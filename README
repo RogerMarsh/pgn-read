@@ -1,0 +1,19 @@
+To install the pgn package type
+
+python setup.py install
+
+at the command prompt with setup.py in the current directory.
+
+
+This is pgn-0.4
+
+
+Dependencies:
+
+Python 2.6 or Python 2.7 installed.
+
+
+Contact:
+
+roger.marsh@solentware.co.uk
+
