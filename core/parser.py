@@ -180,6 +180,17 @@ from .constants import (
     CASTLING_OPTION_FENMAP,
     EN_PASSANT_FENMAP,
     TAG_OPENING,
+    SEVEN_TAG_ROSTER_EXPORT_ORDER,
+    REPERTOIRE_TAG_ORDER,
+    REPERTOIRE_GAME_TAGS,
+    PGN_MAX_LINE_LEN,
+    SEVEN_TAG_ROSTER_ARCHIVE_SORT1,
+    SEVEN_TAG_ROSTER_ARCHIVE_SORT2,
+    TAG_DATE,
+    TAG_ROUND,
+    SPECIAL_TAG_DATE,
+    SPECIAL_TAG_ROUND,
+    NORMAL_TAG_ROUND,
     )
 
 re_tokens = re.compile(SPLIT_INTO_TOKENS)
@@ -1831,6 +1842,10 @@ class PGNDisplay(PGNDisplayMoves):
 
     Methods added:
 
+    get_archive_pgn_elements
+    get_export_pgn_movetext
+    get_export_pgn_ravtext
+    get_export_pgn_elements
     _concatenate_comments
 
     Methods overridden:
@@ -1889,6 +1904,307 @@ class PGNDisplay(PGNDisplayMoves):
             self._comments[:] = []
             return None
         return PGN_ERROR
+
+    def get_export_pgn_movetext(self):
+        """Return Export format PGN movetext"""
+        tokens = self.gametokens
+        movetext = ['\n']
+        linelen = 0
+        pmn = True
+        mns = [self.move_number]
+        for t, n, m in self.moves:
+            if isinstance(m, tuple):
+                if isinstance(n, int):
+                    if t is True:
+                        if m[1] == 1:
+                            mn = str(mns[-1]) + '.'
+                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(mn)
+                            movetext.append(' ')
+                            linelen += len(mn) + 1
+                        elif pmn:
+                            mn = str(mns[-1]) + '...'
+                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(mn)
+                            movetext.append(' ')
+                            linelen += len(mn) + 1
+                        if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                            movetext[-1] = '\n'
+                            linelen = 0
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen += len(movetext[-2]) + 1
+                        if m[1] == 0:
+                            mns[-1] += 1
+                        pmn = False
+                    else:
+                        if t == START_RAV:
+                            if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(tokens[n])
+                            linelen += len(tokens[n])
+                        elif t == END_RAV:
+                            linelen -= len(movetext[-1])
+                            del movetext[-1]
+                            if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(tokens[n])
+                            movetext.append(' ')
+                            linelen += len(tokens[n]) + 1
+                        else:
+                            if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(tokens[n])
+                            movetext.append(' ')
+                            linelen += len(tokens[n]) + 1
+                        if t == START_RAV:
+                            if m[1] == 1:
+                                mns.append(mns[-1] - 1)
+                            else:
+                                mns.append(mns[-1])
+                        elif t == END_RAV:
+                            del mns[-1]
+                        pmn = True
+            elif isinstance(n, int):
+                if t == TERMINATION:
+                    if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                        movetext[-1] = '\n'
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen = len(tokens[n]) + 1
+                    else:
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen += len(tokens[n]) + 1
+                elif t in (START_COMMENT, START_RESERVED):
+                    ts = tokens[n].split('\n')
+                    if len(ts) == 1:
+                        if linelen + len(ts[0]) > PGN_MAX_LINE_LEN:
+                            movetext[-1] = '\n'
+                            linelen = 0
+                        movetext.append(ts[0])
+                        movetext.append(' ')
+                        linelen += len(ts[0]) + 1
+                    else:
+                        if linelen + len(ts[0]) > PGN_MAX_LINE_LEN:
+                            movetext[-1] = '\n'
+                            linelen = 0
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen = len(ts[-1]) + 1
+                elif t == COMMENT_TO_EOL:
+                    if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
+                        movetext[-1] = '\n'
+                    movetext.append(tokens[n])
+                    movetext.append('\n')
+                    linelen = 0
+                elif t == ESCAPE_TO_EOL:
+                    movetext[-1] = '\n'
+                    movetext.append(tokens[n])
+                    movetext.append('\n')
+                    linelen = 0
+        try:
+            # delete trailing space
+            del movetext[-1]
+        except IndexError:
+            # empty list ok but unusual
+            pass
+        movetext.append('\n\n')
+        return ''.join(movetext)
+
+    def get_archive_movetext(self):
+        """Return Reduced Export format PGN movetext"""
+        tokens = self.gametokens
+        linelen = 0
+        mns = [self.move_number]
+        movetext = ['\n']
+        for t, n, m in self.moves:
+            if isinstance(m, tuple):
+                if isinstance(n, int):
+                    if t is True:
+                        if len(mns) > 1:
+                            continue
+                        if m[1] == 1:
+                            mn = str(mns[-1]) + '.'
+                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(mn)
+                            movetext.append(' ')
+                            linelen += len(mn) + 1
+                        if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                            movetext[-1] = '\n'
+                            linelen = 0
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen += len(movetext[-2]) + 1
+                        if m[1] == 0:
+                            mns[-1] += 1
+                    else:
+                        if t == START_RAV:
+                            if m[1] == 1:
+                                mns.append(mns[-1] - 1)
+                            else:
+                                mns.append(mns[-1])
+                        elif t == END_RAV:
+                            del mns[-1]
+            elif isinstance(n, int):
+                if t == TERMINATION:
+                    if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                        movetext[-1] = '\n'
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen = len(tokens[n]) + 1
+                    else:
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen += len(tokens[n]) + 1
+        try:
+            # delete trailing space
+            del movetext[-1]
+        except IndexError:
+            # empty list ok but unusual
+            pass
+        movetext.append('\n\n')
+        return ''.join(movetext)
+
+    def get_export_pgn_rav_movetext(self):
+        """Return Export format PGN moves and RAVs"""
+        tokens = self.gametokens
+        movetext = ['\n']
+        linelen = 0
+        pmn = True
+        mns = [self.move_number]
+        for t, n, m in self.moves:
+            if isinstance(m, tuple):
+                if isinstance(n, int):
+                    if t is True:
+                        if m[1] == 1:
+                            mn = str(mns[-1]) + '.'
+                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(mn)
+                            movetext.append(' ')
+                            linelen += len(mn) + 1
+                        elif pmn:
+                            mn = str(mns[-1]) + '...'
+                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(mn)
+                            movetext.append(' ')
+                            linelen += len(mn) + 1
+                        if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                            movetext[-1] = '\n'
+                            linelen = 0
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen += len(movetext[-2]) + 1
+                        if m[1] == 0:
+                            mns[-1] += 1
+                        pmn = False
+                    else:
+                        if t == START_RAV:
+                            if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(tokens[n])
+                            linelen += len(tokens[n])
+                        elif t == END_RAV:
+                            linelen -= len(movetext[-1])
+                            del movetext[-1]
+                            if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                                movetext[-1] = '\n'
+                                linelen = 0
+                            movetext.append(tokens[n])
+                            movetext.append(' ')
+                            linelen += len(tokens[n]) + 1
+                        if t == START_RAV:
+                            if m[1] == 1:
+                                mns.append(mns[-1] - 1)
+                            else:
+                                mns.append(mns[-1])
+                        elif t == END_RAV:
+                            del mns[-1]
+                        pmn = True
+            elif isinstance(n, int):
+                if t == TERMINATION:
+                    if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                        movetext[-1] = '\n'
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen = len(tokens[n]) + 1
+                    else:
+                        movetext.append(tokens[n])
+                        movetext.append(' ')
+                        linelen += len(tokens[n]) + 1
+        try:
+            # delete trailing space
+            del movetext[-1]
+        except IndexError:
+            # empty list ok but unusual
+            pass
+        movetext.append('\n\n')
+        return ''.join(movetext)
+
+    def get_non_seven_tag_roster_tags(self):
+        """Return string of sorted tags not in Seven Tag Roster"""
+        pb = []
+        for t, v in sorted([tv for tv in self.tags.items()
+                            if tv[0] not in SEVEN_TAG_ROSTER]):
+            pb.extend(['[', t, ' "', v, '"]\n'])
+        #pb.append('\n')
+        return ''.join(pb)
+
+    def get_seven_tag_roster_tags(self):
+        """Return ordered Seven Tag Roster tags decorated for sorting games"""
+        strtags = [self.tags.get(
+            TAG_DATE, SEVEN_TAG_ROSTER[TAG_DATE]).replace(*SPECIAL_TAG_DATE)]
+        st = []
+        for t in SEVEN_TAG_ROSTER_ARCHIVE_SORT1:
+            st.extend(
+                ['[', t, ' "',
+                 self.tags.get(t, SEVEN_TAG_ROSTER[t]),
+                 '"]\n'])
+        strtags.append(''.join(st))
+        strtags.append(SPECIAL_TAG_ROUND.get(
+            self.tags.get(TAG_ROUND, SEVEN_TAG_ROSTER[TAG_ROUND]),
+            NORMAL_TAG_ROUND))
+        st = []
+        for t in SEVEN_TAG_ROSTER_ARCHIVE_SORT2:
+            st.extend(
+                ['[', t, ' "',
+                 self.tags.get(t, SEVEN_TAG_ROSTER[t]),
+                 '"]\n'])
+        #st.append('\n')
+        strtags.append(''.join(st))
+        return strtags
+
+    def get_export_pgn_elements(self):
+        """Return Export format PGN text"""
+        return (
+            self.get_seven_tag_roster_tags(),
+            self.get_export_pgn_movetext(),
+            self.get_non_seven_tag_roster_tags())
+
+    def get_archive_pgn_elements(self):
+        """Return Reduced Export format PGN text"""
+        return (self.get_seven_tag_roster_tags(), self.get_archive_movetext())
+
+    def get_export_pgn_rav_elements(self):
+        """Return Export format PGN text"""
+        return (
+            self.get_seven_tag_roster_tags(),
+            self.get_export_pgn_rav_movetext(),
+            self.get_non_seven_tag_roster_tags())
 
     def _concatenate_comments(self):
         """Concatenate adjacent comment tokens into one token for display."""
@@ -2307,6 +2623,8 @@ class PGNRepertoireDisplay(PGNDisplay):
 
     Methods overridden:
 
+    get_export_repertoire_text
+    get_export_repertoire_rav_text
     is_tag_roster_valid
     
     Methods extended:
@@ -2330,6 +2648,34 @@ class PGNRepertoireDisplay(PGNDisplay):
             # A mandatory tag is missing
             return False
         return True
+
+    def get_export_repertoire_text(self):
+        """Return Export format PGN text for repertoire"""
+        pb = []
+        for t in REPERTOIRE_TAG_ORDER:
+            pb.extend(
+                ['[', t, ' "',
+                 self.tags.get(t, REPERTOIRE_GAME_TAGS[t]),
+                 '"]\n'])
+        for t, v in sorted([tv for tv in self.tags.items()
+                            if tv[0] not in REPERTOIRE_GAME_TAGS]):
+            pb.extend(['[', t, ' "', v, '"]\n'])
+        pb.append(self.get_export_pgn_movetext())
+        return ''.join(pb)
+
+    def get_export_repertoire_rav_text(self):
+        """Return Export format PGN text for repertoire RAV"""
+        pb = []
+        for t in REPERTOIRE_TAG_ORDER:
+            pb.extend(
+                ['[', t, ' "',
+                 self.tags.get(t, REPERTOIRE_GAME_TAGS[t]),
+                 '"]\n'])
+        for t, v in sorted([tv for tv in self.tags.items()
+                            if tv[0] not in REPERTOIRE_GAME_TAGS]):
+            pb.extend(['[', t, ' "', v, '"]\n'])
+        pb.append(self.get_export_pgn_rav_movetext())
+        return ''.join(pb)
 
 
 class PGNRepertoireUpdate(PGN):

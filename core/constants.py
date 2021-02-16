@@ -18,13 +18,13 @@ TAG_BLACK = 'Black'
 TAG_RESULT = 'Result'
 TAG_FEN = 'FEN'
 SEVEN_TAG_ROSTER = {
-    TAG_EVENT,
-    TAG_SITE,
-    TAG_DATE,
-    TAG_ROUND,
-    TAG_WHITE,
-    TAG_BLACK,
-    TAG_RESULT,
+    TAG_EVENT: '?',
+    TAG_SITE: '?',
+    TAG_DATE: '????.??.??',
+    TAG_ROUND: '?',
+    TAG_WHITE: '?',
+    TAG_BLACK: '?',
+    TAG_RESULT: '*',
     }
 SEVEN_TAG_ROSTER_DISPLAY_ORDER = (
     TAG_SITE,
@@ -44,11 +44,29 @@ SEVEN_TAG_ROSTER_EXPORT_ORDER = (
     TAG_BLACK,
     TAG_RESULT,
     )
+# Allow for decorators to do special cases for Date and Round sorting
+SPECIAL_TAG_DATE = ('?', '0')
+SPECIAL_TAG_ROUND = {'?': 1, '-':2}
+NORMAL_TAG_ROUND = 3
+SEVEN_TAG_ROSTER_ARCHIVE_SORT1 = (
+    TAG_EVENT,
+    TAG_SITE,
+    TAG_DATE,
+    )
+SEVEN_TAG_ROSTER_ARCHIVE_SORT2 = (
+    TAG_ROUND,
+    TAG_WHITE,
+    TAG_BLACK,
+    TAG_RESULT,
+    )
 
 # Repertoire Tags (non-standard)
 TAG_OPENING = 'Opening'
 REPERTOIRE_TAG_ORDER = (TAG_OPENING, TAG_RESULT)
-REPERTOIRE_GAME_TAGS = set(REPERTOIRE_TAG_ORDER)
+REPERTOIRE_GAME_TAGS = {
+    TAG_OPENING: '?',
+    TAG_RESULT: '*',
+    }
 
 WHITE_WIN = '1-0'
 BLACK_WIN = '0-1'
@@ -562,6 +580,12 @@ NON_MOVE = None
 MOVE_ERROR = False
 MOVE_AFTER_ERROR = 0
 MOVE_TEXT = True
+
+# Maximum line length in PGN file for movetext excluding EOL ('\n')
+# Some PGN Tags are allowed to exceed this
+# The rule may not be enforcable for comments, especially any re-exported,
+# without disturbing any formatting attempts with EOL and spaces.
+PGN_MAX_LINE_LEN = 79
 
 #
 # The following lookup tables are calculated by _calculate_lookups() which is
