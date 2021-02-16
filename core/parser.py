@@ -1631,7 +1631,13 @@ class PGN(object):
 
     def _end_variation_containing_error(self):
         # different from _end_variation to emphasise state change
-        self._state = self._state_stack.pop()
+        try:
+            self._state = self._state_stack.pop()
+        except IndexError:
+            # ')' without an earlier matching '('.
+            self._state = PGN_ERROR
+            self._token_movetext_error()
+            return
         del self.ravstack[-1]
         if self.ravstack[-1] is not None:
             self.reset_position(self.ravstack[-1][-1])
@@ -2090,7 +2096,10 @@ class PGNDisplay(PGNDisplayMoves):
                         if m[1] == 1:
                             mn = str(mns[-1]) + '.'
                             if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
+                                if movetext[-1] == ' ':
+                                    movetext[-1] = '\n'
+                                else:
+                                    movetext.append('\n')
                                 linelen = 0
                             movetext.append(mn)
                             movetext.append(' ')
@@ -2098,13 +2107,19 @@ class PGNDisplay(PGNDisplayMoves):
                         elif pmn:
                             mn = str(mns[-1]) + '...'
                             if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
+                                if movetext[-1] == ' ':
+                                    movetext[-1] = '\n'
+                                else:
+                                    movetext.append('\n')
                                 linelen = 0
                             movetext.append(mn)
                             movetext.append(' ')
                             linelen += len(mn) + 1
                         if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                            movetext[-1] = '\n'
+                            if movetext[-1] == ' ':
+                                movetext[-1] = '\n'
+                            else:
+                                movetext.append('\n')
                             linelen = 0
                         movetext.append(tokens[n])
                         movetext.append(' ')
@@ -2115,14 +2130,21 @@ class PGNDisplay(PGNDisplayMoves):
                     else:
                         if t == START_RAV:
                             if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
+                                if movetext[-1] == ' ':
+                                    movetext[-1] = '\n'
+                                else:
+                                    movetext.append('\n')
                                 linelen = 0
                             movetext.append(tokens[n])
                             linelen += len(tokens[n])
                         elif t == END_RAV:
+                            # Assumes a space precedes ')' which ends rav.
                             linelen -= len(movetext[-1])
                             del movetext[-1]
                             if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
+                                # Should never get here because previous token
+                                # encounters 'line too long' condition.  But if
+                                # it does it will not work.
                                 movetext[-1] = '\n'
                                 linelen = 0
                             movetext.append(tokens[n])
@@ -2139,7 +2161,10 @@ class PGNDisplay(PGNDisplayMoves):
             elif isinstance(n, int):
                 if t == TERMINATION:
                     if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                        movetext[-1] = '\n'
+                        if movetext[-1] == ' ':
+                            movetext[-1] = '\n'
+                        else:
+                            movetext.append('\n')
                         movetext.append(tokens[n])
                         movetext.append(' ')
                         linelen = len(tokens[n]) + 1
