@@ -8,7 +8,7 @@ Portable Game Notation (PGN) parser
 Description
 ===========
 
-This package provides a parser for chess game scores in PGN format.
+This package provides a parser for chess game scores in `PGN`_ format.
 
 Both the strict export format and many less strict import formats are supported.
 
@@ -52,3 +52,4 @@ The lookup tables really need to be implemented more efficiently.  But other are
 
 
 .. _Python: https://python.org
+.. _PGN: http://www6.chessclub/help/PGN-spec

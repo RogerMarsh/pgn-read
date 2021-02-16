@@ -24,6 +24,7 @@ to move to f3.
 List of classes
 
 PGN
+PGNAnalysis
 PGNDisplay
 PGNDisplayMoves
 PGNEdit
@@ -2987,4 +2988,47 @@ def get_position_string(position):
         sorted([PCH[board[square] * 64 + square]
                 for square in FULLBOARD if board[square] != NOPIECE]) +
         [TOMOVE_TO_POSITION_KEY[side_to_move]])
+
+
+class PGNAnalysis(PGNDisplay):
+    """Generate data to display Chess Engine analysis without ability to edit.
+
+    Methods added:
+
+    None
+
+    Methods overridden:
+
+    is_tag_roster_valid
+    
+    Methods extended:
+
+    None
+
+    Notes:
+
+    The notion of mandatory PGN tags, like the 'seven tag roster', is removed
+    from the PGNDisplay class.
+
+    Subclasses may use the PGN tag structure to manage analysis, but exactly
+    what tags are defined is up to them.
+
+    A single main move is required; to which chess engine analysis is attached
+    as a sequence of RAVs, each RAV corresponding to one PV in a PV or multiPV
+    response from a chess engine.
+    
+    """
+    
+    def is_tag_roster_valid(self):
+        if not self._tags_valid:
+            # Tags deemed invalid even if calculation says ok
+            return False
+        if len(self.tags) != len(self.tags_in_order):
+            # Tag must appear no more than once
+            return False
+        for v in self.tags.values():
+            if len(v) == 0:
+                # Tag value must not be null
+                return False
+        return True
 
