@@ -17,4 +17,4 @@ Coordinator: Steven J. Edwards (send comments to sje@world.std.com)
 Transcription to Word: Steven Pigeon (send to pigeon@iro.umontreal.ca)
 
 """
-_pgn_version = '0.2'
+_pgn_version = '0.3'
