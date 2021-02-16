@@ -1,5 +1,5 @@
 # parser.py
-# Copyright 2003, 2010 Roger Marsh
+# Copyright 2003, 2010, 2016 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
 """Portable Game Notation (PGN) parser.
@@ -38,148 +38,86 @@ PGNUpdate
 List of functions
 
 get_board_from_position
-get_fen_from_position
+get_fen_string
 get_position_string
 
 """
 
-# Original pgn.py works but I dare not try changing it in any significant way,
-# such as improving the score editor to detect and note valid PGN syntax even
-# if moves do not make sense after an error is detected.
-#
-# For example an error in a variation does not mean the PGN after end of line
-# is wrong.  In fact an error implies the PGN leading to the error represents
-# a playable sequence of moves.  pgn.py handles variations nested indefinitely
-# but does not track errors at the line level.
-#
-
 import re
 
 from .constants import (
-    NO_EP_SQUARE,
-    CASTLEALL,
-    WHITE_TO_MOVE,
-    BLACK_TO_MOVE,
-    INITIAL_WP_SQUARES,
-    INITIAL_BP_SQUARES,
-    WKING,
-    WQUEEN,
-    WROOK,
-    WBISHOP,
-    WKNIGHT,
-    WPAWN,
-    BKING,
-    BQUEEN,
-    BROOK,
-    BBISHOP,
-    BKNIGHT,
-    BPAWN,
-    WPIECES,
-    FEN_FIELD_DELIM,
-    FEN_WHITE,
-    FEN_BLACK,
-    FEN_NO_DATA,
-    FEN_RANK_DELIM,
-    FEN_WPAWN,
-    FEN_BPAWN,
-    FEN_WKING,
-    FEN_BKING,
     FEN_ADJACENT_EMPTY_SQUARES,
-    MAPFILE,
-    MAPRANK,
-    FEN_PIECEMAP,
-    FEN_EP_SQUARES,
-    CASTLEKEY,
-    CASTLEMOVES,
-    CASTLESET,
-    OTHERSIDE_PAWN,
-    OTHER_SIDE,
-    SIDE_KING,
     SCH,
-    SPLIT_INTO_TOKENS,
-    SPLIT_INTO_TOKENS_EDIT,
-    SPLIT_INTO_TAGS,
-    MOVETEXT,
-    MOVE_DETAIL,
-    END_COMMENT,
+    FULLSTOP,
+    LEFT_ANGLE_BRACE,
+    RIGHT_ANGLE_BRACE,
+    PERCENT,
+    IMPORT_FORMAT,
+    DISAMBIGUATE_FORMAT,
+    UNAMBIGUOUS_FORMAT,
+    POSSIBLE_MOVE,
+    IFG_START_TAG,
+    IFG_TAG_SYMBOL,
+    IFG_TAG_STRING,
+    IFG_TAG_STRING_VALUE,
+    IFG_PAWN_PROMOTE_FROM_FILE,
+    IFG_PAWN_TAKES_PROMOTE,
+    IFG_PAWN_PROMOTE_SQUARE,
+    IFG_PAWN_PROMOTE_PIECE,
+    IFG_PAWN_CAPTURE_FROM_FILE,
+    IFG_PAWN_TAKES,
+    IFG_PAWN_CAPTURE_SQUARE,
+    IFG_KING_CAPTURE,
+    IFG_PIECE_CAPTURE,
+    IFG_PIECE_CAPTURE_FROM,
+    IFG_PIECE_TAKES,
+    IFG_PIECE_CAPTURE_SQUARE,
+    IFG_PIECE_CHOICE,
+    IFG_PIECE_CHOICE_FILE_OR_RANK,
+    IFG_PIECE_CHOICE_SQUARE,
+    IFG_PIECE_MOVE,
+    IFG_PIECE_SQUARE,
+    IFG_PAWN_SQUARE,
+    IFG_CASTLES,
+    IFG_CHECK,
+    IFG_ANNOTATION,
+    IFG_COMMENT,
+    IFG_NAG,
+    IFG_COMMENT_TO_EOL,
+    IFG_TERMINATION,
+    IFG_START_RAV,
+    IFG_END_RAV,
+    IFG_ANYTHING_ELSE,
+    PGN_SEARCHING,
+    PGN_SEARCHING_AFTER_ERROR_IN_RAV,
+    PGN_SEARCHING_AFTER_ERROR_IN_GAME,
+    PGN_COLLECTING_TAG_PAIRS,
+    PGN_COLLECTING_MOVETEXT,
+    PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING,
+    PGN_DISAMBIGUATE_MOVE,
     LINEFEED,
     CARRIAGE_RETURN,
-    START_COMMENT,
-    END_RESERVED,
-    START_RESERVED,
-    ESCAPE_TO_EOL,
-    RESULT,
-    PGN_ERROR,
-    COMMENT_TO_EOL,
-    PERIOD,
     START_TAG,
     END_TAG,
-    START_RAV,
-    END_RAV,
     SPACE,
     HORIZONTAL_TAB,
     FORMFEED,
     VERTICAL_TAB,
     NEWLINE,
     TAG_FEN,
-    INITIAL_BOARD,
     RESULT_SET,
-    MOVE_OR_CAPTURE_GROUP,
     PLAIN_MOVE,
-    PROMOTE_GROUP,
-    MAPPIECE,
-    PIECE_MOVE_MAP,
-    PATH,
     NOPIECE,
-    CASTLEMASKS,
-    PGN_PAWN,
-    ALLOW_EP_MOVES,
-    PIECES_ATTACK,
-    GAPS,
-    CAPTURE_MOVE,
-    PIECE_CAPTURE_MAP,
     O_O_O,
     O_O,
-    WK_CASTLES,
-    BPIECES,
-    FILES,
     SEVEN_TAG_ROSTER,
-    RANKS,
-    HIDDEN,
-    BK_CASTLES,
-    WQ_CASTLES,
-    MAPROW,
-    BQ_CASTLES,
-    EP_MOVES,
-    PIECE_GROUP,
-    CAPTURE_MOVE,
     PGN_FROM_SQUARE_DISAMBIGUATION,
-    DISAMBIGUATE,
     MOVE_NUMBER_KEYS,
     NON_MOVE,
     MOVE_ERROR,
     MOVE_AFTER_ERROR,
-    TERMINATION,
     MOVE_TEXT,
-    GLYPH,
-    SPLIT_INTO_GAMES,
-    POSITION_KEY_TO_PIECES,
-    POSITION_KEY_TO_FLAGS,
-    TOMOVE_TO_POSITION_KEY,
-    INITIAL_SQUARES,
-    PCH,
-    FULLBOARD,
-    DECODE,
-    SPECIAL_VALUES_OFFSET,
-    SPECIAL_VALUES_TOMOVE,
-    SPECIAL_VALUES_CASTLE,
-    SPECIAL_VALUES_ENPASSANT,
     TAG_RESULT,
-    INTEGER,
-    PIECE_FENMAP,
-    SIDE_TO_MOVE_FENMAP,
-    CASTLING_OPTION_FENMAP,
-    EN_PASSANT_FENMAP,
     TAG_OPENING,
     SEVEN_TAG_ROSTER_EXPORT_ORDER,
     REPERTOIRE_TAG_ORDER,
@@ -192,14 +130,97 @@ from .constants import (
     SPECIAL_TAG_DATE,
     SPECIAL_TAG_ROUND,
     NORMAL_TAG_ROUND,
+    WKING,
+    WQUEEN,
+    WROOK,
+    WBISHOP,
+    WKNIGHT,
+    WPAWN,
+    BKING,
+    BQUEEN,
+    BROOK,
+    BBISHOP,
+    BKNIGHT,
+    BPAWN,
+    WHITE_SIDE,
+    INITIAL_BOARD,
+    INITIAL_BOARD_BITMAP,
+    INITIAL_OCCUPIED_SQUARES,
+    INITIAL_PIECE_LOCATIONS,
+    FEN_FIELD_DELIM,
+    FEN_FIELD_COUNT,
+    FEN_SIDES,
+    FEN_NULL,
+    FEN_INITIAL_CASTLING,
+    FEN_WHITE,
+    FEN_INITIAL_HALFMOVE_COUNT,
+    FEN_WHITE_MOVE_TO_EN_PASSANT,
+    FEN_INITIAL_FULLMOVE_NUMBER,
+    FEN_RANK_DELIM,
+    BOARDSIDE,
+    FEN_PIECE_COUNT_PER_SIDE_MAX,
+    FEN_KINGS,
+    FEN_KING_COUNT,
+    FEN_PAWN_COUNT_MAX,
+    FEN_QUEEN_COUNT_INITIAL,
+    FEN_ROOK_COUNT_INITIAL,
+    FEN_BISHOP_COUNT_INITIAL,
+    FEN_KNIGHT_COUNT_INITIAL,
+    CASTLING_W,
+    CASTLING_WK,
+    CASTLING_WQ,
+    CASTLING_B,
+    CASTLING_BK,
+    CASTLING_BQ,
+    WPIECES,
+    PIECES,
+    SQUARE_BITS,
+    GAPS,
+    FEN_CASTLING,
+    FEN_CASTLING_OPTION_REPEAT_MAX,
+    FEN_BLACK,
+    FEN_BLACK_MOVE_TO_EN_PASSANT,
+    BPIECES,
+    PIECE_CAPTURE_MAP,
+    OTHER_SIDE,
+    SIDE_KING,
+    FEN_TOMOVE,
+    FEN_MAXIMUM_PIECES_GIVING_CHECK,
+    MAPFILE,
+    MAP_PGN_SQUARE_NAME_TO_FEN_ORDER,
+    MAPPIECE,
+    CAPTURE_MOVE,
+    PIECE_MOVE_MAP,
+    FILES,
+    PGN_PAWN,
+    RANKS,
+    EN_PASSANT_FROM_SQUARES,
+    EN_PASSANT_TO_SQUARES,
+    FEN_EN_PASSANT_TARGET_RANK,
+    MAPROW,
+    BLACK_SIDE,
+    PGN_KING,
+    CASTLING_AVAILABITY_SQUARES,
+    CASTLING_SQUARES,
+    FEN_WHITE_CAPTURE_EN_PASSANT,
+    FEN_BLACK_CAPTURE_EN_PASSANT,
+    PGN_QUEEN,
+    PGN_ROOK,
+    PGN_BISHOP,
+    PGN_KNIGHT,
+    PAWN_MOVE_DESITINATION,
     )
 
-re_tokens = re.compile(SPLIT_INTO_TOKENS)
-re_tokens_edit = re.compile(SPLIT_INTO_TOKENS_EDIT)
-re_tags = re.compile(SPLIT_INTO_TAGS)
-re_detail = re.compile(MOVE_DETAIL)
-re_disambiguate = re.compile(DISAMBIGUATE)
-re_games = re.compile(SPLIT_INTO_GAMES)
+re_tokens = re.compile(IMPORT_FORMAT)
+
+# Avoid re.fullmatch() method while compatibility with Python 3.3 is important.
+re_disambiguate_error = re.compile(DISAMBIGUATE_FORMAT.join(('^', '$')))
+re_disambiguate_non_move = re.compile(UNAMBIGUOUS_FORMAT.join(('^', '$')))
+re_possible_move = re.compile(POSSIBLE_MOVE.join(('(^', '$)')))
+
+
+class PGNError(Exception):
+    pass
 
 
 class PGN(object):
@@ -210,74 +231,22 @@ class PGN(object):
 
     Methods added:
 
-    extract_first_game
-    get_attacks_on_square
-    get_tag_result
+    count_attacks_on_square_by_side
+    is_active_king_attacked
     is_movetext_valid
     is_pgn_valid
+    is_square_attacked_by_side
     is_tag_roster_valid
-    process_game
+    _play_disambiguated_move
+    _play_move
     reset_position
     set_position_fen
-    _add_move_to_game
-    _comment_to_eol
-    _comment_to_eol_after_nl_between_moves
-    _disambiguate_move
-    _end_comment
-    _end_reserved
+    add_move_to_game
     _end_variation
-    _end_variation_containing_error
-    _escape_to_eol
-    _escape_to_eol_after_nl_between_moves
-    _is_attacked
-    _is_king_in_check_after_move
-    _make_castles_move
-    _make_capture
-    _make_move
-    _make_pawn_capture
-    _make_pawn_capture_promotion
-    _make_pawn_move
-    _make_pawn_promotion
-    _move_error
-    _movetext_error
-    _newline
-    _newline_between_moves
-    _newline_in_comment_to_eol
-    _newline_in_escape_to_eol
-    _newline_repeat
-    _newline_repeat_between_moves
-    _process_movetext
-    _process_token
-    _prune_pieces_pinned_to_king
+    _process_disambiguated_token
     _revert_state_and_reprocess_token
-    _set_game_data
-    _start_comment
-    _start_reserved
     _start_variation
-    _start_variation_in_error_sequence
-    _token_comment
-    _token_comment_after_newline
-    _token_digit
-    _token_end_comment
-    _token_end_reserved
-    _token_end_variation
-    _token_glyph
-    _token_move
-    _token_move_detail_error
-    _token_move_disambiguate
-    _token_move_error
-    _token_move_error_disambiguate
-    _token_move_in_error_sequence
-    _token_movetext_error
-    _token_newline
-    _token_newline_keep
-    _token_period
-    _token_previous_move_error
-    _token_result
-    _token_start_comment
-    _token_start_reserved
-    _token_start_variation
-    _token_whitespace
+    _termination_while_searching
 
     Methods overridden:
 
@@ -290,208 +259,200 @@ class PGN(object):
     """
 
     def __init__(self):
-        super(PGN, self).__init__()
+        super().__init__()
         
-        # data generated from PGN text for game before checking moves are legal
+        # data generated from PGN text for game while checking moves are legal
         self.tokens = []
-        self.tags = {}
+        self.error_tokens = []
         self.tags_in_order = []
-        self._tag_string = ''
-        self._move_string = ''
         
         # data generated from PGN text for game after checking moves are legal
-        self.gametokens = []
-        self.occupied_square_pieces = []
-        self.board_pieces = []
-        self.piece_locations = []
+        self.collected_game = None
+        self.board_bitmap = None
+        self.occupied_squares = []
+        self.board = []
+        #self.piece_locations = []
+        self.piece_locations = {}
+        self.fullmove_number = None
+        self.halfmove_count = None
+        self.en_passant = None
+        self.castling = None
+        self.active_side = None
+
         # ravstack keeps track of the position at start of game or variation
         # and the position after application of a valid move.  Thus the value
         # in ravstack[-1] is (None, <position start>) at start of game or line
         # and (<position start>, <position after move>) after application of a
         # valid move from gametokens.
         self.ravstack = []
-        self.move_number = None # set but not used in original pgn.py
-        self.since_capture = None
-        self.ep_move_to_sq = None
-        self.castle_options = None
-        self.side_to_move = None
         
         # data used while parsing PGN text to split into tag and move tokens
-        self._movetext_valid = None
-        self._token = ''
-        self._tags_valid = None
+        self._initial_fen = None
         self._state = None
-        self._state_stack = []
+        self._move_error_state = None
+        self._rewind_state = None
         
-        self._despatch_table = {
-            START_COMMENT: { # comment tokens until END_COMMENT
-                END_COMMENT: self._end_comment,
-                LINEFEED: self._newline,
-                None: self._token_comment,
-                },
-            START_RESERVED: { # treat as comment tokens until END_RESERVED
-                END_RESERVED: self._end_reserved,
-                LINEFEED: self._newline,
-                None: self._token_comment,
-                },
-            ESCAPE_TO_EOL: { # treat as comment tokens until newline
-                LINEFEED: self._newline_in_escape_to_eol,
-                None: self._token_comment,
-                },
-            RESULT: { # non-whitespace token after result treated as comment
-                LINEFEED: self._token_whitespace,
-                CARRIAGE_RETURN: self._token_whitespace,
-                SPACE: self._token_whitespace,
-                HORIZONTAL_TAB: self._token_whitespace,
-                FORMFEED: self._token_whitespace,
-                VERTICAL_TAB: self._token_whitespace,
-                None: self._token_comment,
-                },
-            PGN_ERROR: { # An error deemed unrecoverable detected
-                None: self._token_movetext_error,
-                },
-            COMMENT_TO_EOL: { # tokens until newline are comments
-                LINEFEED: self._newline_in_comment_to_eol,
-                None: self._token_comment,
-                },
-            MOVETEXT: { # main line or variation contains move(s)
-                PERIOD: self._token_period,
-                START_COMMENT: self._start_comment,
-                END_COMMENT: self._movetext_error,
-                START_TAG: self._movetext_error, # should be unrecoverable?
-                END_TAG: self._movetext_error, # should be unrecoverable?
-                START_RAV: self._start_variation,
-                END_RAV: self._end_variation,
-                START_RESERVED: self._start_reserved,
-                END_RESERVED: self._movetext_error,
-                LINEFEED: self._newline_between_moves,
-                CARRIAGE_RETURN: self._token_whitespace,
-                SPACE: self._token_whitespace,
-                HORIZONTAL_TAB: self._token_whitespace,
-                FORMFEED: self._token_whitespace,
-                VERTICAL_TAB: self._token_whitespace,
-                COMMENT_TO_EOL: self._comment_to_eol,
-                None: self._process_token,
-                },
-            False: { # move tokens treated as comment till matching END_RAV
-                PERIOD: self._token_comment,
-                START_COMMENT: self._start_comment, # ..._in_error_sequence
-                END_COMMENT: self._token_comment, # should be an error?
-                START_TAG: self._token_comment, # should be unrecoverable?
-                END_TAG: self._token_comment, # should be unrecoverable?
-                START_RAV: self._start_variation_in_error_sequence,
-                END_RAV: self._end_variation_containing_error,
-                START_RESERVED: self._start_reserved, # ..._in_error_sequence
-                END_RESERVED: self._token_comment, # should be an error?
-                LINEFEED: self._newline_between_moves, # ..._in_error_sequence
-                CARRIAGE_RETURN: self._token_comment,
-                SPACE: self._token_comment,
-                HORIZONTAL_TAB: self._token_comment,
-                FORMFEED: self._token_comment,
-                VERTICAL_TAB: self._token_comment,
-                COMMENT_TO_EOL: self._comment_to_eol, # ..._in_error_sequence
-                None: self._token_move_in_error_sequence,
-                },
-            None: { # at start of main line or variation
-                PERIOD: self._token_period,
-                START_COMMENT: self._start_comment,
-                END_COMMENT: self._movetext_error,
-                START_TAG: self._movetext_error, # should be unrecoverable?
-                END_TAG: self._movetext_error, # should be unrecoverable?
-                START_RAV: self._movetext_error,
-                END_RAV: self._movetext_error,
-                START_RESERVED: self._start_reserved,
-                END_RESERVED: self._movetext_error,
-                LINEFEED: self._newline_between_moves,
-                CARRIAGE_RETURN: self._token_whitespace,
-                SPACE: self._token_whitespace,
-                HORIZONTAL_TAB: self._token_whitespace,
-                FORMFEED: self._token_whitespace,
-                VERTICAL_TAB: self._token_whitespace,
-                COMMENT_TO_EOL: self._comment_to_eol,
-                None: self._process_token,
-                },
-            LINEFEED: { # newlines between moves allow escape or comment to eol
-                ESCAPE_TO_EOL: self._escape_to_eol_after_nl_between_moves,
-                LINEFEED: self._newline_repeat_between_moves,
-                COMMENT_TO_EOL: self._comment_to_eol_after_nl_between_moves,
-                None: self._revert_state_and_reprocess_token,
-                },
-            NEWLINE: { # newlines in {comment} allow escape to eol
-                ESCAPE_TO_EOL: self._escape_to_eol,
-                LINEFEED: self._newline_repeat,
-                None: self._revert_state_and_reprocess_token,
-                },
-            PGN_FROM_SQUARE_DISAMBIGUATION: { # token must be piece tosquare
-                None: self._disambiguate_move,
-                },
-            }
-        
-        self._unmatched_text_valid_table = {
-            START_COMMENT: self._token_comment,
-            START_RESERVED: self._token_comment,
-            ESCAPE_TO_EOL: self._token_comment,
-            RESULT: self._token_comment,
-            COMMENT_TO_EOL: self._token_comment,
-            MOVETEXT: self._move_error,
-            None: self._move_error,
-            False: self._token_comment,
-            LINEFEED: self._move_error,
-            NEWLINE: self._token_comment,
-            PGN_ERROR: self._token_comment,
-            PGN_FROM_SQUARE_DISAMBIGUATION: self._token_previous_move_error,
-            }
+        self._despatch_table = [
+            self._searching,
+            self._searching_after_error_in_rav,
+            self._searching_after_error_in_game,
+            self._collecting_tag_pairs,
+            self._collecting_movetext,
+            self._collecting_non_whitespace_while_searching,
+            self._disambiguate_move,
+            ]
 
-    def extract_first_game(self, pgntext):
-        '''Return tuple(PGN tags, PGN movetext) for first game in pgntext.'''
-        games = re_games.split(pgntext)
-        if len(games[0]):
-            self._tag_string = ''
-            self._move_string = games[0]
-            return
-        self._tag_string = games[1]
-        self._move_string = games[2]
-        return
+    @staticmethod
+    def _read_pgn(string, length):
+        pgntext = string.read(length)
+        while len(pgntext):
+            yield pgntext
+            pgntext = string.read(length)
+        yield pgntext
     
-    def get_tag_result(self):
-        return self.tags.get(TAG_RESULT)
+    def read_games(self, source, size=10000000, housekeepinghook=lambda:None):
+        """Extract games from file-like source.
+
+        Yield each token where the match is on a game termination token.  The
+        collected_game attribute is bound to the game just terminated.
+
+        source - file-like object from which to read pgn text
+        size - number of characters to read in each read() call
+        housekeepinghook - periodic callback when importing many games
+
+        housekeepinghook introduced to commit database updates in DPT while
+        code remains unchanged for other database engines
+
+        """
+        self._state = PGN_SEARCHING
+        self._move_error_state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+        for pgntext in self._read_pgn(source, size):
+            if len(self.error_tokens):
+                self._state = self._rewind_state
+                pgntext = ''.join(self.error_tokens) + pgntext
+                self.error_tokens.clear()
+            for t in re_tokens.finditer(pgntext):
+                self._despatch_table[self._state](t)
+                if t.group(IFG_TERMINATION):
+                    yield t
+            housekeepinghook()
+
+    def read_pgn_tokens(
+        self, source, size=10000000, housekeepinghook=lambda:None):
+        """Extract games from file-like source yielding for each token.
+
+        The termination group value for each match is yielded, so bool(<yield>)
+        is True for the '1-0', '0-1', '1/2-1/2', and '*', tokens but False for
+        the rest.
+
+        source - file-like object from which to read pgn text
+        size - number of characters to read in each read() call
+        housekeepinghook - ignored, present for compatibility with read_games.
+
+        """
+        self._state = PGN_SEARCHING
+        self._move_error_state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+        for pgntext in self._read_pgn(source, size):
+            if len(self.error_tokens):
+                self._state = self._rewind_state
+                pgntext = ''.join(self.error_tokens) + pgntext
+                self.error_tokens.clear()
+            for t in re_tokens.finditer(pgntext):
+                self._despatch_table[self._state](t)
+                yield t.group(IFG_TERMINATION)
+
+    def get_games(self, source):
+        """Extract games from string.
+
+        Yield each token where the match is on a game termination token.  The
+        collected_game attribute is bound to the game just terminated.
+
+        source - file-like object from which to read pgn text
+
+        """
+        self._state = PGN_SEARCHING
+        self._move_error_state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+        for t in re_tokens.finditer(source):
+            self._despatch_table[self._state](t)
+            if t.group(IFG_TERMINATION):
+                yield t
+
+    def get_first_pgn_token(self, source):
+        """Return termination group value for first token matched in string.
+
+        Thus bool(<return>) is True for the '1-0', '0-1', '1/2-1/2', and '*',
+        tokens but False for the rest.
+
+        source - file-like object from which to read pgn text
+
+        """
+        self._state = PGN_SEARCHING
+        self._move_error_state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+        try:
+            t = next(re_tokens.finditer(source))
+            self._despatch_table[self._state](t)
+            return False if t.group(IFG_TERMINATION) else True
+        except StopIteration:
+            return
+
+    def read_first_game(
+        self, source, size=10000000, housekeepinghook=lambda:None):
+        """Extract first games from file-like source.
+
+        source - file-like object from which to read pgn text
+        size - number of characters to read in each read() call
+        housekeepinghook - periodic callback when importing many games
+
+        housekeepinghook introduced to commit database updates in DPT while
+        code remains unchanged for other database engines
+
+        """
+        return next(self.read_games(source,
+                                    size=size,
+                                    housekeepinghook=housekeepinghook))
+
+    def get_first_game(self, source):
+        """Extract first game from string.
+
+        source - file-like object from which to read pgn text
+
+        """
+        return next(self.get_games(source))
     
     def is_movetext_valid(self):
-        if not self._movetext_valid:
-            # Movetext deemed invalid even if calculation says ok
-            return False
-        return self._state == RESULT
+        """Return True if there are no error_tokens in the collected game.
+
+        A collected movetext with no PGN errors in the main line but errors in
+        one or more RAVs will cause this method to return True.
+
+        """
+        return not self.collected_game[3]
     
     def is_pgn_valid(self):
+        """Return True if the tags and movetext in the collected game are valid.
+
+        A collected movetext with no PGN errors in the main line but errors in
+        one or more RAVs will cause this method to return True.
+
+        """
         return self.is_movetext_valid() and self.is_tag_roster_valid()
     
     def is_tag_roster_valid(self):
-        if not self._tags_valid:
-            # Tags deemed invalid even if calculation says ok
-            return False
-        if len(self.tags) != len(self.tags_in_order):
+        """Return True if the tag roster in the collected game is valid."""
+        tags_in_order = self.collected_game[0]
+        tags = self.collected_game[1]
+        if len(tags) != len(tags_in_order):
             # Tag must appear no more than once
             return False
-        for v in self.tags.values():
+        for v in tags.values():
             if len(v) == 0:
                 # Tag value must not be null
                 return False
         for t in SEVEN_TAG_ROSTER:
-            if t not in self.tags:
+            if t not in tags:
                 # A mandatory tag is missing
                 return False
         return True
-
-    def process_game(self):
-        self._movetext_valid = True
-        self._collect_tags()
-        if TAG_FEN in self.tags:
-            self._state = self.set_position_fen(
-                fen=self.tags[TAG_FEN])
-        else:
-            self._state = self.set_position_fen()
-        self.tokens[:] = re_tokens.split(self._move_string)
-        self._process_movetext()
 
     def set_position_fen(self, fen=None):
         """Initialize PGN score parser with Forsyth Edwards Notation position.
@@ -515,1218 +476,1413 @@ class PGN(object):
         
         """
         # fen is standard start position by default
-        if fen == None:
-            self.gametokens[:] = []
-            self.occupied_square_pieces[:] = [
-                set(INITIAL_WP_SQUARES),
-                set(INITIAL_BP_SQUARES)]
-            self.board_pieces[:] = list(INITIAL_BOARD)
-            self.ravstack[:] = [
-                (None,
-                 (tuple(self.board_pieces),
-                  WHITE_TO_MOVE,
-                  CASTLEALL,
-                  NO_EP_SQUARE))]
-            self.piece_locations[:] = [set(s) for s in INITIAL_SQUARES] 
-            self.move_number = 1
-            self.since_capture = 0
-            self.ep_move_to_sq = NO_EP_SQUARE
-            self.castle_options = CASTLEALL
-            self.side_to_move = WHITE_TO_MOVE
-            return None
+        if fen is None:
+            self.board_bitmap = INITIAL_BOARD_BITMAP
+            self.board = list(INITIAL_BOARD)
+            self.occupied_squares[:] = [
+                set(s) for s in INITIAL_OCCUPIED_SQUARES]
+            self.piece_locations = {k:set(v)
+                                    for k, v in INITIAL_PIECE_LOCATIONS.items()}
+            self.ravstack[:] = [(None, (INITIAL_BOARD,
+                                        WHITE_SIDE,
+                                        FEN_INITIAL_CASTLING,
+                                        FEN_NULL))]
+            self.active_side = WHITE_SIDE
+            self.castling = FEN_INITIAL_CASTLING
+            self.en_passant = FEN_NULL
+            self.halfmove_count = FEN_INITIAL_HALFMOVE_COUNT
+            self.fullmove_number = FEN_INITIAL_FULLMOVE_NUMBER
+            self._initial_fen = True
+            return
 
-        # fen specifies an arbitrary position
-        
-        # set all piece counts to zero
-        sp_piececount = {
-            WKING:0, WQUEEN:0, WROOK:0, WBISHOP:0, WKNIGHT:0, WPAWN:0,
-            BKING:0, BQUEEN:0, BROOK:0, BBISHOP:0, BKNIGHT:0, BPAWN:0
-            }
+        # fen specifies an arbitrary position.
 
-        # fen has six space delimited fields
-        sp_p = fen.split(FEN_FIELD_DELIM)
-        if len(sp_p) != 6:
-            return PGN_ERROR
+        # fen has six space delimited fields.
+        fs = fen.split(FEN_FIELD_DELIM)
+        if len(fs) != FEN_FIELD_COUNT:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        (piece_placement,
+         active_side,
+         castling,
+         en_passant,
+         halfmove_count,
+         fullmove_number,
+         ) = fs
+        del fs
 
-        # fen side to move field
-        if sp_p[1] == FEN_WHITE:
-            sp_side_to_move = WHITE_TO_MOVE
-        elif sp_p[1] == FEN_BLACK:
-            sp_side_to_move = BLACK_TO_MOVE
+        # fen side to move field.
+        if active_side not in FEN_SIDES:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+
+        # fen castling field.
+        if castling != FEN_NULL:
+            for c in FEN_CASTLING:
+                if castling.count(c) > FEN_CASTLING_OPTION_REPEAT_MAX:
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
+            for c in castling:
+                if c not in FEN_CASTLING:
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
+
+        # fen square to which a pawn can move when capturing en passant.
+        if active_side == FEN_WHITE:
+            if en_passant not in FEN_WHITE_MOVE_TO_EN_PASSANT:
+                if en_passant != FEN_NULL:
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
+        elif active_side == FEN_BLACK:
+            if en_passant not in FEN_BLACK_MOVE_TO_EN_PASSANT:
+                if en_passant != FEN_NULL:
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
+
+        # Earlier 'fen side to move field' test makes this unreachable.
         else:
-            return PGN_ERROR
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-        # fen square to which a pawn can move when capturing en passant
-        if sp_p[3] == FEN_NO_DATA:
-            sp_ep_remove_pawn_sq = sp_ep_move_to_sq = NO_EP_SQUARE
-        else:
-            if len(sp_p[3]) != 2:
-                return PGN_ERROR
-            elif sp_p[3][0] not in MAPFILE:
-                return PGN_ERROR
-            elif sp_p[3][1] not in MAPRANK:
-                return PGN_ERROR
-            sp_i = MAPFILE[sp_p[3][0]] + MAPRANK[sp_p[3][1]]
-            if not sp_i in FEN_EP_SQUARES:
-                return PGN_ERROR
-            elif FEN_EP_SQUARES[sp_i][2] != sp_side_to_move:
-                return PGN_ERROR
-            else:
-                sp_ep_move_to_sq = sp_i
-                sp_ep_remove_pawn_sq = FEN_EP_SQUARES[sp_i][0]
+        # fen halfmove count since pawn move or capture.
+        if not halfmove_count.isdigit():
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-        # fen moves since pawn move or capture
-        if sp_p[4].isdigit() == 0:
-            return PGN_ERROR
-        else:
-            sp_since_capture = int(sp_p[4])
+        # fen fullmove number.
+        if not fullmove_number.isdigit():
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-        # fen next move number
-        if sp_p[5].isdigit() == 0:
-            return PGN_ERROR
-        elif int(sp_p[5]) == 0:
-            return PGN_ERROR
-        else:
-            sp_move_number = int(sp_p[5])
+        # fen piece placement field has eight ranks delimited by '/'.
+        ranks = piece_placement.split(FEN_RANK_DELIM)
+        if len(ranks) != BOARDSIDE:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-        # fen position field has eight / delimited ranks
-        sp_rank = sp_p[0].split(FEN_RANK_DELIM)
-        if len(sp_rank) != 8:
-            return PGN_ERROR
+        # fen piece placement field has pieces and empty squares only.
+        for r in ranks:
+            for c in r:
+                if c not in PIECES:
+                    if not c.isdigit():
+                        self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                        return
 
-        # no pawns on first or eighth ranks
-        if sp_rank[0].count(FEN_WPAWN) + sp_rank[0].count(FEN_BPAWN) + sp_rank[7].count(FEN_WPAWN) + sp_rank[7].count(FEN_BPAWN):
-            return PGN_ERROR
+        # Exactly 64 squares: equivalent to exactly 8 squares per rank.
+        for r in ranks:
+            if sum([1 if not s.isdigit() else int(s)
+                    for s in r]) != BOARDSIDE:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
 
-        # no more than 32 pieces and exactly 64 squares
-        sp_i = 0
-        for sp_j in FEN_PIECEMAP:
-            sp_k = sp_piececount[FEN_PIECEMAP[sp_j]] = sp_p[0].count(sp_j)
-            sp_i += sp_k
-        if sp_i > 32:
-            return PGN_ERROR
-        for sp_j in FEN_ADJACENT_EMPTY_SQUARES:
-            sp_i += int(sp_j) * sp_p[0].count(sp_j)
-        if sp_i != 64:
-            return PGN_ERROR
+        # No pawns on first or eighth ranks.
+        if (ranks[0].count(WPAWN) +
+            ranks[0].count(BPAWN) +
+            ranks[BOARDSIDE-1].count(WPAWN) +
+            ranks[BOARDSIDE-1].count(BPAWN)):
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-        # piece counts within pawn promotion bounds
-        sp_i = sp_piececount[WPAWN] - 8
-        sp_i += max(sp_piececount[WQUEEN] - 1, 0)
-        sp_i += max(sp_piececount[WROOK] - 2, 0)
-        sp_i += max(sp_piececount[WBISHOP] - 2, 0)
-        sp_i += max(sp_piececount[WKNIGHT] - 2, 0)
-        if sp_i > 0:
-            return PGN_ERROR
-        sp_i = sp_piececount[BPAWN] - 8
-        sp_i += max(sp_piececount[BQUEEN] - 1, 0)
-        sp_i += max(sp_piececount[BROOK] - 2, 0)
-        sp_i += max(sp_piececount[BBISHOP] - 2, 0)
-        sp_i += max(sp_piececount[BKNIGHT] - 2, 0)
-        if sp_i > 0:
-            return PGN_ERROR
+        # No more than 16 pieces per side.
+        for s in (WPIECES, BPIECES):
+            for p in s:
+                if sum([piece_placement.count(p)
+                        for p in s]) > FEN_PIECE_COUNT_PER_SIDE_MAX:
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
 
-        # no more than eight pawns per side
-        if sp_piececount[WPAWN] > 8:
-            return PGN_ERROR
-        if sp_piececount[BPAWN] > 8:
-            return PGN_ERROR
+        # Exactly one king per side.
+        for p in FEN_KINGS:
+            if piece_placement.count(p) != FEN_KING_COUNT:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
 
-        # exactly one king per side
-        if sp_piececount[WKING] != 1:
-            return PGN_ERROR
-        if sp_piececount[BKING] != 1:
-            return PGN_ERROR
+        # No more than eight pawns per side.
+        for p in (WPAWN, BPAWN):
+            if piece_placement.count(p) > FEN_PAWN_COUNT_MAX:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
 
-        # check 8 squares per rank and build internal position map
-        # note white and black king squares
-        sp_i = -1
-        sp_white = set()
-        sp_black = set()
-        sp_occupied_square_pieces = [sp_white, sp_black]
-        sp_board_pieces = [NOPIECE] * 64
-        sp_piece_locations = [
-            set(), set(), set(), set(), set(), set(),
-            set(), set(), set(), set(), set(), set(),
-            set(range(64)),
-            ]
-        for sp_r in sp_rank:
-            sp_i += 1
-            sp_fm = sorted(
-                RANKS[len(RANKS) - sp_i - 1])
-            sp_k = 0
-            for sp_j in sp_r:
-                if sp_j in FEN_PIECEMAP:
-                    sp_l = sp_fm[sp_k]
-                    if FEN_PIECEMAP[sp_j] in WPIECES:
-                        sp_white.add(sp_l)
-                    else:
-                        sp_black.add(sp_l)
-                    sp_piece_locations[FEN_PIECEMAP[sp_j]].add(sp_l)
-                    sp_piece_locations[NOPIECE].discard(sp_l)
-                    sp_board_pieces[sp_l] = FEN_PIECEMAP[sp_j]
-                    if sp_j == FEN_WKING:
-                        sp_wking_sq = sp_l
-                    elif sp_j == FEN_BKING:
-                        sp_bking_sq = sp_l
-                    sp_k += 1
-                elif sp_j in FEN_ADJACENT_EMPTY_SQUARES:
-                    sp_k += int(sp_j)
-                else:
-                    return PGN_ERROR
-            if sp_k != 8:
-                return PGN_ERROR
+        # Piece counts within initial position and pawn promotion bounds.
+        if (piece_placement.count(WPAWN) -
+            FEN_PAWN_COUNT_MAX +
+            max(piece_placement.count(WQUEEN) -
+                FEN_QUEEN_COUNT_INITIAL, 0) +
+            max(piece_placement.count(WROOK) -
+                FEN_ROOK_COUNT_INITIAL, 0) +
+            max(piece_placement.count(WBISHOP) -
+                FEN_BISHOP_COUNT_INITIAL, 0) +
+            max(piece_placement.count(WKNIGHT) -
+                FEN_KNIGHT_COUNT_INITIAL, 0)
+            ) > 0:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        if (piece_placement.count(BPAWN) -
+            FEN_PAWN_COUNT_MAX +
+            max(piece_placement.count(BQUEEN) -
+                FEN_QUEEN_COUNT_INITIAL, 0) +
+            max(piece_placement.count(BROOK) -
+                FEN_ROOK_COUNT_INITIAL, 0) +
+            max(piece_placement.count(BBISHOP) -
+                FEN_BISHOP_COUNT_INITIAL, 0) +
+            max(piece_placement.count(BKNIGHT) -
+                FEN_KNIGHT_COUNT_INITIAL, 0)
+            ) > 0:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-        # fen castling field
-        sp_OO_options = 0
-        if sp_p[2] != FEN_NO_DATA:
-            for sp_j in sp_p[2]:
-                if sp_p[2].count(sp_j) > 1:
-                    return PGN_ERROR
-                if sp_j not in CASTLEKEY:
-                    return PGN_ERROR
-                sp_k = CASTLEMOVES[CASTLEKEY[sp_j]]
-                for sp_l in sp_k:
-                    if sp_l[1] not in sp_piece_locations[sp_l[0]]:
-                        return PGN_ERROR
-                sp_OO_options += CASTLESET[CASTLEKEY[sp_j]]
-
-        # position is legal apart from checks, actual and deduced, and deduced
+        # Position is legal apart from checks, actual and deduced, and deduced
         # move that sets up en passant capture possibility.
+        board = []
+        for r in ranks:
+            for c in r:
+                if c in PIECES:
+                    board.append(c)
+                else:
+                    board.extend([NOPIECE] * int(c))
+
+        # Castling availability must fit the board position.
+        if board[CASTLING_W] != WKING:
+            if WKING in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+            if WQUEEN in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+        if board[CASTLING_B] != BKING:
+            if BKING in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+            if BQUEEN in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+        if board[CASTLING_WK] != WROOK:
+            if WKING in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+        if board[CASTLING_WQ] != WROOK:
+            if WQUEEN in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+        if board[CASTLING_BK] != BROOK:
+            if BKING in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
+        if board[CASTLING_BQ] != BROOK:
+            if BQUEEN in castling:
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
 
         # the two squares behind the pawn that can be captured en passant
         # must be empty. FEN quotes en passant capture square if latest move
         # is a two square pawn move,there does not need to be a pawn able to
         # make the capture. The side with the move must not be in check
         # diagonally through the square containing a pawn that can be captured
-        # en passant square, treating that square as empty.
-        if sp_ep_move_to_sq != NO_EP_SQUARE:
-            if sp_ep_remove_pawn_sq not in sp_piece_locations[
-                OTHERSIDE_PAWN[sp_side_to_move]]:
-                return PGN_ERROR
-            for sp_k in sp_occupied_square_pieces:
-                if sp_ep_move_to_sq in sp_k:
-                    return PGN_ERROR
-                if FEN_EP_SQUARES[sp_ep_move_to_sq][1] in sp_k:
-                    return PGN_ERROR
-            ep_squares = sp_occupied_square_pieces[OTHER_SIDE[sp_side_to_move]]
-            if sp_side_to_move == WHITE_TO_MOVE:
-                sp_i = sp_ep_remove_pawn_sq + 16
-                sp_j = BPAWN
+        # en passant, treating that square as empty.
+        if en_passant != FEN_NULL:
+            if en_passant in FEN_WHITE_MOVE_TO_EN_PASSANT:
+                s = FEN_WHITE_MOVE_TO_EN_PASSANT[en_passant]
+                if (board[s] != NOPIECE or
+                    board[s-8] != NOPIECE or
+                    board[s+8] != BPAWN):
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
+            elif en_passant in FEN_BLACK_MOVE_TO_EN_PASSANT:
+                s = FEN_BLACK_MOVE_TO_EN_PASSANT[en_passant]
+                if (board[s] != NOPIECE or
+                    board[s+8] != NOPIECE or
+                    board[s-8] != WPAWN):
+                    self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                    return
             else:
-                sp_i = sp_ep_remove_pawn_sq - 16
-                sp_j = WPAWN
-            ep_squares.add(sp_i)
-            ep_squares.discard(sp_ep_remove_pawn_sq)
-            if PGN._is_attacked(
-                ep_squares,
-                sp_piece_locations[SIDE_KING[sp_side_to_move]],
-                sp_board_pieces,
-                sp_occupied_square_pieces[sp_side_to_move]):
-                return PGN_ERROR
-            ep_squares.discard(sp_i)
-            ep_squares.add(sp_ep_remove_pawn_sq)
 
-        # the side without the move must not be in check
-        sp_i = OTHER_SIDE[sp_side_to_move]
-        if PGN._is_attacked(
-            sp_occupied_square_pieces[OTHER_SIDE[sp_i]],
-            sp_piece_locations[SIDE_KING[sp_i]],
-            sp_board_pieces,
-            sp_occupied_square_pieces[sp_i]):
-            return PGN_ERROR
+                # Should not happen, caught earlier.
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
 
-        # side with the move must not be in check from more than two squares
-        sp_i = sp_side_to_move
-        sp_j = PGN.get_attacks_on_square(
-            sp_occupied_square_pieces[OTHER_SIDE[sp_i]],
-            sp_piece_locations[SIDE_KING[sp_i]],
-            sp_board_pieces,
-            sp_occupied_square_pieces[sp_i])
-        if len(sp_j) > 2:
-            return PGN_ERROR
+        # FEN is legal, except for restrictions on kings in check, so set
+        # instance attributes to fit description of position.
+        #piece_locations = [set() for r in range(len(INITIAL_PIECE_LOCATIONS))]
+        piece_locations = {k:set() for k in INITIAL_PIECE_LOCATIONS}
+        active_side_squares = set()
+        inactive_side_squares = set()
+        board_bitmap = []
+        if active_side == FEN_WHITE:
+            active_side_pieces = WPIECES
+        else:
+            active_side_pieces = BPIECES
+        for s, p in enumerate(board):
+            if p in PIECES:
+                piece_locations[p].add(s)
+                board_bitmap.append(SQUARE_BITS[s])
+                if p in active_side_pieces:
+                    active_side_squares.add(s)
+                else:
+                    inactive_side_squares.add(s)
+        for active_side_king_square in piece_locations[
+            SIDE_KING[FEN_SIDES[active_side]]]:
+            pass # set active_side_king_square without pop() and add().
+        for inactive_side_king_square in piece_locations[
+            SIDE_KING[OTHER_SIDE[FEN_SIDES[active_side]]]]:
+            pass # set active_side_king_square without pop() and add().
 
-        # position is legal so set up self.position and self.piece_locations
-        self.gametokens[:] = []
-        self.ravstack[:] = [
-            (None,
-             (tuple(sp_board_pieces),
-              sp_side_to_move,
-              sp_OO_options,
-              sp_ep_move_to_sq))]
-        self.occupied_square_pieces[:] = sp_occupied_square_pieces
-        self.piece_locations[:] = sp_piece_locations
-        self.board_pieces[:] = sp_board_pieces
-        self.move_number = sp_move_number * 2 - (
-            sp_side_to_move == WHITE_TO_MOVE)
-        self.since_capture = sp_since_capture
-        self.ep_move_to_sq = sp_ep_move_to_sq
-        self.castle_options = sp_OO_options
-        self.side_to_move = sp_side_to_move
+        # Side without the move must not be in check.
+        # Cannot use is_active_king_attacked method because attributes are
+        # not set until the position is ok.
+        gap = GAPS[inactive_side_king_square]
+        board_bitmap = sum(board_bitmap)
+        for s in active_side_squares:
+            if (not board_bitmap & gap[s] and
+                SQUARE_BITS[s] &
+                PIECE_CAPTURE_MAP[board[s]][inactive_side_king_square]):
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                return
 
-        return None
+        # Side with the move must not be in check from more than two squares.
+        # Cannot use count_attacks_on_square_by_side method because attributes
+        # are not set until the position is ok.
+        gap = GAPS[active_side_king_square]
+        if len([s for s in inactive_side_squares
+                if (not board_bitmap & gap[s] and
+                    SQUARE_BITS[s] &
+                    PIECE_CAPTURE_MAP[board[s]][active_side_king_square]
+                    )]) > FEN_MAXIMUM_PIECES_GIVING_CHECK:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
 
-    @staticmethod
-    def get_attacks_on_square(tomove, targets, board_pieces, offmove):
-        """Returns a list of attacks on square by side without the move.
-        
-        Mainly to validate fen.
-        Return a list of squares containg pieces of the side without the move
-        that attack the square. A list of squares between the two squares is
-        held in GAPS.
-        Attacks on e4 by Rb4 Rh4 Nc3 Ng3 and Bd5 would be represented by
-        [18, 22, 25, 31, 35] each element being a square occupied by a piece
-        that can move to e4.
-        
+        self.board_bitmap = board_bitmap
+        self.board = board
+        if active_side == FEN_WHITE:
+            self.occupied_squares[
+                :] = active_side_squares, inactive_side_squares
+        else:
+            self.occupied_squares[
+                :] = inactive_side_squares, active_side_squares
+        self.piece_locations = piece_locations
+        self.ravstack[:] = [(None, (tuple(board),
+                                    FEN_SIDES[active_side],
+                                    castling,
+                                    en_passant))]
+        self.active_side = FEN_SIDES[active_side]
+        self.castling = castling
+        self.en_passant = en_passant
+        self.halfmove_count = int(halfmove_count)
+        self.fullmove_number = int(fullmove_number)
+        self._initial_fen = fen
+
+    def _play_move(self,
+                   pgn_piece,
+                   pgn_from,
+                   pgn_capture,
+                   pgn_tosquare,
+                   pgn_promote):
+        """Play move or adjust state to indicate move was not played.
+
+        State constants.PGN_FROM_SQUARE_DISAMBIGUATION indicates it is possible
+        the stated move is the first part of a move specification where more
+        than two pieces of the same kind can move to a square: Qd1 where Qd1f3
+        is needed to state the move, for example.
+
+        State False indicates the stated move cannot be played in the position.
+
         """
-        attacks = []
-        for square in targets:
-            att = PIECES_ATTACK[square]
-            gap = GAPS[square]
-            for sq in tomove:
-                if board_pieces[sq] in att[sq]:
-                    for s in gap[sq]:
-                        if s in tomove:
-                            break
-                        if s in offmove:
-                            break
-                    else:
-                        attacks.append(sq)
-        return attacks
+        tosquare = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER[pgn_tosquare]
+        piece = MAPPIECE[self.active_side][pgn_piece]
+        g = GAPS[tosquare]
+        b = self.board
+        bb = self.board_bitmap
+        if pgn_capture == CAPTURE_MOVE:
+            pts = PIECE_CAPTURE_MAP[piece][tosquare]
+        else:
+            pts = PIECE_MOVE_MAP[piece][tosquare]
+        from_squares = [s for s in self.piece_locations[piece]
+                        if (SQUARE_BITS[s] & pts and not bb & g[s])]
+        if len(from_squares) > 1:
+            if pgn_from:
+                fm = MAPFILE.get(pgn_from[0])
+                if fm is not None:
+                    fm = FILES[fm]
+                    from_squares = [s for s in from_squares
+                                    if SQUARE_BITS[s] & fm]
+                if len(from_squares) > 1:
+                    fm = MAPROW.get(pgn_from[-1])
+                    if fm is not None:
+                        fm = RANKS[fm]
+                        from_squares = [s for s in from_squares
+                                        if SQUARE_BITS[s] & fm]
+            if len(from_squares) > 1:
+                inactive_side_squares = self.occupied_squares[
+                    OTHER_SIDE[self.active_side]]
+                for active_side_king_square in self.piece_locations[
+                    SIDE_KING[self.active_side]]:
+                    pass # set active_side_king_square without pop() and add().
+                gk = GAPS[active_side_king_square]
+                pinned_to_king = set()
+                for si in inactive_side_squares:
+                    if PIECE_CAPTURE_MAP[b[si]][active_side_king_square
+                                                ] & SQUARE_BITS[si]:
+                        for s in from_squares:
+                            if gk[si] & SQUARE_BITS[s]:
+                                if not ((bb ^ SQUARE_BITS[s] |
+                                         SQUARE_BITS[tosquare]) &
+                                        gk[si]):
+                                    if si != tosquare:
+                                        pinned_to_king.add(s)
+                from_squares = [s for s in from_squares
+                                if s not in pinned_to_king]
+        if pgn_capture == PLAIN_MOVE and b[tosquare] == piece:
 
-    def _add_move_to_game(self):
+            # If moving piece is on tosquare and the next token is a square
+            # identity try tosquare as fromsquare and next token as tosquare
+            # for the piece move.
+            # Only applies to Q B N non-capture moves where the moving side
+            # has more than 2 of the moving piece so it is possible there
+            # are two pieces of the moving kind on the same rank and the
+            # same file at the same time which can reach the tosquare.
+            # Check that there are at least three pieces of one kind which
+            # can move to the same square and note the possibilities for
+            # evaluation in two subsequent states where the next tokens are
+            # readily available for comparison.  The next two tokens must be
+            # '' and a square identity and the square identity must be one
+            # of the possibilities.
+            if b.count(piece) > 2:
+                if pgn_piece in PGN_FROM_SQUARE_DISAMBIGUATION:
+                    self._state = PGN_DISAMBIGUATE_MOVE
+                    self._rewind_state = self._state
+                    return
+
+            self._illegal_play_move()
+            return
+
+        # After the disambiguation test, plain move to square containing piece
+        # which is moving, because queen moves like both rook and bishop.
+        if len(from_squares) != 1:
+            self._illegal_play_move()
+            return
+
+        piece_locations = self.piece_locations
+        fromsquare = from_squares.pop()
+        if pgn_capture == CAPTURE_MOVE:
+            inactive_side_squares = self.occupied_squares[
+                OTHER_SIDE[self.active_side]]
+            if tosquare not in inactive_side_squares:
+                if pgn_piece != PGN_PAWN:
+                    self._illegal_play_move()
+                    return
+                elif pgn_tosquare != self.en_passant:
+                    self._illegal_play_move()
+                    return
+
+                # Remove pawn captured en passant.
+                elif self.en_passant in FEN_WHITE_CAPTURE_EN_PASSANT:
+                    eps = FEN_WHITE_CAPTURE_EN_PASSANT[self.en_passant]
+                    b[eps] = NOPIECE
+                    inactive_side_squares.remove(eps)
+                    piece_locations[BPAWN].remove(eps)
+                    self.board_bitmap &= (
+                        self.board_bitmap ^ SQUARE_BITS[eps])
+                elif self.en_passant in FEN_BLACK_CAPTURE_EN_PASSANT:
+                    eps = FEN_BLACK_CAPTURE_EN_PASSANT[self.en_passant]
+                    b[eps] = NOPIECE
+                    inactive_side_squares.remove(eps)
+                    piece_locations[WPAWN].remove(eps)
+                    self.board_bitmap &= (
+                        self.board_bitmap ^ SQUARE_BITS[eps])
+
+                else:
+                    self._illegal_play_move()
+                    return
+
+            else:
+                inactive_side_squares.remove(tosquare)
+                piece_locations[b[tosquare]].remove(tosquare)
+            self.en_passant = FEN_NULL
+            self.halfmove_count = 0
+        elif SQUARE_BITS[tosquare] & bb:
+            self._illegal_play_move()
+            return
+        elif pgn_piece == PGN_PAWN:
+
+            # Moves like 'b1' for black, and 'b8' for white, are passed earlier
+            # to cope with disambiguating queen moves like 'Qd1f1'.
+            if not (SQUARE_BITS[tosquare] &
+                    PAWN_MOVE_DESITINATION[self.active_side]):
+                if not pgn_promote:
+                    self._illegal_play_move()
+                    return
+            
+            self.halfmove_count = 0
+            if (SQUARE_BITS[fromsquare] & EN_PASSANT_FROM_SQUARES and
+                SQUARE_BITS[tosquare] & EN_PASSANT_TO_SQUARES):
+                self.en_passant = (
+                    pgn_tosquare[0] +
+                    FEN_EN_PASSANT_TARGET_RANK[pgn_tosquare[1]])
+            else:
+                self.en_passant = FEN_NULL
+        else:
+            self.en_passant = FEN_NULL
+            self.halfmove_count = self.halfmove_count + 1
+        active_side_squares = self.occupied_squares[self.active_side]
+
+        # Remove moving piece from current square.
+        b[fromsquare] = NOPIECE
+        active_side_squares.remove(fromsquare)
+        piece_locations[piece].remove(fromsquare)
+        self.board_bitmap &= self.board_bitmap ^ SQUARE_BITS[fromsquare]
+
+        # Put moving piece on new square.
+        b[tosquare] = piece
+        active_side_squares.add(tosquare)
+        piece_locations[piece].add(tosquare)
+        self.board_bitmap |= SQUARE_BITS[tosquare]
+
+        # Replace moving pawn on promotion and update inactive king square.
+        if pgn_promote:
+            piece_locations[b[tosquare]].remove(tosquare)
+            b[tosquare] = MAPPIECE[self.active_side][pgn_promote]
+            piece_locations[b[tosquare]].add(tosquare)
+        
+        # Undo move if it leaves king in check.
+        if self.is_active_king_attacked():
+            self.reset_position(self.ravstack[-1][-1])
+            self._illegal_play_move()
+            return
+
+        # Castling availabity.
+        # tosquare tests deal with capture of rooks which have not moved.
+        # For real games the top condition is false for more than half the game
+        # and the next condition is usually false.
+        if self.castling != FEN_NULL:
+            if ((SQUARE_BITS[fromsquare] | SQUARE_BITS[tosquare]) &
+                CASTLING_AVAILABITY_SQUARES):
+                if fromsquare == CASTLING_W:
+                    self.castling = self.castling.replace(WKING, NOPIECE)
+                    self.castling = self.castling.replace(WQUEEN, NOPIECE)
+                elif fromsquare == CASTLING_WK:
+                    self.castling = self.castling.replace(WKING, NOPIECE)
+                elif fromsquare == CASTLING_WQ:
+                    self.castling = self.castling.replace(WQUEEN, NOPIECE)
+                elif fromsquare == CASTLING_B:
+                    self.castling = self.castling.replace(BKING, NOPIECE)
+                    self.castling = self.castling.replace(BQUEEN, NOPIECE)
+                elif fromsquare == CASTLING_BK:
+                    self.castling = self.castling.replace(BKING, NOPIECE)
+                elif fromsquare == CASTLING_BQ:
+                    self.castling = self.castling.replace(BQUEEN, NOPIECE)
+                elif tosquare == CASTLING_WK:
+                    self.castling = self.castling.replace(WKING, NOPIECE)
+                elif tosquare == CASTLING_WQ:
+                    self.castling = self.castling.replace(WQUEEN, NOPIECE)
+                elif tosquare == CASTLING_BK:
+                    self.castling = self.castling.replace(BKING, NOPIECE)
+                elif tosquare == CASTLING_BQ:
+                    self.castling = self.castling.replace(BQUEEN, NOPIECE)
+                if self.castling == NOPIECE:
+                    self.castling = FEN_NULL
+
+        self.add_move_to_game()
+
+    def _play_castles(self, token):
+        """Play move or adjust state to indicate move was not played.
+
+        State False indicates the stated move cannot be played in the position.
+
+        """
+
+        # Verify castling availability and pick castling rules.
+        if token.startswith(O_O_O):
+            if self.active_side == WHITE_SIDE:
+                if WQUEEN not in self.castling:
+                    self._illegal_play_castles()
+                    return
+                castling_squares = CASTLING_SQUARES[WQUEEN]
+            else:
+                if BQUEEN not in self.castling:
+                    self._illegal_play_castles()
+                    return
+                castling_squares = CASTLING_SQUARES[BQUEEN]
+        elif token.startswith(O_O):
+            if self.active_side == WHITE_SIDE:
+                if WKING not in self.castling:
+                    self._illegal_play_castles()
+                    return
+                castling_squares = CASTLING_SQUARES[WKING]
+            else:
+                if BKING not in self.castling:
+                    self._illegal_play_castles()
+                    return
+                castling_squares = CASTLING_SQUARES[BKING]
+        else:
+            self._illegal_play_castles()
+            return
+
+        bb = self.board_bitmap
+        board = self.board
+        piece_locations = self.piece_locations
+        active_side_squares = self.occupied_squares[self.active_side]
+        active_side_king_locations = piece_locations[
+            SIDE_KING[self.active_side]]
+        if self.active_side == WHITE_SIDE:
+            active_side_rook_locations = piece_locations[WROOK]
+        else:
+            active_side_rook_locations = piece_locations[BROOK]
+        for active_side_king_square in active_side_king_locations:
+            pass # set active_side_king_square without pop() and add().
+
+        # Confirm board position is consistent with castling availability.
+        if (active_side_king_square != castling_squares[0] or
+            board[castling_squares[0]] != castling_squares[5] or
+            board[castling_squares[1]] != castling_squares[4]):
+            self._illegal_play_castles()
+            return
+
+        # Squares between king and castling rook must be empty.
+        for squares in castling_squares[2:4]:
+            for s in squares:
+                if SQUARE_BITS[s] & bb:
+                    self._illegal_play_castles()
+                    return
+
+        # Castling king must not be in check.
+        if self.is_square_attacked_by_side(castling_squares[0],
+                                           OTHER_SIDE[self.active_side]):
+            self._illegal_play_castles()
+            return
+
+        # Castling king's destination square, and the one between, must not be
+        # attacked by the other side.
+        for square in castling_squares[2]:
+            if self.is_square_attacked_by_side(
+                square, OTHER_SIDE[self.active_side]):
+                self._illegal_play_castles()
+                return
+
+        king_square = castling_squares[0]
+        new_king_square = castling_squares[2][1]
+        rook_square = castling_squares[1]
+        new_rook_square = castling_squares[2][0]
+
+        # Put moving pieces on new squares.
+        board[new_king_square] = board[king_square]
+        board[new_rook_square] = board[rook_square]
+        active_side_squares.add(new_king_square)
+        active_side_king_locations.add(new_king_square)
+        active_side_squares.add(new_rook_square)
+        active_side_rook_locations.add(new_rook_square)
+        self.board_bitmap |= (SQUARE_BITS[new_king_square] |
+                              SQUARE_BITS[new_rook_square])
+
+        # Remove moving pieces from current squares.
+        board[king_square] = NOPIECE
+        board[rook_square] = NOPIECE
+        active_side_squares.remove(king_square)
+        active_side_king_locations.remove(king_square)
+        active_side_squares.remove(rook_square)
+        active_side_rook_locations.remove(rook_square)
+        self.board_bitmap &= (
+            self.board_bitmap ^ (SQUARE_BITS[king_square] |
+                                 SQUARE_BITS[rook_square]))
+
+        # Castling availabity.
+        if self.active_side == WHITE_SIDE:
+            self.castling = self.castling.replace(
+                WKING, NOPIECE)
+            self.castling = self.castling.replace(
+                WQUEEN, NOPIECE)
+        else:
+            self.castling = self.castling.replace(
+                BKING, NOPIECE)
+            self.castling = self.castling.replace(
+                BQUEEN, NOPIECE)
+        if self.castling == NOPIECE:
+            self.castling = FEN_NULL
+
+        # Cannot be en-passant
+        self.en_passant = FEN_NULL
+
+        self.halfmove_count = self.halfmove_count + 1
+        self.add_move_to_game()
+
+    def is_active_king_attacked(self):
+        """Return True if king of side with move is attacked.
+
+        Strictly this is not 'in check' because the position is illegal.
+
+        The method is used to check the legality of a proposed move.
+
+        """
+        b = self.board
+        bb = self.board_bitmap
+
+        # Only one element in this container.
+        for ks in self.piece_locations[SIDE_KING[self.active_side]]:
+            g = GAPS[ks]
+            for s in self.occupied_squares[OTHER_SIDE[self.active_side]]:
+                if (not bb & g[s] and
+                    SQUARE_BITS[s] & PIECE_CAPTURE_MAP[b[s]][ks]):
+                    return True
+        return False
+
+    def is_square_attacked_by_side(self, square, side):
+        """Return True if square is attacked by at least one piece of side.
+
+        Only pieces which can move to a square if it were their side's turn are
+        counted.
+
+        """
+        g = GAPS[square]
+        b = self.board
+        bb = self.board_bitmap
+        for s in self.occupied_squares[side]:
+            if (not bb & g[s] and
+                SQUARE_BITS[s] & PIECE_CAPTURE_MAP[b[s]][square]):
+                return True
+        return False
+
+    def count_attacks_on_square_by_side(self, square, side):
+        """Return count of side's pieces which attack a square.
+
+        Only pieces which can move to a square if it were their side's turn are
+        counted.
+
+        """
+        g = GAPS[square]
+        b = self.board
+        bb = self.board_bitmap
+        return len([s for s in self.occupied_squares[side]
+                    if (not bb & g[s] and
+                        SQUARE_BITS[s] & PIECE_CAPTURE_MAP[b[s]][square]
+                        )])
+
+    def add_move_to_game(self):
         """Add legal move to data structures describing game.
 
-        Caller has modified the board description as specified by the move
-        ignoring whether the king of the moving side is left in check.  If
-        the king is left in check undo the move and return False.  If not
-        update the variation structure of the game and return True.
-
         """
-        self.side_to_move = OTHER_SIDE[self.side_to_move]
+        self.active_side = OTHER_SIDE[self.active_side]
         self.ravstack[-1] = (
             self.ravstack[-1][-1],
-            (tuple(self.board_pieces),
-             self.side_to_move,
-             self.castle_options,
-             self.ep_move_to_sq))
-        self._state = MOVETEXT
-        self._token_move()
+            (tuple(self.board),
+             self.active_side,
+             self.castling,
+             self.en_passant))
 
-    def _collect_tags(self): # update and display may have different versions
-        self.tags.clear()
-        tags_in_order = self.tags_in_order
-        tags_in_order[:] = []
-        self._tags_valid = True
-        for t in re_tags.split(self._tag_string):
-            st = t.strip()
-            if st:
-                try:
-                    f, v = st.split('"', 1)
-                    f = f[1:].strip()
-                    tags_in_order.append((f, v.rsplit('"', 1)[0]))
-                except ValueError:
-                    pass
-                except:
-                    self._tags_valid = False
-                    raise
-        self.tags.update(tags_in_order)
+    def collect_token(self, match):
+        """"""
+        self.tokens.append(match)
 
-    def _disambiguate_move(self):
-        """Process second token in <piece><fromsquare><tosquare> sequence.
+    def collect_game_tokens(self):
+        """Create snapshot of tokens extracted from PGN.
+
+        This method is expected to be called on detection of termination token.
+
+        """
+        self.collected_game = (
+            self.tags_in_order,
+            {m.group(IFG_TAG_SYMBOL):m.group(IFG_TAG_STRING_VALUE)
+             for m in self.tags_in_order},
+            self.tokens,
+            self.error_tokens)
+
+    def _play_disambiguated_move(self, pgn_piece, pgn_fromsquare, pgn_tosquare):
+        """Play move or adjust state to indicate move was not played.
+
+        State False indicates the stated move cannot be played in the position.
+
+        the second token in <piece><fromsquare><tosquare> sequence is used to
+        determine the move.
 
         If more than two pieces of a kind can move to a square the move is
         represented as Qd1f3 for example.  The parser treats this sequence as
         a queen move followed by a pawn move normally.  If that assumption
         fails and there is a queen of the side to move on d1 and more than two
         queens of this side on the board the piece move interpretation of
-        Qd1f3 is tested by this method.
+        Qd1f3 is tested by this method.  Rooks, bishops, and knights, too. 
 
         """
-        t = re_disambiguate.match(self._token)
-        if not t:
-            self._token_move_error_disambiguate()
-            self._state = False
-            return False
-        (pgn_piece,
-         tofile,
-         torank,
-         capture,
-         fromfile,
-         fromrank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        (tofile, torank, annotation,) = t.groups()
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        fromsquare = MAPFILE[fromfile] + MAPRANK[fromrank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_MOVE_MAP[piece][tosquare]).intersection(
-            RANKS[MAPROW[fromrank]].union(FILES[MAPFILE[fromfile]]))
-        for fs in from_squares.copy():
-            if not GAPS[tosquare][fromsquare].issubset(
-                self.piece_locations[NOPIECE]):
-                from_squares.discard(fs)
-        self._prune_pieces_pinned_to_king(from_squares, tosquare)
-        # PGN specification implies that the Qd1f3 kind of move specification is
-        # to be used only if both rank alone and file alone are insufficient.
-        # At this point there must be three or more items in from_squares to
-        # meet this condition.  This rule is not enforced (as for corresponding
-        # rules for rank and file in Qdf3 and Q1f3 move specifications).
-        if fromsquare not in from_squares:
-            self._token_move_error_disambiguate()
-            self._state = False
-            return False
-        if tosquare not in self.piece_locations[NOPIECE]:
-            self._token_move_error_disambiguate()
-            self._state = False
-            return False
-        self.castle_options &= CASTLEMASKS[fromsquare]
-        # remove moving piece from old square
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        # add moving piece to new square
-        self.piece_locations[piece].add(tosquare)
-        self.piece_locations[NOPIECE].discard(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = piece
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._token_move_error_disambiguate()
-            self._state = False
-            return False
-        # add move to data structures describing game
-        self._token = ''.join((self.gametokens.pop(), self._token))
-        return self._add_move_to_game()
-
-    def _process_movetext(self):
-        dt = self._despatch_table
-        utvt = self._unmatched_text_valid_table
-        tokens = self.tokens
-        for e, self._token in enumerate(tokens):
-            if e % 2:
-                dt[self._state].get(self._token, dt[self._state][None])()
-            elif len(self._token):
-                utvt[self._state]()
-        self._set_game_data()
-
-    def _revert_state_and_reprocess_token(self):
-        self._state = self._state_stack.pop()
-        return self._despatch_table[self._state].get(
-            self._token,
-            self._despatch_table[self._state][None])()
-
-    def _process_token(self):
-        """Process move token in main line or variation"""
-        t = re_detail.match(self._token)
-        if not t:
-            if self._token.isdigit():
-                self._token_digit()
-                return
-            if self._token.startswith(GLYPH):
-                self._token_glyph()
-                return
-            if self._token in RESULT_SET:
-                try:
-                    del self.ravstack[-1]
-                    if len(self.ravstack):
-                        self._state = PGN_ERROR
-                        self._token_movetext_error()
-                    else:
-                        self._state = RESULT
-                        self._token_result()
-                except:
-                    self._state = PGN_ERROR
-                    self._token_movetext_error()
-                return
-            self._state = False
-            self._token_move_detail_error()
+        fromsquare = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER[pgn_fromsquare]
+        tosquare = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER[pgn_tosquare]
+        piece = MAPPIECE[self.active_side][pgn_piece]
+        if fromsquare not in self.piece_locations[piece]:
+            self._illegal_play_disambiguated_move()
             return
-        self._token_groups = t.groups()
-        # Pick and call the appropriate method for the move
-        if self._token_groups[PIECE_GROUP] == PGN_PAWN:
-            if self._token_groups[MOVE_OR_CAPTURE_GROUP] == PLAIN_MOVE:
-                if self._token_groups[PROMOTE_GROUP]:
-                    self._make_pawn_promotion()
-                else:
-                    self._make_pawn_move()
-            else:
-                if self._token_groups[PROMOTE_GROUP]:
-                    self._make_pawn_capture_promotion()
-                else:
-                    self._make_pawn_capture()
-        elif self._token_groups[MOVE_OR_CAPTURE_GROUP] == PLAIN_MOVE:
-            self._make_move()
-        elif self._token_groups[MOVE_OR_CAPTURE_GROUP] == CAPTURE_MOVE:
-            self._make_capture()
+        if not (SQUARE_BITS[fromsquare] &
+                PIECE_MOVE_MAP[piece][tosquare] and not
+                self.board_bitmap & GAPS[tosquare][fromsquare]):
+            self._illegal_play_disambiguated_move()
+            return
+        if SQUARE_BITS[tosquare] & self.board_bitmap:
+            self._illegal_play_disambiguated_move()
+            return
         else:
-            self._make_castles_move()
+            self.halfmove_count = self.halfmove_count + 1
+        b = self.board
+        piece_locations = self.piece_locations
+        active_side_squares = self.occupied_squares[self.active_side]
 
-    def _make_castles_move(self):
-        if self._token.startswith(O_O_O):
-            if self.side_to_move == WHITE_TO_MOVE:
-                castles = CASTLEMOVES[WQ_CASTLES]
-            elif self.side_to_move == BLACK_TO_MOVE:
-                castles = CASTLEMOVES[BQ_CASTLES]
-            else:
-                self._state = False
-                self._token_move_error()
-                return
-        elif self._token.startswith(O_O):
-            if self.side_to_move == WHITE_TO_MOVE:
-                castles = CASTLEMOVES[WK_CASTLES]
-            elif self.side_to_move == BLACK_TO_MOVE:
-                castles = CASTLEMOVES[BK_CASTLES]
-            else:
-                self._state = False
-                self._token_move_error()
-                return
-        else:
-            self._state = False
-            self._token_move_error()
-            return
-        if not (CASTLESET[CASTLEKEY[castles[0][3]]] &
-                self.castle_options):
-            self._state = False
-            self._token_move_error()
-            return
-        for piece in castles:
-            if self.board_pieces[piece[1]] != piece[0]:
-                self._state = False
-                self._token_move_error()
-                return
-        for square in castles[1][2]:
-            if self.board_pieces[square] != NOPIECE:
-                self._state = False
-                self._token_move_error()
-                return
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # Cannot castle out of, or through, check.
-        # As implemented this test does not stop the king being placed on an
-        # attacked square; but the add_move_to_game() call can, and is the
-        # most convenient place to, do this test for all types of move.
-        if PGN._is_attacked(
-            self.occupied_square_pieces[
-                OTHER_SIDE[self.side_to_move]],
-            castles[0][4],
-            self.board_pieces,
-            self.occupied_square_pieces[self.side_to_move]):
-            self._state = False
-            self._token_move_error()
-            return
-        for piece, fromsquare in (
-            (castles[0][0], castles[0][1],), # king
-            (castles[1][0], castles[1][1],), # rook
-            ):
-            self.castle_options &= CASTLEMASKS[fromsquare]
-            self.piece_locations[piece].discard(fromsquare)
-            self.piece_locations[NOPIECE].add(fromsquare)
-            self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-            self.board_pieces[fromsquare] = NOPIECE
-        for piece, tosquare in (
-            (castles[0][0], castles[0][2][-1],), # king
-            (castles[1][0], castles[1][2][-1],), # rook
-            ):
-            self.piece_locations[piece].add(tosquare)
-            self.piece_locations[NOPIECE].discard(tosquare)
-            self.occupied_square_pieces[self.side_to_move].add(tosquare)
-            self.board_pieces[tosquare] = piece
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
+        # Remove moving piece from current square.
+        b[fromsquare] = NOPIECE
+        active_side_squares.remove(fromsquare)
+        piece_locations[piece].remove(fromsquare)
+        self.board_bitmap &= self.board_bitmap ^ SQUARE_BITS[fromsquare]
 
-    def _make_capture(self):
-        (pgn_piece,
-         fromfile,
-         fromrank,
-         capture,
-         tofile,
-         torank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_CAPTURE_MAP[piece][tosquare])
-        if len(from_squares) > 1:
-            if fromfile:
-                from_squares.intersection_update(
-                    FILES[MAPFILE[fromfile]])
-            if fromrank:
-                from_squares.intersection_update(
-                    RANKS[MAPROW[fromrank]])
-            if len(from_squares) > 1:
-                occupied = self.occupied_square_pieces[
-                    OTHER_SIDE[self.side_to_move]].union(
-                        self.occupied_square_pieces[self.side_to_move])
-                for fs in from_squares.copy():
-                    for gs in occupied.intersection(
-                        GAPS[tosquare][fs]):
-                        from_squares.difference_update(
-                            from_squares.intersection(
-                                HIDDEN[tosquare][gs]))
-            if len(from_squares) > 1:
-                self._prune_pieces_pinned_to_king(from_squares, tosquare)
-        if len(from_squares) != 1:
-            self._state = False
-            self._token_move_error()
-            return
-        fromsquare = from_squares.pop()
-        if not GAPS[tosquare][fromsquare].issubset(
-            self.piece_locations[NOPIECE]):
-                self._state = False
-                self._token_move_error()
-                return
-        # remove captured piece from old square
-        if tosquare in self.piece_locations[NOPIECE]:
-            self._state = False
-            self._token_move_error()
-            return
-        self.piece_locations[
-            self.board_pieces[tosquare]].discard(tosquare)
-        self.occupied_square_pieces[
-            OTHER_SIDE[self.side_to_move]].discard(tosquare)
-        self.castle_options &= (CASTLEMASKS[fromsquare] &
-                                CASTLEMASKS[tosquare])
-        # add moving piece to new square
-        self.piece_locations[piece].add(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = piece
-        # remove moving piece from old square
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
-
-    def _make_move(self):
-        (pgn_piece,
-         fromfile,
-         fromrank,
-         capture,
-         tofile,
-         torank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_MOVE_MAP[piece][tosquare])
-        if len(from_squares) > 1:
-            # if ... elif ... as get here only if exactly one of these given
-            if fromfile:
-                from_squares.intersection_update(
-                    FILES[MAPFILE[fromfile]])
-            elif fromrank:
-                from_squares.intersection_update(
-                    RANKS[MAPROW[fromrank]])
-            if len(from_squares) > 1:
-                occupied = self.occupied_square_pieces[
-                    OTHER_SIDE[self.side_to_move]].union(
-                        self.occupied_square_pieces[self.side_to_move])
-                for fs in from_squares.copy():
-                    for gs in occupied.intersection(
-                        GAPS[tosquare][fs]):
-                        from_squares.difference_update(
-                            from_squares.intersection(
-                                HIDDEN[tosquare][gs]))
-            if len(from_squares) > 1:
-                self._prune_pieces_pinned_to_king(from_squares, tosquare)
-        if len(from_squares) != 1:
-            # If moving piece is on tosquare and the next token is a square
-            # identity try tosquare as fromsquare and next token as tosquare
-            # for the piece move.
-            # Only applies to Q B N non-capture moves where the moving side
-            # has more than 2 of the moving piece so it is possible there are
-            # two pieces of the moving kind on the same rank and the same
-            # file at the same time which can reach the tosquare.
-            # Check that there are at least three pieces of one kind which
-            # can move to the same square and note the possibilities for
-            # evaluation in two subsequent states where the next tokens are
-            # readily available for comparison.  The next two tokens must be
-            # '' and a square identity and the square identity must be one of
-            # the possibilities.
-            if self.board_pieces[tosquare] == piece:
-                if len(self.piece_locations[piece]) > 2:
-                    if pgn_piece in PGN_FROM_SQUARE_DISAMBIGUATION:
-                        self._state = PGN_FROM_SQUARE_DISAMBIGUATION
-                        self._token_move_disambiguate()
-                        return True
-            self._state = False
-            self._token_move_error()
-            return
-        fromsquare = from_squares.pop()
-        if not PATH[tosquare][fromsquare].issubset(
-            self.piece_locations[NOPIECE]):
-                self._state = False
-                self._token_move_error()
-                return
-        # check for tosquare empty implied by PATH test
-        self.castle_options &= CASTLEMASKS[fromsquare]
-        # remove moving piece from old square
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        # add moving piece to new square
-        self.piece_locations[piece].add(tosquare)
-        self.piece_locations[NOPIECE].discard(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = piece
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
-
-    def _make_pawn_capture(self):
-        (pgn_piece,
-         fromfile,
-         fromrank,
-         capture,
-         tofile,
-         torank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_CAPTURE_MAP[piece][tosquare])
-        if len(from_squares) > 1:
-            from_squares.intersection_update(
-                FILES[MAPFILE[fromfile]])
-        if len(from_squares) != 1:
-            self._state = False
-            self._token_move_error()
-            return
-        fromsquare = from_squares.pop()
-        if not GAPS[tosquare][fromsquare].issubset(
-            self.piece_locations[NOPIECE]):
-                self._state = False
-                self._token_move_error()
-                return
-        # remove captured piece from old square or ep square
-        if tosquare in self.piece_locations[NOPIECE]:
-            # check for en passant before saying illegal move
-            if tosquare != self.ep_move_to_sq:
-                self._state = False
-                self._token_move_error()
-                return
-            ep_capture_sq = EP_MOVES[self.ep_move_to_sq]
-            self.piece_locations[
-                self.board_pieces[ep_capture_sq]].discard(ep_capture_sq)
-            self.piece_locations[NOPIECE].add(ep_capture_sq)
-            self.piece_locations[NOPIECE].discard(self.ep_move_to_sq)
-            self.occupied_square_pieces[
-                OTHER_SIDE[self.side_to_move]].discard(ep_capture_sq)
-            self.board_pieces[ep_capture_sq] = NOPIECE
-        else:
-            self.piece_locations[
-                self.board_pieces[tosquare]].discard(tosquare)
-            self.occupied_square_pieces[
-                OTHER_SIDE[self.side_to_move]].discard(tosquare)
-        self.castle_options &= (CASTLEMASKS[fromsquare] &
-                                CASTLEMASKS[tosquare])
-        # add moving piece to new square
-        self.piece_locations[piece].add(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = piece
-        # remove moving piece from old square
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
-
-    def _make_pawn_capture_promotion(self):
-        (pgn_piece,
-         fromfile,
-         fromrank,
-         capture,
-         tofile,
-         torank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_CAPTURE_MAP[piece][tosquare])
-        if len(from_squares) > 1:
-            from_squares.intersection_update(
-                FILES[MAPFILE[fromfile]])
-        if len(from_squares) != 1:
-            self._state = False
-            self._token_move_error()
-            return
-        fromsquare = from_squares.pop()
-        if not GAPS[tosquare][fromsquare].issubset(
-            self.piece_locations[NOPIECE]):
-                self._state = False
-                self._token_move_error()
-                return
-        if tosquare not in self.occupied_square_pieces[
-            OTHER_SIDE[self.side_to_move]]:
-            self._state = False
-            self._token_move_error()
-            return
-        promote = MAPPIECE[pgn_promote][self.side_to_move]
-        self.castle_options &= (CASTLEMASKS[fromsquare] &
-                                CASTLEMASKS[tosquare])
-        # the captured piece
-        self.piece_locations[
-            self.board_pieces[tosquare]].discard(tosquare)
-        self.occupied_square_pieces[
-            OTHER_SIDE[self.side_to_move]].discard(tosquare)
-        # the promoted pawn
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        # the promoted piece
-        self.piece_locations[promote].add(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = promote
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
-
-    def _make_pawn_move(self):
-        (pgn_piece,
-         fromfile,
-         fromrank,
-         capture,
-         tofile,
-         torank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_MOVE_MAP[piece][tosquare])
-        if len(from_squares) > 1:
-            occupied = self.occupied_square_pieces[
-                OTHER_SIDE[self.side_to_move]].union(
-                    self.occupied_square_pieces[self.side_to_move])
-            for fs in from_squares.copy():
-                for gs in occupied.intersection(
-                    GAPS[tosquare][fs]):
-                    from_squares.difference_update(
-                        from_squares.intersection(
-                            HIDDEN[tosquare][gs]))
-        if len(from_squares) != 1:
-            self._state = False
-            self._token_move_error()
-            return
-        fromsquare = from_squares.pop()
-        if not PATH[tosquare][fromsquare].issubset(
-            self.piece_locations[NOPIECE]):
-                self._state = False
-                self._token_move_error()
-                return
-        # check for tosquare empty implied by PATH test
-        self.castle_options &= CASTLEMASKS[fromsquare]
-        # remove moving piece from old square
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        # add moving piece to new square
-        self.piece_locations[piece].add(tosquare)
-        self.piece_locations[NOPIECE].discard(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = piece
-        self.ep_move_to_sq = ALLOW_EP_MOVES.get(
-            (fromsquare, tosquare), NO_EP_SQUARE)
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
-
-    def _make_pawn_promotion(self):
-        (pgn_piece,
-         fromfile,
-         fromrank,
-         capture,
-         tofile,
-         torank,
-         pgn_promote,
-         annotation,
-         ) = self._token_groups
-        tosquare = MAPFILE[tofile] + MAPRANK[torank]
-        piece = MAPPIECE[pgn_piece][self.side_to_move]
-        from_squares = self.piece_locations[piece].intersection(
-            PIECE_MOVE_MAP[piece][tosquare])
-        if len(from_squares) != 1:
-            self._state = False
-            self._token_move_error()
-            return
-        fromsquare = from_squares.pop()
-        if not PATH[tosquare][fromsquare].issubset(
-            self.piece_locations[NOPIECE]):
-                self._state = False
-                self._token_move_error()
-                return
-        # check for tosquare empty implied by PATH test
-        promote = MAPPIECE[pgn_promote][self.side_to_move]
-        self.castle_options &= CASTLEMASKS[fromsquare]
-        # the promoted pawn
-        self.piece_locations[piece].discard(fromsquare)
-        self.piece_locations[NOPIECE].add(fromsquare)
-        self.occupied_square_pieces[self.side_to_move].discard(fromsquare)
-        self.board_pieces[fromsquare] = NOPIECE
-        # the promoted piece
-        self.piece_locations[promote].add(tosquare)
-        self.piece_locations[NOPIECE].discard(tosquare)
-        self.occupied_square_pieces[self.side_to_move].add(tosquare)
-        self.board_pieces[tosquare] = promote
-        self.ep_move_to_sq = NO_EP_SQUARE
-        # undo move if it leaves king in check
-        if self._is_king_in_check_after_move():
-            self.reset_position(self.ravstack[-1][-1])
-            self._state = False
-            self._token_move_error()
-            return
-        # add move to data structures describing game
-        self._add_move_to_game()
-
-    @staticmethod
-    def _is_attacked(tomove, targets, board_pieces, offmove):
-        """Return a clear line from a square in targets to a square in tomove.
-
-        Clear line is an iterable of squares from GAP, which lists
-        the squares between but not including two squares.
-        tomove and offmove are iterables of squares containing pieces of the
-        side with the move and the side without the move respectively.
-        targets is an iterable of squares to be tested for the possibilty of
-        moving a piece from a square in tomove to a square in targets.
-        If multiple clear lines exist for the given squares one of these lines
-        is returned. Which one is undefined.
+        # Put moving piece on new square.
+        b[tosquare] = piece
+        active_side_squares.add(tosquare)
+        piece_locations[piece].add(tosquare)
+        self.board_bitmap |= SQUARE_BITS[tosquare]
         
-        """
-        for square in targets:
-            att = PIECES_ATTACK[square]
-            gap = GAPS[square]
-            for sq in tomove:
-                if board_pieces[sq] in att[sq]:
-                    for s in gap[sq]:
-                        if s in tomove:
-                            break
-                        if s in offmove:
-                            break
-                    else:
-                        return gap[sq]
-        return False
+        # Undo move if it leaves king in check.
+        if self.is_active_king_attacked():
+            self.reset_position(self.ravstack[-1][-1])
+            self._illegal_play_disambiguated_move()
+            return
 
-    def _is_king_in_check_after_move(self):
-        """Return True if king would be in check if move is played.
+        # Castling availabity is not affected because rooks cannot be involved
+        # in moves which need disambiguation.
 
-        Same algorithm as _is_attacked but volume of use justifies it being
-        separate method.
-        
-        """
-        tomove = self.occupied_square_pieces[OTHER_SIDE[self.side_to_move]]
-        empty = self.piece_locations[NOPIECE]
-        board_pieces = self.board_pieces
-        for square in self.piece_locations[SIDE_KING[self.side_to_move]]:
-            att = PIECES_ATTACK[square]
-            gap = GAPS[square]
-            for sq in tomove:
-                if board_pieces[sq] in att[sq]:
-                    for s in gap[sq]:
-                        if s not in empty:
-                            break
-                    else:
-                        return True
-        return False
+        # Cannot be en-passant
+        self.en_passant = FEN_NULL
 
-    def _prune_pieces_pinned_to_king(self, from_squares, tosquare):
-        """Remove pieces pinned against king from list of potential moves.
+        self.add_move_to_game()
 
-        Rg3, for example, is not ambiguous if one of two rooks that could
-        move to g3 is pinned against the king and g3 is not in the line on
-        which the rook is pinned.  Rxg3, however, must be ambigous if more
-        than one rook can do the capture and the pinning piece is on g3.
-
-        This method is designed to disambiguate moves and leaves the legality
-        of a move based on the king being in check after playing a move till
-        after the move is played.  But if both rooks are pinned, by different
-        pieces, both moves are removed from the list of potential moves.
-        
-        """
-        kingsquares = self.piece_locations[SIDE_KING[self.side_to_move]]
-        for fm_sq in tuple(from_squares):
-            # remove potentially moving piece from board
-            fm_piece = self.board_pieces[fm_sq]
-            self.occupied_square_pieces[
-                self.side_to_move].discard(fm_sq)
-            self.piece_locations[fm_piece].discard(fm_sq)
-            self.board_pieces[fm_sq] = NOPIECE
-            for square in kingsquares:
-                line = PGN._is_attacked(
-                    self.occupied_square_pieces[
-                        OTHER_SIDE[self.side_to_move]].intersection(
-                            HIDDEN[square][fm_sq]),
-                    kingsquares,
-                    self.board_pieces,
-                    self.occupied_square_pieces[self.side_to_move])
-                if line:
-                    if tosquare not in line:
-                        if fm_sq != tosquare:
-                            from_squares.discard(fm_sq)
-            # put potentially moving piece back on board
-            self.piece_locations[fm_piece].add(fm_sq)
-            self.occupied_square_pieces[self.side_to_move].add(fm_sq)
-            self.board_pieces[fm_sq] = fm_piece
-
+    # Maybe should not be a method now, but retain shape of pre-FEN class code
+    # for ease of comparison until sure everything works.
+    # Just say self._fen = ... where method is called.
     def reset_position(self, position):
-        """Reset squares piece_locations etc to position."""
-        self.board_pieces[:] = list(position[0])
-        (self.side_to_move,
-         self.castle_options,
-         self.ep_move_to_sq) = position[1:]
-        occupied_square_pieces = self.occupied_square_pieces
-        for side in occupied_square_pieces:
+        """Reset squares and locations etc to position."""
+        board, self.active_side, self.castling, self.en_passant = position
+        self.board[:] = list(board)
+        occupied_squares = self.occupied_squares
+        for side in occupied_squares:
             side.clear()
         piece_locations = self.piece_locations
-        for i in piece_locations:
-            i.clear()
-        for sq, piece in enumerate(self.board_pieces):
+        for piece in piece_locations.values():
+            piece.clear()
+        board_bitmap = 0
+        for square, piece in enumerate(board):
             if piece in WPIECES:
-                occupied_square_pieces[0].add(sq)
+                occupied_squares[0].add(square)
+                piece_locations[piece].add(square)
+                board_bitmap |= SQUARE_BITS[square]
             elif piece in BPIECES:
-                occupied_square_pieces[1].add(sq)
-            piece_locations[piece].add(sq)
-
-    def _comment_to_eol(self):
-        self._state_stack.append(self._state)
-        self._state = COMMENT_TO_EOL
-        self._token_comment()
-
-    def _comment_to_eol_after_nl_between_moves(self):
-        self._state_stack.append(self._state)
-        self._state = COMMENT_TO_EOL
-        self._token_comment_after_newline()
-
-    def _newline(self):
-        self._state_stack.append(self._state)
-        self._state = NEWLINE
-        self._token_newline()
-
-    def _newline_between_moves(self):
-        self._state_stack.append(self._state)
-        self._state = LINEFEED
-        self._token_newline()
-
-    def _newline_in_comment_to_eol(self):
-        self._state = LINEFEED
-        self._token_newline_keep()
-
-    def _newline_in_escape_to_eol(self):
-        self._state = self._state_stack.pop()
-        self._token_newline_keep()
-
-    def _newline_repeat(self):
-        self._token_newline_keep()
-
-    def _newline_repeat_between_moves(self):
-        self._token_newline()
-
-    def _escape_to_eol(self):
-        self._state = ESCAPE_TO_EOL
-        self._token_comment()
-
-    def _escape_to_eol_after_nl_between_moves(self):
-        self._state = ESCAPE_TO_EOL
-        self._token_comment_after_newline()
-
-    def _end_comment(self):
-        self._state = self._state_stack.pop()
-        self._token_end_comment()
-
-    def _start_comment(self):
-        self._state_stack.append(self._state)
-        self._state = START_COMMENT
-        self._token_start_comment()
-
-    def _end_reserved(self):
-        self._state = self._state_stack.pop()
-        self._token_end_reserved()
-
-    def _start_reserved(self):
-        self._state_stack.append(self._state)
-        self._state = START_RESERVED
-        self._token_start_reserved()
+                occupied_squares[1].add(square)
+                piece_locations[piece].add(square)
+                board_bitmap |= SQUARE_BITS[square]
+        self.board_bitmap = board_bitmap
 
     def _start_variation(self):
         self.ravstack.append((None, self.ravstack[-1][0]))
         self.reset_position(self.ravstack[-1][-1])
-        self._state_stack.append(self._state)
-        self._state = None
-        self._token_start_variation()
-
-    def _start_variation_in_error_sequence(self):
-        self.ravstack.append(None)
-        self._state_stack.append(self._state)
-        self._state = False
-        self._token_comment()
 
     def _end_variation(self):
-        self._state = self._state_stack.pop()
         try:
             del self.ravstack[-1]
             try:
                 self.reset_position(self.ravstack[-1][-1])
-                self._token_end_variation()
             except:
-                self._state = PGN_ERROR
-                self._token_movetext_error()
+                pass
         except:
-            self._state = PGN_ERROR
-            self._token_movetext_error()
+            pass
 
-    def _end_variation_containing_error(self):
-        # different from _end_variation to emphasise state change
-        try:
-            self._state = self._state_stack.pop()
-        except IndexError:
-            # ')' without an earlier matching '('.
-            self._state = PGN_ERROR
-            self._token_movetext_error()
+    def _searching(self, match):
+        mg = match.group
+        if mg(IFG_START_TAG):
+            self.tags_in_order.append(match)
+            if mg(IFG_TAG_SYMBOL) == TAG_FEN:
+                self.set_position_fen(mg(IFG_TAG_STRING_VALUE))
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
             return
-        del self.ravstack[-1]
-        if self.ravstack[-1] is not None:
-            self.reset_position(self.ravstack[-1][-1])
-            self._token_end_variation()
+        if mg(IFG_PIECE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_MOVE),
+                            '',
+                            '',
+                            mg(IFG_PIECE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PAWN_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move('',
+                            '',
+                            '',
+                            mg(IFG_PAWN_SQUARE),
+                            '')
+            return
+        if mg(IFG_PIECE_CAPTURE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_CAPTURE) or mg(IFG_KING_CAPTURE),
+                            mg(IFG_PIECE_CAPTURE_FROM),
+                            mg(IFG_PIECE_TAKES),
+                            mg(IFG_PIECE_CAPTURE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PAWN_CAPTURE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move('',
+                            mg(IFG_PAWN_CAPTURE_FROM_FILE),
+                            mg(IFG_PAWN_TAKES),
+                            mg(IFG_PAWN_CAPTURE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PIECE_CHOICE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_CHOICE),
+                            mg(IFG_PIECE_CHOICE_FILE_OR_RANK),
+                            '',
+                            mg(IFG_PIECE_CHOICE_SQUARE),
+                            '')
+            return
+        if mg(IFG_CASTLES):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_castles(mg(IFG_CASTLES))
+            return
+        if mg(IFG_PAWN_PROMOTE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move('',
+                            mg(IFG_PAWN_PROMOTE_FROM_FILE),
+                            mg(IFG_PAWN_TAKES_PROMOTE),
+                            mg(IFG_PAWN_PROMOTE_SQUARE),
+                            mg(IFG_PAWN_PROMOTE_PIECE)[1])
+            return
+        if mg(IFG_COMMENT):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.collect_token(match)
+            return
+        if mg(IFG_NAG):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.collect_token(match)
+            return
+        if mg(IFG_COMMENT_TO_EOL):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.collect_token(match)
+            return
+
+        # The captured tokens not accepted when searching for start of game.
+        if mg(IFG_START_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+            return
+        if mg(IFG_END_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+            return
+        if mg(IFG_TERMINATION):
+            self._termination_while_searching(match)
+            return
+
+        # Action for non-captured groups is decided by looking at whole token.
+        string = mg()
+
+        if not string.strip():
+            return
+        if string.isdigit():
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if string == FULLSTOP:
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+
+        # Only other groups with length > 1:
+        # '<reserved>'
+        # '%escaped\n'
+        # are not captured and are ignored.
+        if len(string) > 1:
+            return
+        
+        self.error_tokens.append(string)
+        self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+        return
+
+    def _searching_after_error_in_rav(self, match):
+        if match.group(IFG_START_RAV):
+            self.error_tokens.append(match.group())
+            self._ravstack_length += 1
+            return
+        if match.group(IFG_END_RAV):
+            if self._ravstack_length == len(self.ravstack):
+                self._convert_error_tokens_to_token()
+                self.collect_token(match)
+                self._end_variation()
+                self.error_tokens = []
+                self._state = PGN_COLLECTING_MOVETEXT
+                self._rewind_state = self._state
+                if self._ravstack_length > 2:
+                    self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_RAV
+                else:
+                    self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                del self._ravstack_length
+            else:
+                self.error_tokens.append(match.group())
+                self._ravstack_length -= 1
+            return
+        if match.group(IFG_TERMINATION):
+            self._convert_error_tokens_to_token()
+            self.collect_token(match)
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            del self._ravstack_length
+            return
+        if match.group(IFG_START_TAG):
+            self._convert_error_tokens_to_token()
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            if match.group(IFG_TAG_SYMBOL) == TAG_FEN:
+                self.set_position_fen(match.group(IFG_TAG_STRING_VALUE))
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            del self._ravstack_length
+            return
+        self.error_tokens.append(match.group())
+
+    def _searching_after_error_in_game(self, match):
+        if match.group(IFG_TERMINATION):
+            self._convert_error_tokens_to_token()
+            self.collect_token(match)
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            return
+        if match.group(IFG_START_TAG):
+            self._convert_error_tokens_to_token()
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            if match.group(IFG_TAG_SYMBOL) == TAG_FEN:
+                self.set_position_fen(match.group(IFG_TAG_STRING_VALUE))
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        self.error_tokens.append(match.group())
+
+    def _collecting_tag_pairs(self, match):
+        mg = match.group
+        if mg(IFG_START_TAG):
+            self.tags_in_order.append(match)
+            if mg(IFG_TAG_SYMBOL) == TAG_FEN:
+                self.set_position_fen(mg(IFG_TAG_STRING_VALUE))
+            return
+        if mg(IFG_PIECE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_MOVE),
+                            '',
+                            '',
+                            mg(IFG_PIECE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PAWN_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move('',
+                            '',
+                            '',
+                            mg(IFG_PAWN_SQUARE),
+                            '')
+            return
+        if mg(IFG_PIECE_CAPTURE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_CAPTURE) or mg(IFG_KING_CAPTURE),
+                            mg(IFG_PIECE_CAPTURE_FROM),
+                            mg(IFG_PIECE_TAKES),
+                            mg(IFG_PIECE_CAPTURE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PAWN_CAPTURE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move('',
+                            mg(IFG_PAWN_CAPTURE_FROM_FILE),
+                            mg(IFG_PAWN_TAKES),
+                            mg(IFG_PAWN_CAPTURE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PIECE_CHOICE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_CHOICE),
+                            mg(IFG_PIECE_CHOICE_FILE_OR_RANK),
+                            '',
+                            mg(IFG_PIECE_CHOICE_SQUARE),
+                            '')
+            return
+        if mg(IFG_CASTLES):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_castles(mg(IFG_CASTLES))
+            return
+        if mg(IFG_PAWN_PROMOTE_SQUARE):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_move('',
+                            mg(IFG_PAWN_PROMOTE_FROM_FILE),
+                            mg(IFG_PAWN_TAKES_PROMOTE),
+                            mg(IFG_PAWN_PROMOTE_SQUARE),
+                            mg(IFG_PAWN_PROMOTE_PIECE)[1])
+            return
+        if mg(IFG_TERMINATION):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self.collect_token(match)
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.collect_token(match)
+            return
+        if mg(IFG_NAG):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.collect_token(match)
+            return
+        if mg(IFG_COMMENT_TO_EOL):
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.collect_token(match)
+            return
+
+        # The captured tokens not accepted when searching for tag pairs.
+        if mg(IFG_START_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        if mg(IFG_END_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+
+        # Action for non-captured groups is decided by looking at whole token.
+        string = mg()
+
+        if not string.strip():
+            return
+        if string.isdigit():
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if string == FULLSTOP:
+            if not self._initial_fen:
+                self.set_position_fen()
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+
+        # Only other groups with length > 1:
+        # '<reserved>'
+        # '%escaped\n'
+        # are not captured and are ignored.
+        if len(string) > 1:
+            return
+        
+        self.error_tokens.append(string)
+        self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+        return
+
+    def _collecting_movetext(self, match):
+        mg = match.group
+        if mg(IFG_PIECE_SQUARE):
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_MOVE),
+                            '',
+                            '',
+                            mg(IFG_PIECE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PAWN_SQUARE):
+            self.tokens.append(match)
+            self._play_move('',
+                            '',
+                            '',
+                            mg(IFG_PAWN_SQUARE),
+                            '')
+            return
+        if mg(IFG_PIECE_CAPTURE_SQUARE):
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_CAPTURE) or mg(IFG_KING_CAPTURE),
+                            mg(IFG_PIECE_CAPTURE_FROM),
+                            mg(IFG_PIECE_TAKES),
+                            mg(IFG_PIECE_CAPTURE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PAWN_CAPTURE_SQUARE):
+            self.tokens.append(match)
+            self._play_move('',
+                            mg(IFG_PAWN_CAPTURE_FROM_FILE),
+                            mg(IFG_PAWN_TAKES),
+                            mg(IFG_PAWN_CAPTURE_SQUARE),
+                            '')
+            return
+        if mg(IFG_PIECE_CHOICE_SQUARE):
+            self.tokens.append(match)
+            self._play_move(mg(IFG_PIECE_CHOICE),
+                            mg(IFG_PIECE_CHOICE_FILE_OR_RANK),
+                            '',
+                            mg(IFG_PIECE_CHOICE_SQUARE),
+                            '')
+            return
+        if mg(IFG_CASTLES):
+            self.tokens.append(match)
+            self._play_castles(mg(IFG_CASTLES))
+            return
+        if mg(IFG_PAWN_PROMOTE_SQUARE):
+            self.tokens.append(match)
+            self._play_move('',
+                            mg(IFG_PAWN_PROMOTE_FROM_FILE),
+                            mg(IFG_PAWN_TAKES_PROMOTE),
+                            mg(IFG_PAWN_PROMOTE_SQUARE),
+                            mg(IFG_PAWN_PROMOTE_PIECE)[1])
+            return
+        if mg(IFG_START_RAV):
+            self._start_variation()
+            self.collect_token(match)
+            return
+        if mg(IFG_END_RAV):
+            if len(self.ravstack) > 1:
+                self._end_variation()
+                self.collect_token(match)
+            else:
+                self.error_tokens.append(mg())
+                self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        if mg(IFG_TERMINATION):
+            self.collect_token(match)
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT):
+            self.collect_token(match)
+            return
+        if mg(IFG_NAG):
+            self.collect_token(match)
+            return
+        if mg(IFG_COMMENT_TO_EOL):
+            self.collect_token(match)
+            return
+
+        # Other groups are not put on self.tokens because they are not shown in
+        # game displays and do not need to the associated with a position on
+        # the board.
+
+        # The non-captured groups which are accepted without action.
+        string = mg()
+
+        if not string.strip():
+            return
+        if string.isdigit():
+            return
+        if string == FULLSTOP:
+            return
+
+        # Current movetext finishes in error, no termination, assume start of
+        # new game.
+        if mg(IFG_START_TAG):
+            self._convert_error_tokens_to_token()
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            if mg(IFG_TAG_SYMBOL) == TAG_FEN:
+                self.set_position_fen(mg(IFG_TAG_STRING_VALUE))
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+
+        # Only other groups with length > 1:
+        # '<reserved>'
+        # '%escaped\n'
+        # are not captured and are ignored.
+        if len(string) > 1:
+            return
+
+        # The non-captured groups which cause an error condition.
+        self.error_tokens.append(string)
+        self._ravstack_length = len(self.ravstack)
+        if self._ravstack_length > 1:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_RAV
         else:
-            self._token_comment()
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
 
-    def _move_error(self):
-        self._state = False#PGN_ERROR
-        self._movetext_valid = False # in case error is in a RAV
-        self._token_move_error()
+    def _collecting_non_whitespace_while_searching(self, match):
+        if match.group(IFG_START_TAG):
+            self._convert_error_tokens_to_token()
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            if match.group(IFG_TAG_SYMBOL) == TAG_FEN:
+                self.set_position_fen(match.group(IFG_TAG_STRING_VALUE))
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        if not match.group().split():
+            self.error_tokens.append(match.group())
+            return
+        self.error_tokens.append(match.group())
 
-    def _movetext_error(self):
-        self._state = PGN_ERROR
-        self._token_movetext_error()
+    def _disambiguate_move(self, match):
+        mg = match.group
+        if mg(IFG_PAWN_SQUARE):
+            start = self.tokens.pop()
+            match = re_disambiguate_error.match(start.group() + mg())
+            if match is None:
+                match = re_disambiguate_non_move.match(start.group() + mg())
+                self.tokens.append(match)
+                self._illegal_play_disambiguated_move()
+                return
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            self.tokens.append(match)
+            self._play_disambiguated_move(start.group(IFG_PIECE_MOVE),
+                                          start.group(IFG_PIECE_SQUARE),
+                                          mg(IFG_PAWN_SQUARE))
+            return
+        self.error_tokens.append(self.tokens.pop().group() + mg())
+        self._ravstack_length = len(self.ravstack)
+        if self._ravstack_length > 1:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_RAV
+        else:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
 
-    # start of refactored game token collection for base class
+    def _illegal_play_move(self):
+        self._state = self._move_error_state
+        et = self.tokens.pop()
+        self.error_tokens.append(et.group())
 
-    def _set_game_data(self):
-        pass
+    def _illegal_play_castles(self):
+        self._illegal_play_move()
 
-    def _token_comment(self):
-        pass
+    def _illegal_play_disambiguated_move(self):
+        self._illegal_play_move()
 
-    def _token_comment_after_newline(self):
-        pass
+    def _convert_error_tokens_to_token(self):
+        self.collect_token(re_tokens.match(
+            ''.join(('{Error: ', ''.join(self.error_tokens), '}'))))
+        # Should this method clear self.error_tokens too?
 
-    def _token_digit(self):
-        pass
+    def _termination_while_searching(self, match):
+        self.error_tokens.append(match.group())
+        self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
 
-    def _token_end_variation(self):
-        pass
+    def __eq__(self, other):
+        """Return (self == other).  Relevant attributes compared explicitly."""
+        if len(self.collected_game[2]) != len(other.collected_game[2]):
+            return False
+        if self.collected_game[3] or other.collected_game[3]:
+            return False
+        for ta, tb in zip(self.collected_game[2], other.collected_game[2]):
+            if ta.group() != tb.group():
+                return False
+        return True
 
-    def _token_glyph(self):
-        pass
-
-    def _token_move(self):
-        pass
-
-    def _token_move_detail_error(self):
-        pass
-
-    def _token_move_disambiguate(self):
-        pass
-
-    def _token_move_error(self):
-        pass
-
-    def _token_move_error_disambiguate(self):
-        pass
-
-    def _token_move_in_error_sequence(self):
-        pass
-
-    def _token_movetext_error(self):
-        pass
-
-    def _token_newline(self):
-        pass
-
-    def _token_newline_keep(self):
-        pass
-
-    def _token_period(self):
-        pass
-
-    def _token_previous_move_error(self):
-        pass
-
-    def _token_result(self):
-        pass
-
-    def _token_end_comment(self):
-        pass
-
-    def _token_start_comment(self):
-        pass
-
-    def _token_end_reserved(self):
-        pass
-
-    def _token_start_reserved(self):
-        pass
-
-    def _token_start_variation(self):
-        pass
-
-    def _token_whitespace(self):
-        pass
+    def __ne__(self, other):
+        """Return (not self == other)."""
+        return not self == other
 
 
 class PGNDisplayMoves(PGN):
@@ -1738,37 +1894,29 @@ class PGNDisplayMoves(PGN):
 
     Methods overridden:
 
-    _set_game_data
-    _token_end_variation
-    _token_move
-    _token_move_detail_error
-    _token_move_disambiguate
-    _token_move_error_disambiguate
-    _token_move_error
-    _token_move_in_error_sequence
-    _token_previous_move_error
-    _token_result
-    _token_start_variation
+    add_move_to_game
+    collect_game_tokens
+    collect_token
     
     Methods extended:
 
     __init__
     set_position_fen
-    _add_move_to_game
     
     """
 
     def __init__(self):
-        super(PGNDisplayMoves, self).__init__()
+        super().__init__()
         
         '''Add structures to support display of PGN moves'''
-        # moves describes the contents of gametokens (see superclass).
-        # Each element in moves is (<type>, <gametoken index>, <data>).
-        # A move is (True, <gametoken index>, <position after move>) so the
+
+        # moves describes the contents of tokens (see superclass).
+        # Each element in moves is (<type>, <token index>, <data>).
+        # A move is (True, <token index>, <position after move>) so the
         # very first move is (True, None, <start position>) following the
         # convention in ravstack.  The initial position of a variation is
-        # ('(', <gametoken index for '('>, <variation start position>) and the
-        # end is (')', <gametoken index for ')'>, None).
+        # ('(', <token index for '('>, <variation start position>) and the
+        # end is (')', <token index for ')'>, None).
         self.moves = []
 
     def set_position_fen(self, fen=None):
@@ -1777,71 +1925,45 @@ class PGNDisplayMoves(PGN):
         fen defaults to the starting position for a game of chess.
 
         """
-        if super(PGNDisplayMoves, self).set_position_fen(fen=fen) is None:
-            self.moves[:] = [(TAG_FEN, None, self.ravstack[-1][-1])]
-            return None
-        return PGN_ERROR
+        super().set_position_fen(fen=fen)
+        if self._initial_fen:
+            self.moves = [(None, self.ravstack[-1][-1])]
 
-    def _add_move_to_game(self):
+    def add_move_to_game(self):
         """Add legal move to data structures describing game.
 
-        Caller has modified the board description as specified by the move
-        ignoring whether the king of the moving side is left in check.  If
-        the king is left in check undo the move and return False.  If not
-        update the variation structure of the game and return True.
+        """
+        #super().add_move_to_game()
+        self.active_side = OTHER_SIDE[self.active_side]
+        self.ravstack[-1] = (
+            self.ravstack[-1][-1],
+            (tuple(self.board),
+             self.active_side,
+             self.castling,
+             self.en_passant))
+
+        self.moves.append((self.tokens[-1], self.ravstack[-1][-1]))
+
+    def collect_token(self, match):
+        """"""
+        #super().collect_token(match)
+        self.tokens.append(match)
+
+        self.moves.append((self.tokens[-1], self.ravstack[-1][-1]))
+
+    def collect_game_tokens(self):
+        """Create snapshot of tokens extracted from PGN.
+
+        This method is expected to be called on detection of termination token.
 
         """
-        super(PGNDisplayMoves, self)._add_move_to_game()
-        # extra code in this subclass
-
-    def _set_game_data(self):
-        if self._state == PGN_FROM_SQUARE_DISAMBIGUATION:
-            self.moves.append((MOVE_ERROR, len(self.gametokens) - 1, False))
-
-    def _token_end_variation(self):
-        self.moves.append(
-            (END_RAV, len(self.gametokens), self.ravstack[-1][-1]))
-        self.gametokens.append(self._token)
-
-    def _token_move(self):
-        self.moves.append(
-            (MOVE_TEXT, len(self.gametokens), self.ravstack[-1][-1]))
-        self.gametokens.append(self._token)
-
-    def _token_move_detail_error(self):
-        self.moves.append((MOVE_ERROR, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_move_disambiguate(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_error_disambiguate(self):
-        self.moves.append((MOVE_ERROR, len(self.gametokens) - 1, False))
-        self.moves.append((MOVE_AFTER_ERROR, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_move_error(self):
-        self.moves.append((MOVE_ERROR, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_move_in_error_sequence(self):
-        self.moves.append((MOVE_AFTER_ERROR, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_previous_move_error(self):
-        self.moves.append((MOVE_ERROR, len(self.gametokens) - 1, False))
-        self.moves.append((NON_MOVE, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_result(self):
-        self.moves.append(
-            (TERMINATION, len(self.gametokens), None))
-        self.gametokens.append(self._token)
-
-    def _token_start_variation(self):
-        self.moves.append(
-            (START_RAV, len(self.gametokens), self.ravstack[-1][-1]))
-        self.gametokens.append(self._token)
+        self.collected_game = (
+            self.tags_in_order,
+            {m.group(IFG_TAG_SYMBOL):m.group(IFG_TAG_STRING_VALUE)
+             for m in self.tags_in_order},
+            self.tokens,
+            self.error_tokens,
+            self.moves)
 
 
 class PGNDisplay(PGNDisplayMoves):
@@ -1849,370 +1971,228 @@ class PGNDisplay(PGNDisplayMoves):
 
     Methods added:
 
+    _add_token_to_text
+    get_archive_movetext
     get_archive_pgn_elements
     get_export_pgn_movetext
-    get_export_pgn_ravtext
-    get_export_pgn_elements
-    _concatenate_comments
+    get_export_pgn_rav_elements
+    get_export_pgn_rav_movetext
+    get_non_seven_tag_roster_tags
+    get_seven_tag_roster_tags
 
     Methods overridden:
 
-    _comment_to_eol_after_nl_between_moves
-    _token_comment
-    _token_comment_after_newline
-    _token_digit
-    _token_end_comment
-    _token_end_reserved
-    _token_glyph
-    _token_movetext_error
-    _token_newline
-    _token_newline_keep
-    _token_period
-    _token_start_comment
-    _token_start_reserved
-    _token_whitespace
+    None
     
     Methods extended:
 
-    __init__
-    set_position_fen
-    _comment_to_eol
-    _escape_to_eol_after_nl_between_moves
-    _set_game_data
-    _token_end_variation
-    _token_move
-    _token_move_detail_error
-    _token_move_error
-    _token_move_in_error_sequence
-    _token_result
-    _token_start_variation
+    None
     
     """
 
-    def __init__(self):
-        super(PGNDisplay, self).__init__()
-        
-        '''Add structures to support display and edit of full PGN score'''
-        # _comments is a buffer for collecting an uninterrupted sequence of
-        # tokens to be treated as a single comment element when displayed.
-        self._comments = []
-        # _comment_type is the kind of token being collected.  Tags [...],
-        # reserved <...>, comment {...}, nag $..., escape \n%...\n, and
-        # comment to eol ;...\n or \n;...\n, are the options.
-        self._comment_type = NON_MOVE
-
-    def set_position_fen(self, fen=None):
-        """Initialize PGN score parser with Forsyth Edwards Notation position.
-
-        fen defaults to the starting position for a game of chess.
-
-        """
-        if super(PGNDisplay, self).set_position_fen(fen=fen) is None:
-            self._comments[:] = []
-            return None
-        return PGN_ERROR
+    def _add_token_to_text(self, token, movetext, length):
+        """"""
+        if not length:
+            movetext.append(token)
+            return len(token)
+        elif len(token) + length >= PGN_MAX_LINE_LEN:
+            movetext.append(LINEFEED)
+            movetext.append(token)
+            return len(token)
+        else:
+            movetext.append(SPACE)
+            movetext.append(token)
+            return len(token) + length + 1
 
     def get_export_pgn_movetext(self):
         """Return Export format PGN movetext"""
-        tokens = self.gametokens
+        ordered_tags, tags, tokens, error_tokens, moves = self.collected_game
+        active_side = moves[0][1][1]
+        fullmove_number = self.fullmove_number
         movetext = ['\n']
-        linelen = 0
-        pmn = True
-        mns = [self.move_number]
-        for t, n, m in self.moves:
-            if isinstance(m, tuple):
-                if isinstance(n, int):
-                    if t is True:
-                        if m[1] == 1:
-                            mn = str(mns[-1]) + '.'
-                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(mn)
-                            movetext.append(' ')
-                            linelen += len(mn) + 1
-                        elif pmn:
-                            mn = str(mns[-1]) + '...'
-                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(mn)
-                            movetext.append(' ')
-                            linelen += len(mn) + 1
-                        if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                            movetext[-1] = '\n'
-                            linelen = 0
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen += len(movetext[-2]) + 1
-                        if m[1] == 0:
-                            mns[-1] += 1
-                        pmn = False
-                    else:
-                        if t == START_RAV:
-                            if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(tokens[n])
-                            linelen += len(tokens[n])
-                        elif t == END_RAV:
-                            linelen -= len(movetext[-1])
-                            del movetext[-1]
-                            if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(tokens[n])
-                            movetext.append(' ')
-                            linelen += len(tokens[n]) + 1
-                        else:
-                            if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(tokens[n])
-                            movetext.append(' ')
-                            linelen += len(tokens[n]) + 1
-                        if t == START_RAV:
-                            if m[1] == 1:
-                                mns.append(mns[-1] - 1)
-                            else:
-                                mns.append(mns[-1])
-                        elif t == END_RAV:
-                            del mns[-1]
-                        pmn = True
-            elif isinstance(n, int):
-                if t == TERMINATION:
-                    if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                        movetext[-1] = '\n'
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen = len(tokens[n]) + 1
-                    else:
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen += len(tokens[n]) + 1
-                elif t in (START_COMMENT, START_RESERVED):
-                    ts = tokens[n].split('\n')
-                    if len(ts) == 1:
-                        if linelen + len(ts[0]) > PGN_MAX_LINE_LEN:
-                            movetext[-1] = '\n'
-                            linelen = 0
-                        movetext.append(ts[0])
-                        movetext.append(' ')
-                        linelen += len(ts[0]) + 1
-                    else:
-                        if linelen + len(ts[0]) > PGN_MAX_LINE_LEN:
-                            movetext[-1] = '\n'
-                            linelen = 0
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen = len(ts[-1]) + 1
-                elif t == COMMENT_TO_EOL:
-                    if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
-                        movetext[-1] = '\n'
-                    movetext.append(tokens[n])
-                    movetext.append('\n')
-                    linelen = 0
-                elif t == ESCAPE_TO_EOL:
-                    movetext[-1] = '\n'
-                    movetext.append(tokens[n])
-                    movetext.append('\n')
-                    linelen = 0
-        try:
-            # delete trailing space
-            del movetext[-1]
-        except IndexError:
-            # empty list ok but unusual
-            pass
+        length = 0
+        blackmove_number = True
+        mns = [[fullmove_number, active_side]]
+        for e, t in enumerate(tokens):
+            if t.group(IFG_COMMENT):
+                for cw in t.group().split():
+                    length = self._add_token_to_text(cw, movetext, length)
+                blackmove_number = True
+            elif t.group(IFG_NAG):
+                length = self._add_token_to_text(t.group(), movetext, length)
+                blackmove_number = True
+            elif t.group(IFG_COMMENT_TO_EOL):
+                if len(t.group()) + length >= PGN_MAX_LINE_LEN:
+                    movetext.append(LINEFEED)
+                else:
+                    movetext.append(SPACE)
+                movetext.append(t.group())
+                length = 0
+                blackmove_number = True
+            elif t.group(IFG_START_RAV):
+                length = self._add_token_to_text(t.group(), movetext, length)
+                mns[-1] = [fullmove_number, active_side]
+                active_side = OTHER_SIDE[active_side]
+                mns.append([fullmove_number, active_side])
+                blackmove_number = True
+            elif t.group(IFG_END_RAV):
+                length = self._add_token_to_text(t.group(), movetext, length)
+                del mns[-1]
+                fullmove_number, active_side = mns[-1]
+                blackmove_number = True
+            elif t.group(IFG_TERMINATION):
+                length = self._add_token_to_text(t.group(), movetext, length)
+            elif active_side == WHITE_SIDE:
+                length = self._add_token_to_text(
+                    str(fullmove_number) + FULLSTOP,
+                    movetext,
+                    length)
+                length = self._add_token_to_text(t.group(), movetext, length)
+                active_side = OTHER_SIDE[active_side]
+                blackmove_number = False
+            else:
+                if blackmove_number:
+                    length = self._add_token_to_text(
+                        str(fullmove_number) + FULLSTOP * 3,
+                        movetext,
+                        length)
+                    blackmove_number = False
+                length = self._add_token_to_text(t.group(), movetext, length)
+                active_side = OTHER_SIDE[active_side]
+                fullmove_number += 1
         movetext.append('\n\n')
         return ''.join(movetext)
 
     def get_archive_movetext(self):
         """Return Reduced Export format PGN movetext"""
-        tokens = self.gametokens
-        linelen = 0
-        mns = [self.move_number]
+        ordered_tags, tags, tokens, error_tokens, moves = self.collected_game
+        active_side = moves[0][1][1]
+        fullmove_number = self.fullmove_number
         movetext = ['\n']
-        for t, n, m in self.moves:
-            if isinstance(m, tuple):
-                if isinstance(n, int):
-                    if t is True:
-                        if len(mns) > 1:
-                            continue
-                        if m[1] == 1:
-                            mn = str(mns[-1]) + '.'
-                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(mn)
-                            movetext.append(' ')
-                            linelen += len(mn) + 1
-                        if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                            movetext[-1] = '\n'
-                            linelen = 0
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen += len(movetext[-2]) + 1
-                        if m[1] == 0:
-                            mns[-1] += 1
-                    else:
-                        if t == START_RAV:
-                            if m[1] == 1:
-                                mns.append(mns[-1] - 1)
-                            else:
-                                mns.append(mns[-1])
-                        elif t == END_RAV:
-                            del mns[-1]
-            elif isinstance(n, int):
-                if t == TERMINATION:
-                    if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                        movetext[-1] = '\n'
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen = len(tokens[n]) + 1
-                    else:
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen += len(tokens[n]) + 1
-        try:
-            # delete trailing space
-            del movetext[-1]
-        except IndexError:
-            # empty list ok but unusual
-            pass
+        length = 0
+        blackmove_number = True
+        rav_depth = 0
+        mns = [[fullmove_number, active_side]]
+        for e, t in enumerate(tokens):
+            if (t.group(IFG_COMMENT) or
+                t.group(IFG_NAG) or
+                t.group(IFG_COMMENT_TO_EOL)):
+                pass
+            elif t.group(IFG_START_RAV):
+                rav_depth += 1
+            elif t.group(IFG_END_RAV):
+                rav_depth -= 1
+            elif t.group(IFG_TERMINATION):
+                length = self._add_token_to_text(t.group(), movetext, length)
+            elif rav_depth:
+                pass
+            elif active_side == WHITE_SIDE:
+                length = self._add_token_to_text(
+                    str(fullmove_number) + FULLSTOP,
+                    movetext,
+                    length)
+                length = self._add_token_to_text(t.group(), movetext, length)
+                active_side = OTHER_SIDE[active_side]
+                blackmove_number = False
+            else:
+                if blackmove_number:
+                    length = self._add_token_to_text(
+                        str(fullmove_number) + FULLSTOP * 3,
+                        movetext,
+                        length)
+                    blackmove_number = False
+                length = self._add_token_to_text(t.group(), movetext, length)
+                active_side = OTHER_SIDE[active_side]
+                fullmove_number += 1
         movetext.append('\n\n')
         return ''.join(movetext)
 
     def get_export_pgn_rav_movetext(self):
         """Return Export format PGN moves and RAVs"""
-        tokens = self.gametokens
+        ordered_tags, tags, tokens, error_tokens, moves = self.collected_game
+        active_side = moves[0][1][1]
+        fullmove_number = self.fullmove_number
         movetext = ['\n']
-        linelen = 0
-        pmn = True
-        mns = [self.move_number]
-        for t, n, m in self.moves:
-            if isinstance(m, tuple):
-                if isinstance(n, int):
-                    if t is True:
-                        if m[1] == 1:
-                            mn = str(mns[-1]) + '.'
-                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                if movetext[-1] == ' ':
-                                    movetext[-1] = '\n'
-                                else:
-                                    movetext.append('\n')
-                                linelen = 0
-                            movetext.append(mn)
-                            movetext.append(' ')
-                            linelen += len(mn) + 1
-                        elif pmn:
-                            mn = str(mns[-1]) + '...'
-                            if linelen + len(mn) >= PGN_MAX_LINE_LEN:
-                                if movetext[-1] == ' ':
-                                    movetext[-1] = '\n'
-                                else:
-                                    movetext.append('\n')
-                                linelen = 0
-                            movetext.append(mn)
-                            movetext.append(' ')
-                            linelen += len(mn) + 1
-                        if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                            if movetext[-1] == ' ':
-                                movetext[-1] = '\n'
-                            else:
-                                movetext.append('\n')
-                            linelen = 0
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen += len(movetext[-2]) + 1
-                        if m[1] == 0:
-                            mns[-1] += 1
-                        pmn = False
-                    else:
-                        if t == START_RAV:
-                            if linelen + len(tokens[n]) > PGN_MAX_LINE_LEN:
-                                if movetext[-1] == ' ':
-                                    movetext[-1] = '\n'
-                                else:
-                                    movetext.append('\n')
-                                linelen = 0
-                            movetext.append(tokens[n])
-                            linelen += len(tokens[n])
-                        elif t == END_RAV:
-                            # Assumes a space precedes ')' which ends rav.
-                            linelen -= len(movetext[-1])
-                            del movetext[-1]
-                            if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                                # Should never get here because previous token
-                                # encounters 'line too long' condition.  But if
-                                # it does it will not work.
-                                movetext[-1] = '\n'
-                                linelen = 0
-                            movetext.append(tokens[n])
-                            movetext.append(' ')
-                            linelen += len(tokens[n]) + 1
-                        if t == START_RAV:
-                            if m[1] == 1:
-                                mns.append(mns[-1] - 1)
-                            else:
-                                mns.append(mns[-1])
-                        elif t == END_RAV:
-                            del mns[-1]
-                        pmn = True
-            elif isinstance(n, int):
-                if t == TERMINATION:
-                    if linelen + len(tokens[n]) >= PGN_MAX_LINE_LEN:
-                        if movetext[-1] == ' ':
-                            movetext[-1] = '\n'
-                        else:
-                            movetext.append('\n')
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen = len(tokens[n]) + 1
-                    else:
-                        movetext.append(tokens[n])
-                        movetext.append(' ')
-                        linelen += len(tokens[n]) + 1
-        try:
-            # delete trailing space
-            del movetext[-1]
-        except IndexError:
-            # empty list ok but unusual
-            pass
+        length = 0
+        blackmove_number = True
+        mns = [[fullmove_number, active_side]]
+        for e, t in enumerate(tokens):
+            if (t.group(IFG_COMMENT) or
+                t.group(IFG_NAG) or
+                t.group(IFG_COMMENT_TO_EOL)):
+                pass
+            elif t.group(IFG_START_RAV):
+                length = self._add_token_to_text(t.group(), movetext, length)
+                mns[-1] = [fullmove_number, active_side]
+                active_side = OTHER_SIDE[active_side]
+                mns.append([fullmove_number, active_side])
+                blackmove_number = True
+            elif t.group(IFG_END_RAV):
+                length = self._add_token_to_text(t.group(), movetext, length)
+                del mns[-1]
+                fullmove_number, active_side = mns[-1]
+                blackmove_number = True
+            elif t.group(IFG_TERMINATION):
+                length = self._add_token_to_text(t.group(), movetext, length)
+            elif active_side == WHITE_SIDE:
+                length = self._add_token_to_text(
+                    str(fullmove_number) + FULLSTOP,
+                    movetext,
+                    length)
+                length = self._add_token_to_text(t.group(), movetext, length)
+                active_side = OTHER_SIDE[active_side]
+                blackmove_number = False
+            else:
+                if blackmove_number:
+                    length = self._add_token_to_text(
+                        str(fullmove_number) + FULLSTOP * 3,
+                        movetext,
+                        length)
+                    blackmove_number = False
+                length = self._add_token_to_text(t.group(), movetext, length)
+                active_side = OTHER_SIDE[active_side]
+                fullmove_number += 1
         movetext.append('\n\n')
         return ''.join(movetext)
 
     def get_non_seven_tag_roster_tags(self):
         """Return string of sorted tags not in Seven Tag Roster"""
-        pb = []
-        for t, v in sorted([tv for tv in self.tags.items()
-                            if tv[0] not in SEVEN_TAG_ROSTER]):
-            pb.extend(['[', t, ' "', v, '"]\n'])
-        #pb.append('\n')
-        return ''.join(pb)
+        return '\n'.join(sorted(
+            [t.group()
+             for t in self.collected_game[0]
+             if t.group(IFG_TAG_SYMBOL) not in SEVEN_TAG_ROSTER]))
 
     def get_seven_tag_roster_tags(self):
-        """Return ordered Seven Tag Roster tags decorated for sorting games"""
-        strtags = [self.tags.get(
-            TAG_DATE, SEVEN_TAG_ROSTER[TAG_DATE]).replace(*SPECIAL_TAG_DATE)]
-        st = []
-        for t in SEVEN_TAG_ROSTER_ARCHIVE_SORT1:
-            st.extend(
-                ['[', t, ' "',
-                 self.tags.get(t, SEVEN_TAG_ROSTER[t]),
-                 '"]\n'])
-        strtags.append(''.join(st))
-        strtags.append(SPECIAL_TAG_ROUND.get(
-            self.tags.get(TAG_ROUND, SEVEN_TAG_ROSTER[TAG_ROUND]),
-            NORMAL_TAG_ROUND))
-        st = []
-        for t in SEVEN_TAG_ROSTER_ARCHIVE_SORT2:
-            st.extend(
-                ['[', t, ' "',
-                 self.tags.get(t, SEVEN_TAG_ROSTER[t]),
-                 '"]\n'])
-        #st.append('\n')
-        strtags.append(''.join(st))
-        return strtags
+        """Return tuple of Seven Tag Roster tags decorated for sorting games.
+
+        The tuple is:
+        (Date tag with '?'s replaced by '0',
+         Event, Site, and Date, tags,
+         Round tag with '?', '-', and any other, replaced by 1, 2, and 3,
+         Round, White, Black, and Result, tags,
+        )
+
+        """
+        tags = self.collected_game[1]
+        return [
+            tags.get(TAG_DATE, SEVEN_TAG_ROSTER[TAG_DATE]
+                     ).replace(*SPECIAL_TAG_DATE).join(('"', '"')),
+            ''.join([''.join(['[',
+                              t,
+                              ' "',
+                              tags.get(t, SEVEN_TAG_ROSTER[t]),
+                              '"]\n'])
+                     for t in SEVEN_TAG_ROSTER_ARCHIVE_SORT1]),
+            SPECIAL_TAG_ROUND.get(tags.get(TAG_ROUND,
+                                           SEVEN_TAG_ROSTER[TAG_ROUND]),
+                                  NORMAL_TAG_ROUND),
+            ''.join([''.join(['[',
+                              t,
+                              ' "',
+                              tags.get(t, SEVEN_TAG_ROSTER[t]),
+                              '"]\n'])
+                     for t in SEVEN_TAG_ROSTER_ARCHIVE_SORT2]),
+            ]
 
     def get_export_pgn_elements(self):
         """Return Export format PGN text"""
@@ -2232,128 +2212,6 @@ class PGNDisplay(PGNDisplayMoves):
             self.get_export_pgn_rav_movetext(),
             self.get_non_seven_tag_roster_tags())
 
-    def _concatenate_comments(self):
-        """Concatenate adjacent comment tokens into one token for display."""
-        comments = self._comments
-        if len(comments) == 1:
-            if comments[0] == ' ':
-                # join(self.gametokens) will insert a space between tokens
-                self._comments[:] = []
-                return
-        elif len(comments):
-            if comments[0] == ' ':
-                # join(self.gametokens) will insert a space before comment
-                del comments[0]
-            if comments[-1] == ' ':
-                # join(self.gametokens) will insert a space after comment
-                del comments[-1]
-        if len(comments):
-            self.moves.append((self._comment_type, len(self.gametokens), False))
-            self.gametokens.append(''.join(comments))
-            self._comments[:] = []
-        self._comment_type = NON_MOVE
-
-    def _comment_to_eol(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._comment_to_eol()
-        self._comment_type = COMMENT_TO_EOL
-
-    def _comment_to_eol_after_nl_between_moves(self):
-        self._comment_to_eol()
-
-    def _escape_to_eol_after_nl_between_moves(self):
-        nl = self._comments.pop()
-        self._concatenate_comments()
-        self._comments.append(nl)
-        super(PGNDisplay, self)._escape_to_eol_after_nl_between_moves()
-        self._comment_type = ESCAPE_TO_EOL
-
-    # start of refactored game token collection for display and edit
-
-    def _set_game_data(self):
-        super(PGNDisplay, self)._set_game_data()
-        self._concatenate_comments()
-
-    def _token_comment(self):
-        self._comments.append(self._token)
-
-    def _token_comment_after_newline(self):
-        self._comments.append(self._token)
-
-    def _token_digit(self):
-        self._concatenate_comments()
-        self.moves.append((INTEGER, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_end_variation(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_end_variation()
-
-    def _token_glyph(self):
-        self._concatenate_comments()
-        self.moves.append((GLYPH, len(self.gametokens), False))
-        self.gametokens.append(self._token)
-
-    def _token_move(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_move()
-
-    def _token_move_detail_error(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_move_detail_error()
-
-    def _token_move_error(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_move_error()
-
-    def _token_move_in_error_sequence(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_move_in_error_sequence()
-
-    def _token_movetext_error(self):
-        self._comments.append(self._token)
-
-    def _token_newline(self):
-        self._comments.append(self._token)
-
-    def _token_newline_keep(self):
-        self._comments.append(self._token)
-
-    def _token_period(self):
-        if self._comment_type is not PERIOD:
-            self._concatenate_comments()
-            self._comment_type = PERIOD
-        self._comments.append(self._token)
-
-    def _token_result(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_result()
-
-    def _token_end_comment(self):
-        self._comments.append(self._token)
-        self._concatenate_comments()
-
-    def _token_start_comment(self):
-        self._concatenate_comments()
-        self._comment_type = START_COMMENT
-        self._comments.append(self._token)
-
-    def _token_end_reserved(self):
-        self._comments.append(self._token)
-        self._concatenate_comments()
-
-    def _token_start_reserved(self):
-        self._concatenate_comments()
-        self._comment_type = START_RESERVED
-        self._comments.append(self._token)
-
-    def _token_start_variation(self):
-        self._concatenate_comments()
-        super(PGNDisplay, self)._token_start_variation()
-
-    def _token_whitespace(self):
-        self._comments.append(self._token)
-
 
 class PGNEdit(PGNDisplay):
     """Generate data structures to display a game for editing.
@@ -2364,7 +2222,7 @@ class PGNEdit(PGNDisplay):
 
     Methods overridden:
 
-    process_game
+    _convert_error_tokens_to_token
     
     Methods extended:
 
@@ -2372,24 +2230,24 @@ class PGNEdit(PGNDisplay):
     
     """
 
-    def process_game(self):
-        """Override to use regular expression appropriate for editing PGN.
+    def _convert_error_tokens_to_token(self):
+        """Override to spot possible moves in error tokens.
 
         Usually all the PGN text is present before parsing.  But when editing
         the text incomplete moves will be present and the 'R1' part of 'R1a4',
         for example, gets treated as two tokens, 'R' and '1' by the re_tokens
-        regular expression when the 'a' has not yet been typed.
+        regular expression when the rest of the move has not yet been typed.
 
         """
-        self._movetext_valid = True
-        self._collect_tags()
-        if TAG_FEN in self.tags:
-            self._state = self.set_position_fen(
-                fen=self.tags[TAG_FEN])
+        possible_move = ''.join(self.error_tokens)
+        fullmatch = re_possible_move.match(possible_move)
+        if fullmatch:
+            self.collect_token(fullmatch)
+            self.error_tokens.clear()
         else:
-            self._state = self.set_position_fen()
-        self.tokens[:] = re_tokens_edit.split(self._move_string)
-        self._process_movetext()
+            self.collect_token(re_tokens.match(
+                ''.join(('{Error: ', possible_move, '}'))))
+        # Should this method clear self.error_tokens too?
 
 
 class PGNMove(PGN):
@@ -2402,7 +2260,6 @@ class PGNMove(PGN):
     Methods overridden:
 
     is_movetext_valid
-    process_game
     
     Methods extended:
 
@@ -2410,54 +2267,24 @@ class PGNMove(PGN):
     set_position_fen
     
     """
+    # Should _convert_error_tokens_to_token() be overridden here?
 
     def __init__(self):
         """Extend to support restoration of initial position state"""
-        super(PGNMove, self).__init__()
+        super().__init__()
         self._initial_position = None
-        self._move_number = self.move_number
-        self._since_capture = self.since_capture
 
     def is_movetext_valid(self):
         """Override to return True if exactly one valid move in movetext."""
-        if not self._movetext_valid:
-            # Movetext deemed invalid even if calculation says ok
-            return False
-        return self._state is MOVETEXT
-    
-    def process_game(self):
-        """Override to use existing start position and accept one move only.
-
-        Use case is editing an existing game score and caller modifies that
-        game score and discards the instance of this class once it has found
-        a valid move to insert.
-
-        """
-        self._movetext_valid = True
-        self._collect_tags()
-        if self.ravstack[0][0] is None:
-            self.gametokens[:] = []
-            self.ravstack[:] = [(None, self._initial_position)]
-            self.reset_position(self._initial_position)
-            self.move_number = self._move_number
-            self.since_capture = self._since_capture
-        self._state = None
-        self.tokens[:] = re_tokens.split(self._move_string)
-        self._process_movetext()
-        if len(self.tokens) > 3:
-            self._movetext_valid = False
-        elif len(self.tokens) < 3:
-            self._movetext_valid = True
-        elif len(self.tokens[2]):
-            self._movetext_valid = False
+        if self.collected_game is None:
+            return bool(len(self.tokens) == 1)
+        return bool(len(self.collected_game[2]) == 1)
 
     def set_position_fen(self, fen=None):
         """Extend to remember full state for initial position in fen"""
-        state = super(PGNMove, self).set_position_fen(fen=fen)
-        self._initial_position = self.ravstack[0][-1]
-        self._move_number = self.move_number
-        self._since_capture = self.since_capture
-        return state
+        super().set_position_fen(fen=fen)
+        if self._initial_fen:
+            self._initial_position = self.ravstack[0][-1]
 
 
 class PGNUpdate(PGN):
@@ -2469,42 +2296,21 @@ class PGNUpdate(PGN):
 
     Methods overridden:
 
-    _add_move_to_game
-    _token_comment
-    _token_comment_after_newline
-    _token_digit
-    _token_end_comment
-    _token_end_reserved
-    _token_end_variation
-    _token_glyph
-    _token_move
-    _token_move_detail_error
-    _token_move_disambiguate
-    _token_move_error
-    _token_move_error_disambiguate
-    _token_move_in_error_sequence
-    _token_movetext_error
-    _token_newline
-    _token_newline_keep
-    _token_period
-    _token_previous_move_error
-    _token_result
-    _token_start_comment
-    _token_start_reserved
-    _token_start_variation
-    _token_whitespace
+    collect_game_tokens
     
     Methods extended:
 
     __init__
+    add_move_to_game
     set_position_fen
     
     """
 
     def __init__(self):
-        super(PGNUpdate, self).__init__()
+        super().__init__()
         
         '''Add structures to support update of PGN records on database'''
+
         self.positions = []
         self.piecesquaremoves = []
 
@@ -2514,34 +2320,16 @@ class PGNUpdate(PGN):
         fen defaults to the starting position for a game of chess.
 
         """
-        if super(PGNUpdate, self).set_position_fen(fen=fen) is None:
-            self.positions[:] = []
-            self.piecesquaremoves[:] = []
-            return None
-        return PGN_ERROR
+        super().set_position_fen(fen=fen)
+        if self._initial_fen:
+            self.positions = []
+            self.piecesquaremoves = []
 
-    def _add_move_to_game(self):
+    def add_move_to_game(self):
         """Add legal move to data structures describing game.
 
-        Caller has modified the board description as specified by the move
-        ignoring whether the king of the moving side is left in check.  If
-        the king is left in check undo the move and return False.  If not
-        update the variation structure of the game and generate database keys
-        for position on board and return True.
-
         """
-        # superclass code repeated rather than called
-        self.side_to_move = OTHER_SIDE[self.side_to_move]
-        self.ravstack[-1] = (
-            self.ravstack[-1][-1],
-            (tuple(self.board_pieces),
-             self.side_to_move,
-             self.castle_options,
-             self.ep_move_to_sq))
-        self._state = MOVETEXT
-        self._token_move()
-        # extra code in this subclass
-        board_pieces = self.board_pieces
+        super().add_move_to_game()
         try:
             movenumber = MOVE_NUMBER_KEYS[len(self.positions)]
         except IndexError:
@@ -2551,93 +2339,37 @@ class PGNUpdate(PGN):
                 n, r = divmod(n, 256)
                 b.append(SCH[r])
             try:
-                movenumber = ''.join((SCH[len(b)], ''.join(b)))
+                movenumber = SCH[len(b)] + ''.join(b)
             except IndexError:
-                movenumber = ''.join((SCH[len(b) % 256], ''.join(b)))
-        # This algorithm leads to run-times about 5% faster than obtained
-        # with the one used in PGNDisplay.get_position_string() method when
-        # updating the database.  Significant for large PGN files.
-        # There are reasonable-looking algorithms that take 25% longer.
-        piecesquares = sorted([PCH[board_pieces[square] * 64 + square]
-                               for side in self.occupied_square_pieces
-                               for square in side])
-        self.positions.append(''.join(
-            piecesquares +
-            [TOMOVE_TO_POSITION_KEY[self.side_to_move]]))
-        self.piecesquaremoves.extend(
-            [''.join((s, movenumber)) for s in piecesquares])
+                movenumber = SCH[len(b) % 256] + ''.join(b)
+        board = self.board
+        piecesquares = [FEN_TOMOVE[self.active_side] +
+                        self.castling +
+                        self.en_passant +
+                        self.board_bitmap.to_bytes(8, 'big'
+                                                   ).decode('iso-8859-1')]
+        piecesquaremoves = self.piecesquaremoves
+        sch = SCH
+        for square, piece in enumerate(board):
+            if piece:
+                piecesquares.append(piece)
+                piecesquaremoves.append(piece + sch[square] + movenumber)
+        self.positions.append(''.join(piecesquares))
         
-    # start of refactored game token collection for update
+    def collect_game_tokens(self):
+        """Create snapshot of tokens extracted from PGN.
 
-    def _token_comment(self):
-        self.gametokens.append(self._token)
+        This method is expected to be called on detection of termination token.
 
-    def _token_comment_after_newline(self):
-        self.gametokens.append(LINEFEED)
-        self.gametokens.append(self._token)
-
-    def _token_digit(self):
-        pass
-
-    def _token_end_variation(self):
-        self.gametokens.append(self._token)
-
-    def _token_glyph(self):
-        self.gametokens.append(self._token)
-
-    def _token_move(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_detail_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_disambiguate(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_error_disambiguate(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_in_error_sequence(self):
-        self.gametokens.append(self._token)
-
-    def _token_movetext_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_newline(self):
-        pass
-
-    def _token_newline_keep(self):
-        self.gametokens.append(self._token)
-
-    def _token_period(self):
-        pass
-
-    def _token_previous_move_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_result(self):
-        self.gametokens.append(self._token)
-
-    def _token_end_comment(self):
-        self.gametokens.append(self._token)
-
-    def _token_start_comment(self):
-        self.gametokens.append(self._token)
-
-    def _token_end_reserved(self):
-        self.gametokens.append(self._token)
-
-    def _token_start_reserved(self):
-        self.gametokens.append(self._token)
-
-    def _token_start_variation(self):
-        self.gametokens.append(self._token)
-
-    def _token_whitespace(self):
-        pass
+        """
+        self.collected_game = (
+            self.tags_in_order,
+            {m.group(IFG_TAG_SYMBOL):m.group(IFG_TAG_STRING_VALUE)
+             for m in self.tags_in_order},
+            self.tokens,
+            self.error_tokens,
+            self.positions,
+            self.piecesquaremoves)
 
 
 class PGNRepertoireDisplay(PGNDisplay):
@@ -2645,12 +2377,11 @@ class PGNRepertoireDisplay(PGNDisplay):
 
     Methods added:
 
-    None
+    get_export_repertoire_rav_text
+    get_export_repertoire_text
 
     Methods overridden:
 
-    get_export_repertoire_text
-    get_export_repertoire_rav_text
     is_tag_roster_valid
     
     Methods extended:
@@ -2660,30 +2391,31 @@ class PGNRepertoireDisplay(PGNDisplay):
     """
     
     def is_tag_roster_valid(self):
-        if not self._tags_valid:
-            # Tags deemed invalid even if calculation says ok
-            return False
-        if len(self.tags) != len(self.tags_in_order):
+        """Return True if the tag roster in the collected game is valid."""
+        tags_in_order = self.collected_game[0]
+        tags = self.collected_game[1]
+        if len(tags) != len(tags_in_order):
             # Tag must appear no more than once
             return False
-        for v in self.tags.values():
+        for v in tags.values():
             if len(v) == 0:
                 # Tag value must not be null
                 return False
-        if TAG_OPENING not in self.tags:
+        if TAG_OPENING not in tags:
             # A mandatory tag is missing
             return False
         return True
 
     def get_export_repertoire_text(self):
         """Return Export format PGN text for repertoire"""
+        tags = self.collected_game[1]
         pb = []
         for t in REPERTOIRE_TAG_ORDER:
             pb.extend(
                 ['[', t, ' "',
-                 self.tags.get(t, REPERTOIRE_GAME_TAGS[t]),
+                 tags.get(t, REPERTOIRE_GAME_TAGS[t]),
                  '"]\n'])
-        for t, v in sorted([tv for tv in self.tags.items()
+        for t, v in sorted([tv for tv in tags.items()
                             if tv[0] not in REPERTOIRE_GAME_TAGS]):
             pb.extend(['[', t, ' "', v, '"]\n'])
         pb.append(self.get_export_pgn_movetext())
@@ -2691,13 +2423,14 @@ class PGNRepertoireDisplay(PGNDisplay):
 
     def get_export_repertoire_rav_text(self):
         """Return Export format PGN text for repertoire RAV"""
+        tags = self.collected_game[1]
         pb = []
         for t in REPERTOIRE_TAG_ORDER:
             pb.extend(
                 ['[', t, ' "',
-                 self.tags.get(t, REPERTOIRE_GAME_TAGS[t]),
+                 tags.get(t, REPERTOIRE_GAME_TAGS[t]),
                  '"]\n'])
-        for t, v in sorted([tv for tv in self.tags.items()
+        for t, v in sorted([tv for tv in tags.items()
                             if tv[0] not in REPERTOIRE_GAME_TAGS]):
             pb.extend(['[', t, ' "', v, '"]\n'])
         pb.append(self.get_export_pgn_rav_movetext())
@@ -2714,29 +2447,6 @@ class PGNRepertoireUpdate(PGN):
     Methods overridden:
 
     is_tag_roster_valid
-    _token_comment
-    _token_comment_after_newline
-    _token_digit
-    _token_end_comment
-    _token_end_reserved
-    _token_end_variation
-    _token_glyph
-    _token_move
-    _token_move_detail_error
-    _token_move_disambiguate
-    _token_move_error
-    _token_move_error_disambiguate
-    _token_move_in_error_sequence
-    _token_movetext_error
-    _token_newline
-    _token_newline_keep
-    _token_period
-    _token_previous_move_error
-    _token_result
-    _token_start_comment
-    _token_start_reserved
-    _token_start_variation
-    _token_whitespace
     
     Methods extended:
 
@@ -2745,141 +2455,19 @@ class PGNRepertoireUpdate(PGN):
     """
     
     def is_tag_roster_valid(self):
-        if not self._tags_valid:
-            # Tags deemed invalid even if calculation says ok
-            return False
-        if len(self.tags) != len(self.tags_in_order):
+        tags_in_order = self.collected_game[0]
+        tags = self.collected_game[1]
+        if len(tags) != len(tags_in_order):
             # Tag must appear no more than once
             return False
-        for v in self.tags.values():
+        for v in tags.values():
             if len(v) == 0:
                 # Tag value must not be null
                 return False
-        if TAG_OPENING not in self.tags:
+        if TAG_OPENING not in tags:
             # A mandatory tag is missing
             return False
         return True
-        
-    # start of refactored game token collection for update
-
-    def _token_comment(self):
-        self.gametokens.append(self._token)
-
-    def _token_comment_after_newline(self):
-        self.gametokens.append(LINEFEED)
-        self.gametokens.append(self._token)
-
-    def _token_digit(self):
-        pass
-
-    def _token_end_variation(self):
-        self.gametokens.append(self._token)
-
-    def _token_glyph(self):
-        self.gametokens.append(self._token)
-
-    def _token_move(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_detail_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_disambiguate(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_error_disambiguate(self):
-        self.gametokens.append(self._token)
-
-    def _token_move_in_error_sequence(self):
-        self.gametokens.append(self._token)
-
-    def _token_movetext_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_newline(self):
-        pass
-
-    def _token_newline_keep(self):
-        self.gametokens.append(self._token)
-
-    def _token_period(self):
-        pass
-
-    def _token_previous_move_error(self):
-        self.gametokens.append(self._token)
-
-    def _token_result(self):
-        self.gametokens.append(self._token)
-
-    def _token_end_comment(self):
-        self.gametokens.append(self._token)
-
-    def _token_start_comment(self):
-        self.gametokens.append(self._token)
-
-    def _token_end_reserved(self):
-        self.gametokens.append(self._token)
-
-    def _token_start_reserved(self):
-        self.gametokens.append(self._token)
-
-    def _token_start_variation(self):
-        self.gametokens.append(self._token)
-
-    def _token_whitespace(self):
-        pass
-
-
-class PGNRepertoireTags(PGN):
-    """Generate data structures to display the PGN Tags of a repertoire.
-
-    Methods added:
-
-    get_game_score
-
-    Methods overridden:
-
-    is_tag_roster_valid
-    _process_movetext
-    
-    Methods extended:
-
-    __init__
-    
-    """
-
-    def __init__(self):
-        super(PGNRepertoireTags, self).__init__()
-        self._gamescore = None
-
-    def get_game_score(self):
-        """Process PGN movetext if required and return game score"""
-        if self._gamescore is None:
-            super(PGNRepertoireTags, self)._process_movetext()
-            self._gamescore = ''.join(self.tokens)
-        return self._gamescore
-    
-    def is_tag_roster_valid(self):
-        if not self._tags_valid:
-            # Tags deemed invalid even if calculation says ok
-            return False
-        if len(self.tags) != len(self.tags_in_order):
-            # Tag must appear no more than once
-            return False
-        for v in self.tags.values():
-            if len(v) == 0:
-                # Tag value must not be null
-                return False
-        if TAG_OPENING not in self.tags:
-            # A mandatory tag is missing
-            return False
-        return True
-
-    def _process_movetext(self):
-        """Override so PGN movetext is not processed"""
 
 
 class PGNTags(PGN):
@@ -2887,132 +2475,426 @@ class PGNTags(PGN):
 
     Methods added:
 
-    get_game_score
+    None
 
     Methods overridden:
 
-    _process_movetext
+    _collecting_movetext
+    _collecting_tag_pairs
+    _disambiguate_move
+    _end_variation
+    _searching
+    _searching_after_error_in_game
+    _searching_after_error_in_rav
+    _start_variation
     
     Methods extended:
 
-    __init__
+    None
+
+    Notes
+
+    _disambiguate_move is defined but the only way it should be reached has
+    been disabled by overriding _collecting_movetext.  The definition ensures
+    PGN._disambiguate_move is never called.
+
+    PGN._collecting_non_whitespace_while_searching is correct in this class too.
     
     """
 
-    def __init__(self):
-        super(PGNTags, self).__init__()
-        self._gamescore = None
+    def _searching(self, match):
+        if match.group(IFG_START_TAG):
+            self.tags_in_order.append(match)
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        mg = match.group
+        if mg(IFG_PIECE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PAWN_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PIECE_CAPTURE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PAWN_CAPTURE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PIECE_CHOICE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_CASTLES):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PAWN_PROMOTE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_NAG):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT_TO_EOL):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
 
-    def get_game_score(self):
-        """Process PGN movetext if required and return game score"""
-        if self._gamescore is None:
-            super(PGNTags, self)._process_movetext()
-            self._gamescore = ''.join(self.tokens)
-        return self._gamescore
+        # The captured tokens not accepted when searching for start of game.
+        if mg(IFG_START_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+            return
+        if mg(IFG_END_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+            return
+        if mg(IFG_TERMINATION):
+            self._termination_while_searching(match)
+            return
 
-    def _process_movetext(self):
-        """Override so PGN movetext is not processed"""
+        # Action for non-captured groups is decided by looking at whole token.
+        string = mg()
 
+        if not string.strip():
+            return
+        if string.isdigit():
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if string == FULLSTOP:
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
 
-def get_board_from_position(position):
-    """Return board description where position is after move played.
+        # Only other groups with length > 1:
+        # '<reserved>'
+        # '%escaped\n'
+        # are not captured and are ignored.
+        if len(string) > 1:
+            return
+        
+        self.error_tokens.append(string)
+        self._state = PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING
+        return
 
-    Return value is
-    tuple(tuple(<pieces on squares>), <whose move>, <castling>, <en passant>)
+    def _searching_after_error_in_rav(self, match):
+        if match.group(IFG_START_RAV):
+            self._ravstack_length += 1
+            return
+        if match.group(IFG_END_RAV):
+            if self._ravstack_length == len(self.ravstack):
+                self.error_tokens = []
+                self._state = PGN_COLLECTING_MOVETEXT
+                self._rewind_state = self._state
+                if self._ravstack_length > 2:
+                    self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_RAV
+                else:
+                    self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+                del self._ravstack_length
+            else:
+                self._ravstack_length -= 1
+            return
+        if match.group(IFG_TERMINATION):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            del self._ravstack_length
+            return
+        if match.group(IFG_START_TAG):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            del self._ravstack_length
+            return
 
-    """
-    board = [NOPIECE] * 64
-    castle_options = False
-    ep_square = False
-    side_to_move = False
-    offset = 0
-    for pk in position:
-        decode = DECODE[pk] + offset
-        if decode in POSITION_KEY_TO_FLAGS:
-            if decode in SPECIAL_VALUES_OFFSET:
-                offset = POSITION_KEY_TO_FLAGS[decode]
-                continue
-            elif decode in SPECIAL_VALUES_TOMOVE:
-                side_to_move = POSITION_KEY_TO_FLAGS[decode]
-            elif decode in SPECIAL_VALUES_CASTLE:
-                castle_options = POSITION_KEY_TO_FLAGS[decode]
-            elif decode in SPECIAL_VALUES_ENPASSANT:
-                if side_to_move == WHITE_TO_MOVE:
-                    ep_square = (MAPFILE[POSITION_KEY_TO_FLAGS[decode]] +
-                                 MAPRANK['6'])
-                elif side_to_move == BLACK_TO_MOVE:
-                    ep_square = (MAPFILE[POSITION_KEY_TO_FLAGS[decode]] +
-                                 MAPRANK['3'])
+    def _searching_after_error_in_game(self, match):
+        if match.group(IFG_TERMINATION):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            return
+        if match.group(IFG_START_TAG):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+
+    def _collecting_tag_pairs(self, match):
+        if match.group(IFG_START_TAG):
+            self.tags_in_order.append(match)
+            return
+        mg = match.group
+        if mg(IFG_PIECE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PAWN_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PIECE_CAPTURE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PAWN_CAPTURE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PIECE_CHOICE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_CASTLES):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_PAWN_PROMOTE_SQUARE):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_TERMINATION):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_NAG):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT_TO_EOL):
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+
+        # The captured tokens not accepted when searching for tag pairs.
+        if mg(IFG_START_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+        if mg(IFG_END_RAV):
+            self.error_tokens.append(mg())
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+
+        # Action for non-captured groups is decided by looking at whole token.
+        string = mg()
+
+        if not string.strip():
+            return
+        if string.isdigit():
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        if string == FULLSTOP:
+            self.ravstack[:] = [None]
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+
+        # Only other groups with length > 1:
+        # '<reserved>'
+        # '%escaped\n'
+        # are not captured and are ignored.
+        if len(string) > 1:
+            return
+        
+        self.error_tokens.append(string)
+        self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+        return
+
+    def _collecting_movetext(self, match):
+        mg = match.group
+        if mg(IFG_PIECE_SQUARE):
+            return
+        if mg(IFG_PAWN_SQUARE):
+            return
+        if mg(IFG_PIECE_CAPTURE_SQUARE):
+            return
+        if mg(IFG_PAWN_CAPTURE_SQUARE):
+            return
+        if mg(IFG_PIECE_CHOICE_SQUARE):
+            return
+        if mg(IFG_CASTLES):
+            return
+        if mg(IFG_PAWN_PROMOTE_SQUARE):
+            return
+        if mg(IFG_START_RAV):
+            self._start_variation()
+            return
+        if mg(IFG_END_RAV):
+            self._end_variation()
+            return
+        if mg(IFG_TERMINATION):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = []
+            self._state = PGN_SEARCHING
+            self._rewind_state = self._state
+            return
+        if mg(IFG_COMMENT):
+            return
+        if mg(IFG_NAG):
+            return
+        if mg(IFG_COMMENT_TO_EOL):
+            return
+
+        # Other groups are not put on self.tokens because they are not shown in
+        # game displays and do not need to be associated with a position on
+        # the board.
+
+        # The non-captured groups which are accepted without action.
+        string = mg()
+
+        if not string.strip():
+            return
+        if string.isdigit():
+            return
+        if string == FULLSTOP:
+            return
+
+        # Current movetext finishes in error, no termination, assume start of
+        # new game.
+        if mg(IFG_START_TAG):
+            self.collect_game_tokens()
+            self._initial_fen = False
+            self.tokens = []
+            self.error_tokens = []
+            self.tags_in_order = [match]
+            self._state = PGN_COLLECTING_TAG_PAIRS
+            self._rewind_state = self._state
+            self._move_error_state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+            return
+
+        # Only other groups with length > 1:
+        # '<reserved>'
+        # '%escaped\n'
+        # are not captured and are ignored.
+        if len(string) > 1:
+            return
+
+        # The non-captured groups which cause an error condition.
+        self._ravstack_length = len(self.ravstack)
+        if self._ravstack_length > 1:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_RAV
         else:
-            square, piece = POSITION_KEY_TO_PIECES[decode]
-            board[square] = piece
-        offset = 0
-    return tuple(board), side_to_move, castle_options, ep_square
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+
+    def _disambiguate_move(self, match):
+        if match.group(IFG_PAWN_SQUARE):
+            self._state = PGN_COLLECTING_MOVETEXT
+            self._rewind_state = self._state
+            return
+        self._ravstack_length = len(self.ravstack)
+        if self._ravstack_length > 1:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_RAV
+        else:
+            self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
+
+    def _start_variation(self):
+        self.ravstack.append(None)
+
+    def _end_variation(self):
+        try:
+            del self.ravstack[-1]
+        except:
+            pass
 
 
-def get_fen_from_position(position, halfmoves=0, fullmoves=1):
-    """Return FEN description of position.
+class PGNRepertoireTags(PGNTags):
+    """Generate data structures to display the PGN Tags of a repertoire.
 
-    The FEN description can be given as a PGN Tag in a PGN game score.  It
-    can also be used to set a PGN instance to a given position.
+    Methods added:
+
+    None
+
+    Methods overridden:
+
+    is_tag_roster_valid
+    
+    Methods extended:
+
+    None
     
     """
-    board, side_to_move, castle_options, ep_square = position
-    board = list(board)
-    fen_board = []
-    while len(board):
-        rank = []
-        while len(rank) < len(FILES):
-            rank.insert(0, board.pop())
-        gap_length = 0
-        fen_rank = []
-        for p in rank:
-            if p == NOPIECE:
-                gap_length += 1
-                continue
-            if gap_length:
-                fen_rank.append(FEN_ADJACENT_EMPTY_SQUARES[gap_length - 1])
-                gap_length = 0
-            fen_rank.append(PIECE_FENMAP[p])
-        if gap_length:
-            fen_rank.append(FEN_ADJACENT_EMPTY_SQUARES[gap_length - 1])
-        fen_board.append(''.join(fen_rank))
-    return ' '.join((
-        '/'.join(fen_board),
-        SIDE_TO_MOVE_FENMAP[side_to_move],
-        CASTLING_OPTION_FENMAP[castle_options],
-        EN_PASSANT_FENMAP[ep_square],
-        str(halfmoves),
-        str(fullmoves)))
-
-
-def get_position_string(position):
-    """Return position for use as key in game retrieval.
-
-    Encoded as a sorted sequence of one or two byte values representing
-    the piece and it's host square.  There are 832 values including those
-    representing an empty square.  The piece encoding is chosen such that
-    the unused pawn-square codes (for a1..h1 and a8..h8) include those
-    which represent 512 and 768 when used in integer context.  Castling
-    options and en passant move, if any, are not included; being left to
-    evaluation of the PGN game score in retrieved records.
     
-    """
-    '''May remove en passant from position specification because self.moves
-    is tuple(previous position, current position) and can determine if en
-    passant is possible by comparing the two positions.  Castling options
-    persist so those flags must remain.'''
-    # note that this algorithm to calculate the position key is not used in
-    # PGNUpdate._add_move_to_game() method because it adds about 5% to the
-    # run-time when updating database.  Significant when importing a large
-    # PGN file.  However the data structure used there is not available to
-    # this method. (That's 5% without the sort which is included here for
-    # compatibility as the sort is needed in the other algorithm).
-    board, side_to_move = position[:2]
-    return ''.join(
-        sorted([PCH[board[square] * 64 + square]
-                for square in FULLBOARD if board[square] != NOPIECE]) +
-        [TOMOVE_TO_POSITION_KEY[side_to_move]])
+    def is_tag_roster_valid(self):
+        """Return True if the tag roster in the collected game is valid."""
+        tags_in_order = self.collected_game[0]
+        tags = self.collected_game[1]
+        if len(tags) != len(tags_in_order):
+            # Tag must appear no more than once
+            return False
+        for v in tags.values():
+            if len(v) == 0:
+                # Tag value must not be null
+                return False
+        if TAG_OPENING not in tags:
+            # A mandatory tag is missing
+            return False
+        return True
 
 
 class PGNAnalysis(PGNDisplay):
@@ -3025,6 +2907,7 @@ class PGNAnalysis(PGNDisplay):
     Methods overridden:
 
     is_tag_roster_valid
+    _termination_while_searching
     
     Methods extended:
 
@@ -3045,15 +2928,76 @@ class PGNAnalysis(PGNDisplay):
     """
     
     def is_tag_roster_valid(self):
-        if not self._tags_valid:
-            # Tags deemed invalid even if calculation says ok
-            return False
-        if len(self.tags) != len(self.tags_in_order):
+        """Return True if the tag roster in the collected game is valid."""
+        tags_in_order = self.collected_game[0]
+        tags = self.collected_game[1]
+        if len(tags) != len(tags_in_order):
             # Tag must appear no more than once
             return False
-        for v in self.tags.values():
+        for v in tags.values():
             if len(v) == 0:
                 # Tag value must not be null
                 return False
         return True
 
+    def _termination_while_searching(self, match):
+        if not self._initial_fen:
+            self.set_position_fen()
+        self.collect_token(match)
+        self.collect_game_tokens()
+        self._initial_fen = False
+        self.tokens = []
+        self.error_tokens = []
+        self.tags_in_order = []
+        self._state = PGN_SEARCHING
+        self._rewind_state = self._state
+
+
+def get_fen_string(description, halfmoves=0, fullmoves=1):
+    """Return Forsythe Edwards Notation string for position description.
+
+    The FEN string can be given as a PGN Tag in a PGN game score.  It can also
+    be used to set a PGN instance to a given position.
+    
+    """
+    board, side_to_move, castle_options, ep_square = description
+    fenboard = []
+    fenrank = []
+    gap_length = 0
+    for e, r in enumerate(board):
+        if not e % BOARDSIDE:
+            if gap_length:
+                fenrank.append(str(gap_length))
+                gap_length = 0
+            if len(fenrank):
+                fenboard.append(''.join(fenrank))
+                fenrank = []
+        if r == NOPIECE:
+            gap_length += 1
+            continue
+        if gap_length:
+            fenrank.append(str(gap_length))
+            gap_length = 0
+        fenrank.append(r)
+    if gap_length:
+        fenrank.append(str(gap_length))
+    fenboard.append(''.join(fenrank))
+    return ' '.join(('/'.join(fenboard),
+                     FEN_TOMOVE[side_to_move],
+                     castle_options,
+                     ep_square,
+                     str(halfmoves),
+                     str(fullmoves)))
+
+
+def get_position_string(description):
+    """Return position string for description of board.
+    
+    """
+    board, side_to_move, castle_options, ep_square = description
+    return (FEN_TOMOVE[side_to_move] +
+            castle_options +
+            ep_square +
+            sum(SQUARE_BITS[e] for e, p in enumerate(board) if p
+                ).to_bytes(8, 'big').decode('iso-8859-1') +
+            ''.join(p for p in board))

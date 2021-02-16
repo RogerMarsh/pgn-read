@@ -71,8 +71,8 @@ REPERTOIRE_GAME_TAGS = {
 WHITE_WIN = '1-0'
 BLACK_WIN = '0-1'
 DRAW = '1/2-1/2'
-TERMINATION = '*' # Unknown result
-RESULT_SET = {WHITE_WIN, BLACK_WIN, DRAW, TERMINATION}
+UNKNOWN_RESULT = '*' # Was TERMINATION
+RESULT_SET = {WHITE_WIN, BLACK_WIN, DRAW, UNKNOWN_RESULT}
 
 PGN_PAWN = ''
 PGN_KING = 'K'
@@ -82,151 +82,11 @@ PGN_BISHOP = 'B'
 PGN_KNIGHT = 'N'
 PGN_FROM_SQUARE_DISAMBIGUATION = frozenset((PGN_QUEEN, PGN_BISHOP, PGN_KNIGHT))
 
-# PGN regular expression pattern matching strings
-PRINT_CHARS = ''.join((
-    '[',
-    ' -~',
-    '-'.join((chr(192), chr(255))),
-    ']',
-    ))
-ESCAPE_TO_EOL = '%' # loosely '\n%.*' ignore line
-COMMENT_TO_EOL = ';' # loosely ';.*'
-CHECK = '[+#]?'
-ANNOTATION = '(?:[!?][!?]?)?'
-# MOVETEXT matches the shortest string that could be a legal move.
-# Thus it would find two moves, Qg7 and d4, from Qg7d4 not interpreting this
-# as either the over elaborate recording of moving a queen from g7 to d4 or
-# the possible, but unlikely, disambiguation needed when two queens on the
-# g-file and two queens on the 7-rank can move to d4.  The parser considers
-# the disambiguation possibility if there is a Q on g7 when Qg7 is given.
-# It also rules out impossible moves such as axb4=Q.
-# MOVETEXT is used in splitting a PGN text into moves.
-MOVETEXT = ''.join((
-    '(?:',
-    '|'.join((
-        '(?:[a-h](?:x[a-h])?[2-7])',
-        '(?:[a-h](?:x[a-h])?[18]=[BNQR])',
-        '(?:[BNQR][a-h]?[1-8]?x[a-h][1-8])',
-        '(?:[BNQR][a-h1-8]?[a-h][1-8])',
-        '(?:Kx?[a-h][1-8])',
-        '(?:O-O-O)',
-        '(?:O-O)',
-        )),
-    ')',
-    '(?:', CHECK, ')?',
-    '(?:', ANNOTATION, ')?',
-    ))
-# MOVE_DETAIL matches the longest string that could be a legal move.
-# It is used to extract information from moves found by splitting a PGN text
-# and assumes that the splitting was done using MOVETEXT.
-# Thus axb4=Q and so on are assumed not to occur when using MOVE_DETAIL to
-# determine if a move is legal in a game position.
-MOVE_DETAIL = ''.join((
-    '(?:',
-    '|'.join((
-        '(?:([KBNQR]?)([a-h]?)([1-8]?)(x?)([a-h])([1-8])(?:=([BNQR]))?)',
-        '(?:O-O-O)',
-        '(?:O-O)',
-        )),
-    ')',
-    '(?:', CHECK, ')?',
-    '(', ANNOTATION, ')?',
-    ))
-# MOVETEXT_EDIT matches the shortest string that could be a legal move or the
-# start of a legal move.
-# It modifies MOVETEXT to cope with editing Movetext when the text is parsed
-# after each addition or removal of a character.
-# Primary task is to stop 'R1' becoming two tokens 'R' '1' before 'R1a4' is
-# typed for example.
-MOVETEXT_EDIT = ''.join((
-    '(?:',
-    '|'.join((
-        '(?:[a-h](?:x[a-h])?[2-7])',
-        '(?:[a-h](?:x[a-h])?[18]=[BNQR])',
-        '(?:[BNQR][a-h]?[1-8]?x[a-h][1-8])',
-        '(?:[BNQR][a-h1-8]?[a-h][1-8])',
-        '(?:Kx?[a-h][1-8])',
-        '(?:O-O-O)',
-        '(?:O-O)',
-        '(?:[BNQR][1-8]x?[a-h]?)',
-        '(?:[a-h][18]=?)',
-        '(?:[a-h]x[a-h][18]=?)',
-        )),
-    ')',
-    '(?:', CHECK, ')?',
-    '(?:', ANNOTATION, ')?',
-    ))
-PIECE_GROUP = 0
-FROMFILE_GROUP = 1
-FROMRANK_GROUP = 2
-MOVE_OR_CAPTURE_GROUP = 3
-TOFILE_GROUP = 4
-TORANK_GROUP = 5
-PROMOTE_GROUP = 6
-ANNOTATION_GROUP = 7
-# DISAMBIGUATE matches the string that should be the destination square in a
-# move where more than two of the specified piece can move to the square
-DISAMBIGUATE = ''.join((
-    '(?:([a-h])([1-8]))',
-    '(?:', CHECK, ')?',
-    '(', ANNOTATION, ')?',
-    ))
-DISAMBIGUATE_TOFILE_GROUP = 0
-DISAMBIGUATE_TORANK_GROUP = 1
-DISAMBIGUATE_ANNOTATION_GROUP = 2
+# Refugees from old PGN regular expression pattern matching strings.
 O_O_O = 'O-O-O'
 O_O = 'O-O'
 PLAIN_MOVE = ''
 CAPTURE_MOVE = 'x'
-# Tokens
-STRING = ''.join((
-    '"',
-    PRINT_CHARS,
-    '*?"',
-    ))
-INTEGER = '(?:[1-9][0-9]*)'
-PERIOD = '.'
-START_COMMENT = '{'
-END_COMMENT = '}' # Commentary. Loosely '{' + PRINT_CHARS + '*' + '}'
-START_TAG = '['
-END_TAG = ']' # See TAG_PAIR
-START_RAV = '('
-END_RAV = ')' # See recursive annotation variation
-START_RESERVED = '<'
-END_RESERVED = '>' # Undefined. Assumed loosely '{' + PRINT_CHARS + '*' + '}'
-GLYPH = '$'
-NAG = ''.join(('\$', INTEGER))
-SYMBOL = '[A-Za-z0-9][A-Za-z0-9_+#=:-]*'
-TAG_NAME = '[A-Z][A-Za-z0-9_+#=:-]*' # Symbol used as database field name
-RESULT = '|'.join((
-    WHITE_WIN.join(('(?:', ')')),
-    BLACK_WIN.join(('(?:', ')')),
-    DRAW.join(('(?:', ')')),
-    ))
-# If TERMINATION is included with the other results and RESULTS is placed
-# early in TOKENS, for the split order, anything after RESULT is not split
-# corrrectly.  Not quite sure what I am saying wrong to cause this.  Putting
-# TERMINATION at end of TOKENS does what I want and is reasonable because it
-# is one of the rarest tokens.
-#
-# RESULT_EDIT matches the shortest string that could be a legal result or the
-# start of a legal result.
-# It modifies RESULT to cope with editing Movetext when the text is parsed
-# after each addition or removal of a character.
-# Primary task is to stop '1-' becoming two tokens '1' '-' before '1-0' is
-# typed for example.
-RESULT_EDIT = '|'.join((
-    WHITE_WIN.join(('(?:', ')')),
-    BLACK_WIN.join(('(?:', ')')),
-    DRAW.join(('(?:', ')')),
-    '(?:1-)',
-    '(?:0-)',
-    '(?:1/2-1/)',
-    '(?:1/2-1)',
-    '(?:1/2-)',
-    '(?:1/2)',
-    '(?:1/)',
-    ))
 LINEFEED = '\n'
 CARRIAGE_RETURN = '\r'
 NEWLINE = ''.join((LINEFEED, CARRIAGE_RETURN))
@@ -234,117 +94,148 @@ SPACE = ' '
 HORIZONTAL_TAB = '\t'
 FORMFEED = '\f'
 VERTICAL_TAB = '\v'
-WHITESPACE = ''.join((SPACE, HORIZONTAL_TAB, FORMFEED, VERTICAL_TAB))
-# Structures
-TAG_PAIR = ''.join((
-    START_TAG.join(('[', ']')),
-    '\s*',
-    SYMBOL,
-    '\s*',
-    STRING,
-    '\s*',
-    END_TAG.join(('[', ']')),
-    ))
-SPLIT_INTO_GAMES = ''.join((
-    '((?:',
-    TAG_PAIR,
-    '\s*',
-    ')*)',
-    )) # Cannot have commentary or escaped data mixed in tag pairs
-SPLIT_INTO_TAGS = ''.join((
-    '(',
-    TAG_PAIR,
-    ')',
-    )) # Non-whitespace outside a tag is assumed to be movetext
-TOKEN = '|'.join((
-    MOVETEXT,
-    NAG,
-    RESULT,
-    INTEGER, # must be after MOVETEXT NAG and RESULT for correct splitting
-    WHITESPACE.join(('[', ']')),
-    PERIOD.join(('[', ']')),
-    NEWLINE.join(('[', ']')),
-    START_RAV.join(('[', ']')),
-    END_RAV.join(('[', ']')),
-    START_COMMENT,
-    END_COMMENT,
-    START_RESERVED,
-    END_RESERVED,
-    COMMENT_TO_EOL,
-    ESCAPE_TO_EOL,
-    TERMINATION.join(('[', ']')),
-    ))
-SPLIT_INTO_TOKENS = ''.join((
-    '(',
-    TOKEN,
-    ')',
-    )) # Cannot have commentary or escaped data mixed in tag pairs
-TOKEN_EDIT = '|'.join((
-    MOVETEXT_EDIT,
-    NAG,
-    RESULT_EDIT,
-    INTEGER, # must be after MOVETEXT_EDIT NAG and RESULT for correct splitting
-    WHITESPACE.join(('[', ']')),
-    PERIOD.join(('[', ']')),
-    NEWLINE.join(('[', ']')),
-    START_RAV.join(('[', ']')),
-    END_RAV.join(('[', ']')),
-    START_COMMENT,
-    END_COMMENT,
-    START_RESERVED,
-    END_RESERVED,
-    COMMENT_TO_EOL,
-    ESCAPE_TO_EOL,
-    TERMINATION.join(('[', ']')),
-    ))
-SPLIT_INTO_TOKENS_EDIT = ''.join((
-    '(',
-    TOKEN_EDIT,
-    ')',
-    )) # Cannot have commentary or escaped data mixed in tag pairs
+
+# PGN regular expression pattern matching strings
+
+# Building blocks
+ANYTHING_ELSE = '.'
+WHITESPACE = '\s+'
+FULLSTOP = '.'
+PERIOD ='\\' + FULLSTOP
+INTEGER = '[1-9][0-9]*'
+TERMINATION = '1-0|0-1|1/2-1/2|\*'
+START_TAG = '['
+END_TAG = ']'
+SYMBOL = '([A-Za-z0-9][A-Za-z0-9_+#=:-]*)'
+STRING = '((?<![\\\\])"(.*?)(?<![\\\\])")'
+TAG_PAIR = ''.join(('(\\', START_TAG, ')\s*',
+                    SYMBOL, '\s*',
+                    STRING, '\s*',
+                    '(\\', END_TAG, ')'))
+START_COMMENT = '{'
+END_COMMENT = '}'
+COMMENT = ''.join(('\\', START_COMMENT, '[^', END_COMMENT, ']*\\', END_COMMENT))
+LEFT_ANGLE_BRACE = '<'
+RIGHT_ANGLE_BRACE = '>'
+RESERVED = ''.join((
+    LEFT_ANGLE_BRACE, '[^', RIGHT_ANGLE_BRACE, ']*', RIGHT_ANGLE_BRACE))
+COMMENT_TO_EOL = ';(?:(?!$).)*\n'
+PERCENT = '%'
+ESCAPE_LINE = PERCENT.join(('(?<=\n)', '(?:(?!$).)*\n'))
+NAG = '\$[0-9]+'
+START_RAV = '('
+END_RAV = ')'
+PAWN_PROMOTE = '(?:([a-h])(x))?([a-h][18])(=[BNQR])'
+PAWN_CAPTURE = '([a-h])(x)([a-h][2-7])'
+PIECE_CAPTURE = '(?:(K)|(?:([BNQR])([a-h]?[1-8]?)))(x)([a-h][1-8])'
+PIECE_CHOICE_MOVE = '([BNQR])([a-h1-8])([a-h][1-8])'
+PIECE_MOVE = '([KBNQR])([a-h][1-8])'
+PAWN_MOVE = '([a-h][1-8])'
+CASTLES = '(O-O(?:-O)?)'
+CHECK = '([+#]?)'
+ANNOTATION = '([!?][!?]?)?'
+
+# Regular expression to detect full games in import format; export format is a
+# subset of import format.  The text stored on database is captured.
+IMPORT_FORMAT = ''.join(('(?:', TAG_PAIR, ')', '|',
+                         '(?:',
+                         '(?:',
+                         '(?:', PAWN_PROMOTE, ')', '|',
+                         '(?:', PAWN_CAPTURE, ')', '|',
+                         '(?:', PIECE_CAPTURE, ')', '|',
+                         '(?:', PIECE_CHOICE_MOVE, ')', '|',
+                         '(?:', PIECE_MOVE, ')', '|',
+                         '(?:', PAWN_MOVE, ')', '|',
+                         '(?:', CASTLES, ')',
+                         ')',
+                         '(?:', CHECK, ')',
+                         '(?:', ANNOTATION, ')',
+                         ')', '|',
+                         '(', COMMENT, ')', '|',
+                         '(', NAG, ')', '|',
+                         '(', COMMENT_TO_EOL, ')', '|',
+                         '(', TERMINATION, ')', '|',
+                         INTEGER, '|',
+                         PERIOD, '|',
+                         WHITESPACE, '|',
+                         '(\\', START_RAV, ')', '|',
+                         '(\\', END_RAV, ')', '|',
+                         RESERVED, '|',
+                         ESCAPE_LINE, '|',
+                         '(', ANYTHING_ELSE, ')'))
+
+# Regular expressions to disambiguate moves: move text like 'Bc4d5' is the only
+# kind which could need to be interpreted as one move rather than two.
+DISAMBIGUATE_FORMAT = '[BNQ][a-h][1-8][a-h][1-8]'
+UNAMBIGUOUS_FORMAT = '.*'
+
+# Regular expression to detect possible beginning of move in an error sequence,
+# "Bxa" for example while typing "Bxa6".
+POSSIBLE_MOVE = '[OKBNRQa-h][-Oa-h1-8+#?!=]* *'
+
+#
+# Group offsets for IMPORT_FORMAT matches
+#
+IFG_START_TAG = 1
+IFG_TAG_SYMBOL = 2
+IFG_TAG_STRING = 3
+IFG_TAG_STRING_VALUE = 4
+#IFG_TAG_END = 5
+IFG_PAWN_PROMOTE_FROM_FILE = 6
+IFG_PAWN_TAKES_PROMOTE = 7
+IFG_PAWN_PROMOTE_SQUARE = 8
+IFG_PAWN_PROMOTE_PIECE = 9
+IFG_PAWN_CAPTURE_FROM_FILE = 10
+IFG_PAWN_TAKES = 11
+IFG_PAWN_CAPTURE_SQUARE = 12
+IFG_KING_CAPTURE = 13
+IFG_PIECE_CAPTURE = 14
+IFG_PIECE_CAPTURE_FROM = 15
+IFG_PIECE_TAKES = 16
+IFG_PIECE_CAPTURE_SQUARE = 17
+IFG_PIECE_CHOICE = 18
+IFG_PIECE_CHOICE_FILE_OR_RANK = 19
+IFG_PIECE_CHOICE_SQUARE = 20
+IFG_PIECE_MOVE = 21
+IFG_PIECE_SQUARE = 22
+IFG_PAWN_SQUARE = 23
+IFG_CASTLES = 24
+IFG_CHECK = 25
+IFG_ANNOTATION = 26
+IFG_COMMENT = 27
+IFG_NAG = 28
+IFG_COMMENT_TO_EOL = 29
+IFG_TERMINATION = 30
+IFG_START_RAV = 31
+IFG_END_RAV = 32
+IFG_ANYTHING_ELSE = 33
+
+#
+# Parser states
+#
+PGN_SEARCHING = 0
+PGN_SEARCHING_AFTER_ERROR_IN_RAV = 1
+PGN_SEARCHING_AFTER_ERROR_IN_GAME = 2
+PGN_COLLECTING_TAG_PAIRS = 3
+PGN_COLLECTING_MOVETEXT = 4
+PGN_COLLECTING_NON_WHITESPACE_WHILE_SEARCHING = 5
+PGN_DISAMBIGUATE_MOVE = 6
 
 #
 # numeric annotation glyphs (just validation for now)
 #
-NAG_TRANSLATION = {}
-for o in range(1, 499): # only 1 though 139 have a formal definition
-    NAG_TRANSLATION['$' + str(o)] = None
-del o
-
-#
-# error states for PGN parser
-#
-PGN_MOVE_NOT_RECOGNISED = '1'  # token does not generate legal move in position
-PGN_TOKENS_AFTER_RESULT = '2'  # token present after result (so game is valid)
-PGN_ERROR = '3' # any error not classified under another error state 
+NAG_TRANSLATION = {'$' + str(o): None for o in range(1, 499)}
 
 #
 # Square constants and flags
 #
-NO_EP_SQUARE = None
-
-# Castling flags
-WK_CASTLES = 1
-WQ_CASTLES = 2
-BK_CASTLES = 3
-BQ_CASTLES = 4
-CASTLEALL = 15
-CASTLESET = {WK_CASTLES:8, WQ_CASTLES:4, BK_CASTLES:2, BQ_CASTLES:1}
-CASTLEVOID_K = 7
-CASTLEVOID_Q = 11
-CASTLEVOID_k = 13
-CASTLEVOID_q = 14
-CASTLEVOID_w = 3
-CASTLEVOID_b = 12
-
-# Castling options kept (if possessed) on moving piece from square.
-CASTLEMASKS = [CASTLEALL] * 64
-CASTLEMASKS[0] = CASTLEVOID_Q
-CASTLEMASKS[4] = CASTLEVOID_w
-CASTLEMASKS[7] = CASTLEVOID_K
-CASTLEMASKS[56] = CASTLEVOID_q
-CASTLEMASKS[60] = CASTLEVOID_b
-CASTLEMASKS[63] = CASTLEVOID_k
+BOARDSIDE = 8
+BOARDSQUARES = BOARDSIDE * BOARDSIDE
+SQUARE_BITS = [1 << i for i in range(BOARDSQUARES)]
+ALL_SQUARES = sum(SQUARE_BITS)
+EN_PASSANT_TO_SQUARES = sum([SQUARE_BITS[s] for s in range(24, 40)])
+EN_PASSANT_FROM_SQUARES = (sum([SQUARE_BITS[s] for s in range(8, 16)]) |
+                           sum([SQUARE_BITS[s] for s in range(48, 56)]))
 
 # Pieces
 # Encoding positions is more efficient (key length) if pawns are encoded with
@@ -355,21 +246,20 @@ CASTLEMASKS[63] = CASTLEVOID_k
 # best used for the kings which are always present.  Absence of a piece is best
 # encoded with the highest value, which will be 12 if using lists, wherever
 # possible, rather than dictionaries for mappings.
-NOPIECE = 12
-WKING = 2
-WQUEEN = 4
-WROOK = 5
-WBISHOP = 6
-WKNIGHT = 7
-WPAWN = 0
-BKING = 3
-BQUEEN = 8
-BROOK = 9
-BBISHOP = 10
-BKNIGHT = 11
-BPAWN = 1
+NOPIECE = ''
+WKING = 'K'
+WQUEEN = 'Q'
+WROOK = 'R'
+WBISHOP = 'B'
+WKNIGHT = 'N'
+WPAWN = 'P'
+BKING = 'k'
+BQUEEN = 'q'
+BROOK = 'r'
+BBISHOP = 'b'
+BKNIGHT = 'n'
+BPAWN = 'p'
 PIECES = frozenset((
-    NOPIECE,
     WKING,
     WQUEEN,
     WROOK,
@@ -388,170 +278,135 @@ PIECES = frozenset((
 WPIECES = frozenset((WKING, WQUEEN, WROOK, WBISHOP, WKNIGHT, WPAWN))
 BPIECES = frozenset((BKING, BQUEEN, BROOK, BBISHOP, BKNIGHT, BPAWN))
 
-# Packing order for piece counts in position keys for database
+# The default initial board, internal representation.
 INITIAL_BOARD = (
-    WROOK, WKNIGHT, WBISHOP, WQUEEN, WKING, WBISHOP, WKNIGHT, WROOK,
-    WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
-    BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN,
     BROOK, BKNIGHT, BBISHOP, BQUEEN, BKING, BBISHOP, BKNIGHT, BROOK,
+    BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    NOPIECE, NOPIECE, NOPIECE, NOPIECE,
+    WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN,
+    WROOK, WKNIGHT, WBISHOP, WQUEEN, WKING, WBISHOP, WKNIGHT, WROOK,
     )
-FULLBOARD = tuple(range(64))
+INITIAL_OCCUPIED_SQUARES = (
+    frozenset((48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63)),
+    frozenset((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)))
+INITIAL_BOARD_BITMAP = sum([sum([SQUARE_BITS[o] for o in s])
+                            for s in INITIAL_OCCUPIED_SQUARES])
+INITIAL_PIECE_LOCATIONS = {k:v for k, v in
+                           ((WKING, (60,)),
+                            (WQUEEN, (59,)),
+                            (WROOK, (56, 63)),
+                            (WBISHOP, (58, 61)),
+                            (WKNIGHT, (57, 62)),
+                            (WPAWN, (48, 49, 50, 51, 52, 53, 54, 55)),
+                            (BKING, (4,)),
+                            (BQUEEN, (3,)),
+                            (BROOK, (0, 7)),
+                            (BBISHOP, (2, 5)),
+                            (BKNIGHT, (1, 6)),
+                            (BPAWN, (8, 9, 10, 11, 12, 13, 14, 15)),
+                            )}
 
-# To move
-WHITE_TO_MOVE = 0
-BLACK_TO_MOVE = 1
-OTHER_SIDE = [BLACK_TO_MOVE, WHITE_TO_MOVE]
-OTHERSIDE_PAWN = [BPAWN, WPAWN]
-SIDE_KING = [WKING, BKING]
-
-# Define squares with white and black pieces for standard initial position
-INITIAL_WP_SQUARES = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-INITIAL_BP_SQUARES = (
-    (48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63))
-INITIAL_SQUARES = tuple([v for k, v in sorted([
-    (NOPIECE, (list(range(16, 48)))),
-    (WKING, (4,)),
-    (WQUEEN, (3,)),
-    (WROOK, (0, 7)),
-    (WBISHOP, (2, 5)),
-    (WKNIGHT, (1, 6)),
-    (WPAWN, (8, 9, 10, 11, 12, 13, 14, 15)),
-    (BKING, (60,)),
-    (BQUEEN, (59,)),
-    (BROOK, (56, 63)),
-    (BBISHOP, (58, 61)),
-    (BKNIGHT, (57, 62)),
-    (BPAWN, (48, 49, 50, 51, 52, 53, 54, 55)),
-    ])])
+# White and black side
+WHITE_SIDE = 0
+BLACK_SIDE = 1
+OTHER_SIDE = BLACK_SIDE, WHITE_SIDE
+SIDE_KING = WKING, BKING
 
 # Map PGN piece file and rank names to internal representation
-MAPPIECE = {
-    PGN_PAWN: (WPAWN, BPAWN),
-    PGN_KING: (WKING, BKING),
-    PGN_QUEEN: (WQUEEN, BQUEEN),
-    PGN_ROOK: (WROOK, BROOK),
-    PGN_BISHOP: (WBISHOP, BBISHOP),
-    PGN_KNIGHT: (WKNIGHT, BKNIGHT),
-    } # not sure if this should be set or tuple or maybe both should exist
+MAPPIECE = ({PGN_PAWN: WPAWN,
+             PGN_KING: WKING,
+             PGN_QUEEN: WQUEEN,
+             PGN_ROOK: WROOK,
+             PGN_BISHOP: WBISHOP,
+             PGN_KNIGHT: WKNIGHT},
+            {PGN_PAWN: BPAWN,
+             PGN_KING: BKING,
+             PGN_QUEEN: BQUEEN,
+             PGN_ROOK: BROOK,
+             PGN_BISHOP: BBISHOP,
+             PGN_KNIGHT: BKNIGHT},
+            ) # not sure if this should be set or tuple or dict
+
 MAPFILE = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7}
-MAPRANK = {'1':0, '2':8, '3':16, '4':24, '5':32, '6':40, '7':48, '8':56}
-MAPROW = {'1':0, '2':1, '3':2, '4':3, '5':4, '6':5, '7':6, '8':7}
+MAPRANK = {'8':0, '7':8, '6':16, '5':24, '4':32, '3':40, '2':48, '1':56}
+MAPROW = {'8':0, '7':1, '6':2, '5':3, '4':4, '3':5, '2':6, '1':7}
+
+# {'a8':0, 'b8':1, ..., 'g1':62, 'h1':63}, the order squares are listed in
+# Forsyth-Edwards Notation and the square numbers used internally.
+MAP_PGN_SQUARE_NAME_TO_FEN_ORDER = {''.join((f,r)): fn + rn
+                                    for f, fn in MAPFILE.items()
+                                    for r, rn in MAPRANK.items()}
 
 # FEN constants
 FEN_STARTPOSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 FEN_FIELD_DELIM = ' '
 FEN_RANK_DELIM = '/'
-FEN_NO_DATA = '-'
+FEN_NULL = '-'
 FEN_ADJACENT_EMPTY_SQUARES = '12345678'
+FEN_NEW = None
+FEN_FIELD_DELIM = ' '
+FEN_FIELD_COUNT = 6
 FEN_WHITE = 'w'
 FEN_BLACK = 'b'
-FEN_WKING = 'K'
-FEN_WQUEEN = 'Q'
-FEN_WROOK = 'R'
-FEN_WBISHOP = 'B'
-FEN_WKNIGHT = 'N'
-FEN_WPAWN = 'P'
-FEN_BKING = 'k'
-FEN_BQUEEN = 'q'
-FEN_BROOK = 'r'
-FEN_BBISHOP = 'b'
-FEN_BKNIGHT = 'n'
-FEN_BPAWN = 'p'
-
-# Map FEN piece names to internal representation
-FEN_PIECEMAP = {
-    FEN_WKING: WKING,
-    FEN_WQUEEN: WQUEEN,
-    FEN_WROOK: WROOK,
-    FEN_WBISHOP: WBISHOP,
-    FEN_WKNIGHT: WKNIGHT,
-    FEN_WPAWN: WPAWN,
-    FEN_BKING: BKING,
-    FEN_BQUEEN: BQUEEN,
-    FEN_BROOK: BROOK,
-    FEN_BBISHOP: BBISHOP,
-    FEN_BKNIGHT: BKNIGHT,
-    FEN_BPAWN: BPAWN,
-    }
-
-# Map internal representation to FEN piece names
-PIECE_FENMAP = {
-    WKING: FEN_WKING,
-    WQUEEN: FEN_WQUEEN,
-    WROOK: FEN_WROOK,
-    WBISHOP: FEN_WBISHOP,
-    WKNIGHT: FEN_WKNIGHT,
-    WPAWN: FEN_WPAWN,
-    BKING: FEN_BKING,
-    BQUEEN: FEN_BQUEEN,
-    BROOK: FEN_BROOK,
-    BBISHOP: FEN_BBISHOP,
-    BKNIGHT: FEN_BKNIGHT,
-    BPAWN: FEN_BPAWN,
-    }
+FEN_SIDES = {FEN_WHITE: WHITE_SIDE, FEN_BLACK: BLACK_SIDE}
+FEN_TOMOVE = FEN_WHITE, FEN_BLACK
+FEN_INITIAL_HALFMOVE_COUNT = 0
+FEN_INITIAL_FULLMOVE_NUMBER = 1
 
 # Map internal representation to FEN square names for en passant capture
-EN_PASSANT_FENMAP = {
-    None: FEN_NO_DATA,
-    16: 'a3',
-    17: 'b3',
-    18: 'c3',
-    19: 'd3',
-    20: 'e3',
-    21: 'f3',
-    22: 'g3',
-    23: 'h3',
-    40: 'a6',
-    41: 'b6',
-    42: 'c6',
-    43: 'd6',
-    44: 'e6',
-    45: 'f6',
-    46: 'g6',
-    47: 'h6',
+FEN_WHITE_MOVE_TO_EN_PASSANT = {
+    'a6': 16,
+    'b6': 17,
+    'c6': 18,
+    'd6': 19,
+    'e6': 20,
+    'f6': 21,
+    'g6': 22,
+    'h6': 23,
+     }
+FEN_BLACK_MOVE_TO_EN_PASSANT = {
+    'a3': 40,
+    'b3': 41,
+    'c3': 42,
+    'd3': 43,
+    'e3': 44,
+    'f3': 45,
+    'g3': 46,
+    'h3': 47,
     }
+FEN_WHITE_CAPTURE_EN_PASSANT = {
+    'a6': 24,
+    'b6': 25,
+    'c6': 26,
+    'd6': 27,
+    'e6': 28,
+    'f6': 29,
+    'g6': 30,
+    'h6': 31,
+     }
+FEN_BLACK_CAPTURE_EN_PASSANT = {
+    'a3': 32,
+    'b3': 33,
+    'c3': 34,
+    'd3': 35,
+    'e3': 36,
+    'f3': 37,
+    'g3': 38,
+    'h3': 39,
+    }
+FEN_EN_PASSANT_TARGET_RANK = {'5':'6', '4':'3'}
 
-# Map internal representation to FEN castling option names
-CASTLING_OPTION_FENMAP = {
-    0: FEN_NO_DATA,
-    1: FEN_BQUEEN,
-    2: FEN_BKING,
-    3: ''.join((FEN_BKING, FEN_BQUEEN)),
-    4: FEN_WQUEEN,
-    5: ''.join((FEN_WQUEEN, FEN_BQUEEN)),
-    6: ''.join((FEN_WQUEEN, FEN_BKING)),
-    7: ''.join((FEN_WQUEEN, FEN_BKING, FEN_BQUEEN)),
-    8: FEN_WKING,
-    9: ''.join((FEN_WKING, FEN_BQUEEN)),
-    10: ''.join((FEN_WKING, FEN_BKING)),
-    11: ''.join((FEN_WKING, FEN_BKING, FEN_BQUEEN)),
-    12: ''.join((FEN_WKING, FEN_WQUEEN)),
-    13: ''.join((FEN_WKING, FEN_WQUEEN, FEN_BQUEEN)),
-    14: ''.join((FEN_WKING, FEN_WQUEEN, FEN_BKING)),
-    15: ''.join((FEN_WKING, FEN_WQUEEN, FEN_BKING, FEN_BQUEEN)),
-    }
-
-# Map internal representation to FEN side to move names
-SIDE_TO_MOVE_FENMAP = {
-    WHITE_TO_MOVE: FEN_WHITE,
-    BLACK_TO_MOVE: FEN_BLACK,
-    }
-
-# Map FEN castling description to internal representation
-CASTLEKEY = {
-    FEN_WKING: WK_CASTLES,
-    FEN_WQUEEN: WQ_CASTLES,
-    FEN_BKING: BK_CASTLES,
-    FEN_BQUEEN: BQ_CASTLES,
-    }
+# Castling
+FEN_CASTLING = frozenset((WKING, WQUEEN, BKING, BQUEEN))
+FEN_KINGS = frozenset((WKING, BKING))
+FEN_INITIAL_CASTLING = WKING + WQUEEN + BKING + BQUEEN
 
 # Specification of conditions to be met to permit castling and changes to make
 # to board to display move in internal representation.
@@ -561,19 +416,60 @@ CASTLEKEY = {
 # about castling is that the king cannot move out of or through check; for all
 # types of move the king must not be under attack after playing the move.  But
 # as currently implemented there is no harm except waste in including the test.
-CASTLEMOVES = {
-    WK_CASTLES: (
-        [WKING, 4, [5, 6], FEN_WKING, {4, 5}],
-        [WROOK, 7, [6, 5]]),
-    WQ_CASTLES: (
-        [WKING, 4, [3, 2], FEN_WQUEEN, {4, 3}],
-        [WROOK, 0, [1, 2, 3]]),
-    BK_CASTLES: (
-        [BKING, 60, [61, 62], FEN_BKING, {60, 61}],
-        [BROOK, 63, [62, 61]]),
-    BQ_CASTLES: (
-        [BKING, 60, [59, 58], FEN_BQUEEN, {60, 59}],
-        [BROOK, 56, [57, 58, 59]]) }
+CASTLING_W = 60
+CASTLING_WK = 63
+CASTLING_WQ = 56
+CASTLING_B = 4
+CASTLING_BK = 7
+CASTLING_BQ = 0
+CASTLING_AVAILABITY_SQUARES = (
+    SQUARE_BITS[CASTLING_WQ] |
+    SQUARE_BITS[CASTLING_W] |
+    SQUARE_BITS[CASTLING_WK] |
+    SQUARE_BITS[CASTLING_BQ] |
+    SQUARE_BITS[CASTLING_B] |
+    SQUARE_BITS[CASTLING_BK])
+CASTLING_SQUARES = {
+    WKING: (
+        CASTLING_W,
+        CASTLING_WK,
+        (CASTLING_W+1, CASTLING_W+2),
+        (),
+        WROOK,
+        WKING),
+    WQUEEN: (
+        CASTLING_W,
+        CASTLING_WQ,
+        (CASTLING_W-1, CASTLING_W-2),
+        (CASTLING_W-3,),
+        WROOK,
+        WKING),
+    BKING: (
+        CASTLING_B,
+        CASTLING_BK,
+        (CASTLING_B+1, CASTLING_B+2),
+        (),
+        BROOK,
+        BKING),
+    BQUEEN: (
+        CASTLING_B,
+        CASTLING_BQ,
+        (CASTLING_B-1, CASTLING_B-2),
+        (CASTLING_B-3,),
+        BROOK,
+        BKING),
+    }
+
+# FEN validation
+FEN_CASTLING_OPTION_REPEAT_MAX = 1
+FEN_PIECE_COUNT_PER_SIDE_MAX = 16
+FEN_KING_COUNT = 1
+FEN_PAWN_COUNT_MAX = 8
+FEN_QUEEN_COUNT_INITIAL = 1
+FEN_ROOK_COUNT_INITIAL = 2
+FEN_BISHOP_COUNT_INITIAL = 2
+FEN_KNIGHT_COUNT_INITIAL = 2
+FEN_MAXIMUM_PIECES_GIVING_CHECK = 2
 
 # variation markers and non-move placeholders
 NON_MOVE = None
@@ -587,647 +483,179 @@ MOVE_TEXT = True
 # without disturbing any formatting attempts with EOL and spaces.
 PGN_MAX_LINE_LEN = 79
 
-#
-# The following lookup tables are calculated by _calculate_lookups() which is
-# then deleted
-#
-# the character representation of positions for use as position keys
-# not yet clear if castling and en passant possibilities will be included in
-# position key but the encodings are defined
-SCH = []
-MOVE_NUMBER_KEYS = []
-POSITION_KEY_TO_PIECES = dict()
-POSITION_KEY_TO_FLAGS = dict()
-TOMOVE_TO_POSITION_KEY = dict()
-PCH = []
-DECODE = {}
-SPECIAL_VALUES_OFFSET = set()
-SPECIAL_VALUES_TOMOVE = set()
-SPECIAL_VALUES_CASTLE = set()
-SPECIAL_VALUES_ENPASSANT = set()
+# Piece moves and line definitions
 
-def _calculate_lookups(boardside=8):
-    """Generate lookups for creating database keys."""
-    # 832 values are needed to represent all the (piece, square) combinations.
-    # 256 values (0..255) can be encoded in 1 byte.  This is 4 sets of 64 which
-    # just covers the white and black P K pieces, P the most common and K the
-    # one always present.  The rest are encoded in two bytes using some unused
-    # pawn encodings as the prefix.  For this it is convenient to encode one of
-    # the pawns as 0 so that \x01 \x02 and \x03 are amongst the unused codes
-    # (typically the squares b1 c1 and d1) as these byte value arises from
-    # 832 / 256 and are a good choice as prefix values.
-    boardsquares = boardside * boardside
-    bytes256 = bytes(range(256))
-    for e in bytes256:
-        SCH.append(bytes256[e:e+1].decode('iso-8859-1'))
-        DECODE[SCH[-1]] = e
-    MOVE_NUMBER_KEYS[:] = [''.join((SCH[1], c)) for c in SCH]
-    PCH[:] = [None] * len(PIECES) * boardsquares
-    for piece in PIECES:
-        base = piece * boardsquares
-        if piece == NOPIECE:
-            for square in range(boardsquares):
-                PCH[base + square] = ''
+_RANKS = [sum([SQUARE_BITS[s+r*BOARDSIDE] for s in range(BOARDSIDE)])
+          for r in range(BOARDSIDE)
+          for f in range(BOARDSIDE)
+          ]
+_FILES = [sum([SQUARE_BITS[s*BOARDSIDE+f] for s in range(BOARDSIDE)])
+          for r in range(BOARDSIDE)
+          for f in range(BOARDSIDE)
+          ]
+_TOPLEFT_TO_BOTTOMRIGHT = [
+    sum([SQUARE_BITS[((f+c)%BOARDSIDE)+((r+c)%BOARDSIDE)*BOARDSIDE]
+         for c in range(BOARDSIDE)
+         if (f+c<BOARDSIDE and r+c<BOARDSIDE or
+             f+c>=BOARDSIDE and r+c>=BOARDSIDE)])
+    for r in range(BOARDSIDE)
+    for f in range(BOARDSIDE)]
+_BOTTOMLEFT_TO_TOPRIGHT = [
+    sum([SQUARE_BITS[((f-c)%BOARDSIDE)+((r+c)%BOARDSIDE)*BOARDSIDE]
+         for c in range(BOARDSIDE)
+         if f>=c and r+c<BOARDSIDE or c>f and r+c>=BOARDSIDE])
+    for r in range(BOARDSIDE)
+    for f in range(BOARDSIDE)]
+
+RANKS = [_RANKS[r*BOARDSIDE] for r in range(BOARDSIDE)]
+
+FILES = _FILES[:BOARDSIDE]
+
+ROOK_MOVES = [(_RANKS[k]|_FILES[k])-s for k, s in enumerate(SQUARE_BITS)]
+
+BISHOP_MOVES = [(_TOPLEFT_TO_BOTTOMRIGHT[k]|_BOTTOMLEFT_TO_TOPRIGHT[k])-s
+                for k, s in enumerate(SQUARE_BITS)]
+
+QUEEN_MOVES = [(BISHOP_MOVES[s] | ROOK_MOVES[s]) for s in range(BOARDSQUARES)]
+
+KNIGHT_MOVES = [
+    ((sum(_FILES[kf+r*BOARDSIDE]
+          for kf in range(f-2, f+3) if kf >= 0 and kf < BOARDSIDE) &
+      sum(_RANKS[f+kr*8]
+          for kr in range(r-2, r+3) if kr >= 0 and kr < BOARDSIDE)) &
+     ~(_RANKS[f+r*BOARDSIDE] |
+       _FILES[f+r*BOARDSIDE] |
+       _TOPLEFT_TO_BOTTOMRIGHT[f+r*BOARDSIDE] |
+       _BOTTOMLEFT_TO_TOPRIGHT[f+r*BOARDSIDE]))
+    for r in range(BOARDSIDE)
+    for f in range(BOARDSIDE)]
+
+KING_MOVES = [
+    (QUEEN_MOVES[f+r*BOARDSIDE] &
+     (sum(_FILES[kf+r*BOARDSIDE]
+          for kf in range(f-1, f+2) if kf >= 0 and kf < BOARDSIDE) &
+      sum(_RANKS[f+kr*8]
+          for kr in range(r-1, r+2) if kr >= 0 and kr < BOARDSIDE)))
+    for r in range(BOARDSIDE)
+    for f in range(BOARDSIDE)]
+
+WHITE_PAWN_MOVES_TO_SQUARE = []
+for s in range(BOARDSQUARES):
+    if s < BOARDSQUARES - BOARDSIDE*2:
+        WHITE_PAWN_MOVES_TO_SQUARE.append(SQUARE_BITS[s+BOARDSIDE])
+    else:
+        WHITE_PAWN_MOVES_TO_SQUARE.append(0)
+for s in range(BOARDSQUARES-BOARDSIDE*4, BOARDSQUARES-BOARDSIDE*3):
+    WHITE_PAWN_MOVES_TO_SQUARE[s] |= SQUARE_BITS[s+BOARDSIDE*2]
+
+BLACK_PAWN_MOVES_TO_SQUARE = []
+for s in range(BOARDSQUARES):
+    if s < BOARDSIDE*2:
+        BLACK_PAWN_MOVES_TO_SQUARE.append(0)
+    else:
+        BLACK_PAWN_MOVES_TO_SQUARE.append(SQUARE_BITS[s-BOARDSIDE])
+for s in range(BOARDSIDE*3, BOARDSIDE*4):
+    BLACK_PAWN_MOVES_TO_SQUARE[s] |= SQUARE_BITS[s-BOARDSIDE*2]
+
+# 'b1' for black, and 'b8' for white, are allowed as pawn move specifications
+# to disambiguate queen moves like 'Qd1f1'.
+# PAWN_MOVE_DESITINATION filters them out.
+PAWN_MOVE_DESITINATION = [0, 0]
+for s in range(BOARDSQUARES):
+    if s < BOARDSIDE:
+        pass
+    elif s < BOARDSIDE*2:
+        PAWN_MOVE_DESITINATION[0] |= SQUARE_BITS[s]
+    elif s < BOARDSQUARES-BOARDSIDE*2:
+        PAWN_MOVE_DESITINATION[0] |= SQUARE_BITS[s]
+        PAWN_MOVE_DESITINATION[1] |= SQUARE_BITS[s]
+    elif s < BOARDSQUARES-BOARDSIDE:
+        PAWN_MOVE_DESITINATION[1] |= SQUARE_BITS[s]
+
+WHITE_PAWN_CAPTURES_TO_SQUARE = []
+for s in range(BOARDSQUARES):
+    if s > BOARDSQUARES - BOARDSIDE*2 - 1:
+        WHITE_PAWN_CAPTURES_TO_SQUARE.append(0)
+    elif s % BOARDSIDE == 0:
+        WHITE_PAWN_CAPTURES_TO_SQUARE.append(SQUARE_BITS[s+BOARDSIDE+1])
+    elif s % BOARDSIDE == BOARDSIDE - 1:
+        WHITE_PAWN_CAPTURES_TO_SQUARE.append(SQUARE_BITS[s+BOARDSIDE-1])
+    else:
+        WHITE_PAWN_CAPTURES_TO_SQUARE.append(
+            SQUARE_BITS[s+BOARDSIDE-1] | SQUARE_BITS[s+BOARDSIDE+1])
+
+BLACK_PAWN_CAPTURES_TO_SQUARE = []
+for s in range(BOARDSQUARES):
+    if s < BOARDSIDE*2:
+        BLACK_PAWN_CAPTURES_TO_SQUARE.append(0)
+    elif s % BOARDSIDE == 0:
+        BLACK_PAWN_CAPTURES_TO_SQUARE.append(SQUARE_BITS[s-BOARDSIDE+1])
+    elif s % BOARDSIDE == BOARDSIDE - 1:
+        BLACK_PAWN_CAPTURES_TO_SQUARE.append(SQUARE_BITS[s-BOARDSIDE-1])
+    else:
+        BLACK_PAWN_CAPTURES_TO_SQUARE.append(
+            SQUARE_BITS[s-BOARDSIDE-1] | SQUARE_BITS[s-BOARDSIDE+1])
+
+GAPS = []
+for f in range(BOARDSQUARES):
+    GAPS.append(list())
+    for t in range(BOARDSQUARES):
+        aligned = ((_RANKS[f] & _RANKS[t])|
+                   (_FILES[f] & _FILES[t])|
+                   (_TOPLEFT_TO_BOTTOMRIGHT[f] & _TOPLEFT_TO_BOTTOMRIGHT[t])|
+                   (_BOTTOMLEFT_TO_TOPRIGHT[f] & _BOTTOMLEFT_TO_TOPRIGHT[t]))
+        if not aligned:
+            if SQUARE_BITS[t] & KNIGHT_MOVES[f]:
+                GAPS[f].append(0)
+            else:
+                GAPS[f].append(ALL_SQUARES)
         else:
-            for square in range(boardsquares):
-                prefix, code = divmod(base + square, 256)
-                if prefix:
-                    PCH[base + square] = ''.join((SCH[prefix], SCH[code]))
-                else:
-                    PCH[base + square] = SCH[code]
-                POSITION_KEY_TO_PIECES[base + square] = (square, piece)
-    # The special values (unused pawn-square encodings)
-    castlemask = 0
-    for f, v in sorted(MAPFILE.items()):
-        # The en passant files
-        POSITION_KEY_TO_FLAGS[WPAWN * boardsquares + MAPRANK['8'] + v] = f
-        SPECIAL_VALUES_ENPASSANT.add(WPAWN * boardsquares + MAPRANK['8'] + v)
-        # The castling options
-        POSITION_KEY_TO_FLAGS[BPAWN * boardsquares + MAPRANK['1'] + v
-                              ] = castlemask
-        SPECIAL_VALUES_CASTLE.add(BPAWN * boardsquares + MAPRANK['1'] + v)
-        POSITION_KEY_TO_FLAGS[BPAWN * boardsquares + MAPRANK['8'] + v
-                              ] = castlemask + 8
-        SPECIAL_VALUES_CASTLE.add(BPAWN * boardsquares + MAPRANK['8'] + v)
-        castlemask += 1
-        # Other move flags
-        POSITION_KEY_TO_FLAGS[WPAWN * boardsquares + MAPRANK['1'] + v] = None
-    # Set other move flags to specific values
-    base = WPAWN * boardsquares + MAPRANK['1']
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['a']] = None
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['b']] = 256
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['c']] = 512
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['d']] = 768
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['e']] = None
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['f']] = None
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['g']] = WHITE_TO_MOVE
-    POSITION_KEY_TO_FLAGS[base + MAPFILE['h']] = BLACK_TO_MOVE
-    SPECIAL_VALUES_OFFSET.add(base + MAPFILE['b'])
-    SPECIAL_VALUES_OFFSET.add(base + MAPFILE['c'])
-    SPECIAL_VALUES_OFFSET.add(base + MAPFILE['d'])
-    SPECIAL_VALUES_TOMOVE.add(base + MAPFILE['g'])
-    SPECIAL_VALUES_TOMOVE.add(base + MAPFILE['h'])
-    TOMOVE_TO_POSITION_KEY[WHITE_TO_MOVE] = PCH[base + MAPFILE['g']]
-    TOMOVE_TO_POSITION_KEY[BLACK_TO_MOVE] = PCH[base + MAPFILE['h']]
-                          
-_calculate_lookups()
-del _calculate_lookups
+            gap = (aligned &
+                   sum(SQUARE_BITS[min(f,t):max(f,t)+1]) &
+                   ~(SQUARE_BITS[f] | SQUARE_BITS[t]))
+            if gap:
+                GAPS[f].append(gap)
+            elif f == t:
+                GAPS[f].append(ALL_SQUARES)
+            else:
+                GAPS[f].append(0)
 
-def _generate_square_maps(boardside=8):
-    """Generate square mappings needed to determine legality of a chess move.
+del _TOPLEFT_TO_BOTTOMRIGHT
+del _BOTTOMLEFT_TO_TOPRIGHT
+del _FILES
+del _RANKS
+del f, t, gap, aligned
 
-    Text from PGN gives the destination square, the piece, and as much as, but
-    no more than, necessary of the source square to identify the move given
-    the position.
+PIECE_CAPTURE_MAP = {k:v for k, v in
+                     ((WKING, KING_MOVES),
+                      (WQUEEN, QUEEN_MOVES),
+                      (WROOK, ROOK_MOVES),
+                      (WBISHOP, BISHOP_MOVES),
+                      (WKNIGHT, KNIGHT_MOVES),
+                      (WPAWN, WHITE_PAWN_CAPTURES_TO_SQUARE),
+                      (BKING, KING_MOVES),
+                      (BQUEEN, QUEEN_MOVES),
+                      (BROOK, ROOK_MOVES),
+                      (BBISHOP, BISHOP_MOVES),
+                      (BKNIGHT, KNIGHT_MOVES),
+                      (BPAWN, BLACK_PAWN_CAPTURES_TO_SQUARE),
+                      )}
 
-    The board position gives the current location of all pieces.
+PIECE_MOVE_MAP = {k:v for k, v in
+                  ((WKING, KING_MOVES),
+                   (WQUEEN, QUEEN_MOVES),
+                   (WROOK, ROOK_MOVES),
+                   (WBISHOP, BISHOP_MOVES),
+                   (WKNIGHT, KNIGHT_MOVES),
+                   (WPAWN, WHITE_PAWN_MOVES_TO_SQUARE),
+                   (BKING, KING_MOVES),
+                   (BQUEEN, QUEEN_MOVES),
+                   (BROOK, ROOK_MOVES),
+                   (BBISHOP, BISHOP_MOVES),
+                   (BKNIGHT, KNIGHT_MOVES),
+                   (BPAWN, BLACK_PAWN_MOVES_TO_SQUARE),
+                   )}
 
-    The mappings allow the legality of a move from PGN text to be determined.
-
-    """
-    # Not yet clear whether a further transformation to dictionary access on
-    # square rank and file names ('d4' 'f' and '2' for example) is better.
-    # Or even need both!
-
-    def fen_en_passant_move_squares():
-        # map enabling move to capturing move
-        en_passant = dict()
-        for s in range(boardside):
-            en_passant[s + boardside * 5] = [
-                s + boardside * 4,
-                s + boardside * 6,
-                WHITE_TO_MOVE,
-                ]
-            en_passant[s + boardside * 2] = [
-                s + boardside * 3,
-                s + boardside,
-                BLACK_TO_MOVE,
-                ]
-        return en_passant
-
-    def en_passant_move_squares():
-        # map enabling move to capturing move
-        en_passant = dict()
-        for s in range(boardside):
-            en_passant[(s + boardside, s + boardside * 3)] = (
-                s + boardside * 2)
-            en_passant[
-                (boardsquares + s - boardside * 2,
-                 boardsquares + s - boardside * 4)] = (
-                     boardsquares + s - boardside * 3
-                     )
-        return en_passant
-
-    def en_passant_capture_squares():
-        # map capturing move to square where pawn captured
-        en_passant = dict()
-        for s in range(boardside):
-            en_passant[s + boardside * 2] = s + boardside * 3
-            en_passant[boardsquares + s - boardside * 3] = (
-                     boardsquares + s - boardside * 4
-                     )
-        return en_passant
-
-    def ranks_and_files():
-        # 'a' is rank 0
-        # '1' is file 0
-        for s in range(boardside):
-            rank.append(set())
-            file_.append(set())
-            
-        for s in range(boardsquares):
-            same_rank.append(set())
-            same_file.append(set())
-
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            for t in range(s + 1):
-                tr, tf = divmod(t, boardside)
-                if tr == sr:
-                    rank[sr].add(t)
-                if tf == sf:
-                    file_[sf].add(s)
-
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            same_rank[s].update(rank[sr])
-            same_rank[s].remove(s)
-            same_file[s].update(file_[sf])
-            same_file[s].remove(s)
-
-    def diagonals():
-        # a1-h8 is 'up' diagonal 0
-        # a2-g8 is 'up' diagonal 1
-        # b1-h7 is 'up' diagonal 14
-        # subtracting rank ('1' is 0) from file ('a' is 0) gives the correct
-        # negative index to the updiagonals list.
-        # a1 is 'down' diagonal 0
-        # h1-a8 is 'down' diagonal 7
-        # adding rank to file gives correct positive index into downdiagonals.
-        for s in range(boardside * 2 - 1):
-            downdiagonal.append(set())
-            updiagonal.append(set())
-            
-        for s in range(boardsquares):
-            same_downdiagonal.append(set())
-            same_updiagonal.append(set())
-
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            downdiagonal[sr + sf].add(s)
-            updiagonal[sr - sf].add(s) # because x[-1] is last element in list x
-
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            same_downdiagonal[s].update(downdiagonal[sr + sf])
-            same_downdiagonal[s].remove(s)
-            if not len(same_downdiagonal[s]):
-                same_downdiagonal[s] = empty
-            same_updiagonal[s].update(updiagonal[sr - sf])
-            same_updiagonal[s].remove(s)
-            if not len(same_updiagonal[s]):
-                same_updiagonal[s] = empty
-
-    def pieces_move_from_squares():
-        # squares[10][30] is the set of pieces than can move to 10 from 30
-        # pawn capture rules make this different to pieces_attack_from_squares
-        # king_moves() queen_moves() and so on must be called before
-        # pieces_attack_from_squares()
-        squares = []
-        wkbk = {WKING, BKING}
-        wqbq = {WQUEEN, BQUEEN}
-        wrbr = {WROOK, BROOK}
-        wbbb = {WBISHOP, BBISHOP}
-        wnbn = {WKNIGHT, BKNIGHT}
-        wp = {WPAWN}
-        bp = {BPAWN}
-        for s in range(boardsquares):
-            squares.append(list())
-            for t in range(boardsquares):
-                squares[s].append(set())
-                if t in king[s]:
-                    squares[s][t].update(wkbk)
-                if t in queen[s]:
-                    squares[s][t].update(wqbq)
-                if t in rook[s]:
-                    squares[s][t].update(wrbr)
-                if t in bishop[s]:
-                    squares[s][t].update(wbbb)
-                if t in knight[s]:
-                    squares[s][t].update(wnbn)
-                if t in white_pawn_moves[s]:
-                    squares[s][t].update(wp)
-                if t in black_pawn_moves[s]:
-                    squares[s][t].update(bp)
-                if not len(squares[s][t]):
-                    squares[s][t] = empty
-        return squares
-
-    def pieces_attack_from_squares():
-        # squares[10][30] is the set of pieces than can capture on 10 from 30 
-        # pawn capture rules make this different to pieces_move_from_squares
-        # king_moves() queen_moves() and so on must be called before
-        # pieces_attack_from_squares()
-        squares = []
-        wkbk = {WKING, BKING}
-        wqbq = {WQUEEN, BQUEEN}
-        wrbr = {WROOK, BROOK}
-        wbbb = {WBISHOP, BBISHOP}
-        wnbn = {WKNIGHT, BKNIGHT}
-        wp = {WPAWN}
-        bp = {BPAWN}
-        for s in range(boardsquares):
-            squares.append(list())
-            for t in range(boardsquares):
-                squares[s].append(set())
-                if t in king[s]:
-                    squares[s][t].update(wkbk)
-                if t in queen[s]:
-                    squares[s][t].update(wqbq)
-                if t in rook[s]:
-                    squares[s][t].update(wrbr)
-                if t in bishop[s]:
-                    squares[s][t].update(wbbb)
-                if t in knight[s]:
-                    squares[s][t].update(wnbn)
-                if t in white_pawn_captures[s]:
-                    squares[s][t].update(wp)
-                if t in black_pawn_captures[s]:
-                    squares[s][t].update(bp)
-                if not len(squares[s][t]):
-                    squares[s][t] = empty
-        return squares
-
-    def attacking_squares():
-        # squares[10] is the set of squares from which a suitable piece can
-        # capture on 10 
-        # ranks_and_files() and diagonals() must be called before queen_moves()
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            squares[s].update(queen[s])
-            squares[s].update(knight[s])
-        return squares
-            
-    def queen_moves():
-        # ranks_and_files() and diagonals() must be called before queen_moves()
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            squares[s].update(same_rank[s])
-            squares[s].update(same_file[s])
-            squares[s].update(same_updiagonal[s])
-            squares[s].update(same_downdiagonal[s])
-        return squares
-
-    def rook_moves():
-        # ranks_and_files() must be called before rook_moves()
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            squares[s].update(same_rank[s])
-            squares[s].update(same_file[s])
-        return squares
-
-    def bishop_moves():
-        # diagonals() must be called before bishop_moves()
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            squares[s].update(same_updiagonal[s])
-            squares[s].update(same_downdiagonal[s])
-        return squares
-
-    def knight_moves():
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            sr, sf = divmod(s, boardside)
-            for t in range(boardsquares):
-                tr, tf = divmod(t, boardside)
-                dr = abs(sr - tr)
-                df = abs(sf - tf)
-                if (dr == 1) or (df == 1):
-                    if dr + df != 1:
-                        if abs(dr - df) == 1:
-                            squares[s].add(t)
-        return squares
-
-    def king_moves():
-        # excluding O-O and O-O-O
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            sr, sf = divmod(s, boardside)
-            for t in range(boardsquares):
-                if t != s:
-                    tr, tf = divmod(t, boardside)
-                    dr = abs(sr - tr)
-                    df = abs(sf - tf)
-                    if (dr < 2) and (df < 2):
-                        squares[s].add(t)
-        return squares
-
-    def white_pawn_moves_to_square():
-        # just white pawn non-capture moves
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            sr, sf = divmod(s, boardside)
-            if sr > 1:
-                squares[s].update(rank[sr - 1].intersection(file_[sf]))
-                if sr == 3:
-                    squares[s].update(rank[sr - 2].intersection(file_[sf]))
-            if not len(squares[s]):
-                squares[s] = empty
-        return squares
-
-    def white_pawn_captures_to_square():
-        # just white pawn capture moves
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            sr, sf = divmod(s, boardside)
-            if sr > 1:
-                if sf < boardside - 1:
-                    squares[s].update(rank[sr - 1].intersection(file_[sf + 1]))
-                if sf > 0:
-                    squares[s].update(rank[sr - 1].intersection(file_[sf - 1]))
-            if not len(squares[s]):
-                squares[s] = empty
-        return squares
-
-    def black_pawn_moves_to_square():
-        # just black pawn non-capture moves
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            sr, sf = divmod(s, boardside)
-            if sr < boardside - 2:
-                squares[s].update(rank[sr + 1].intersection(file_[sf]))
-                if sr == boardside - 4:
-                    squares[s].update(rank[sr + 2].intersection(file_[sf]))
-            if not len(squares[s]):
-                squares[s] = empty
-        return squares
-
-    def black_pawn_captures_to_square():
-        # just black pawn capture moves
-        squares = []
-        for s in range(boardsquares):
-            squares.append(set())
-            sr, sf = divmod(s, boardside)
-            if sr < boardside - 2:
-                if sf < boardside - 1:
-                    squares[s].update(rank[sr + 1].intersection(file_[sf + 1]))
-                if sf > 0:
-                    squares[s].update(rank[sr + 1].intersection(file_[sf - 1]))
-            if not len(squares[s]):
-                squares[s] = empty
-        return squares
-
-    def hidden_squares():
-        # squares[10][30] bisects the line through (10,30) at 30 returning the
-        # list of squares in the section containing neither 10 nor 30.
-        # only ranks files and diagonals can give a non-empty list of squares
-        squares = []
-        for s in range(boardsquares):
-            squares.append(list())
-            for t in range(boardsquares):
-                squares[s].append(set())
-            
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            for t in range(s):
-                tr, tf = divmod(t, boardside)
-                if tr == sr:
-                    squares[s][t].update(rank[tr])
-                    squares[t][s].update(rank[tr])
-                elif tf == sf:
-                    squares[s][t].update(file_[tf])
-                    squares[t][s].update(file_[tf])
-                elif sf - tf == sr - tr:
-                    squares[s][t].update(updiagonal[tr - tf])
-                    squares[t][s].update(updiagonal[tr - tf])
-                elif tf - sf == sr - tr:
-                    squares[s][t].update(downdiagonal[tr + tf])
-                    squares[t][s].update(downdiagonal[tr + tf])
-                for u in range(t, boardsquares):
-                    squares[s][t].discard(u)
-                for u in range(s + 1):
-                    squares[t][s].discard(u)
-
-        for s in range(boardsquares):
-            for t in range(boardsquares):
-                if not len(squares[s][t]):
-                    squares[s][t] = empty
-            
-        return squares
-
-    def gap_squares():
-        # squares[10][30] trisects the line through (10,30) returning list of
-        # squares in the section between 10 and 30 excluding both 10 and 30.
-        # only ranks files and diagonals can give a non-empty list of squares
-        # squares[10][10] = []
-        for s in range(boardsquares):
-            gaps.append(list())
-            for t in range(boardsquares):
-                gaps[s].append(set())
-            
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            for t in range(s):
-                tr, tf = divmod(t, boardside)
-                if tr == sr:
-                    gaps[s][t].update(rank[tr])
-                    gaps[t][s] = gaps[s][t]
-                elif tf == sf:
-                    gaps[s][t].update(file_[tf])
-                    gaps[t][s] = gaps[s][t]
-                elif sf - tf == sr - tr:
-                    gaps[s][t].update(updiagonal[tr - tf])
-                    gaps[t][s] = gaps[s][t]
-                elif tf - sf == sr - tr:
-                    gaps[s][t].update(downdiagonal[tr + tf])
-                    gaps[t][s] = gaps[s][t]
-                for u in range(t + 1):
-                    gaps[s][t].discard(u)
-                for u in range(s, boardsquares):
-                    gaps[s][t].discard(u)
-
-        for s in range(boardsquares):
-            for t in range(boardsquares):
-                if not len(gaps[s][t]):
-                    gaps[s][t] = empty
-
-    def path_squares():
-        # squares[10][30] trisects the line through (10,30) returning list of
-        # squares in the section between 10 and 30 including 10 but not 30.
-        # only ranks files and diagonals can give a non-empty list of squares
-        # squares[10][10] = [10]
-        '''A possible optimisation is to refer to the element in gap_squares()
-        which includes 30 as well if it exists, and so on.'''
-        squares = []
-        for s in range(boardsquares):
-            squares.append(list())
-            for t in range(boardsquares):
-                squares[s].append(set())
-            
-        for s in range(boardsquares):
-            sr, sf = divmod(s, boardside)
-            for t in range(s):
-                tr, tf = divmod(t, boardside)
-                if tr == sr:
-                    squares[s][t].update(rank[tr])
-                    squares[t][s].update(rank[tr])
-                elif tf == sf:
-                    squares[s][t].update(file_[tf])
-                    squares[t][s].update(file_[tf])
-                elif sf - tf == sr - tr:
-                    squares[s][t].update(updiagonal[tr - tf])
-                    squares[t][s].update(updiagonal[tr - tf])
-                elif tf - sf == sr - tr:
-                    squares[s][t].update(downdiagonal[tr + tf])
-                    squares[t][s].update(downdiagonal[tr + tf])
-                for u in range(t + 1):
-                    squares[s][t].discard(u)
-                for u in range(s + 1, boardsquares):
-                    squares[s][t].discard(u)
-                for u in range(t):
-                    squares[t][s].discard(u)
-                for u in range(s, boardsquares):
-                    squares[t][s].discard(u)
-            squares[s][s].add(s)
-
-        for s in range(boardsquares):
-            for t in range(boardsquares):
-                if not len(squares[s][t]):
-                    squares[s][t] = empty
-            
-        return squares
-
-    empty = set()
-    gaps = []
-    rank = []
-    file_ = []
-    updiagonal = []
-    downdiagonal = []
-    same_rank = []
-    same_file = []
-    same_updiagonal = []
-    same_downdiagonal = []
-    knight = []
-    bishop = []
-    rook = []
-    queen = []
-    king = []
-    white_pawn_captures = []
-    black_pawn_captures = []
-    boardsquares = boardside * boardside
-
-    ranks_and_files()
-    diagonals()
-    gap_squares()
-    knight = knight_moves()
-    bishop = bishop_moves()
-    rook = rook_moves()
-    queen = queen_moves()
-    king = king_moves()
-    white_pawn_moves = white_pawn_moves_to_square()
-    white_pawn_captures = white_pawn_captures_to_square()
-    black_pawn_moves = black_pawn_moves_to_square()
-    black_pawn_captures = black_pawn_captures_to_square()
-    attack = attacking_squares()
-    pieces_attack = pieces_attack_from_squares()
-    pieces_move = pieces_move_from_squares()
-
-    return (
-        rank,
-        file_,
-        same_rank,
-        same_file,
-        updiagonal,
-        downdiagonal,
-        same_updiagonal,
-        same_downdiagonal,
-        gaps,
-        hidden_squares(),
-        path_squares(),
-        knight,
-        bishop,
-        rook,
-        queen,
-        king,
-        white_pawn_moves,
-        white_pawn_captures,
-        black_pawn_moves,
-        black_pawn_captures,
-        attack,
-        pieces_attack,
-        pieces_move,
-        en_passant_move_squares(),
-        en_passant_capture_squares(),
-        fen_en_passant_move_squares(),
-        )
-
-(RANKS,
- FILES,
- SAME_RANKS,
- SAME_FILES,
- UPDIAGONALS,
- DOWNDIAGONALS,
- SAME_UPDIAGONALS,
- SAME_DOWNDIAGONALS,
- GAPS,
- HIDDEN,
- PATH,
- KNIGHT_MOVES,
- BISHOP_MOVES,
- ROOK_MOVES,
- QUEEN_MOVES,
- KING_MOVES,
- WHITE_PAWN_MOVES_TO_SQUARE,
- WHITE_PAWN_CAPTURES_TO_SQUARE,
- BLACK_PAWN_MOVES_TO_SQUARE,
- BLACK_PAWN_CAPTURES_TO_SQUARE,
- ATTACK,
- PIECES_ATTACK,
- PIECES_MOVE,
- ALLOW_EP_MOVES,
- EP_MOVES,
- FEN_EP_SQUARES,
- ) = _generate_square_maps()
-del _generate_square_maps
-
-def _generate_capture_and_move_maps():
-    """Generate piece move maps needed to determine legality of a chess move.
-
-    Associate the piece encodings with the corresponding capture and move maps.
-
-    """
-    # A list so the encodings must be in range(len(<map>))
-    # Could be a dictionary removing restriction on code values but lookup may
-    # be slower enough to be noticed on large imports.
-    capture_map = [None] * len(PIECES)
-    move_map = [None] * len(PIECES)
-    for p, c, m in (
-        (NOPIECE, None, None,),
-        (WKING, KING_MOVES, KING_MOVES,),
-        (WQUEEN, QUEEN_MOVES, QUEEN_MOVES,),
-        (WROOK, ROOK_MOVES, ROOK_MOVES,),
-        (WBISHOP, BISHOP_MOVES, BISHOP_MOVES,),
-        (WKNIGHT, KNIGHT_MOVES, KNIGHT_MOVES,),
-        (WPAWN, WHITE_PAWN_CAPTURES_TO_SQUARE, WHITE_PAWN_MOVES_TO_SQUARE,),
-        (BKING, KING_MOVES, KING_MOVES,),
-        (BQUEEN, QUEEN_MOVES, QUEEN_MOVES,),
-        (BROOK, ROOK_MOVES, ROOK_MOVES,),
-        (BBISHOP, BISHOP_MOVES, BISHOP_MOVES,),
-        (BKNIGHT, KNIGHT_MOVES, KNIGHT_MOVES,),
-        (BPAWN, BLACK_PAWN_CAPTURES_TO_SQUARE, BLACK_PAWN_MOVES_TO_SQUARE,),
-        ):
-        capture_map[p] = c
-        move_map[p] = m
-    return capture_map, move_map
-
-PIECE_CAPTURE_MAP, PIECE_MOVE_MAP = _generate_capture_and_move_maps()
-del _generate_capture_and_move_maps
+# Lookup tables for string representation of square and move numbers.
+SCH = tuple([chr(i) for i in range(256)])
+MOVE_NUMBER_KEYS = tuple([''.join((SCH[1], c)) for c in SCH])
