@@ -86,18 +86,18 @@ class PGNParserConstants(unittest.TestCase):
         self.assertEqual(constants.START_TAG, '[')
         self.assertEqual(constants.END_TAG, ']')
         self.assertEqual(constants.SYMBOL, '([A-Za-z0-9][A-Za-z0-9_+#=:-]*)')
-        self.assertEqual(constants.STRING, '((?<![\\\\])"(.*?)(?<![\\\\])")')
+        self.assertEqual(constants.STRING, '"((?:[^\\"]|\\.)*)"')
         self.assertEqual(constants.TAG_PAIR,
                          ''.join(('(\[)\s*([A-Za-z0-9][A-Za-z0-9_+#=:-]*)\s*',
-                                  '((?<![\\\\])"(.*?)(?<![\\\\])")\s*(\])')))
+                                  '"((?:[^\\"]|\\.)*)"\s*(\])')))
         self.assertEqual(constants.START_COMMENT, '{')
         self.assertEqual(constants.END_COMMENT, '}')
         self.assertEqual(constants.COMMENT, '\{[^}]*\}')
         self.assertEqual(constants.LEFT_ANGLE_BRACE, '<')
         self.assertEqual(constants.RIGHT_ANGLE_BRACE, '>')
         self.assertEqual(constants.RESERVED, '<[^>]*>')
-        self.assertEqual(constants.COMMENT_TO_EOL, ';(?:(?!$).)*\n')
-        self.assertEqual(constants.ESCAPE_LINE, '(?<=\n)%(?:(?!$).)*\n')
+        self.assertEqual(constants.COMMENT_TO_EOL, ';(?:[^\n]*)\n')
+        self.assertEqual(constants.ESCAPE_LINE, '(?:\A|(?<=\n))%(?:[^\n]*)\n')
         self.assertEqual(constants.NAG, '\$[0-9]+(?!/|-)')
         self.assertEqual(constants.START_RAV, '(')
         self.assertEqual(constants.END_RAV, ')')
@@ -118,7 +118,7 @@ class PGNParserConstants(unittest.TestCase):
                                   ''.join((
                                       '(\[)\s*([A-Za-z0-9][A-Za-z0-9_+#=:-]*)',
                                       '\s*',
-                                      '((?<![\\\\])"(.*?)(?<![\\\\])")\s*(\])')),
+                                      '"((?:[^\\"]|\\.)*)"\s*(\])')),
                                   ')|',
                                   '(?:',
                                   '(?:',
@@ -138,7 +138,7 @@ class PGNParserConstants(unittest.TestCase):
                                   ')|',
                                   '(\{[^}]*\}', ')|',
                                   '(\$[0-9]+(?!/|-)', ')|',
-                                  '(;(?:(?!$).)*\n)|',
+                                  '(;(?:[^\n]*)\n)|',
                                   '(', '1-0|0-1|1/2-1/2|\*)|',
                                   '[1-9][0-9]*|',
                                   '\.|',
@@ -146,7 +146,7 @@ class PGNParserConstants(unittest.TestCase):
                                   '(\()|',
                                   '(\))|',
                                   '<[^>]*>|',
-                                  '(?<=\n)%(?:(?!$).)*\n|',
+                                  '(?:\A|(?<=\n))%(?:[^\n]*)\n|',
                                   '(.)',
                                   )))
         self.assertEqual(constants.DISAMBIGUATE_FORMAT,
@@ -156,37 +156,37 @@ class PGNParserConstants(unittest.TestCase):
                          '[OKBNRQa-h][-Oa-h1-8+#?!=]* *')
         self.assertEqual(constants.IFG_START_TAG, 1)
         self.assertEqual(constants.IFG_TAG_SYMBOL, 2)
-        self.assertEqual(constants.IFG_TAG_STRING, 3)
-        self.assertEqual(constants.IFG_TAG_STRING_VALUE, 4)
+        #self.assertEqual(constants.IFG_TAG_STRING, 3)
+        self.assertEqual(constants.IFG_TAG_STRING_VALUE, 3)
         #self.assertEqual(constants.IFG_TAG_END, 5)
-        self.assertEqual(constants.IFG_PAWN_PROMOTE_FROM_FILE, 6)
-        self.assertEqual(constants.IFG_PAWN_TAKES_PROMOTE, 7)
-        self.assertEqual(constants.IFG_PAWN_PROMOTE_SQUARE, 8)
-        self.assertEqual(constants.IFG_PAWN_PROMOTE_PIECE, 9)
-        self.assertEqual(constants.IFG_PAWN_CAPTURE_FROM_FILE, 10)
-        self.assertEqual(constants.IFG_PAWN_TAKES, 11)
-        self.assertEqual(constants.IFG_PAWN_CAPTURE_SQUARE, 12)
-        self.assertEqual(constants.IFG_KING_CAPTURE, 13)
-        self.assertEqual(constants.IFG_PIECE_CAPTURE, 14)
-        self.assertEqual(constants.IFG_PIECE_CAPTURE_FROM, 15)
-        self.assertEqual(constants.IFG_PIECE_TAKES, 16)
-        self.assertEqual(constants.IFG_PIECE_CAPTURE_SQUARE, 17)
-        self.assertEqual(constants.IFG_PIECE_CHOICE, 18)
-        self.assertEqual(constants.IFG_PIECE_CHOICE_FILE_OR_RANK, 19)
-        self.assertEqual(constants.IFG_PIECE_CHOICE_SQUARE, 20)
-        self.assertEqual(constants.IFG_PIECE_MOVE, 21)
-        self.assertEqual(constants.IFG_PIECE_SQUARE, 22)
-        self.assertEqual(constants.IFG_PAWN_SQUARE, 23)
-        self.assertEqual(constants.IFG_CASTLES, 24)
-        self.assertEqual(constants.IFG_CHECK, 25)
-        self.assertEqual(constants.IFG_ANNOTATION, 26)
-        self.assertEqual(constants.IFG_COMMENT, 27)
-        self.assertEqual(constants.IFG_NAG, 28)
-        self.assertEqual(constants.IFG_COMMENT_TO_EOL, 29)
-        self.assertEqual(constants.IFG_TERMINATION, 30)
-        self.assertEqual(constants.IFG_START_RAV, 31)
-        self.assertEqual(constants.IFG_END_RAV, 32)
-        self.assertEqual(constants.IFG_ANYTHING_ELSE, 33)
+        self.assertEqual(constants.IFG_PAWN_PROMOTE_FROM_FILE, 5)
+        self.assertEqual(constants.IFG_PAWN_TAKES_PROMOTE, 6)
+        self.assertEqual(constants.IFG_PAWN_PROMOTE_SQUARE, 7)
+        self.assertEqual(constants.IFG_PAWN_PROMOTE_PIECE, 8)
+        self.assertEqual(constants.IFG_PAWN_CAPTURE_FROM_FILE, 9)
+        self.assertEqual(constants.IFG_PAWN_TAKES, 10)
+        self.assertEqual(constants.IFG_PAWN_CAPTURE_SQUARE, 11)
+        self.assertEqual(constants.IFG_KING_CAPTURE, 12)
+        self.assertEqual(constants.IFG_PIECE_CAPTURE, 13)
+        self.assertEqual(constants.IFG_PIECE_CAPTURE_FROM, 14)
+        self.assertEqual(constants.IFG_PIECE_TAKES, 15)
+        self.assertEqual(constants.IFG_PIECE_CAPTURE_SQUARE, 16)
+        self.assertEqual(constants.IFG_PIECE_CHOICE, 17)
+        self.assertEqual(constants.IFG_PIECE_CHOICE_FILE_OR_RANK, 18)
+        self.assertEqual(constants.IFG_PIECE_CHOICE_SQUARE, 19)
+        self.assertEqual(constants.IFG_PIECE_MOVE, 20)
+        self.assertEqual(constants.IFG_PIECE_SQUARE, 21)
+        self.assertEqual(constants.IFG_PAWN_SQUARE, 22)
+        self.assertEqual(constants.IFG_CASTLES, 23)
+        self.assertEqual(constants.IFG_CHECK, 24)
+        self.assertEqual(constants.IFG_ANNOTATION, 25)
+        self.assertEqual(constants.IFG_COMMENT, 26)
+        self.assertEqual(constants.IFG_NAG, 27)
+        self.assertEqual(constants.IFG_COMMENT_TO_EOL, 28)
+        self.assertEqual(constants.IFG_TERMINATION, 29)
+        self.assertEqual(constants.IFG_START_RAV, 30)
+        self.assertEqual(constants.IFG_END_RAV, 31)
+        self.assertEqual(constants.IFG_ANYTHING_ELSE, 32)
         self.assertEqual(constants.PGN_SEARCHING, 0)
         self.assertEqual(constants.PGN_SEARCHING_AFTER_ERROR_IN_RAV, 1)
         self.assertEqual(constants.PGN_SEARCHING_AFTER_ERROR_IN_GAME, 2)
