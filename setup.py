@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     setup(
         name='pgn',
-        version='0.8',
+        version='0.8.1',
         description='Portable Game Notation (PGN) parser',
         author='Roger Marsh',
         author_email='roger.marsh@solentware.co.uk',
@@ -22,7 +22,7 @@ if __name__ == '__main__':
             'pgn.about',
             ],
         package_data={
-            'pgn.about': ['LICENCE'],
+            'pgn.about': ['LICENCE', 'CONTACT'],
             },
         long_description=long_description,
         license='BSD',

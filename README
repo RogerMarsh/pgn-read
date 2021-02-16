@@ -51,10 +51,4 @@ Notes
 The lookup tables really need to be implemented more efficiently.  But other areas of chess game processing still offer better opportunities for speeding things up in my use of the package.
 
 
-Contact
-=======
-
-roger.marsh@solentware.co.uk
-
-
 .. _Python: https://python.org
