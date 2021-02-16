@@ -1566,7 +1566,7 @@ class PGN(object):
         self._token_newline_keep()
 
     def _newline_in_escape_to_eol(self):
-        self._state = LINEFEED
+        self._state = self._state_stack.pop()
         self._token_newline_keep()
 
     def _newline_repeat(self):
