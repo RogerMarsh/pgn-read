@@ -122,7 +122,7 @@ RESERVED = ''.join((
 COMMENT_TO_EOL = ';(?:(?!$).)*\n'
 PERCENT = '%'
 ESCAPE_LINE = PERCENT.join(('(?<=\n)', '(?:(?!$).)*\n'))
-NAG = '\$[0-9]+'
+NAG = '\$[0-9]+(?!/|-)'
 START_RAV = '('
 END_RAV = ')'
 PAWN_PROMOTE = '(?:([a-h])(x))?([a-h][18])(=[BNQR])'

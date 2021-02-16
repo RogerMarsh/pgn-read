@@ -98,7 +98,7 @@ class PGNParserConstants(unittest.TestCase):
         self.assertEqual(constants.RESERVED, '<[^>]*>')
         self.assertEqual(constants.COMMENT_TO_EOL, ';(?:(?!$).)*\n')
         self.assertEqual(constants.ESCAPE_LINE, '(?<=\n)%(?:(?!$).)*\n')
-        self.assertEqual(constants.NAG, '\$[0-9]+')
+        self.assertEqual(constants.NAG, '\$[0-9]+(?!/|-)')
         self.assertEqual(constants.START_RAV, '(')
         self.assertEqual(constants.END_RAV, ')')
         self.assertEqual(constants.PAWN_PROMOTE,
@@ -137,7 +137,7 @@ class PGNParserConstants(unittest.TestCase):
                                   '(?:([!?][!?]?)?)',
                                   ')|',
                                   '(\{[^}]*\}', ')|',
-                                  '(\$[0-9]+', ')|',
+                                  '(\$[0-9]+(?!/|-)', ')|',
                                   '(;(?:(?!$).)*\n)|',
                                   '(', '1-0|0-1|1/2-1/2|\*)|',
                                   '[1-9][0-9]*|',

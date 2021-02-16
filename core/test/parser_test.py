@@ -7,6 +7,7 @@
 import unittest
 import re
 import io
+import sys
 
 from .. import parser
 from .. import constants
@@ -395,7 +396,9 @@ class Pgn__searching(unittest.TestCase):
 
     def test__searching_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._searching(match)
         self.assertEqual(p._state, 3)
         self.assertEqual(p.tokens, [])
@@ -403,28 +406,36 @@ class Pgn__searching(unittest.TestCase):
 
     def test__searching_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Qc2')
+        #match = parser.re_tokens.fullmatch('Qc2')
+        match = parser.re_tokens.match('Qc2')
+        self.assertEqual(match.group(), 'Qc2')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__searching_03(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('h3')
+        #match = parser.re_tokens.fullmatch('h3')
+        match = parser.re_tokens.match('h3')
+        self.assertEqual(match.group(), 'h3')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__searching_04(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Bxf6')
+        #match = parser.re_tokens.fullmatch('Bxf6')
+        match = parser.re_tokens.match('Bxf6')
+        self.assertEqual(match.group(), 'Bxf6')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__searching_05(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('cxd5')
+        #match = parser.re_tokens.fullmatch('cxd5')
+        match = parser.re_tokens.match('cxd5')
+        self.assertEqual(match.group(), 'cxd5')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -432,14 +443,18 @@ class Pgn__searching(unittest.TestCase):
     def test__searching_06(self):
         p = self.pgn
         p.set_position_fen(test_position_two)
-        match = parser.re_tokens.fullmatch('Nge2')
+        #match = parser.re_tokens.fullmatch('Nge2')
+        match = parser.re_tokens.match('Nge2')
+        self.assertEqual(match.group(), 'Nge2')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__searching_07(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('O-O')
+        #match = parser.re_tokens.fullmatch('O-O')
+        match = parser.re_tokens.match('O-O')
+        self.assertEqual(match.group(), 'O-O')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -447,7 +462,9 @@ class Pgn__searching(unittest.TestCase):
     def test__searching_08(self):
         p = self.pgn
         p.set_position_fen(test_position_three)
-        match = parser.re_tokens.fullmatch('e8=Q#')
+        #match = parser.re_tokens.fullmatch('e8=Q#')
+        match = parser.re_tokens.match('e8=Q#')
+        self.assertEqual(match.group(), 'e8=Q#')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -572,7 +589,9 @@ class Pgn__searching(unittest.TestCase):
     def test__searching_23(self):
         p = self.pgn
         p.set_position_fen('7k/8/6K1/8/8/1p6/8/8 b - - 0 70')
-        match = parser.re_tokens.fullmatch('b2')
+        #match = parser.re_tokens.fullmatch('b2')
+        match = parser.re_tokens.match('b2')
+        self.assertEqual(match.group(), 'b2')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -580,7 +599,9 @@ class Pgn__searching(unittest.TestCase):
     def test__searching_24(self):
         p = self.pgn
         p.set_position_fen('7k/8/6K1/8/8/8/1p6/8 b - - 0 70')
-        match = parser.re_tokens.fullmatch('b1')
+        #match = parser.re_tokens.fullmatch('b1')
+        match = parser.re_tokens.match('b1')
+        self.assertEqual(match.group(), 'b1')
         p._searching(match)
         self.assertEqual(p._state, 5)
         self.assertEqual(p.tokens, [])
@@ -705,7 +726,9 @@ d5h6Be3e6dxe6Bxe6 10. Qd2 (b3u(Nbd7(Nxe4'''
             p.get_first_game(gamescore)
         except StopIteration:
             pass
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._searching_after_error_in_rav(match)
         self.assertEqual(p.collected_game[2][-1].group(),
                          '{Error: u(Nbd7(Nxe4}')
@@ -768,7 +791,9 @@ d5h6Be3u6'''
             p.get_first_game(gamescore)
         except StopIteration:
             pass
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._searching_after_error_in_game(match)
         self.assertEqual(p.collected_game[2][-2].group(), 'Be3')
         self.assertEqual(p.collected_game[2][-1].group(), '{Error: u6}')
@@ -786,7 +811,9 @@ d5h6Be3u6'''
             p.get_first_game(gamescore)
         except StopIteration:
             pass
-        match = parser.re_tokens.fullmatch('dxe6')
+        #match = parser.re_tokens.fullmatch('dxe6')
+        match = parser.re_tokens.match('dxe6')
+        self.assertEqual(match.group(), 'dxe6')
         p._searching_after_error_in_game(match)
         self.assertEqual(p._state, 2)
         self.assertEqual(len(p.tokens), 15)
@@ -808,7 +835,9 @@ class Pgn__collecting_tag_pairs(unittest.TestCase):
 
     def test__collecting_tag_pairs_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 3)
         self.assertEqual(p.tokens, [])
@@ -816,28 +845,36 @@ class Pgn__collecting_tag_pairs(unittest.TestCase):
 
     def test__collecting_tag_pairs_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Qc2')
+        #match = parser.re_tokens.fullmatch('Qc2')
+        match = parser.re_tokens.match('Qc2')
+        self.assertEqual(match.group(), 'Qc2')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_tag_pairs_03(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('h3')
+        #match = parser.re_tokens.fullmatch('h3')
+        match = parser.re_tokens.match('h3')
+        self.assertEqual(match.group(), 'h3')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_tag_pairs_04(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Bxf6')
+        #match = parser.re_tokens.fullmatch('Bxf6')
+        match = parser.re_tokens.match('Bxf6')
+        self.assertEqual(match.group(), 'Bxf6')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_tag_pairs_05(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('cxd5')
+        #match = parser.re_tokens.fullmatch('cxd5')
+        match = parser.re_tokens.match('cxd5')
+        self.assertEqual(match.group(), 'cxd5')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -845,14 +882,18 @@ class Pgn__collecting_tag_pairs(unittest.TestCase):
     def test__collecting_tag_pairs_06(self):
         p = self.pgn
         p.set_position_fen(test_position_two)
-        match = parser.re_tokens.fullmatch('Nge2')
+        #match = parser.re_tokens.fullmatch('Nge2')
+        match = parser.re_tokens.match('Nge2')
+        self.assertEqual(match.group(), 'Nge2')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_tag_pairs_07(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('O-O')
+        #match = parser.re_tokens.fullmatch('O-O')
+        match = parser.re_tokens.match('O-O')
+        self.assertEqual(match.group(), 'O-O')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -860,7 +901,9 @@ class Pgn__collecting_tag_pairs(unittest.TestCase):
     def test__collecting_tag_pairs_08(self):
         p = self.pgn
         p.set_position_fen(test_position_three)
-        match = parser.re_tokens.fullmatch('e8=Q#')
+        #match = parser.re_tokens.fullmatch('e8=Q#')
+        match = parser.re_tokens.match('e8=Q#')
+        self.assertEqual(match.group(), 'e8=Q#')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -999,28 +1042,36 @@ class Pgn__collecting_movetext(unittest.TestCase):
 
     def test__collecting_movetext_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Qc2')
+        #match = parser.re_tokens.fullmatch('Qc2')
+        match = parser.re_tokens.match('Qc2')
+        self.assertEqual(match.group(), 'Qc2')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_movetext_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('h3')
+        #match = parser.re_tokens.fullmatch('h3')
+        match = parser.re_tokens.match('h3')
+        self.assertEqual(match.group(), 'h3')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_movetext_03(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Bxf6')
+        #match = parser.re_tokens.fullmatch('Bxf6')
+        match = parser.re_tokens.match('Bxf6')
+        self.assertEqual(match.group(), 'Bxf6')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_movetext_04(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('cxd5')
+        #match = parser.re_tokens.fullmatch('cxd5')
+        match = parser.re_tokens.match('cxd5')
+        self.assertEqual(match.group(), 'cxd5')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -1028,14 +1079,18 @@ class Pgn__collecting_movetext(unittest.TestCase):
     def test__collecting_movetext_05(self):
         p = self.pgn
         p.set_position_fen(test_position_two)
-        match = parser.re_tokens.fullmatch('Nge2')
+        #match = parser.re_tokens.fullmatch('Nge2')
+        match = parser.re_tokens.match('Nge2')
+        self.assertEqual(match.group(), 'Nge2')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
 
     def test__collecting_movetext_06(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('O-O')
+        #match = parser.re_tokens.fullmatch('O-O')
+        match = parser.re_tokens.match('O-O')
+        self.assertEqual(match.group(), 'O-O')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -1043,7 +1098,9 @@ class Pgn__collecting_movetext(unittest.TestCase):
     def test__collecting_movetext_07(self):
         p = self.pgn
         p.set_position_fen(test_position_three)
-        match = parser.re_tokens.fullmatch('e8=Q#')
+        #match = parser.re_tokens.fullmatch('e8=Q#')
+        match = parser.re_tokens.match('e8=Q#')
+        self.assertEqual(match.group(), 'e8=Q#')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [match])
@@ -1213,7 +1270,9 @@ class Pgn__collecting_non_whitespace_while_searching(unittest.TestCase):
 
     def test__collecting_non_whitespace_while_searching_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._collecting_non_whitespace_while_searching(match)
         self.assertEqual(p.collected_game[2][0].group(), '{Error: }')
         self.assertEqual(p._state, 3)
@@ -1223,7 +1282,9 @@ class Pgn__collecting_non_whitespace_while_searching(unittest.TestCase):
 
     def test__collecting_non_whitespace_while_searching_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch(' \n   \n\r\t')
+        #match = parser.re_tokens.fullmatch(' \n   \n\r\t')
+        match = parser.re_tokens.match(' \n   \n\r\t')
+        self.assertEqual(match.group(), ' \n   \n\r\t')
         p._collecting_non_whitespace_while_searching(match)
         self.assertEqual(p._state, 5)
         self.assertEqual(p.tokens, [])
@@ -1459,10 +1520,14 @@ class Pgn_reset_position(unittest.TestCase):
             *(None,))
 
     def test_reset_position_02(self):
+        if sys.version_info[:2] < (3,5):
+            msg = "need more than 3 values to unpack"
+        else:
+            msg = "not enough values to unpack \(expected 4, got 3\)"
         p = self.pgn
         self.assertRaisesRegex(
             ValueError,
-            "need more than 3 values to unpack",
+            msg,
             p.reset_position,
             *((None,None,None),))
 
@@ -2038,11 +2103,15 @@ class Pgn_add_move_to_game(unittest.TestCase):
         del self.pgn_base
 
     def test__add_move_to_game_01(self):
+        if sys.version_info[:2] < (3,5):
+            msg = "tuple indices must be integers, not NoneType"
+        else:
+            msg = "tuple indices must be integers or slices, not NoneType"
         p = self.pgn
         pend = self.pgn_base
         self.assertRaisesRegex(
             TypeError,
-            "tuple indices must be integers, not NoneType",
+            msg,
             p.add_move_to_game)
 
     def test__add_move_to_game_02(self):
@@ -2083,9 +2152,15 @@ class Pgn__play_disambiguated_move(unittest.TestCase):
 
     def setUp(self):
         self.pgn = parser.PGN()
-        self.matchfrom = parser.re_tokens.fullmatch('Be4')
-        self.match = parser.re_disambiguate_error.fullmatch('Be4d5')
-        self.matcherror = parser.re_disambiguate_error.fullmatch('Be4d6')
+        #self.matchfrom = parser.re_tokens.fullmatch('Be4')
+        #self.match = parser.re_disambiguate_error.fullmatch('Be4d5')
+        #self.matcherror = parser.re_disambiguate_error.fullmatch('Be4d6')
+        self.matchfrom = parser.re_tokens.match('Be4')
+        self.match = parser.re_disambiguate_error.match('Be4d5')
+        self.matcherror = parser.re_disambiguate_error.match('Be4d6')
+        self.assertEqual(self.matchfrom.group(), 'Be4')
+        self.assertEqual(self.match.group(), 'Be4d5')
+        self.assertEqual(self.matcherror.group(), 'Be4d6')
         p = self.pgn
         p.set_position_fen('8/8/4B3/8/2B1B3/8/8/k3K3 w - - 0 60')
         p._state = constants.PGN_COLLECTING_MOVETEXT
@@ -2668,6 +2743,105 @@ Kb5 ( Ka5 $18 ) Ke7 Kb6 Kd8 Kb7 $1 1-0
             self.assertEqual((e, t.group()), (e, manual_tokens[e]))
 
     def test_05(self):
+        # Problem exposed by Howell-Kourtseva from All_4NCL_1996_2010.pgn
+        # after the pgn_dev_3520 branch was merged into trunk.
+        # The NAG immediately before the termination was not recognised when
+        # game score was read from database record because all whitespace had
+        # been removed.
+        game = ''.join(("""[Event "4NCL/Div1a/CAMB1 vs. JUTK"]
+[Site "Sunningdale ENG"]
+[Date "2009.10.25"]
+[Round "2.8"]
+[White "Howell, Chris I"]
+[Black "Kourtseva, Julie"]
+[Result "1-0"]
+[ECO "B01"]
+[WhiteElo "2077"]
+[BlackElo "1706"]
+[Annotator "Howell, Chris"]
+[PlyCount "151"]
+[EventDate "2009.10.25"]
+[EventCountry "ENG"]
+[SourceDate "2009.10.24"]
+
+e4d5exd5Qxd5Nf3c6Nc3Qa5Bc4Bf5O-Oe6d3Be7
+Bd2$146(Be3Nf6h3Nbd7a3Qc7Qd2Bd6Rfe1Ne5Nxe5
+Bxe5d4Bd6Bd3Bg6Ne2Nd5c3Nxe3Qxe3Bxd3Qxd3
+O-O-OQc2Rdg8b4h5a4g5b5h4Qe4Qd7bxc6Qxc6
+Qxc6+bxc6f3Kc7Rab1Re8Nc1Bf4Rd1Rb8{1-0 Yurkina,
+Y-Gelivanova,Y/Dagomys 2004})Qc7Nd4Bg6Qf3$1Bf6$6Nb3$2
+(Bf4$1e5Bg3Nd7h4h5a4$14)Ne7$2(Nd7$14)
+Bf4Be5Bxe5Qxe5Rfe1Qc7Nd4O-O$2(e5Qg3Nd7
+Nf3$16)Bxe6$1Qd8$5Bb3Nd7a4$6(Qf4$1$18)Nc5
+Bc4Re8Nb3$6(Qf4$1)Nxb3Bxb3Nf5Bc4$2(
+Rxe8+Qxe8Qe4$16)Nd4Rxe8+Qxe8Qd1Qe7Qd2(Ne4
+$1$16)Re8h3Qb4Re1Rxe1+Qxe1h6Qe8+Kh7Bxf7
+Bxf7Qxf7Qxb2Ne4Qa1+Kh2Ne2Ng5+hxg5Qh5+Kg8Qe8+
+Kh7Qxe2Qxa4Qh5+Kg8c4Qc2Qe8+Kh7Qe4+Kh8Qd4Qa2
+h4gxh4Qxh4+Kg8Qd8+Kh7Qh4+Kg8g4Qb2Kg2Qd4
+Qg3Qd8(a5$1)g5g6Qe3Qd7Kf1c5Ke2b6Qe4Kf7
+Qf4+Ke8Kd2Qe7Qg4Kf8{(=)}f4Qf7Kc2Kg7Qf3b5
+Qe4$1bxc4dxc4Kg8Kb3$1Kg7Qe5+Kg8Qd5Kg7Qxf7+
+Kxf7Ka4Ke6Kb5Kf5Kxc5Kxf4{Diagram #}Kc6$3(Kb5Ke4
+Kc6$3$18)(Kd4$4Kxg5c5Kf6Kd5Ke7Kc6g5Kb7g4
+c6g3c7g2c8=Qg1=QQc7+Ke6Qc6+Kf5Qb5+Kg6
+Qa6+Kf5Qxa7$11)Kxg5c5$1a5Kb5$1a4Kxa4$1Kf6
+Kb5(Ka5$18)Ke7Kb6Kd8Kb7$11-0
+"""))
+        p = self.pgn
+        p.get_first_game(game)
+        self.assertEqual(sorted(i for i in p.collected_game[1].items()),
+                         sorted([('Event', '4NCL/Div1a/CAMB1 vs. JUTK'),
+                                 ('Site', 'Sunningdale ENG'),
+                                 ('Date', '2009.10.25'),
+                                 ('Round', '2.8'),
+                                 ('White', 'Howell, Chris I'),
+                                 ('Black', 'Kourtseva, Julie'),
+                                 ('Result', '1-0'),
+                                 ('ECO', 'B01'),
+                                 ('WhiteElo', '2077'),
+                                 ('BlackElo', '1706'),
+                                 ('Annotator', 'Howell, Chris'),
+                                 ('PlyCount', '151'),
+                                 ('EventDate', '2009.10.25'),
+                                 ('EventCountry', 'ENG'),
+                                 ('SourceDate', '2009.10.24'),]))
+        manual_tokens = '''
+e4 d5 exd5 Qxd5 Nf3 c6 Nc3 Qa5 Bc4 Bf5 O-O e6 d3 Be7
+Bd2 $146 ( Be3 Nf6 h3 Nbd7 a3 Qc7 Qd2 Bd6 Rfe1 Ne5 Nxe5
+Bxe5 d4 Bd6 Bd3 Bg6 Ne2 Nd5 c3 Nxe3 Qxe3 Bxd3 Qxd3
+O-O-O Qc2 Rdg8 b4 h5 a4 g5 b5 h4 Qe4 Qd7 bxc6 Qxc6
+Qxc6+ bxc6 f3 Kc7 Rab1 Re8 Nc1 Bf4 Rd1 Rb8
+'''.split()
+        manual_tokens.extend(['{1-0 Yurkina,\nY-Gelivanova,Y/Dagomys 2004}'])
+        manual_tokens.extend('''
+) Qc7 Nd4 Bg6 Qf3 $1 Bf6 $6 Nb3 $2
+( Bf4 $1 e5 Bg3 Nd7 h4 h5 a4 $14 ) Ne7 $2 ( Nd7 $14 )
+Bf4 Be5 Bxe5 Qxe5 Rfe1 Qc7 Nd4 O-O $2 ( e5 Qg3 Nd7
+Nf3 $16 ) Bxe6 $1 Qd8 $5 Bb3 Nd7 a4 $6 ( Qf4 $1 $18 ) Nc5
+Bc4 Re8 Nb3 $6 ( Qf4 $1 ) Nxb3 Bxb3 Nf5 Bc4 $2 (
+Rxe8+ Qxe8 Qe4 $16 ) Nd4 Rxe8+ Qxe8 Qd1 Qe7 Qd2 ( Ne4
+$1 $16 ) Re8 h3 Qb4 Re1 Rxe1+ Qxe1 h6 Qe8+ Kh7 Bxf7
+Bxf7 Qxf7 Qxb2 Ne4 Qa1+ Kh2 Ne2 Ng5+ hxg5 Qh5+ Kg8 Qe8+
+Kh7 Qxe2 Qxa4 Qh5+ Kg8 c4 Qc2 Qe8+ Kh7 Qe4+ Kh8 Qd4 Qa2
+h4 gxh4 Qxh4+ Kg8 Qd8+ Kh7 Qh4+ Kg8 g4 Qb2 Kg2 Qd4
+Qg3 Qd8 ( a5 $1 ) g5 g6 Qe3 Qd7 Kf1 c5 Ke2 b6 Qe4 Kf7
+Qf4+ Ke8 Kd2 Qe7 Qg4 Kf8 {(=)} f4 Qf7 Kc2 Kg7 Qf3 b5
+Qe4 $1 bxc4 dxc4 Kg8 Kb3 $1 Kg7 Qe5+ Kg8 Qd5 Kg7 Qxf7+
+Kxf7 Ka4 Ke6 Kb5 Kf5 Kxc5 Kxf4
+'''.split())
+        manual_tokens.extend(['{Diagram #}'])
+        manual_tokens.extend('''
+Kc6 $3 ( Kb5 Ke4
+Kc6 $3 $18 ) ( Kd4 $4 Kxg5 c5 Kf6 Kd5 Ke7 Kc6 g5 Kb7 g4
+c6 g3 c7 g2 c8=Q g1=Q Qc7+ Ke6 Qc6+ Kf5 Qb5+ Kg6
+Qa6+ Kf5 Qxa7 $11 ) Kxg5 c5 $1 a5 Kb5 $1 a4 Kxa4 $1 Kf6
+Kb5 ( Ka5 $18 ) Ke7 Kb6 Kd8 Kb7 $1 1-0
+'''.split())
+        for e, t in enumerate(p.collected_game[2]):
+            self.assertEqual((e, t.group()), (e, manual_tokens[e]))
+
+    def test_06(self):
         # Problem exposed by Butterworth-Russant from All_4NCL_1996_2010.pgn
         # introduced since revision 3520 in the pgn_dev_3520 branch.
         # The game starts from a position defined by FEN, presumably because
@@ -3443,11 +3617,15 @@ class PgnDisplayMoves_add_move_to_game(unittest.TestCase):
         del self.pgn_base
 
     def test__add_move_to_game_01(self):
+        if sys.version_info[:2] < (3,5):
+            msg = "tuple indices must be integers, not NoneType"
+        else:
+            msg = "tuple indices must be integers or slices, not NoneType"
         p = self.pgn
         pend = self.pgn_base
         self.assertRaisesRegex(
             TypeError,
-            "tuple indices must be integers, not NoneType",
+            msg,
             p.add_move_to_game)
 
     def test__add_move_to_game_02(self):
@@ -4241,11 +4419,15 @@ class PgnUpdate_add_move_to_game(unittest.TestCase):
         del self.pgn_base
 
     def test__add_move_to_game_01(self):
+        if sys.version_info[:2] < (3,5):
+            msg = "tuple indices must be integers, not NoneType"
+        else:
+            msg = "tuple indices must be integers or slices, not NoneType"
         p = self.pgn
         pend = self.pgn_base
         self.assertRaisesRegex(
             TypeError,
-            "tuple indices must be integers, not NoneType",
+            msg,
             p.add_move_to_game)
 
     def test__add_move_to_game_02(self):
@@ -4545,28 +4727,36 @@ class PgnTags__collecting_movetext(unittest.TestCase):
 
     def test__collecting_movetext_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Qc2')
+        #match = parser.re_tokens.fullmatch('Qc2')
+        match = parser.re_tokens.match('Qc2')
+        self.assertEqual(match.group(), 'Qc2')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_movetext_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('h3')
+        #match = parser.re_tokens.fullmatch('h3')
+        match = parser.re_tokens.match('h3')
+        self.assertEqual(match.group(), 'h3')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_movetext_03(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Bxf6')
+        #match = parser.re_tokens.fullmatch('Bxf6')
+        match = parser.re_tokens.match('Bxf6')
+        self.assertEqual(match.group(), 'Bxf6')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_movetext_04(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('cxd5')
+        #match = parser.re_tokens.fullmatch('cxd5')
+        match = parser.re_tokens.match('cxd5')
+        self.assertEqual(match.group(), 'cxd5')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -4574,14 +4764,18 @@ class PgnTags__collecting_movetext(unittest.TestCase):
     def test__collecting_movetext_05(self):
         p = self.pgn
         p.set_position_fen(test_position_two)
-        match = parser.re_tokens.fullmatch('Nge2')
+        #match = parser.re_tokens.fullmatch('Nge2')
+        match = parser.re_tokens.match('Nge2')
+        self.assertEqual(match.group(), 'Nge2')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_movetext_06(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('O-O')
+        #match = parser.re_tokens.fullmatch('O-O')
+        match = parser.re_tokens.match('O-O')
+        self.assertEqual(match.group(), 'O-O')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -4589,7 +4783,9 @@ class PgnTags__collecting_movetext(unittest.TestCase):
     def test__collecting_movetext_07(self):
         p = self.pgn
         p.set_position_fen(test_position_three)
-        match = parser.re_tokens.fullmatch('e8=Q#')
+        #match = parser.re_tokens.fullmatch('e8=Q#')
+        match = parser.re_tokens.match('e8=Q#')
+        self.assertEqual(match.group(), 'e8=Q#')
         p._collecting_movetext(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -4755,7 +4951,9 @@ class PgnTags__collecting_tag_pairs(unittest.TestCase):
 
     def test__collecting_tag_pairs_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 3)
         self.assertEqual(p.tokens, [])
@@ -4763,28 +4961,36 @@ class PgnTags__collecting_tag_pairs(unittest.TestCase):
 
     def test__collecting_tag_pairs_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Qc2')
+        #match = parser.re_tokens.fullmatch('Qc2')
+        match = parser.re_tokens.match('Qc2')
+        self.assertEqual(match.group(), 'Qc2')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_tag_pairs_03(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('h3')
+        #match = parser.re_tokens.fullmatch('h3')
+        match = parser.re_tokens.match('h3')
+        self.assertEqual(match.group(), 'h3')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_tag_pairs_04(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Bxf6')
+        #match = parser.re_tokens.fullmatch('Bxf6')
+        match = parser.re_tokens.match('Bxf6')
+        self.assertEqual(match.group(), 'Bxf6')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_tag_pairs_05(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('cxd5')
+        #match = parser.re_tokens.fullmatch('cxd5')
+        match = parser.re_tokens.match('cxd5')
+        self.assertEqual(match.group(), 'cxd5')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -4792,14 +4998,18 @@ class PgnTags__collecting_tag_pairs(unittest.TestCase):
     def test__collecting_tag_pairs_06(self):
         p = self.pgn
         p.set_position_fen(test_position_two)
-        match = parser.re_tokens.fullmatch('Nge2')
+        #match = parser.re_tokens.fullmatch('Nge2')
+        match = parser.re_tokens.match('Nge2')
+        self.assertEqual(match.group(), 'Nge2')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__collecting_tag_pairs_07(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('O-O')
+        #match = parser.re_tokens.fullmatch('O-O')
+        match = parser.re_tokens.match('O-O')
+        self.assertEqual(match.group(), 'O-O')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -4807,7 +5017,9 @@ class PgnTags__collecting_tag_pairs(unittest.TestCase):
     def test__collecting_tag_pairs_08(self):
         p = self.pgn
         p.set_position_fen(test_position_three)
-        match = parser.re_tokens.fullmatch('e8=Q#')
+        #match = parser.re_tokens.fullmatch('e8=Q#')
+        match = parser.re_tokens.match('e8=Q#')
+        self.assertEqual(match.group(), 'e8=Q#')
         p._collecting_tag_pairs(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -5027,7 +5239,9 @@ class PgnTags__searching(unittest.TestCase):
 
     def test__searching_01(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._searching(match)
         self.assertEqual(p._state, 3)
         self.assertEqual(p.tokens, [])
@@ -5035,28 +5249,36 @@ class PgnTags__searching(unittest.TestCase):
 
     def test__searching_02(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Qc2')
+        #match = parser.re_tokens.fullmatch('Qc2')
+        match = parser.re_tokens.match('Qc2')
+        self.assertEqual(match.group(), 'Qc2')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__searching_03(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('h3')
+        #match = parser.re_tokens.fullmatch('h3')
+        match = parser.re_tokens.match('h3')
+        self.assertEqual(match.group(), 'h3')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__searching_04(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('Bxf6')
+        #match = parser.re_tokens.fullmatch('Bxf6')
+        match = parser.re_tokens.match('Bxf6')
+        self.assertEqual(match.group(), 'Bxf6')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__searching_05(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('cxd5')
+        #match = parser.re_tokens.fullmatch('cxd5')
+        match = parser.re_tokens.match('cxd5')
+        self.assertEqual(match.group(), 'cxd5')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -5064,14 +5286,18 @@ class PgnTags__searching(unittest.TestCase):
     def test__searching_06(self):
         p = self.pgn
         p.set_position_fen(test_position_two)
-        match = parser.re_tokens.fullmatch('Nge2')
+        #match = parser.re_tokens.fullmatch('Nge2')
+        match = parser.re_tokens.match('Nge2')
+        self.assertEqual(match.group(), 'Nge2')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
 
     def test__searching_07(self):
         p = self.pgn
-        match = parser.re_tokens.fullmatch('O-O')
+        #match = parser.re_tokens.fullmatch('O-O')
+        match = parser.re_tokens.match('O-O')
+        self.assertEqual(match.group(), 'O-O')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -5079,7 +5305,9 @@ class PgnTags__searching(unittest.TestCase):
     def test__searching_08(self):
         p = self.pgn
         p.set_position_fen(test_position_three)
-        match = parser.re_tokens.fullmatch('e8=Q#')
+        #match = parser.re_tokens.fullmatch('e8=Q#')
+        match = parser.re_tokens.match('e8=Q#')
+        self.assertEqual(match.group(), 'e8=Q#')
         p._searching(match)
         self.assertEqual(p._state, 4)
         self.assertEqual(p.tokens, [])
@@ -5231,7 +5459,9 @@ d5h6Be3u6'''
             p.get_first_game(gamescore)
         except StopIteration:
             pass
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._searching_after_error_in_game(match)
         self.assertEqual(p.collected_game[2], [])
         self.assertEqual([t.group() for t in p.collected_game[0]],
@@ -5257,7 +5487,9 @@ d5h6Be3u6'''
             p.get_first_game(gamescore)
         except StopIteration:
             pass
-        match = parser.re_tokens.fullmatch('dxe6')
+        #match = parser.re_tokens.fullmatch('dxe6')
+        match = parser.re_tokens.match('dxe6')
+        self.assertEqual(match.group(), 'dxe6')
         p._searching_after_error_in_game(match)
         self.assertEqual(p._state, 2)
         self.assertEqual(len(p.tokens), 0)
@@ -5431,7 +5663,9 @@ d5h6Be3e6dxe6Bxe6 10. Qd2 (b3u(Nbd7(Nxe4'''
             p.get_first_game(gamescore)
         except StopIteration:
             pass
-        match = parser.re_tokens.fullmatch('[Tag"value"]')
+        #match = parser.re_tokens.fullmatch('[Tag"value"]')
+        match = parser.re_tokens.match('[Tag"value"]')
+        self.assertEqual(match.group(), '[Tag"value"]')
         p._searching_after_error_in_rav(match)
         self.assertEqual(p.collected_game[2], [])
         self.assertEqual([t.group() for t in p.collected_game[0]],
