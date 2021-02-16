@@ -12,8 +12,8 @@ PGNReader
 
 import re
 
-from pgn.core import constants
-from pgn.core.parser import PGNUpdate
+from . import constants
+from .parser import PGNUpdate
 
 re_games = re.compile(constants.SPLIT_INTO_GAMES)
     

@@ -51,7 +51,7 @@ get_position_string
 
 import re
 
-from pgn.core.constants import (
+from .constants import (
     NO_EP_SQUARE,
     CASTLEALL,
     WHITE_TO_MOVE,
@@ -308,120 +308,120 @@ class PGN(object):
         self._state_stack = []
         
         self._despatch_table = {
-            START_COMMENT : { # comment tokens until END_COMMENT
-                END_COMMENT : self._end_comment,
-                LINEFEED : self._newline,
-                None : self._token_comment,
+            START_COMMENT: { # comment tokens until END_COMMENT
+                END_COMMENT: self._end_comment,
+                LINEFEED: self._newline,
+                None: self._token_comment,
                 },
-            START_RESERVED : { # treat as comment tokens until END_RESERVED
-                END_RESERVED : self._end_reserved,
-                LINEFEED : self._newline,
-                None : self._token_comment,
+            START_RESERVED: { # treat as comment tokens until END_RESERVED
+                END_RESERVED: self._end_reserved,
+                LINEFEED: self._newline,
+                None: self._token_comment,
                 },
-            ESCAPE_TO_EOL : { # treat as comment tokens until newline
-                LINEFEED : self._newline_in_escape_to_eol,
-                None : self._token_comment,
+            ESCAPE_TO_EOL: { # treat as comment tokens until newline
+                LINEFEED: self._newline_in_escape_to_eol,
+                None: self._token_comment,
                 },
-            RESULT : { # non-whitespace token after result treated as comment
-                LINEFEED : self._token_whitespace,
-                CARRIAGE_RETURN : self._token_whitespace,
-                SPACE : self._token_whitespace,
-                HORIZONTAL_TAB : self._token_whitespace,
-                FORMFEED : self._token_whitespace,
-                VERTICAL_TAB : self._token_whitespace,
-                None : self._token_comment,
+            RESULT: { # non-whitespace token after result treated as comment
+                LINEFEED: self._token_whitespace,
+                CARRIAGE_RETURN: self._token_whitespace,
+                SPACE: self._token_whitespace,
+                HORIZONTAL_TAB: self._token_whitespace,
+                FORMFEED: self._token_whitespace,
+                VERTICAL_TAB: self._token_whitespace,
+                None: self._token_comment,
                 },
-            PGN_ERROR : { # An error deemed unrecoverable detected
-                None : self._token_movetext_error,
+            PGN_ERROR: { # An error deemed unrecoverable detected
+                None: self._token_movetext_error,
                 },
-            COMMENT_TO_EOL : { # tokens until newline are comments
-                LINEFEED : self._newline_in_comment_to_eol,
-                None : self._token_comment,
+            COMMENT_TO_EOL: { # tokens until newline are comments
+                LINEFEED: self._newline_in_comment_to_eol,
+                None: self._token_comment,
                 },
-            MOVETEXT : { # main line or variation contains move(s)
-                PERIOD : self._token_period,
-                START_COMMENT : self._start_comment,
-                END_COMMENT : self._movetext_error,
-                START_TAG : self._movetext_error, # should be unrecoverable?
-                END_TAG : self._movetext_error, # should be unrecoverable?
-                START_RAV : self._start_variation,
-                END_RAV : self._end_variation,
-                START_RESERVED : self._start_reserved,
-                END_RESERVED : self._movetext_error,
-                LINEFEED : self._newline_between_moves,
-                CARRIAGE_RETURN : self._token_whitespace,
-                SPACE : self._token_whitespace,
-                HORIZONTAL_TAB : self._token_whitespace,
-                FORMFEED : self._token_whitespace,
-                VERTICAL_TAB : self._token_whitespace,
-                COMMENT_TO_EOL : self._comment_to_eol,
-                None : self._process_token,
+            MOVETEXT: { # main line or variation contains move(s)
+                PERIOD: self._token_period,
+                START_COMMENT: self._start_comment,
+                END_COMMENT: self._movetext_error,
+                START_TAG: self._movetext_error, # should be unrecoverable?
+                END_TAG: self._movetext_error, # should be unrecoverable?
+                START_RAV: self._start_variation,
+                END_RAV: self._end_variation,
+                START_RESERVED: self._start_reserved,
+                END_RESERVED: self._movetext_error,
+                LINEFEED: self._newline_between_moves,
+                CARRIAGE_RETURN: self._token_whitespace,
+                SPACE: self._token_whitespace,
+                HORIZONTAL_TAB: self._token_whitespace,
+                FORMFEED: self._token_whitespace,
+                VERTICAL_TAB: self._token_whitespace,
+                COMMENT_TO_EOL: self._comment_to_eol,
+                None: self._process_token,
                 },
-            False : { # move tokens treated as comment till matching END_RAV
-                PERIOD : self._token_comment,
-                START_COMMENT : self._start_comment, # ..._in_error_sequence
-                END_COMMENT : self._token_comment, # should be an error?
-                START_TAG : self._token_comment, # should be unrecoverable?
-                END_TAG : self._token_comment, # should be unrecoverable?
-                START_RAV : self._start_variation_in_error_sequence,
-                END_RAV : self._end_variation_containing_error,
-                START_RESERVED : self._start_reserved, # ..._in_error_sequence
-                END_RESERVED : self._token_comment, # should be an error?
-                LINEFEED : self._newline_between_moves, # ..._in_error_sequence
-                CARRIAGE_RETURN : self._token_comment,
-                SPACE : self._token_comment,
-                HORIZONTAL_TAB : self._token_comment,
-                FORMFEED : self._token_comment,
-                VERTICAL_TAB : self._token_comment,
-                COMMENT_TO_EOL : self._comment_to_eol, # ..._in_error_sequence
-                None : self._token_move_in_error_sequence,
+            False: { # move tokens treated as comment till matching END_RAV
+                PERIOD: self._token_comment,
+                START_COMMENT: self._start_comment, # ..._in_error_sequence
+                END_COMMENT: self._token_comment, # should be an error?
+                START_TAG: self._token_comment, # should be unrecoverable?
+                END_TAG: self._token_comment, # should be unrecoverable?
+                START_RAV: self._start_variation_in_error_sequence,
+                END_RAV: self._end_variation_containing_error,
+                START_RESERVED: self._start_reserved, # ..._in_error_sequence
+                END_RESERVED: self._token_comment, # should be an error?
+                LINEFEED: self._newline_between_moves, # ..._in_error_sequence
+                CARRIAGE_RETURN: self._token_comment,
+                SPACE: self._token_comment,
+                HORIZONTAL_TAB: self._token_comment,
+                FORMFEED: self._token_comment,
+                VERTICAL_TAB: self._token_comment,
+                COMMENT_TO_EOL: self._comment_to_eol, # ..._in_error_sequence
+                None: self._token_move_in_error_sequence,
                 },
-            None : { # at start of main line or variation
-                PERIOD : self._token_period,
-                START_COMMENT : self._start_comment,
-                END_COMMENT : self._movetext_error,
-                START_TAG : self._movetext_error, # should be unrecoverable?
-                END_TAG : self._movetext_error, # should be unrecoverable?
-                START_RAV : self._movetext_error,
-                END_RAV : self._movetext_error,
-                START_RESERVED : self._start_reserved,
-                END_RESERVED : self._movetext_error,
-                LINEFEED : self._newline_between_moves,
-                CARRIAGE_RETURN : self._token_whitespace,
-                SPACE : self._token_whitespace,
-                HORIZONTAL_TAB : self._token_whitespace,
-                FORMFEED : self._token_whitespace,
-                VERTICAL_TAB : self._token_whitespace,
-                COMMENT_TO_EOL : self._comment_to_eol,
-                None : self._process_token,
+            None: { # at start of main line or variation
+                PERIOD: self._token_period,
+                START_COMMENT: self._start_comment,
+                END_COMMENT: self._movetext_error,
+                START_TAG: self._movetext_error, # should be unrecoverable?
+                END_TAG: self._movetext_error, # should be unrecoverable?
+                START_RAV: self._movetext_error,
+                END_RAV: self._movetext_error,
+                START_RESERVED: self._start_reserved,
+                END_RESERVED: self._movetext_error,
+                LINEFEED: self._newline_between_moves,
+                CARRIAGE_RETURN: self._token_whitespace,
+                SPACE: self._token_whitespace,
+                HORIZONTAL_TAB: self._token_whitespace,
+                FORMFEED: self._token_whitespace,
+                VERTICAL_TAB: self._token_whitespace,
+                COMMENT_TO_EOL: self._comment_to_eol,
+                None: self._process_token,
                 },
-            LINEFEED : { # newlines between moves allow escape or comment to eol
-                ESCAPE_TO_EOL : self._escape_to_eol_after_nl_between_moves,
-                LINEFEED : self._newline_repeat_between_moves,
-                COMMENT_TO_EOL : self._comment_to_eol_after_nl_between_moves,
-                None : self._revert_state_and_reprocess_token,
+            LINEFEED: { # newlines between moves allow escape or comment to eol
+                ESCAPE_TO_EOL: self._escape_to_eol_after_nl_between_moves,
+                LINEFEED: self._newline_repeat_between_moves,
+                COMMENT_TO_EOL: self._comment_to_eol_after_nl_between_moves,
+                None: self._revert_state_and_reprocess_token,
                 },
-            NEWLINE : { # newlines in {comment} allow escape to eol
-                ESCAPE_TO_EOL : self._escape_to_eol,
-                LINEFEED : self._newline_repeat,
-                None : self._revert_state_and_reprocess_token,
+            NEWLINE: { # newlines in {comment} allow escape to eol
+                ESCAPE_TO_EOL: self._escape_to_eol,
+                LINEFEED: self._newline_repeat,
+                None: self._revert_state_and_reprocess_token,
                 },
-            PGN_FROM_SQUARE_DISAMBIGUATION : { # token must be piece tosquare
-                None : self._disambiguate_move,
+            PGN_FROM_SQUARE_DISAMBIGUATION: { # token must be piece tosquare
+                None: self._disambiguate_move,
                 },
             }
         
         self._unmatched_text_valid_table = {
-            START_COMMENT : self._token_comment,
-            START_RESERVED : self._token_comment,
-            ESCAPE_TO_EOL : self._token_comment,
-            RESULT : self._token_comment,
-            COMMENT_TO_EOL : self._token_comment,
-            MOVETEXT : self._move_error,
-            None : self._move_error,
-            False : self._token_comment,
-            LINEFEED : self._move_error,
-            NEWLINE : self._token_comment,
+            START_COMMENT: self._token_comment,
+            START_RESERVED: self._token_comment,
+            ESCAPE_TO_EOL: self._token_comment,
+            RESULT: self._token_comment,
+            COMMENT_TO_EOL: self._token_comment,
+            MOVETEXT: self._move_error,
+            None: self._move_error,
+            False: self._token_comment,
+            LINEFEED: self._move_error,
+            NEWLINE: self._token_comment,
             PGN_ERROR: self._token_comment,
             PGN_FROM_SQUARE_DISAMBIGUATION: self._token_previous_move_error,
             }
@@ -546,9 +546,9 @@ class PGN(object):
         else:
             if len(sp_p[3]) != 2:
                 return PGN_ERROR
-            elif not MAPFILE.has_key(sp_p[3][0]):
+            elif sp_p[3][0] not in MAPFILE:
                 return PGN_ERROR
-            elif not MAPRANK.has_key(sp_p[3][1]):
+            elif sp_p[3][1] not in MAPRANK:
                 return PGN_ERROR
             sp_i = MAPFILE[sp_p[3][0]] + MAPRANK[sp_p[3][1]]
             if not sp_i in FEN_EP_SQUARES:
@@ -667,7 +667,7 @@ class PGN(object):
             for sp_j in sp_p[2]:
                 if sp_p[2].count(sp_j) > 1:
                     return PGN_ERROR
-                if not CASTLEKEY.has_key(sp_j):
+                if sp_j not in CASTLEKEY:
                     return PGN_ERROR
                 sp_k = CASTLEMOVES[CASTLEKEY[sp_j]]
                 for sp_l in sp_k:

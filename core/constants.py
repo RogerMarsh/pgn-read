@@ -17,7 +17,7 @@ TAG_WHITE = 'White'
 TAG_BLACK = 'Black'
 TAG_RESULT = 'Result'
 TAG_FEN = 'FEN'
-SEVEN_TAG_ROSTER = set((
+SEVEN_TAG_ROSTER = {
     TAG_EVENT,
     TAG_SITE,
     TAG_DATE,
@@ -25,7 +25,7 @@ SEVEN_TAG_ROSTER = set((
     TAG_WHITE,
     TAG_BLACK,
     TAG_RESULT,
-    ))
+    }
 SEVEN_TAG_ROSTER_DISPLAY_ORDER = (
     TAG_SITE,
     TAG_ROUND,
@@ -48,7 +48,7 @@ WHITE_WIN = '1-0'
 BLACK_WIN = '0-1'
 DRAW = '1/2-1/2'
 TERMINATION = '*' # Unknown result
-RESULT_SET = set((WHITE_WIN, BLACK_WIN, DRAW, TERMINATION))
+RESULT_SET = {WHITE_WIN, BLACK_WIN, DRAW, TERMINATION}
 
 PGN_PAWN = ''
 PGN_KING = 'K'
@@ -540,16 +540,16 @@ CASTLEKEY = {
 # as currently implemented there is no harm except waste in including the test.
 CASTLEMOVES = {
     WK_CASTLES: (
-        [WKING, 4, [5, 6], FEN_WKING, set((4, 5))],
+        [WKING, 4, [5, 6], FEN_WKING, {4, 5}],
         [WROOK, 7, [6, 5]]),
     WQ_CASTLES: (
-        [WKING, 4, [3, 2], FEN_WQUEEN, set((4, 3))],
+        [WKING, 4, [3, 2], FEN_WQUEEN, {4, 3}],
         [WROOK, 0, [1, 2, 3]]),
     BK_CASTLES: (
-        [BKING, 60, [61, 62], FEN_BKING, set((60, 61))],
+        [BKING, 60, [61, 62], FEN_BKING, {60, 61}],
         [BROOK, 63, [62, 61]]),
     BQ_CASTLES: (
-        [BKING, 60, [59, 58], FEN_BQUEEN, set((60, 59))],
+        [BKING, 60, [59, 58], FEN_BQUEEN, {60, 59}],
         [BROOK, 56, [57, 58, 59]]) }
 
 # variation markers and non-move placeholders
@@ -764,13 +764,13 @@ def _generate_square_maps(boardside=8):
         # king_moves() queen_moves() and so on must be called before
         # pieces_attack_from_squares()
         squares = []
-        wkbk = set((WKING, BKING))
-        wqbq = set((WQUEEN, BQUEEN))
-        wrbr = set((WROOK, BROOK))
-        wbbb = set((WBISHOP, BBISHOP))
-        wnbn = set((WKNIGHT, BKNIGHT))
-        wp = set((WPAWN,))
-        bp = set((BPAWN,))
+        wkbk = {WKING, BKING}
+        wqbq = {WQUEEN, BQUEEN}
+        wrbr = {WROOK, BROOK}
+        wbbb = {WBISHOP, BBISHOP}
+        wnbn = {WKNIGHT, BKNIGHT}
+        wp = {WPAWN}
+        bp = {BPAWN}
         for s in range(boardsquares):
             squares.append(list())
             for t in range(boardsquares):
@@ -799,13 +799,13 @@ def _generate_square_maps(boardside=8):
         # king_moves() queen_moves() and so on must be called before
         # pieces_attack_from_squares()
         squares = []
-        wkbk = set((WKING, BKING))
-        wqbq = set((WQUEEN, BQUEEN))
-        wrbr = set((WROOK, BROOK))
-        wbbb = set((WBISHOP, BBISHOP))
-        wnbn = set((WKNIGHT, BKNIGHT))
-        wp = set((WPAWN,))
-        bp = set((BPAWN,))
+        wkbk = {WKING, BKING}
+        wqbq = {WQUEEN, BQUEEN}
+        wrbr = {WROOK, BROOK}
+        wbbb = {WBISHOP, BBISHOP}
+        wnbn = {WKNIGHT, BKNIGHT}
+        wp = {WPAWN}
+        bp = {BPAWN}
         for s in range(boardsquares):
             squares.append(list())
             for t in range(boardsquares):
