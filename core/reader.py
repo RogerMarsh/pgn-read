@@ -58,7 +58,8 @@ class PGNReader(PGNUpdate):
         # this call's contribution if more text is to come.
         chars = ''
         for pgntext in read_pgn(source):
-            games = re_games.split(''.join((chars, pgntext.decode('iso-8859-1'))))
+            games = re_games.split(
+                ''.join((chars, pgntext.decode('iso-8859-1'))))
             if len(pgntext):
                 chars = games.pop()
                 if len(games):
@@ -67,7 +68,9 @@ class PGNReader(PGNUpdate):
             # a game with no tags.  The re_games.split() call puts a '' there
             # if no such text is found.  The not-'' case should occur only for
             # the first get_games() call in a read_pgn() call if at all.
-            if len(games[0]):
+            if not len(games):
+                pass
+            elif len(games[0]):
                 self._tag_string = ''
                 self._move_string = games.pop(0)
                 yield True
