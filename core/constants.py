@@ -44,6 +44,12 @@ SEVEN_TAG_ROSTER_EXPORT_ORDER = (
     TAG_BLACK,
     TAG_RESULT,
     )
+
+# Repertoire Tags (non-standard)
+TAG_OPENING = 'Opening'
+REPERTOIRE_TAG_ORDER = (TAG_OPENING, TAG_RESULT)
+REPERTOIRE_GAME_TAGS = set(REPERTOIRE_TAG_ORDER)
+
 WHITE_WIN = '1-0'
 BLACK_WIN = '0-1'
 DRAW = '1/2-1/2'
@@ -393,7 +399,7 @@ INITIAL_WP_SQUARES = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
 INITIAL_BP_SQUARES = (
     (48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63))
 INITIAL_SQUARES = tuple([v for k, v in sorted([
-    (NOPIECE, (range(16, 48))),
+    (NOPIECE, (list(range(16, 48)))),
     (WKING, (4,)),
     (WQUEEN, (3,)),
     (WROOK, (0, 7)),
@@ -407,7 +413,6 @@ INITIAL_SQUARES = tuple([v for k, v in sorted([
     (BKNIGHT, (57, 62)),
     (BPAWN, (48, 49, 50, 51, 52, 53, 54, 55)),
     ])])
-del k, v
 
 # Map PGN piece file and rank names to internal representation
 MAPPIECE = {
@@ -588,9 +593,10 @@ def _calculate_lookups(boardside=8):
     # (typically the squares b1 c1 and d1) as these byte value arises from
     # 832 / 256 and are a good choice as prefix values.
     boardsquares = boardside * boardside
-    for o in range(256):
-        SCH.append(chr(o))
-        DECODE[SCH[o]] = o
+    bytes256 = bytes(range(256))
+    for e in bytes256:
+        SCH.append(bytes256[e:e+1].decode('iso-8859-1'))
+        DECODE[SCH[-1]] = e
     MOVE_NUMBER_KEYS[:] = [''.join((SCH[1], c)) for c in SCH]
     PCH[:] = [None] * len(PIECES) * boardsquares
     for piece in PIECES:
@@ -608,7 +614,7 @@ def _calculate_lookups(boardside=8):
                 POSITION_KEY_TO_PIECES[base + square] = (square, piece)
     # The special values (unused pawn-square encodings)
     castlemask = 0
-    for f, v in sorted(MAPFILE.iteritems()):
+    for f, v in sorted(MAPFILE.items()):
         # The en passant files
         POSITION_KEY_TO_FLAGS[WPAWN * boardsquares + MAPRANK['8'] + v] = f
         SPECIAL_VALUES_ENPASSANT.add(WPAWN * boardsquares + MAPRANK['8'] + v)

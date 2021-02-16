@@ -24,12 +24,15 @@ to move to f3.
 List of classes
 
 PGN
-PGNDisplayMoves
 PGNDisplay
+PGNDisplayMoves
 PGNEdit
 PGNMove
-PGNUpdate
+PGNRepertoireDisplay
+PGNRepertoireTags
+PGNRepertoireUpdate
 PGNTags
+PGNUpdate
 
 List of functions
 
@@ -176,6 +179,7 @@ from .constants import (
     SIDE_TO_MOVE_FENMAP,
     CASTLING_OPTION_FENMAP,
     EN_PASSANT_FENMAP,
+    TAG_OPENING,
     )
 
 re_tokens = re.compile(SPLIT_INTO_TOKENS)
@@ -456,7 +460,7 @@ class PGN(object):
         if len(self.tags) != len(self.tags_in_order):
             # Tag must appear no more than once
             return False
-        for v in self.tags.itervalues():
+        for v in self.tags.values():
             if len(v) == 0:
                 # Tag value must not be null
                 return False
@@ -2292,6 +2296,218 @@ class PGNUpdate(PGN):
 
     def _token_whitespace(self):
         pass
+
+
+class PGNRepertoireDisplay(PGNDisplay):
+    """Generate data to display repertoire game without ability to edit.
+
+    Methods added:
+
+    None
+
+    Methods overridden:
+
+    is_tag_roster_valid
+    
+    Methods extended:
+
+    None
+    
+    """
+    
+    def is_tag_roster_valid(self):
+        if not self._tags_valid:
+            # Tags deemed invalid even if calculation says ok
+            return False
+        if len(self.tags) != len(self.tags_in_order):
+            # Tag must appear no more than once
+            return False
+        for v in self.tags.values():
+            if len(v) == 0:
+                # Tag value must not be null
+                return False
+        if TAG_OPENING not in self.tags:
+            # A mandatory tag is missing
+            return False
+        return True
+
+
+class PGNRepertoireUpdate(PGN):
+    """Generate data structures to update a repertoire game on a database.
+
+    Methods added:
+
+    None
+
+    Methods overridden:
+
+    is_tag_roster_valid
+    _token_comment
+    _token_comment_after_newline
+    _token_digit
+    _token_end_comment
+    _token_end_reserved
+    _token_end_variation
+    _token_glyph
+    _token_move
+    _token_move_detail_error
+    _token_move_disambiguate
+    _token_move_error
+    _token_move_error_disambiguate
+    _token_move_in_error_sequence
+    _token_movetext_error
+    _token_newline
+    _token_newline_keep
+    _token_period
+    _token_previous_move_error
+    _token_result
+    _token_start_comment
+    _token_start_reserved
+    _token_start_variation
+    _token_whitespace
+    
+    Methods extended:
+
+    None
+    
+    """
+    
+    def is_tag_roster_valid(self):
+        if not self._tags_valid:
+            # Tags deemed invalid even if calculation says ok
+            return False
+        if len(self.tags) != len(self.tags_in_order):
+            # Tag must appear no more than once
+            return False
+        for v in self.tags.values():
+            if len(v) == 0:
+                # Tag value must not be null
+                return False
+        if TAG_OPENING not in self.tags:
+            # A mandatory tag is missing
+            return False
+        return True
+        
+    # start of refactored game token collection for update
+
+    def _token_comment(self):
+        self.gametokens.append(self._token)
+
+    def _token_comment_after_newline(self):
+        self.gametokens.append(LINEFEED)
+        self.gametokens.append(self._token)
+
+    def _token_digit(self):
+        pass
+
+    def _token_end_variation(self):
+        self.gametokens.append(self._token)
+
+    def _token_glyph(self):
+        self.gametokens.append(self._token)
+
+    def _token_move(self):
+        self.gametokens.append(self._token)
+
+    def _token_move_detail_error(self):
+        self.gametokens.append(self._token)
+
+    def _token_move_disambiguate(self):
+        self.gametokens.append(self._token)
+
+    def _token_move_error(self):
+        self.gametokens.append(self._token)
+
+    def _token_move_error_disambiguate(self):
+        self.gametokens.append(self._token)
+
+    def _token_move_in_error_sequence(self):
+        self.gametokens.append(self._token)
+
+    def _token_movetext_error(self):
+        self.gametokens.append(self._token)
+
+    def _token_newline(self):
+        pass
+
+    def _token_newline_keep(self):
+        self.gametokens.append(self._token)
+
+    def _token_period(self):
+        pass
+
+    def _token_previous_move_error(self):
+        self.gametokens.append(self._token)
+
+    def _token_result(self):
+        self.gametokens.append(self._token)
+
+    def _token_end_comment(self):
+        self.gametokens.append(self._token)
+
+    def _token_start_comment(self):
+        self.gametokens.append(self._token)
+
+    def _token_end_reserved(self):
+        self.gametokens.append(self._token)
+
+    def _token_start_reserved(self):
+        self.gametokens.append(self._token)
+
+    def _token_start_variation(self):
+        self.gametokens.append(self._token)
+
+    def _token_whitespace(self):
+        pass
+
+
+class PGNRepertoireTags(PGN):
+    """Generate data structures to display the PGN Tags of a repertoire.
+
+    Methods added:
+
+    get_game_score
+
+    Methods overridden:
+
+    is_tag_roster_valid
+    _process_movetext
+    
+    Methods extended:
+
+    __init__
+    
+    """
+
+    def __init__(self):
+        super(PGNRepertoireTags, self).__init__()
+        self._gamescore = None
+
+    def get_game_score(self):
+        """Process PGN movetext if required and return game score"""
+        if self._gamescore is None:
+            super(PGNRepertoireTags, self)._process_movetext()
+            self._gamescore = ''.join(self.tokens)
+        return self._gamescore
+    
+    def is_tag_roster_valid(self):
+        if not self._tags_valid:
+            # Tags deemed invalid even if calculation says ok
+            return False
+        if len(self.tags) != len(self.tags_in_order):
+            # Tag must appear no more than once
+            return False
+        for v in self.tags.values():
+            if len(v) == 0:
+                # Tag value must not be null
+                return False
+        if TAG_OPENING not in self.tags:
+            # A mandatory tag is missing
+            return False
+        return True
+
+    def _process_movetext(self):
+        """Override so PGN movetext is not processed"""
 
 
 class PGNTags(PGN):

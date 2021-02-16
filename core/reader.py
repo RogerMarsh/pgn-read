@@ -58,7 +58,7 @@ class PGNReader(PGNUpdate):
         # this call's contribution if more text is to come.
         chars = ''
         for pgntext in read_pgn(source):
-            games = re_games.split(''.join((chars, pgntext)))
+            games = re_games.split(''.join((chars, pgntext.decode('iso-8859-1'))))
             if len(pgntext):
                 chars = games.pop()
                 if len(games):
