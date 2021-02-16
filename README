@@ -1,19 +1,60 @@
-To install the pgn package type
+===================================
+Portable Game Notation (PGN) parser
+===================================
 
-python setup.py install
+.. contents::
+
+
+Description
+===========
+
+This package provides a parser for chess game scores in PGN format.
+
+Both the strict export format and many less strict import formats are supported.
+
+Classes for handling a single game and files of games are provided.
+
+These classes verify that a game score represents a legal game.
+
+
+Installation Instructions
+=========================
+
+Build dependencies
+
+* `Python`_ 3.3 or later 
+
+Install the package by typing
+
+   python setup.py install
 
 at the command prompt with setup.py in the current directory.
 
+You may need to give the path and version of Python depending on your system's configuration:
 
-This is pgn-0.7
+   <path to python>/python<version> setup.py install
+
+   For example
+
+      C:\\Python33\\python setup.py install
+
+         on Microsoft Windows or
+
+      python3.3 setup.py install
+
+         on Unix-like systems.
 
 
-Dependencies:
+Notes
+=====
 
-Python 3.3 or later installed.
+The lookup tables really need to be implemented more efficiently.  But other areas of chess game processing still offer better opportunities for speeding things up in my use of the package.
 
 
-Contact:
+Contact
+=======
 
 roger.marsh@solentware.co.uk
 
+
+.. _Python: https://python.org

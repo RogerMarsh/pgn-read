@@ -2,33 +2,38 @@
 # Copyright 2011 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
-from distutils.core import setup
+from setuptools import setup
 
-from version import _pgn_version
+if __name__ == '__main__':
 
-setup(
-    name='pgn',
-    version=_pgn_version,
-    description='PGN parser classes',
-    author='solentware.co.uk',
-    author_email='roger.marsh@solentware.co.uk',
-    url='http://www.solentware.co.uk',
-    package_dir={'pgn':''},
-    packages=[
-        'pgn',
-        'pgn.core',
-        ],
-    package_data={
-        'pgn': ['LICENCE'],
-        },
-    long_description='''PGN parser classes
+    long_description = open('README').read()
 
-    Parse game scores in PGN format.  Both the strict export format and many
-    less strict import formats are supported.
-
-    Base classes for handling a single game and files of games are provided.
-
-    These classes verify that a game score represents a legal game.
-    
-    ''',
-    )
+    setup(
+        name='pgn',
+        version='0.8',
+        description='Portable Game Notation (PGN) parser',
+        author='Roger Marsh',
+        author_email='roger.marsh@solentware.co.uk',
+        url='http://www.solentware.co.uk',
+        package_dir={'pgn':''},
+        packages=[
+            'pgn',
+            'pgn.core',
+            'pgn.about',
+            ],
+        package_data={
+            'pgn.about': ['LICENCE'],
+            },
+        long_description=long_description,
+        license='BSD',
+        classifiers=[
+            'License :: OSI Approved :: BSD License',
+            'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
+            'Operating System :: OS Independent',
+            'Topic :: Software Development',
+            'Topic :: Games/Entertainment :: Board Games',
+            'Intended Audience :: Developers',
+            'Development Status :: 4 - Beta',
+            ],
+        )
