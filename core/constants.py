@@ -61,19 +61,19 @@ SEVEN_TAG_ROSTER_ARCHIVE_SORT2 = (
     TAG_RESULT,
     )
 
+WHITE_WIN = '1-0'
+BLACK_WIN = '0-1'
+DRAW = '1/2-1/2'
+UNKNOWN_RESULT = '*'
+RESULT_SET = {WHITE_WIN, BLACK_WIN, DRAW, UNKNOWN_RESULT}
+
 # Repertoire Tags (non-standard)
 TAG_OPENING = 'Opening'
 REPERTOIRE_TAG_ORDER = (TAG_OPENING, TAG_RESULT)
 REPERTOIRE_GAME_TAGS = {
     TAG_OPENING: '?',
-    TAG_RESULT: '*',
+    TAG_RESULT: UNKNOWN_RESULT,
     }
-
-WHITE_WIN = '1-0'
-BLACK_WIN = '0-1'
-DRAW = '1/2-1/2'
-UNKNOWN_RESULT = '*' # Was TERMINATION
-RESULT_SET = {WHITE_WIN, BLACK_WIN, DRAW, UNKNOWN_RESULT}
 
 PGN_PAWN = ''
 PGN_KING = 'K'
@@ -104,7 +104,7 @@ WHITESPACE = '\s+'
 FULLSTOP = '.'
 PERIOD ='\\' + FULLSTOP
 INTEGER = '[1-9][0-9]*'
-TERMINATION = '1-0|0-1|1/2-1/2|\*'
+TERMINATION = '|'.join((WHITE_WIN, BLACK_WIN, DRAW, '\\' + UNKNOWN_RESULT))
 START_TAG = '['
 END_TAG = ']'
 SYMBOL = '([A-Za-z0-9][A-Za-z0-9_+#=:-]*)'
@@ -126,12 +126,28 @@ ESCAPE_LINE = PERCENT.join(('(?:\A|(?<=\n))', '(?:[^\n]*)\n'))
 NAG = '\$[0-9]+(?!/|-)'
 START_RAV = '('
 END_RAV = ')'
-PAWN_PROMOTE = '(?:([a-h])(x))?([a-h][18])(=[BNQR])'
-PAWN_CAPTURE = '([a-h])(x)([a-h][2-7])'
-PIECE_CAPTURE = '(?:(K)|(?:([BNQR])([a-h]?[1-8]?)))(x)([a-h][1-8])'
-PIECE_CHOICE_MOVE = '([BNQR])([a-h1-8])([a-h][1-8])'
-PIECE_MOVE = '([KBNQR])([a-h][1-8])'
-PAWN_MOVE = '([a-h][1-8])'
+
+# KQRBN are replaced by PGN_KING, ..., constants; not WKING, ..., constants.
+FNR = 'a-h'
+RNR = '1-8'
+PAWN_PROMOTE = ''.join(('(?:([' + FNR + '])(x))?([' + FNR + '][18])(=[',
+                         PGN_BISHOP, PGN_KNIGHT, PGN_QUEEN, PGN_ROOK,
+                        '])'))
+PAWN_CAPTURE = '([' + FNR + '])(x)([' + FNR + '][2-7])'
+PIECE_CAPTURE = ''.join(('(?:(',
+                         PGN_KING,
+                         ')|(?:([',
+                         PGN_BISHOP, PGN_KNIGHT, PGN_QUEEN, PGN_ROOK,
+                        '])([' + FNR + ']?[' + RNR + ']?)))',
+                         '(x)([' + FNR + '][' + RNR + '])'))
+PIECE_CHOICE_MOVE = ''.join(('([',
+                             PGN_BISHOP, PGN_KNIGHT, PGN_QUEEN, PGN_ROOK,
+                             '])([',
+                             FNR + RNR + '])([' + FNR + '][' + RNR + '])'))
+PIECE_MOVE = ''.join(('([',
+                      PGN_KING, PGN_BISHOP, PGN_KNIGHT, PGN_QUEEN, PGN_ROOK,
+                      '])([' + FNR + '][' + RNR + '])'))
+PAWN_MOVE = '([' + FNR + '][' + RNR + '])'
 CASTLES = '(O-O(?:-O)?)'
 CHECK = '([+#]?)'
 ANNOTATION = '([!?][!?]?)?'
@@ -167,12 +183,20 @@ IMPORT_FORMAT = ''.join(('(?:', TAG_PAIR, ')', '|',
 
 # Regular expressions to disambiguate moves: move text like 'Bc4d5' is the only
 # kind which could need to be interpreted as one move rather than two.
-DISAMBIGUATE_FORMAT = '[BNQ][a-h][1-8][a-h][1-8]'
+DISAMBIGUATE_FORMAT = ''.join(('[' + PGN_BISHOP + PGN_KNIGHT + PGN_QUEEN + ']',
+                               '[' + FNR + '][' + RNR + ']',
+                               '[' + FNR + '][' + RNR + ']'))
 UNAMBIGUOUS_FORMAT = '.*'
 
 # Regular expression to detect possible beginning of move in an error sequence,
 # "Bxa" for example while typing "Bxa6".
-POSSIBLE_MOVE = '[OKBNRQa-h][-Oa-h1-8+#?!=]* *'
+# No constants for partial castling moves.
+POSSIBLE_MOVE = ''.join(('[O',
+                         PGN_KING, PGN_BISHOP, PGN_KNIGHT, PGN_ROOK, PGN_QUEEN,
+                         FNR,
+                         '][-O',
+                         FNR, RNR,
+                         '+#?!=]* *'))
 
 #
 # Group offsets for IMPORT_FORMAT matches
@@ -346,68 +370,79 @@ MAP_PGN_SQUARE_NAME_TO_FEN_ORDER = {''.join((f,r)): fn + rn
                                     for r, rn in MAPRANK.items()}
 
 # FEN constants
-FEN_STARTPOSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+FEN_WHITE = 'w'
+FEN_BLACK = 'b'
 FEN_FIELD_DELIM = ' '
 FEN_RANK_DELIM = '/'
 FEN_NULL = '-'
-FEN_ADJACENT_EMPTY_SQUARES = '12345678'
-FEN_NEW = None
-FEN_FIELD_DELIM = ' '
-FEN_FIELD_COUNT = 6
-FEN_WHITE = 'w'
-FEN_BLACK = 'b'
-FEN_SIDES = {FEN_WHITE: WHITE_SIDE, FEN_BLACK: BLACK_SIDE}
-FEN_TOMOVE = FEN_WHITE, FEN_BLACK
 FEN_INITIAL_HALFMOVE_COUNT = 0
 FEN_INITIAL_FULLMOVE_NUMBER = 1
+FEN_INITIAL_CASTLING = WKING + WQUEEN + BKING + BQUEEN
+FEN_STARTPOSITION = FEN_FIELD_DELIM.join(
+    (FEN_RANK_DELIM.join(
+        (''.join((BROOK, BKNIGHT, BBISHOP, BQUEEN,
+                  BKING, BBISHOP, BKNIGHT, BROOK)),
+         ''.join((BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN)),
+         str(len(MAPFILE)),
+         str(len(MAPFILE)),
+         str(len(MAPFILE)),
+         str(len(MAPFILE)),
+         ''.join((WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN)),
+         ''.join((WROOK, WKNIGHT, WBISHOP, WQUEEN,
+                  WKING, WBISHOP, WKNIGHT, WROOK)),
+         )),
+     FEN_WHITE,
+     FEN_INITIAL_CASTLING,
+     FEN_NULL,
+     str(FEN_INITIAL_HALFMOVE_COUNT),
+     str(FEN_INITIAL_FULLMOVE_NUMBER),
+     ))
+FEN_FIELD_COUNT = 6
+FEN_SIDES = {FEN_WHITE: WHITE_SIDE, FEN_BLACK: BLACK_SIDE}
+FEN_TOMOVE = FEN_WHITE, FEN_BLACK
 
-# Map internal representation to FEN square names for en passant capture
+# Map FEN square names to board square numbers for en passant move and capture
 FEN_WHITE_MOVE_TO_EN_PASSANT = {
-    'a6': 16,
-    'b6': 17,
-    'c6': 18,
-    'd6': 19,
-    'e6': 20,
-    'f6': 21,
-    'g6': 22,
-    'h6': 23,
+    'a6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['a6'],
+    'b6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['b6'],
+    'c6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['c6'],
+    'd6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['d6'],
+    'e6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['e6'],
+    'f6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['f6'],
+    'g6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['g6'],
+    'h6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['h6'],
      }
 FEN_BLACK_MOVE_TO_EN_PASSANT = {
-    'a3': 40,
-    'b3': 41,
-    'c3': 42,
-    'd3': 43,
-    'e3': 44,
-    'f3': 45,
-    'g3': 46,
-    'h3': 47,
+    'a3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['a3'],
+    'b3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['b3'],
+    'c3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['c3'],
+    'd3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['d3'],
+    'e3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['e3'],
+    'f3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['f3'],
+    'g3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['g3'],
+    'h3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['h3'],
     }
 FEN_WHITE_CAPTURE_EN_PASSANT = {
-    'a6': 24,
-    'b6': 25,
-    'c6': 26,
-    'd6': 27,
-    'e6': 28,
-    'f6': 29,
-    'g6': 30,
-    'h6': 31,
+    'a6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['a5'],
+    'b6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['b5'],
+    'c6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['c5'],
+    'd6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['d5'],
+    'e6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['e5'],
+    'f6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['f5'],
+    'g6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['g5'],
+    'h6': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['h5'],
      }
 FEN_BLACK_CAPTURE_EN_PASSANT = {
-    'a3': 32,
-    'b3': 33,
-    'c3': 34,
-    'd3': 35,
-    'e3': 36,
-    'f3': 37,
-    'g3': 38,
-    'h3': 39,
+    'a3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['a4'],
+    'b3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['b4'],
+    'c3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['c4'],
+    'd3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['d4'],
+    'e3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['e4'],
+    'f3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['f4'],
+    'g3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['g4'],
+    'h3': MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['h4'],
     }
 FEN_EN_PASSANT_TARGET_RANK = {'5':'6', '4':'3'}
-
-# Castling
-FEN_CASTLING = frozenset((WKING, WQUEEN, BKING, BQUEEN))
-FEN_KINGS = frozenset((WKING, BKING))
-FEN_INITIAL_CASTLING = WKING + WQUEEN + BKING + BQUEEN
 
 # Specification of conditions to be met to permit castling and changes to make
 # to board to display move in internal representation.
@@ -417,12 +452,12 @@ FEN_INITIAL_CASTLING = WKING + WQUEEN + BKING + BQUEEN
 # about castling is that the king cannot move out of or through check; for all
 # types of move the king must not be under attack after playing the move.  But
 # as currently implemented there is no harm except waste in including the test.
-CASTLING_W = 60
-CASTLING_WK = 63
-CASTLING_WQ = 56
-CASTLING_B = 4
-CASTLING_BK = 7
-CASTLING_BQ = 0
+CASTLING_W = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['e1']
+CASTLING_WK = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['h1']
+CASTLING_WQ = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['a1']
+CASTLING_B = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['e8']
+CASTLING_BK = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['h8']
+CASTLING_BQ = MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['a8']
 CASTLING_AVAILABITY_SQUARES = (
     SQUARE_BITS[CASTLING_WQ] |
     SQUARE_BITS[CASTLING_W] |
@@ -434,29 +469,33 @@ CASTLING_SQUARES = {
     WKING: (
         CASTLING_W,
         CASTLING_WK,
-        (CASTLING_W+1, CASTLING_W+2),
+        (MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['f1'],
+         MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['g1']),
         (),
         WROOK,
         WKING),
     WQUEEN: (
         CASTLING_W,
         CASTLING_WQ,
-        (CASTLING_W-1, CASTLING_W-2),
-        (CASTLING_W-3,),
+        (MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['d1'],
+         MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['c1']),
+        (MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['b1'],),
         WROOK,
         WKING),
     BKING: (
         CASTLING_B,
         CASTLING_BK,
-        (CASTLING_B+1, CASTLING_B+2),
+        (MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['f8'],
+         MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['g8']),
         (),
         BROOK,
         BKING),
     BQUEEN: (
         CASTLING_B,
         CASTLING_BQ,
-        (CASTLING_B-1, CASTLING_B-2),
-        (CASTLING_B-3,),
+        (MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['d8'],
+         MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['c8']),
+        (MAP_PGN_SQUARE_NAME_TO_FEN_ORDER['b8'],),
         BROOK,
         BKING),
     }
@@ -658,5 +697,9 @@ PIECE_MOVE_MAP = {k:v for k, v in
                    )}
 
 # Lookup tables for string representation of square and move numbers.
-SCH = tuple([chr(i) for i in range(256)])
-MOVE_NUMBER_KEYS = tuple([''.join((SCH[1], c)) for c in SCH])
+MAP_FEN_ORDER_TO_PGN_SQUARE_NAME = [
+    t[-1] for t in sorted((v,k)
+                          for k, v
+                          in MAP_PGN_SQUARE_NAME_TO_FEN_ORDER.items())]
+MOVE_NUMBER_KEYS = tuple(
+    ['0'] + [str(len(hex(i))-2) + hex(i)[2:] for i in range(1, 256)])

@@ -718,7 +718,6 @@ class FENConstants(unittest.TestCase):
         self.assertEqual(constants.OTHER_SIDE, (1, 0))
         self.assertEqual(constants.SIDE_KING, ('K', 'k'))
         self.assertEqual(constants.FEN_NULL, '-')
-        self.assertEqual(constants.FEN_NEW, None)
         self.assertEqual(constants.FEN_FIELD_DELIM, ' ')
         self.assertEqual(constants.FEN_FIELD_COUNT, 6)
         self.assertEqual(constants.FEN_SIDES, {'w':0, 'b':1})
@@ -766,10 +765,6 @@ class FENConstants(unittest.TestCase):
         self.assertEqual(constants.FEN_EN_PASSANT_TARGET_RANK,
                          {'5':'6', '4':'3'})
         self.assertEqual(constants.FEN_RANK_DELIM, '/')
-        self.assertEqual(constants.FEN_CASTLING,
-                         frozenset(('K', 'Q', 'k', 'q')))
-        self.assertEqual(constants.FEN_KINGS,
-                         frozenset(('K', 'k')))
         self.assertEqual(constants.FEN_CASTLING_OPTION_REPEAT_MAX, 1)
         self.assertEqual(constants.FEN_PIECE_COUNT_PER_SIDE_MAX, 16)
         self.assertEqual(constants.FEN_KING_COUNT, 1)

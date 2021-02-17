@@ -26,8 +26,6 @@ to move to f3.
 import re
 
 from .constants import (
-    FEN_ADJACENT_EMPTY_SQUARES,
-    SCH,
     FULLSTOP,
     LEFT_ANGLE_BRACE,
     RIGHT_ANGLE_BRACE,
@@ -138,7 +136,6 @@ from .constants import (
     FEN_RANK_DELIM,
     BOARDSIDE,
     FEN_PIECE_COUNT_PER_SIDE_MAX,
-    FEN_KINGS,
     FEN_KING_COUNT,
     FEN_PAWN_COUNT_MAX,
     FEN_QUEEN_COUNT_INITIAL,
@@ -155,7 +152,6 @@ from .constants import (
     PIECES,
     SQUARE_BITS,
     GAPS,
-    FEN_CASTLING,
     FEN_CASTLING_OPTION_REPEAT_MAX,
     FEN_BLACK,
     FEN_BLACK_MOVE_TO_EN_PASSANT,
@@ -167,6 +163,7 @@ from .constants import (
     FEN_MAXIMUM_PIECES_GIVING_CHECK,
     MAPFILE,
     MAP_PGN_SQUARE_NAME_TO_FEN_ORDER,
+    MAP_FEN_ORDER_TO_PGN_SQUARE_NAME,
     MAPPIECE,
     CAPTURE_MOVE,
     PIECE_MOVE_MAP,
@@ -223,7 +220,6 @@ class PGN(object):
         self.board_bitmap = None
         self.occupied_squares = []
         self.board = []
-        #self.piece_locations = []
         self.piece_locations = {}
         self.fullmove_number = None
         self.halfmove_count = None
@@ -470,12 +466,12 @@ class PGN(object):
 
         # fen castling field.
         if castling != FEN_NULL:
-            for c in FEN_CASTLING:
+            for c in FEN_INITIAL_CASTLING:
                 if castling.count(c) > FEN_CASTLING_OPTION_REPEAT_MAX:
                     self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
                     return
             for c in castling:
-                if c not in FEN_CASTLING:
+                if c not in FEN_INITIAL_CASTLING:
                     self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
                     return
 
@@ -536,7 +532,7 @@ class PGN(object):
             return
 
         # No more than 16 pieces per side.
-        for s in (WPIECES, BPIECES):
+        for s in WPIECES, BPIECES:
             for p in s:
                 if sum([piece_placement.count(p)
                         for p in s]) > FEN_PIECE_COUNT_PER_SIDE_MAX:
@@ -544,13 +540,13 @@ class PGN(object):
                     return
 
         # Exactly one king per side.
-        for p in FEN_KINGS:
+        for p in WKING, BKING:
             if piece_placement.count(p) != FEN_KING_COUNT:
                 self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
                 return
 
         # No more than eight pawns per side.
-        for p in (WPAWN, BPAWN):
+        for p in WPAWN, BPAWN:
             if piece_placement.count(p) > FEN_PAWN_COUNT_MAX:
                 self._state = PGN_SEARCHING_AFTER_ERROR_IN_GAME
                 return
@@ -654,7 +650,6 @@ class PGN(object):
 
         # FEN is legal, except for restrictions on kings in check, so set
         # instance attributes to fit description of position.
-        #piece_locations = [set() for r in range(len(INITIAL_PIECE_LOCATIONS))]
         piece_locations = {k:set() for k in INITIAL_PIECE_LOCATIONS}
         active_side_squares = set()
         inactive_side_squares = set()
@@ -2180,79 +2175,10 @@ class PGNMove(PGN):
             self._initial_position = self.ravstack[0][-1]
 
 
-class PGNUpdate(PGN):
-    """Generate data structures to update a game on a database.
-    
-    """
-
-    def __init__(self):
-        super().__init__()
-        
-        '''Add structures to support update of PGN records on database'''
-
-        self.positions = []
-        self.piecesquaremoves = []
-
-    def set_position_fen(self, fen=None):
-        """Initialize PGN score parser with Forsyth Edwards Notation position.
-
-        fen defaults to the starting position for a game of chess.
-
-        """
-        super().set_position_fen(fen=fen)
-        if self._initial_fen:
-            self.positions = []
-            self.piecesquaremoves = []
-
-    def add_move_to_game(self):
-        """Add legal move to data structures describing game.
-
-        """
-        super().add_move_to_game()
-        try:
-            movenumber = MOVE_NUMBER_KEYS[len(self.positions)]
-        except IndexError:
-            n = len(self.positions)
-            b = []
-            while n:
-                n, r = divmod(n, 256)
-                b.append(SCH[r])
-            try:
-                movenumber = SCH[len(b)] + ''.join(b)
-            except IndexError:
-                movenumber = SCH[len(b) % 256] + ''.join(b)
-        board = self.board
-        piecesquares = [FEN_TOMOVE[self.active_side] +
-                        self.castling +
-                        self.en_passant +
-                        self.board_bitmap.to_bytes(8, 'big'
-                                                   ).decode('iso-8859-1')]
-        piecesquaremoves = self.piecesquaremoves
-        sch = SCH
-        for square, piece in enumerate(board):
-            if piece:
-                piecesquares.append(piece)
-                piecesquaremoves.append(piece + sch[square] + movenumber)
-        self.positions.append(''.join(piecesquares))
-        
-    def collect_game_tokens(self):
-        """Create snapshot of tokens extracted from PGN.
-
-        This method is expected to be called on detection of termination token.
-
-        """
-        self.collected_game = (
-            self.tags_in_order,
-            {m.group(IFG_TAG_SYMBOL):m.group(IFG_TAG_STRING_VALUE)
-             for m in self.tags_in_order},
-            self.tokens,
-            self.error_tokens,
-            self.positions,
-            self.piecesquaremoves)
-
-
 class PGNRepertoireDisplay(PGNDisplay):
     """Generate data to display repertoire game without ability to edit.
+
+    The Opening tag is mandatory and is intended for naming the repertoire.
     
     """
     
@@ -2305,6 +2231,8 @@ class PGNRepertoireDisplay(PGNDisplay):
 
 class PGNRepertoireUpdate(PGN):
     """Generate data structures to update a repertoire game on a database.
+
+    The Opening tag is mandatory and is intended for naming the repertoire.
 
     """
     
@@ -2701,6 +2629,9 @@ class PGNTags(PGN):
 class PGNRepertoireTags(PGNTags):
     """Generate data structures to display the PGN Tags of a repertoire.
 
+    The notion of mandatory PGN tags, like the 'seven tag roster', is removed
+    from the PGNTags class.
+
     """
     
     def is_tag_roster_valid(self):
@@ -2796,16 +2727,3 @@ def get_fen_string(description, halfmoves=0, fullmoves=1):
                      ep_square,
                      str(halfmoves),
                      str(fullmoves)))
-
-
-def get_position_string(description):
-    """Return position string for description of board.
-    
-    """
-    board, side_to_move, castle_options, ep_square = description
-    return (FEN_TOMOVE[side_to_move] +
-            castle_options +
-            ep_square +
-            sum(SQUARE_BITS[e] for e, p in enumerate(board) if p
-                ).to_bytes(8, 'big').decode('iso-8859-1') +
-            ''.join(p for p in board))
