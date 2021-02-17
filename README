@@ -12,9 +12,17 @@ This package provides a parser for chess game scores in `PGN`_ format.
 
 Both the strict export format and many less strict import formats are supported.
 
-Classes for handling a single game and files of games are provided.
+Chess variants are not supported.
 
-These classes verify that a game score represents a legal game.
+The game module provides the Game, GameStrictPGN, GameTextPGN, and GameIgnoreCasePGN, classes and the generate_fen_for_position function.
+
+The parser module provides the PGN class and add_token_to_game function.
+
+The PGN.read_games method yields instances of the Game class, or a subclass, generated from a file-like source or string.
+
+The add_token_to_game function searches for the next PGN token in a string and applies it to an instance of the Game class, or a subclass.
+
+The generate_fen_for_position function returns the Forsyth English Notation (FEN) string for the representation of a position in the Game class, or a subclass.
 
 
 Installation Instructions
@@ -48,9 +56,9 @@ Use `Python`_ 3.3 or later.
 Notes
 =====
 
-Project name and package name changed from 'pgn' to 'pgn-chess' prior to upload to PyPI.
+Project name and package name changed from 'pgn' to 'pgn-read' prior to upload to PyPI.
 
-The version numbers of pgn-chess continue on from pgn.
+The version numbers of pgn-read continue on from pgn.
 
 
 .. _Python: https://python.org
