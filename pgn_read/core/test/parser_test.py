@@ -3173,6 +3173,22 @@ class Pgn__play_move(unittest.TestCase):
         self.pgn._play_move('R', 'f', '', 'e3', None)
         self.changed_after_invalid_move()
 
+    def test_play_move_23(self):
+        self.pgn.set_position_fen(
+            fen='r3k2r/8/5p2/8/8/8/8/R3K2R w KQkq - 0 1')
+        self.assertEqual(self.pgn.castling, 'KQkq')
+        self.pgn._play_move('R', '', 'x', 'a8', None)
+        self.unchanged_after_valid_move()
+        self.assertEqual(self.pgn.castling, 'Kk')
+
+    def test_play_move_24(self):
+        self.pgn.set_position_fen(
+            fen='r3k2r/8/8/8/8/5P2/8/R3K2R b KQkq - 0 1')
+        self.assertEqual(self.pgn.castling, 'KQkq')
+        self.pgn._play_move('R', '', 'x', 'h1', None)
+        self.unchanged_after_valid_move()
+        self.assertEqual(self.pgn.castling, 'Qq')
+
 
 class Pgn__play_castles(unittest.TestCase):
 

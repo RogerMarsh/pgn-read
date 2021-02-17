@@ -923,7 +923,7 @@ class PGN(object):
                     self.castling = self.castling.replace(BKING, NOPIECE)
                 elif fromsquare == CASTLING_BQ:
                     self.castling = self.castling.replace(BQUEEN, NOPIECE)
-                elif tosquare == CASTLING_WK:
+                if tosquare == CASTLING_WK:
                     self.castling = self.castling.replace(WKING, NOPIECE)
                 elif tosquare == CASTLING_WQ:
                     self.castling = self.castling.replace(WQUEEN, NOPIECE)
