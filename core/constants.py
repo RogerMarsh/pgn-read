@@ -4,7 +4,8 @@
 
 """Constants for Portable Game Notation (PGN) parser.
 
-PGN
+The defined constants are used when parsing PGN and FEN text, and when checking
+the PGN game score represents a legal sequence of moves and variations.
 
 """
 

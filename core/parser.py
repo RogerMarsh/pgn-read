@@ -21,26 +21,6 @@ position to do this: does Qd1f3 mean a queen move (to d1) followed by a pawn
 move (to f3) or a queen move (from d1 to f3) if more than two queens are able
 to move to f3.
 
-List of classes
-
-PGN
-PGNAnalysis
-PGNDisplay
-PGNDisplayMoves
-PGNEdit
-PGNMove
-PGNRepertoireDisplay
-PGNRepertoireTags
-PGNRepertoireUpdate
-PGNTags
-PGNUpdate
-
-List of functions
-
-get_board_from_position
-get_fen_string
-get_position_string
-
 """
 
 import re
@@ -227,33 +207,6 @@ class PGN(object):
 
     None of the data structures specific to displaying a game or updating a
     database are generated.  use the appropriate subclass to do these things.
-
-    Methods added:
-
-    count_attacks_on_square_by_side
-    is_active_king_attacked
-    is_movetext_valid
-    is_pgn_valid
-    is_square_attacked_by_side
-    is_tag_roster_valid
-    _play_disambiguated_move
-    _play_move
-    reset_position
-    set_position_fen
-    add_move_to_game
-    _end_variation
-    _process_disambiguated_token
-    _revert_state_and_reprocess_token
-    _start_variation
-    _termination_while_searching
-
-    Methods overridden:
-
-    None
-    
-    Methods extended:
-
-    __init__
     
     """
 
@@ -1886,21 +1839,6 @@ class PGN(object):
 
 class PGNDisplayMoves(PGN):
     """Base class for generating data structures to display a game.
-
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    add_move_to_game
-    collect_game_tokens
-    collect_token
-    
-    Methods extended:
-
-    __init__
-    set_position_fen
     
     """
 
@@ -1967,25 +1905,6 @@ class PGNDisplayMoves(PGN):
 
 class PGNDisplay(PGNDisplayMoves):
     """Generate data structures to display a game without ability to edit.
-
-    Methods added:
-
-    _add_token_to_text
-    get_archive_movetext
-    get_archive_pgn_elements
-    get_export_pgn_movetext
-    get_export_pgn_rav_elements
-    get_export_pgn_rav_movetext
-    get_non_seven_tag_roster_tags
-    get_seven_tag_roster_tags
-
-    Methods overridden:
-
-    None
-    
-    Methods extended:
-
-    None
     
     """
 
@@ -2214,18 +2133,6 @@ class PGNDisplay(PGNDisplayMoves):
 
 class PGNEdit(PGNDisplay):
     """Generate data structures to display a game for editing.
-
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    _convert_error_tokens_to_token
-    
-    Methods extended:
-
-    None
     
     """
 
@@ -2251,19 +2158,6 @@ class PGNEdit(PGNDisplay):
 
 class PGNMove(PGN):
     """Generate data structures to check legality of a move being edited.
-
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    is_movetext_valid
-    
-    Methods extended:
-
-    __init__
-    set_position_fen
     
     """
     # Should _convert_error_tokens_to_token() be overridden here?
@@ -2288,20 +2182,6 @@ class PGNMove(PGN):
 
 class PGNUpdate(PGN):
     """Generate data structures to update a game on a database.
-
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    collect_game_tokens
-    
-    Methods extended:
-
-    __init__
-    add_move_to_game
-    set_position_fen
     
     """
 
@@ -2373,19 +2253,6 @@ class PGNUpdate(PGN):
 
 class PGNRepertoireDisplay(PGNDisplay):
     """Generate data to display repertoire game without ability to edit.
-
-    Methods added:
-
-    get_export_repertoire_rav_text
-    get_export_repertoire_text
-
-    Methods overridden:
-
-    is_tag_roster_valid
-    
-    Methods extended:
-
-    None
     
     """
     
@@ -2439,18 +2306,6 @@ class PGNRepertoireDisplay(PGNDisplay):
 class PGNRepertoireUpdate(PGN):
     """Generate data structures to update a repertoire game on a database.
 
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    is_tag_roster_valid
-    
-    Methods extended:
-
-    None
-    
     """
     
     def is_tag_roster_valid(self):
@@ -2472,26 +2327,7 @@ class PGNRepertoireUpdate(PGN):
 class PGNTags(PGN):
     """Generate data structures to display the PGN Tags of a game.
 
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    _collecting_movetext
-    _collecting_tag_pairs
-    _disambiguate_move
-    _end_variation
-    _searching
-    _searching_after_error_in_game
-    _searching_after_error_in_rav
-    _start_variation
-    
-    Methods extended:
-
-    None
-
-    Notes
+    Comments on two methods are worth making:
 
     _disambiguate_move is defined but the only way it should be reached has
     been disabled by overriding _collecting_movetext.  The definition ensures
@@ -2865,18 +2701,6 @@ class PGNTags(PGN):
 class PGNRepertoireTags(PGNTags):
     """Generate data structures to display the PGN Tags of a repertoire.
 
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    is_tag_roster_valid
-    
-    Methods extended:
-
-    None
-    
     """
     
     def is_tag_roster_valid(self):
@@ -2898,21 +2722,6 @@ class PGNRepertoireTags(PGNTags):
 
 class PGNAnalysis(PGNDisplay):
     """Generate data to display Chess Engine analysis without ability to edit.
-
-    Methods added:
-
-    None
-
-    Methods overridden:
-
-    is_tag_roster_valid
-    _termination_while_searching
-    
-    Methods extended:
-
-    None
-
-    Notes:
 
     The notion of mandatory PGN tags, like the 'seven tag roster', is removed
     from the PGNDisplay class.
