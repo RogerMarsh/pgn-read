@@ -2078,7 +2078,7 @@ class PGNDisplay(PGNDisplayMoves):
     def get_non_seven_tag_roster_tags(self):
         """Return string of sorted tags not in Seven Tag Roster"""
         return '\n'.join(sorted(
-            [t.group()
+            [' "'.join(t.group().split('"', 1))
              for t in self.collected_game[0]
              if t.group(IFG_TAG_SYMBOL) not in SEVEN_TAG_ROSTER]))
 
