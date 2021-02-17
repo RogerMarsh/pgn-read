@@ -805,6 +805,10 @@ class PGN(object):
         piece_locations = self.piece_locations
         fromsquare = from_squares.pop()
         if pgn_capture == CAPTURE_MOVE:
+            if pgn_piece == PGN_PAWN:
+                if MAPFILE.get(pgn_from[0]) != fromsquare % BOARDSIDE:
+                    self._illegal_play_move()
+                    return
             inactive_side_squares = self.occupied_squares[
                 OTHER_SIDE[self.active_side]]
             if tosquare not in inactive_side_squares:

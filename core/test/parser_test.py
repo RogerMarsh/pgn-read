@@ -3109,6 +3109,36 @@ class Pgn__play_move(unittest.TestCase):
         self.pgn._play_move('K', '', 'x', 'c5', None)
         self.changed_after_invalid_move()
 
+    def test_play_move_17(self):
+        self.pgn.set_position_fen(
+            fen='rnbqkb1r/p2ppppp/5n2/1ppP4/2P5/8/PP2PPPP/RNBQKBNR w KQkq - 0 1')
+        self.pgn._play_move('', 'c', 'x', 'b5', None)
+        self.unchanged_after_valid_move()
+
+    def test_play_move_18(self):
+        self.pgn.set_position_fen(
+            fen='rnbqkb1r/p2ppppp/5n2/1ppP4/2P5/8/PP2PPPP/RNBQKBNR w KQkq - 0 1')
+        self.pgn._play_move('', 'a', 'x', 'b5', None)
+        self.changed_after_invalid_move()
+
+    def test_play_move_19(self):
+        self.pgn.set_position_fen(
+            fen='rnbqkb1r/p2ppppp/5n2/1ppP4/2P5/8/PP2PPPP/RNBQKBNR w KQkq - 0 1')
+        self.pgn._play_move('', 'e', 'x', 'b5', None)
+        self.changed_after_invalid_move()
+
+    def test_play_move_20(self):
+        self.pgn.set_position_fen(
+            fen='rnbqkb1r/p2ppppp/5n2/1ppP4/2P5/8/PP2PPPP/RNBQKBNR w KQkq - 0 1')
+        self.pgn._play_move('', 'j', 'x', 'b5', None)
+        self.changed_after_invalid_move()
+
+    def test_play_move_21(self):
+        self.pgn.set_position_fen(
+            fen='rnbqkb1r/p2ppppp/5n2/1ppP4/2P5/8/PP2PPPP/RNBQKBNR w KQkq - 0 1')
+        self.pgn._play_move('', 'c', 'x', 'b6', None)
+        self.changed_after_invalid_move()
+
 
 class Pgn__play_castles(unittest.TestCase):
 
