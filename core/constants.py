@@ -108,7 +108,7 @@ TERMINATION = '1-0|0-1|1/2-1/2|\*'
 START_TAG = '['
 END_TAG = ']'
 SYMBOL = '([A-Za-z0-9][A-Za-z0-9_+#=:-]*)'
-STRING = '"((?:[^\\"]|\\.)*)"'
+STRING = r'"((?:[^\\"]|\\.)*)"'
 TAG_PAIR = ''.join(('(\\', START_TAG, ')\s*',
                     SYMBOL, '\s*',
                     STRING, '\s*',
