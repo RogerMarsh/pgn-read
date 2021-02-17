@@ -10,21 +10,16 @@ if __name__ == '__main__':
 
     setup(
         name='pgn-read',
-        version='1.2.4',
+        version='1.3',
         description='Portable Game Notation (PGN) parser',
         author='Roger Marsh',
         author_email='roger.marsh@solentware.co.uk',
         url='http://www.solentware.co.uk',
-        package_dir={'pgn_read':''},
         packages=[
             'pgn_read',
             'pgn_read.core',
             'pgn_read.core.test',
-            'pgn_read.about',
             ],
-        package_data={
-            'pgn_read.about': ['LICENCE', 'CONTACT'],
-            },
         long_description=long_description,
         license='BSD',
         classifiers=[
@@ -33,6 +28,7 @@ if __name__ == '__main__':
             'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7',
             'Operating System :: OS Independent',
             'Topic :: Software Development',
             'Topic :: Games/Entertainment :: Board Games',

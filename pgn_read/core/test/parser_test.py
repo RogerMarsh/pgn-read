@@ -1513,9 +1513,13 @@ class Pgn_reset_position(unittest.TestCase):
 
     def test_reset_position_01(self):
         p = self.pgn
+        if sys.version_info[:2] < (3, 7):
+            msg = "'NoneType' object is not iterable"
+        else:
+            msg = "cannot unpack non-iterable NoneType object"
         self.assertRaisesRegex(
             TypeError,
-            "'NoneType' object is not iterable",
+            msg,
             p.reset_position,
             *(None,))
 
