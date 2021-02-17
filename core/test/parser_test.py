@@ -3139,6 +3139,12 @@ class Pgn__play_move(unittest.TestCase):
         self.pgn._play_move('', 'c', 'x', 'b6', None)
         self.changed_after_invalid_move()
 
+    def test_play_move_22(self):
+        self.pgn.set_position_fen(
+            fen='2r5/p3k3/3bpr1p/1p1p2pP/3P4/2P2P2/PP1B1RK1/4R3 w - - 0 1')
+        self.pgn._play_move('R', 'f', '', 'e3', None)
+        self.changed_after_invalid_move()
+
 
 class Pgn__play_castles(unittest.TestCase):
 

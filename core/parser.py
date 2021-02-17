@@ -804,11 +804,15 @@ class PGN(object):
 
         piece_locations = self.piece_locations
         fromsquare = from_squares.pop()
+
+        # pgn_from is null, a file name, a rank name, or a square name.  If not
+        # null it must be part of, or equal, the square name of fromsquare.
+        if pgn_from is not None:
+            if pgn_from not in MAP_FEN_ORDER_TO_PGN_SQUARE_NAME[fromsquare]:
+                self._illegal_play_move()
+                return
+
         if pgn_capture == CAPTURE_MOVE:
-            if pgn_piece == PGN_PAWN:
-                if MAPFILE.get(pgn_from[0]) != fromsquare % BOARDSIDE:
-                    self._illegal_play_move()
-                    return
             inactive_side_squares = self.occupied_squares[
                 OTHER_SIDE[self.active_side]]
             if tosquare not in inactive_side_squares:
@@ -2076,9 +2080,14 @@ class PGNDisplay(PGNDisplayMoves):
         return ''.join(movetext)
 
     def get_non_seven_tag_roster_tags(self):
-        """Return string of sorted tags not in Seven Tag Roster"""
+        """Return string of sorted tags not in Seven Tag Roster.
+
+        Assume any number of spaces at end of tag name. '[ECO  "C91"  ]' or
+        '[ECO"C91"]' both give the correct '[ECO "C91"]' for export format.
+
+        """
         return '\n'.join(sorted(
-            [' "'.join(t.group().split('"', 1))
+            [' "'.join(r.rstrip() for r in t.group().split('"', 1))
              for t in self.collected_game[0]
              if t.group(IFG_TAG_SYMBOL) not in SEVEN_TAG_ROSTER]))
 
