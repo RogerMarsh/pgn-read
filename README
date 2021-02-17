@@ -45,5 +45,13 @@ You may need to give the path and version of Python depending on your system's c
          on Unix-like systems.
 
 
+Notes
+=====
+
+Project name and package name changed from 'pgn' to 'pgn-chess' prior to upload to PyPI.
+
+The version numbers of pgn-chess continue on from pgn.
+
+
 .. _Python: https://python.org
 .. _PGN: http://www6.chessclub/help/PGN-spec

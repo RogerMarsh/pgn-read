@@ -9,21 +9,21 @@ if __name__ == '__main__':
     long_description = open('README').read()
 
     setup(
-        name='pgn',
-        version='1.1',
+        name='pgn-read',
+        version='1.2',
         description='Portable Game Notation (PGN) parser',
         author='Roger Marsh',
         author_email='roger.marsh@solentware.co.uk',
         url='http://www.solentware.co.uk',
-        package_dir={'pgn':''},
+        package_dir={'pgn_read':''},
         packages=[
-            'pgn',
-            'pgn.core',
-            'pgn.core.test',
-            'pgn.about',
+            'pgn_read',
+            'pgn_read.core',
+            'pgn_read.core.test',
+            'pgn_read.about',
             ],
         package_data={
-            'pgn.about': ['LICENCE', 'CONTACT'],
+            'pgn_read.about': ['LICENCE', 'CONTACT'],
             },
         long_description=long_description,
         license='BSD',

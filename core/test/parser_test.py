@@ -2440,28 +2440,19 @@ class Pgn_get_fen_string(unittest.TestCase):
     def tearDown(self):
         del self.pgn
 
-    def test_get_fen_string(self):
+    def test_get_fen_string_01(self):
         p = self.pgn
         p.set_position_fen('3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 15 47')
         p._play_move('K', '', '', 'e8', '')
         s = parser.get_fen_string(p.ravstack[-1][-1])
         self.assertEqual(s, '4k3/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 w - - 0 1')
 
-
-class Pgn_get_position_string(unittest.TestCase):
-
-    def setUp(self):
-        self.pgn = parser.PGN()
-
-    def tearDown(self):
-        del self.pgn
-
-    def test_get_position_string(self):
+    def test_get_position_string_02(self):
         p = self.pgn
         p.set_position_fen('3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 15 47')
-        s = parser.get_position_string(p.ravstack[-1][-1])
+        s = parser.get_fen_string(p.ravstack[-1][-1])
         self.assertEqual(s.encode('iso-8859-1'),
-                         b'b--@\x04\n\x08\x04\x04\x80\x08kRqppPBPK')
+                         b'3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 0 1')
 
 
 class RealGamesPGN(unittest.TestCase):
@@ -5486,5 +5477,4 @@ if __name__ == '__main__':
     runner().run(loader(PgnRepertoireTags_is_tag_roster_valid))
     runner().run(loader(PgnAnalysis_is_tag_roster_valid))
     runner().run(loader(Pgn_get_fen_string))
-    runner().run(loader(Pgn_get_position_string))
     runner().run(loader(RealGamesPGN))
