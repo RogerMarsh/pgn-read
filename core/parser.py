@@ -185,6 +185,9 @@ from .constants import (
     PGN_BISHOP,
     PGN_KNIGHT,
     PAWN_MOVE_DESITINATION,
+    ERROR_START_COMMENT,
+    ESCAPE_END_COMMENT,
+    END_COMMENT,
     )
 
 re_tokens = re.compile(IMPORT_FORMAT)
@@ -413,14 +416,6 @@ class PGN(object):
         Thus an argument placing pawns on rank 0 or rank 7 is rejected, but
         an argument placing 8 black pawns on rank 2 and 8 white pawns on rank
         5 with all other pieces on their starting squares is accepted.
-
-        return == None
-        fen represents a legal position and the parser will accept import
-        format PGN as the game score.
-
-        return == PGN_ERROR
-        fen does not represent a legal position and the parser will treat any
-        input as a single comment.
         
         """
         # fen is standard start position by default
@@ -1808,8 +1803,16 @@ class PGN(object):
         self._illegal_play_move()
 
     def _convert_error_tokens_to_token(self):
+        """Generate error token '{Error: <original tokens> }'.
+
+        Any '}' in <original tokens> replaced by '::{{::'.  Assume '::{{::' and
+        '{Error: ' do not occur naturally in '{}' comments.
+        """
         self.collect_token(re_tokens.match(
-            ''.join(('{Error: ', ''.join(self.error_tokens), '}'))))
+            ''.join((ERROR_START_COMMENT,
+                     ''.join(self.error_tokens).replace(
+                         END_COMMENT, ESCAPE_END_COMMENT),
+                     END_COMMENT))))
         # Should this method clear self.error_tokens too?
 
     def _termination_while_searching(self, match):

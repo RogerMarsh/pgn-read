@@ -703,3 +703,7 @@ MAP_FEN_ORDER_TO_PGN_SQUARE_NAME = [
                           in MAP_PGN_SQUARE_NAME_TO_FEN_ORDER.items())]
 MOVE_NUMBER_KEYS = tuple(
     ['0'] + [str(len(hex(i))-2) + hex(i)[2:] for i in range(1, 256)])
+
+# Error markers for PGN display.
+ERROR_START_COMMENT = START_COMMENT + 'Error: '
+ESCAPE_END_COMMENT = '::' + START_COMMENT + START_COMMENT + '::'
