@@ -429,7 +429,9 @@ class PGN(object):
             self.ravstack[:] = [(None, (INITIAL_BOARD,
                                         WHITE_SIDE,
                                         FEN_INITIAL_CASTLING,
-                                        FEN_NULL))]
+                                        FEN_NULL,
+                                        FEN_INITIAL_HALFMOVE_COUNT,
+                                        FEN_INITIAL_FULLMOVE_NUMBER))]
             self.active_side = WHITE_SIDE
             self.castling = FEN_INITIAL_CASTLING
             self.en_passant = FEN_NULL
@@ -704,7 +706,9 @@ class PGN(object):
         self.ravstack[:] = [(None, (tuple(board),
                                     FEN_SIDES[active_side],
                                     castling,
-                                    en_passant))]
+                                    en_passant,
+                                    int(halfmove_count),
+                                    int(fullmove_number)))]
         self.active_side = FEN_SIDES[active_side]
         self.castling = castling
         self.en_passant = en_passant
@@ -1109,12 +1113,17 @@ class PGN(object):
 
         """
         self.active_side = OTHER_SIDE[self.active_side]
+        if self.active_side == WHITE_SIDE:
+            self.fullmove_number += 1
         self.ravstack[-1] = (
             self.ravstack[-1][-1],
             (tuple(self.board),
              self.active_side,
              self.castling,
-             self.en_passant))
+             self.en_passant,
+             self.halfmove_count,
+             self.fullmove_number,
+             ))
 
     def collect_token(self, match):
         """"""
@@ -1200,7 +1209,13 @@ class PGN(object):
     # Just say self._fen = ... where method is called.
     def reset_position(self, position):
         """Reset squares and locations etc to position."""
-        board, self.active_side, self.castling, self.en_passant = position
+        (board,
+         self.active_side,
+         self.castling,
+         self.en_passant,
+         self.halfmove_count,
+         self.fullmove_number,
+         ) = position
         self.board[:] = list(board)
         occupied_squares = self.occupied_squares
         for side in occupied_squares:
@@ -1878,12 +1893,17 @@ class PGNDisplayMoves(PGN):
         """
         #super().add_move_to_game()
         self.active_side = OTHER_SIDE[self.active_side]
+        if self.active_side == WHITE_SIDE:
+            self.fullmove_number += 1
         self.ravstack[-1] = (
             self.ravstack[-1][-1],
             (tuple(self.board),
              self.active_side,
              self.castling,
-             self.en_passant))
+             self.en_passant,
+             self.halfmove_count,
+             self.fullmove_number,
+             ))
 
         self.moves.append((self.tokens[-1], self.ravstack[-1][-1]))
 
@@ -1932,58 +1952,84 @@ class PGNDisplay(PGNDisplayMoves):
         """Return Export format PGN movetext"""
         ordered_tags, tags, tokens, error_tokens, moves = self.collected_game
         active_side = moves[0][1][1]
-        fullmove_number = self.fullmove_number
+        fullmove_number = moves[0][1][5]
         movetext = ['\n']
         length = 0
         blackmove_number = True
         mns = [[fullmove_number, active_side]]
+        _attt = self._add_token_to_text
         for e, t in enumerate(tokens):
-            if t.group(IFG_COMMENT):
-                for cw in t.group().split():
-                    length = self._add_token_to_text(cw, movetext, length)
-                blackmove_number = True
-            elif t.group(IFG_NAG):
-                length = self._add_token_to_text(t.group(), movetext, length)
-                blackmove_number = True
-            elif t.group(IFG_COMMENT_TO_EOL):
-                if len(t.group()) + length >= PGN_MAX_LINE_LEN:
-                    movetext.append(LINEFEED)
-                else:
-                    movetext.append(SPACE)
-                movetext.append(t.group())
-                length = 0
-                blackmove_number = True
-            elif t.group(IFG_START_RAV):
-                length = self._add_token_to_text(t.group(), movetext, length)
-                mns[-1] = [fullmove_number, active_side]
-                active_side = OTHER_SIDE[active_side]
-                mns.append([fullmove_number, active_side])
-                blackmove_number = True
-            elif t.group(IFG_END_RAV):
-                length = self._add_token_to_text(t.group(), movetext, length)
-                del mns[-1]
-                fullmove_number, active_side = mns[-1]
-                blackmove_number = True
-            elif t.group(IFG_TERMINATION):
-                length = self._add_token_to_text(t.group(), movetext, length)
-            elif active_side == WHITE_SIDE:
-                length = self._add_token_to_text(
-                    str(fullmove_number) + FULLSTOP,
-                    movetext,
-                    length)
-                length = self._add_token_to_text(t.group(), movetext, length)
-                active_side = OTHER_SIDE[active_side]
-                blackmove_number = False
-            else:
-                if blackmove_number:
-                    length = self._add_token_to_text(
-                        str(fullmove_number) + FULLSTOP * 3,
-                        movetext,
-                        length)
+            try:
+                if t.group(IFG_COMMENT):
+                    for cw in t.group().split():
+                        length = _attt(cw, movetext, length)
+                    blackmove_number = True
+                elif t.group(IFG_NAG):
+                    length = _attt(t.group(), movetext, length)
+                    blackmove_number = True
+                elif t.group(IFG_COMMENT_TO_EOL):
+                    if len(t.group()) + length >= PGN_MAX_LINE_LEN:
+                        movetext.append(LINEFEED)
+                    else:
+                        movetext.append(SPACE)
+                    movetext.append(t.group())
+                    length = 0
+                    blackmove_number = True
+                elif t.group(IFG_START_RAV):
+                    length = _attt(t.group(), movetext, length)
+                    mns[-1] = [fullmove_number, active_side]
+                    active_side = OTHER_SIDE[active_side]
+                    mns.append([fullmove_number, active_side])
+                    blackmove_number = True
+                elif t.group(IFG_END_RAV):
+                    length = _attt(t.group(), movetext, length)
+                    del mns[-1]
+                    fullmove_number, active_side = mns[-1]
+                    blackmove_number = True
+                elif t.group(IFG_TERMINATION):
+                    length = _attt(t.group(), movetext, length)
+                elif active_side == WHITE_SIDE:
+                    length = _attt(str(fullmove_number) + FULLSTOP,
+                                   movetext,
+                                   length)
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
                     blackmove_number = False
-                length = self._add_token_to_text(t.group(), movetext, length)
-                active_side = OTHER_SIDE[active_side]
-                fullmove_number += 1
+                else:
+                    if blackmove_number:
+                        length = _attt(str(fullmove_number) + FULLSTOP * 3,
+                                       movetext,
+                                       length)
+                        blackmove_number = False
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    fullmove_number += 1
+
+            # If len(token.group()) == 5 or len(token.group()) == 6 assume
+            # movetext such as 'Qb2c3' or 'Qb2xc3' meaning there are more than
+            # two queens able to move to 'c3' and the one om 'b2' does so.
+            # The PGN parser treats 'Qb2c3' as a special case after seeing
+            # 'Qb2' cannot be a move.
+            except IndexError:
+                if len(t.group()) != 5 and len(t.group()) != 6:
+                    raise
+                elif active_side == WHITE_SIDE:
+                    length = _attt(str(fullmove_number) + FULLSTOP,
+                                   movetext,
+                                   length)
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    blackmove_number = False
+                else:
+                    if blackmove_number:
+                        length = _attt(str(fullmove_number) + FULLSTOP * 3,
+                                       movetext,
+                                       length)
+                        blackmove_number = False
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    fullmove_number += 1
+
         movetext.append('\n\n')
         return ''.join(movetext)
 
@@ -1991,43 +2037,69 @@ class PGNDisplay(PGNDisplayMoves):
         """Return Reduced Export format PGN movetext"""
         ordered_tags, tags, tokens, error_tokens, moves = self.collected_game
         active_side = moves[0][1][1]
-        fullmove_number = self.fullmove_number
+        fullmove_number = moves[0][1][5]
         movetext = ['\n']
         length = 0
         blackmove_number = True
         rav_depth = 0
         mns = [[fullmove_number, active_side]]
+        _attt = self._add_token_to_text
         for e, t in enumerate(tokens):
-            if (t.group(IFG_COMMENT) or
-                t.group(IFG_NAG) or
-                t.group(IFG_COMMENT_TO_EOL)):
-                pass
-            elif t.group(IFG_START_RAV):
-                rav_depth += 1
-            elif t.group(IFG_END_RAV):
-                rav_depth -= 1
-            elif t.group(IFG_TERMINATION):
-                length = self._add_token_to_text(t.group(), movetext, length)
-            elif rav_depth:
-                pass
-            elif active_side == WHITE_SIDE:
-                length = self._add_token_to_text(
-                    str(fullmove_number) + FULLSTOP,
-                    movetext,
-                    length)
-                length = self._add_token_to_text(t.group(), movetext, length)
-                active_side = OTHER_SIDE[active_side]
-                blackmove_number = False
-            else:
-                if blackmove_number:
-                    length = self._add_token_to_text(
-                        str(fullmove_number) + FULLSTOP * 3,
-                        movetext,
-                        length)
+            try:
+                if (t.group(IFG_COMMENT) or
+                    t.group(IFG_NAG) or
+                    t.group(IFG_COMMENT_TO_EOL)):
+                    pass
+                elif t.group(IFG_START_RAV):
+                    rav_depth += 1
+                elif t.group(IFG_END_RAV):
+                    rav_depth -= 1
+                elif t.group(IFG_TERMINATION):
+                    length = _attt(t.group(), movetext, length)
+                elif rav_depth:
+                    pass
+                elif active_side == WHITE_SIDE:
+                    length = _attt(str(fullmove_number) + FULLSTOP,
+                                   movetext,
+                                   length)
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
                     blackmove_number = False
-                length = self._add_token_to_text(t.group(), movetext, length)
-                active_side = OTHER_SIDE[active_side]
-                fullmove_number += 1
+                else:
+                    if blackmove_number:
+                        length = _attt(str(fullmove_number) + FULLSTOP * 3,
+                                       movetext,
+                                       length)
+                        blackmove_number = False
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    fullmove_number += 1
+
+            # If len(token.group()) == 5 or len(token.group()) == 6 assume
+            # movetext such as 'Qb2c3' or 'Qb2xc3' meaning there are more than
+            # two queens able to move to 'c3' and the one om 'b2' does so.
+            # The PGN parser treats 'Qb2c3' as a special case after seeing
+            # 'Qb2' cannot be a move.
+            except IndexError:
+                if len(t.group()) != 5 and len(t.group()) != 6:
+                    raise
+                elif active_side == WHITE_SIDE:
+                    length = _attt(str(fullmove_number) + FULLSTOP,
+                                   movetext,
+                                   length)
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    blackmove_number = False
+                else:
+                    if blackmove_number:
+                        length = _attt(str(fullmove_number) + FULLSTOP * 3,
+                                       movetext,
+                                       length)
+                        blackmove_number = False
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    fullmove_number += 1
+
         movetext.append('\n\n')
         return ''.join(movetext)
 
@@ -2035,47 +2107,73 @@ class PGNDisplay(PGNDisplayMoves):
         """Return Export format PGN moves and RAVs"""
         ordered_tags, tags, tokens, error_tokens, moves = self.collected_game
         active_side = moves[0][1][1]
-        fullmove_number = self.fullmove_number
+        fullmove_number = moves[0][1][5]
         movetext = ['\n']
         length = 0
         blackmove_number = True
         mns = [[fullmove_number, active_side]]
+        _attt = self._add_token_to_text
         for e, t in enumerate(tokens):
-            if (t.group(IFG_COMMENT) or
-                t.group(IFG_NAG) or
-                t.group(IFG_COMMENT_TO_EOL)):
-                pass
-            elif t.group(IFG_START_RAV):
-                length = self._add_token_to_text(t.group(), movetext, length)
-                mns[-1] = [fullmove_number, active_side]
-                active_side = OTHER_SIDE[active_side]
-                mns.append([fullmove_number, active_side])
-                blackmove_number = True
-            elif t.group(IFG_END_RAV):
-                length = self._add_token_to_text(t.group(), movetext, length)
-                del mns[-1]
-                fullmove_number, active_side = mns[-1]
-                blackmove_number = True
-            elif t.group(IFG_TERMINATION):
-                length = self._add_token_to_text(t.group(), movetext, length)
-            elif active_side == WHITE_SIDE:
-                length = self._add_token_to_text(
-                    str(fullmove_number) + FULLSTOP,
-                    movetext,
-                    length)
-                length = self._add_token_to_text(t.group(), movetext, length)
-                active_side = OTHER_SIDE[active_side]
-                blackmove_number = False
-            else:
-                if blackmove_number:
-                    length = self._add_token_to_text(
-                        str(fullmove_number) + FULLSTOP * 3,
-                        movetext,
-                        length)
+            try:
+                if (t.group(IFG_COMMENT) or
+                    t.group(IFG_NAG) or
+                    t.group(IFG_COMMENT_TO_EOL)):
+                    pass
+                elif t.group(IFG_START_RAV):
+                    length = _attt(t.group(), movetext, length)
+                    mns[-1] = [fullmove_number, active_side]
+                    active_side = OTHER_SIDE[active_side]
+                    mns.append([fullmove_number, active_side])
+                    blackmove_number = True
+                elif t.group(IFG_END_RAV):
+                    length = _attt(t.group(), movetext, length)
+                    del mns[-1]
+                    fullmove_number, active_side = mns[-1]
+                    blackmove_number = True
+                elif t.group(IFG_TERMINATION):
+                    length = _attt(t.group(), movetext, length)
+                elif active_side == WHITE_SIDE:
+                    length = _attt(str(fullmove_number) + FULLSTOP,
+                                   movetext,
+                                   length)
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
                     blackmove_number = False
-                length = self._add_token_to_text(t.group(), movetext, length)
-                active_side = OTHER_SIDE[active_side]
-                fullmove_number += 1
+                else:
+                    if blackmove_number:
+                        length = _attt(str(fullmove_number) + FULLSTOP * 3,
+                                       movetext,
+                                       length)
+                        blackmove_number = False
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    fullmove_number += 1
+
+            # If len(token.group()) == 5 or len(token.group()) == 6 assume
+            # movetext such as 'Qb2c3' or 'Qb2xc3' meaning there are more than
+            # two queens able to move to 'c3' and the one om 'b2' does so.
+            # The PGN parser treats 'Qb2c3' as a special case after seeing
+            # 'Qb2' cannot be a move.
+            except IndexError:
+                if len(t.group()) != 5 and len(t.group()) != 6:
+                    raise
+                elif active_side == WHITE_SIDE:
+                    length = _attt(str(fullmove_number) + FULLSTOP,
+                                   movetext,
+                                   length)
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    blackmove_number = False
+                else:
+                    if blackmove_number:
+                        length = _attt(str(fullmove_number) + FULLSTOP * 3,
+                                       movetext,
+                                       length)
+                        blackmove_number = False
+                    length = _attt(t.group(), movetext, length)
+                    active_side = OTHER_SIDE[active_side]
+                    fullmove_number += 1
+
         movetext.append('\n\n')
         return ''.join(movetext)
 
@@ -2708,14 +2806,20 @@ class PGNAnalysis(PGNDisplay):
         self._rewind_state = self._state
 
 
-def get_fen_string(description, halfmoves=0, fullmoves=1):
+def get_fen_string(description):
     """Return Forsythe Edwards Notation string for position description.
 
     The FEN string can be given as a PGN Tag in a PGN game score.  It can also
     be used to set a PGN instance to a given position.
     
     """
-    board, side_to_move, castle_options, ep_square = description
+    (board,
+     side_to_move,
+     castle_options,
+     ep_square,
+     halfmoves,
+     fullmoves,
+     ) = description
     fenboard = []
     fenrank = []
     gap_length = 0

@@ -237,7 +237,9 @@ class Pgn__start_variation(unittest.TestCase):
                                     'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                                    0,
                                    'KQkq',
-                                   '-'),
+                                   '-',
+                                   0,
+                                   1),
                                   (('r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                                     'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
                                     '', '', '', '', '', '', '', '',
@@ -248,7 +250,9 @@ class Pgn__start_variation(unittest.TestCase):
                                     'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                                    1,
                                    'KQkq',
-                                   '-')))
+                                   '-',
+                                   0,
+                                   1)))
         self.pgn._start_variation()
         self.assertEqual(len(self.pgn.__dict__), len(self.pgn_base.__dict__))
         self.assertEqual(self.pgn._state, True)
@@ -264,7 +268,9 @@ class Pgn__start_variation(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            0,
                            'KQkq',
-                           '-')))
+                           '-',
+                           0,
+                           1)))
         self.assertEqual(self.pgn.ravstack[-2],
                          ((('r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
@@ -276,7 +282,9 @@ class Pgn__start_variation(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            0,
                            'KQkq',
-                           '-'),
+                           '-',
+                           0,
+                           1),
                           (('r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
                             '', '', '', '', '', '', '', '',
@@ -287,7 +295,9 @@ class Pgn__start_variation(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            1,
                            'KQkq',
-                           '-')))
+                           '-',
+                           0,
+                           1)))
 
 
 class Pgn__end_variation(unittest.TestCase):
@@ -1527,21 +1537,21 @@ class Pgn_reset_position(unittest.TestCase):
         if sys.version_info[:2] < (3,5):
             msg = "need more than 3 values to unpack"
         else:
-            msg = "not enough values to unpack \(expected 4, got 3\)"
+            msg = "not enough values to unpack \(expected 6, got 5\)"
         p = self.pgn
         self.assertRaisesRegex(
             ValueError,
             msg,
             p.reset_position,
-            *((None,None,None),))
+            *((None,None,None,None,None),))
 
     def test_reset_position_03(self):
         p = self.pgn
         self.assertRaisesRegex(
             ValueError,
-            "too many values to unpack \(expected 4\)",
+            "too many values to unpack \(expected 6\)",
             p.reset_position,
-            *((None,None,None,None,None),))
+            *((None,None,None,None,None,None,None),))
 
     def test_reset_position_04(self):
         p = self.pgn
@@ -1549,7 +1559,7 @@ class Pgn_reset_position(unittest.TestCase):
             TypeError,
             "'NoneType' object is not iterable",
             p.reset_position,
-            *((None,None,None,None),))
+            *((None,None,None,None,None,None),))
 
     def test_reset_position_05(self):
         p = self.pgn
@@ -1565,6 +1575,8 @@ class Pgn_reset_position(unittest.TestCase):
                 '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', ''),
+               None,
+               None,
                None,
                None,
                None),))
@@ -1584,6 +1596,8 @@ class Pgn_reset_position(unittest.TestCase):
                 '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', ''),
+               None,
+               None,
                None,
                None,
                None),))
@@ -1608,7 +1622,9 @@ class Pgn_reset_position(unittest.TestCase):
                            12, 12, 12, 12, 12, 12, 12, 12),
                           'a',
                           'b',
-                          'c'),)
+                          'c',
+                          0,
+                          1),)
         self.assertEqual(p.board, [12, 12, 12, 12, 12, 12, 12, 12,
                                    12, 12, 12, 12, 12, 12, 12, 12,
                                    12, 12, 12, 12, 12, 12, 12, 'K',
@@ -1668,7 +1684,7 @@ class Pgn_set_position_fen(unittest.TestCase):
                                          '', '', '', '', '', '', '', '',
                                          '', '', '', '', '', '', '', '',
                                          '', '', '', '', '', '', '', ''),
-                                        0, '-', '-'))])
+                                        0, '-', '-', 5, 60))])
         self.assertEqual(p._initial_fen, '8/8/7K/k7/8/8/8/8 w - - 5 60')
 
     def test_default_fen(self):
@@ -1726,7 +1742,9 @@ class Pgn_set_position_fen(unittest.TestCase):
                              'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                             0,
                             'KQkq',
-                            '-'))])
+                            '-',
+                            0,
+                            1))])
         self.assertEqual(p._state, None)
         self.assertEqual(p._initial_fen, True)
 
@@ -1783,7 +1801,9 @@ class Pgn_set_position_fen(unittest.TestCase):
                              'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                             0,
                             'KQkq',
-                            '-'))])
+                            '-',
+                            0,
+                            1))])
         self.assertEqual(p._state, None)
         self.assertEqual(
             p._initial_fen,
@@ -2137,7 +2157,9 @@ class Pgn_add_move_to_game(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            0,
                            'KQkq',
-                           '-'),
+                           '-',
+                           0,
+                           1),
                           (('r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
                             '', '', '', '', '', '', '', '',
@@ -2148,7 +2170,9 @@ class Pgn_add_move_to_game(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            1,
                            'KQkq',
-                           '-')))
+                           '-',
+                           0,
+                           1)))
         self.assertEqual(p._state, None)
 
 
@@ -2449,14 +2473,14 @@ class Pgn_get_fen_string(unittest.TestCase):
         p.set_position_fen('3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 15 47')
         p._play_move('K', '', '', 'e8', '')
         s = parser.get_fen_string(p.ravstack[-1][-1])
-        self.assertEqual(s, '4k3/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 w - - 0 1')
+        self.assertEqual(s, '4k3/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 w - - 16 48')
 
     def test_get_position_string_02(self):
         p = self.pgn
         p.set_position_fen('3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 15 47')
         s = parser.get_fen_string(p.ravstack[-1][-1])
         self.assertEqual(s.encode('iso-8859-1'),
-                         b'3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 0 1')
+                         b'3k4/7R/2q5/2p5/3p4/1P1B4/2P5/6K1 b - - 15 47')
 
 
 class RealGamesPGN(unittest.TestCase):
@@ -3483,7 +3507,7 @@ class PgnDisplayMoves_set_position_fen(unittest.TestCase):
                                          '', '', '', '', '', '', '', '',
                                          '', '', '', '', '', '', '', '',
                                          '', '', '', '', '', '', '', ''),
-                                        0, '-', '-'))])
+                                        0, '-', '-', 5, 60))])
         self.assertEqual(p._initial_fen, '8/8/7K/k7/8/8/8/8 w - - 5 60')
 
     def test_default_fen(self):
@@ -3541,7 +3565,9 @@ class PgnDisplayMoves_set_position_fen(unittest.TestCase):
                              'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                             0,
                             'KQkq',
-                            '-'))])
+                            '-',
+                            0,
+                            1))])
         self.assertEqual(p._state, None)
         self.assertEqual(p._initial_fen, True)
         self.assertEqual(p.moves, [(None,
@@ -3555,7 +3581,9 @@ class PgnDisplayMoves_set_position_fen(unittest.TestCase):
                                       'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                                      0,
                                      'KQkq',
-                                     '-'))])
+                                     '-',
+                                     0,
+                                     1))])
 
     def test_initial_fen(self):
         p = self.pgn
@@ -3610,7 +3638,9 @@ class PgnDisplayMoves_set_position_fen(unittest.TestCase):
                              'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                             0,
                             'KQkq',
-                            '-'))])
+                            '-',
+                            0,
+                            1))])
         self.assertEqual(p._state, None)
         self.assertEqual(
             p._initial_fen,
@@ -3626,7 +3656,9 @@ class PgnDisplayMoves_set_position_fen(unittest.TestCase):
                                       'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                                      0,
                                      'KQkq',
-                                     '-'))])
+                                     '-',
+                                     0,
+                                     1))])
 
     def test_initial_fen_errors_01(self):
         p = self.pgn
@@ -3680,7 +3712,9 @@ class PgnDisplayMoves_add_move_to_game(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            0,
                             'KQkq',
-                            '-'),
+                            '-',
+                           0,
+                           1),
                           (('r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
                             '', '', '', '', '', '', '', '',
@@ -3691,7 +3725,9 @@ class PgnDisplayMoves_add_move_to_game(unittest.TestCase):
                             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                            1,
                            'KQkq',
-                           '-')))
+                           '-',
+                           0,
+                           1)))
         self.assertEqual(p._state, None)
         self.assertEqual(len(p.moves), 2)
         self.assertEqual(len(p.tokens), 1)
@@ -3707,7 +3743,9 @@ class PgnDisplayMoves_add_move_to_game(unittest.TestCase):
                                       'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                                      0,
                                      'KQkq',
-                                     '-')),
+                                     '-',
+                                     0,
+                                     1)),
                                    (None,
                                     (('r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
                                       'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
@@ -3719,7 +3757,9 @@ class PgnDisplayMoves_add_move_to_game(unittest.TestCase):
                                       'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                                      1,
                                      'KQkq',
-                                     '-'))])
+                                     '-',
+                                     0,
+                                     1))])
 
 
 class PgnDisplayMoves_collect_token(unittest.TestCase):
@@ -4181,7 +4221,9 @@ class PgnMove_set_position_fen(unittest.TestCase):
                            'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                           0,
                           'KQkq',
-                          '-'))
+                          '-',
+                          0,
+                          1))
 
     def test_set_position_fen_03(self):
         p = self.pgn
@@ -4198,7 +4240,9 @@ class PgnMove_set_position_fen(unittest.TestCase):
                            'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'),
                           0,
                           'KQkq',
-                          '-'))
+                          '-',
+                          0,
+                          1))
 
 
 class PgnRepertoireDisplay_is_tag_roster_valid(unittest.TestCase):
