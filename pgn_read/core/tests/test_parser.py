@@ -49,7 +49,7 @@ class StrictPGN(_BasePGN):
         games = self.get('A')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['A'])
+        ae(games[0]._text, [' A'])
 
     # _NonStrictTests version gives no games.
     def test_003_a_word(self):
@@ -57,7 +57,7 @@ class StrictPGN(_BasePGN):
         games = self.get('abcdef123')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['abcdef123'])
+        ae(games[0]._text, [' abcdef123'])
 
     # _NonStrictTests version gives no games.
     def test_004_a_sentence(self):
@@ -65,7 +65,8 @@ class StrictPGN(_BasePGN):
         games = self.get('The cat sat on the mat')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['The ', 'cat ', 'sat ', 'on ', 'the ', 'mat'])
+        ae(games[0]._text,
+           [' The ', ' cat ', ' sat ', ' on ', ' the ', ' mat'])
 
     def test_005_bare_star(self):
         ae = self.assertEqual
@@ -156,14 +157,14 @@ class StrictPGN(_BasePGN):
         games = self.get('e3[A "a"]')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['e3', '[A "a"]'])
+        ae(games[0]._text, ['e3', ' [A "a"]'])
 
     def test_011_bare_illegal_move_in_default_initial_position(self):
         ae = self.assertEqual
         games = self.get('e6')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['e6'])
+        ae(games[0]._text, [' e6'])
 
     def test_012_legal_move_in_default_initial_position_and_star(self):
         ae = self.assertEqual
@@ -177,7 +178,7 @@ class StrictPGN(_BasePGN):
         games = self.get('e6*')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['e6', '*'])
+        ae(games[0]._text, [' e6', ' *'])
 
     def test_014_tag_and_legal_move_in_default_initial_position(self):
         ae = self.assertEqual
@@ -191,7 +192,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A"a"]e6')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', 'e6'])
+        ae(games[0]._text, ['[A"a"]', ' e6'])
 
     def test_016_tag_and_legal_move_in_default_initial_position_and_star(self):
         ae = self.assertEqual
@@ -205,7 +206,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A"a"]e6*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', 'e6', '*'])
+        ae(games[0]._text, ['[A"a"]', ' e6', ' *'])
 
     def test_018_legal_game_and_star(self):
         ae = self.assertEqual
@@ -246,7 +247,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '*'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff[B"b"]d41-0'])
+        ae(games[1]._text, [' ff[B"b"]d41-0'])
 
     # _NonStrictTests version gives two games.
     # games[1].state is None and 'ff[B"b"]' token is lost.
@@ -257,7 +258,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '*'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff[B"b"] ', 'd4', '1-0'])
+        ae(games[1]._text, [' ff[B"b"] ', ' d4', ' 1-0'])
 
     # _NonStrictTests version gives two games.
     # games[1].state is None and 'ff[B"b"]' token is lost.
@@ -268,7 +269,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '*'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff[B"b"] ', '1', '.', 'd4', '1-0'])
+        ae(games[1]._text, [' ff[B"b"] ', ' 1', '.', ' d4', ' 1-0'])
 
     # _NonStrictTests version gives two games.
     # games[0] and games[2] are same and games[1] is lost.
@@ -279,7 +280,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '*'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff '])
+        ae(games[1]._text, [' ff '])
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
@@ -292,7 +293,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '*'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff'])
+        ae(games[1]._text, [' ff'])
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
@@ -305,7 +306,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '*'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff '])
+        ae(games[1]._text, [' ff '])
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
@@ -331,7 +332,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', 'e4', '1-0'])
         ae(games[1].state, 0)
-        ae(games[1]._text, ['ff '])
+        ae(games[1]._text, [' ff '])
         ae(games[0].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
@@ -378,8 +379,8 @@ class StrictPGN(_BasePGN):
             '[A"a"] 1. e4 12. ... 13. d4 14 11. ... 50 . 51 3. 1-0')
         ae(len(games), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ['[A"a"]', 'e4', 'd4', '14', '11', '.', '...',
-                            '50', '.', '51', '3', '.', '1-0'])
+        ae(games[0]._text, ['[A"a"]', 'e4', ' d4', ' 14', ' 11', '.', '...',
+                            ' 50', '.', ' 51', ' 3', '.', ' 1-0'])
 
     def test_034_legal_game_move_numbers_and_dots_newline_not_space(self):
         ae = self.assertEqual
@@ -397,15 +398,15 @@ class StrictPGN(_BasePGN):
                      '\n11.\n...\n50\n.\n51\n3.\n1-0')))
         ae(len(games), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ['[A"a"]', 'e4', 'd4', '14', '11', '.', '...',
-                            '50', '.', '51', '3', '.', '1-0'])
+        ae(games[0]._text, ['[A"a"]', 'e4', ' d4', ' 14', ' 11', '.', '...',
+                            ' 50', '.', ' 51', ' 3', '.', ' 1-0'])
 
     def test_036_illegal_game_and_legal_game(self):
         ae = self.assertEqual
         games = self.get('[A"a"] 1. e4 d4 2. e5 0-1 [B"b"] 1. d4 d5 1-0')
         ae(len(games), 2)
         ae(games[0].state, 2)
-        ae(games[0]._text, ['[A"a"]', 'e4', 'd4', '2', '.', 'e5', '0-1'])
+        ae(games[0]._text, ['[A"a"]', 'e4', ' d4', ' 2', '.', ' e5', ' 0-1'])
         ae(games[1].state, None)
         ae(games[1]._text, ['[B"b"]', 'd4', 'd5', '1-0'])
 
@@ -415,7 +416,7 @@ class StrictPGN(_BasePGN):
             '[A"a"]\n1.\ne4\nd4\n2.\ne5\n0-1\n[B"b"]\n1.\nd4\nd5\n1-0')
         ae(len(games), 2)
         ae(games[0].state, 2)
-        ae(games[0]._text, ['[A"a"]', 'e4', 'd4', '2', '.', 'e5', '0-1'])
+        ae(games[0]._text, ['[A"a"]', 'e4', ' d4', ' 2', '.', ' e5', ' 0-1'])
         ae(games[1].state, None)
         ae(games[1]._text, ['[B"b"]', 'd4', 'd5', '1-0'])
 
@@ -517,25 +518,23 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', '{C;c\n<r>e4(d4)[B"b"]%e\n}', '*'])
 
-    # _NonStrictTests version gives error too, but '{C;c' and '[B"b"' tokens
-    # are lost.
+    # _NonStrictTests version gives error too.
     def test_051_1_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"')
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '{C;c', '<r>', 'e4', '(', 'd4', ')', '[B"b"'])
+           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"'])
 
-    # _NonStrictTests version gives error too, but '{C;c' and '[B"b"' tokens
-    # are lost.
+    # _NonStrictTests version gives error too.
     def test_051_2_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"]')
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '{C;c', '<r>', 'e4', '(', 'd4', ')', '[B"b"]'])
+           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"]'])
 
     def test_052_tag_and_comment_wrapping_tokens_no_tag_and_star(self):
         ae = self.assertEqual
@@ -621,24 +620,23 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', '<r;c\n{C}e4(d4)[B"b"]%e\n>', '*'])
 
-    # _NonStrictTests version gives error too, but '<r;c' and '[B"b"' tokens
-    # are lost.
+    # _NonStrictTests version gives error too.
     def test_063_1_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"')
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '<r;c', '{C}', 'e4', '(', 'd4', ')', '[B"b"'])
+           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"'])
 
-    # _NonStrictTests version gives error too, but '<r;c' token is lost.
+    # _NonStrictTests version gives error too.
     def test_063_2_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"]')
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '<r;c', '{C}', 'e4', '(', 'd4', ')', '[B"b"]'])
+           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"]'])
 
     def test_064_tag_and_reserved_wrapping_tokens_no_tag_and_star(self):
         ae = self.assertEqual
@@ -675,7 +673,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A"a"]%!')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', '%!'])
+        ae(games[0]._text, ['[A"a"]', ' %!'])
 
     # _NonStrictTests version gives error too, but '%!*' token is lost.
     def test_067_tag_and_escaped_and_star(self):
@@ -683,7 +681,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A"a"]%!*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', '%!*'])
+        ae(games[0]._text, ['[A"a"]', ' %!*'])
 
     # _NonStrictTests version gives one game, having lost the '%!\n' token.
     def test_068_tag_and_terminated_escaped_and_star(self):
@@ -691,7 +689,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A"a"]%!\n*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', '%!', '*'])
+        ae(games[0]._text, ['[A"a"]', ' %!', ' *'])
 
     # _NonStrictTests version gives one game, having lost the
     # '%!{C}<r>e4(d4)[B"b"]%e' token.
@@ -700,7 +698,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A"a"]%!{C}<r>e4(d4)[B"b"]%e\n*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', '%!{C}<r>e4(d4)[B"b"]%e', '*'])
+        ae(games[0]._text, ['[A"a"]', ' %!{C}<r>e4(d4)[B"b"]%e', ' *'])
 
     def test_070_castles_O_O_and_move(self):
         ae = self.assertEqual
@@ -734,7 +732,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1"]',
-            'O-O', '-'])
+            'O-O', ' -'])
 
     def test_073_castles_O_O_O(self):
         ae = self.assertEqual
@@ -752,63 +750,63 @@ class StrictPGN(_BasePGN):
         games = self.get('(')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['('])
+        ae(games[0]._text, [' ('])
 
     def test_075_bare_rav_end(self):
         ae = self.assertEqual
         games = self.get(')')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, [')'])
+        ae(games[0]._text, [' )'])
 
     def test_076_bare_rav(self):
         ae = self.assertEqual
         games = self.get('()')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['(', ')'])
+        ae(games[0]._text, [' (', ' )'])
 
     def test_077_rav_start_and_star(self):
         ae = self.assertEqual
         games = self.get('(*')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['(', '*'])
+        ae(games[0]._text, [' (', ' *'])
 
     def test_078_rav_end_and_star(self):
         ae = self.assertEqual
         games = self.get(')*')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, [')', '*'])
+        ae(games[0]._text, [' )', ' *'])
 
     def test_079_rav_and_star(self):
         ae = self.assertEqual
         games = self.get('()*')
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, ['(', ')', '*'])
+        ae(games[0]._text, [' (', ' )', ' *'])
 
     def test_080_tag_and_rav_start_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"](*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', '(', '*'])
+        ae(games[0]._text, ['[A"a"]', ' (', ' *'])
 
     def test_081_tag_and_rav_end_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"])*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', ')', '*'])
+        ae(games[0]._text, ['[A"a"]', ' )', ' *'])
 
     def test_082_tag_and_rav_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]()*')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]', '(', ')', '*'])
+        ae(games[0]._text, ['[A"a"]', ' (', ' )', ' *'])
 
     def test_083_tag_and_move_and_rav_start_and_star(self):
         ae = self.assertEqual
@@ -824,7 +822,7 @@ class StrictPGN(_BasePGN):
         ae(len(games), 1)
         ae(len(games[0]._ravstack), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ['[A"a"]', 'Nf3', ')', '*'])
+        ae(games[0]._text, ['[A"a"]', 'Nf3', ' )', ' *'])
 
     def test_085_tag_and_move_and_empty_rav_and_star(self):
         ae = self.assertEqual
@@ -849,7 +847,7 @@ class StrictPGN(_BasePGN):
         ae(len(games), 1)
         ae(len(games[0]._ravstack), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['Nf3', ')', '*'])
+        ae(games[0]._text, ['Nf3', ' )', ' *'])
 
     def test_088_move_and_empty_rav_and_star(self):
         ae = self.assertEqual
@@ -1112,7 +1110,8 @@ class StrictPGN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 6)
         ae(games[0]._text,
-           ['$10', '$21', '$10', '$22', 'c4', 'e5', 'c4', 'c5', '(', '(', ')'])
+           ['$10', '$21', '$10', '$22', 'c4', 'e5',
+            ' c4', ' c5', ' (', ' (', ' )'])
 
     # Added after changes to convertion of chess engine responses to PGN.
     def test_114_long_algebraic_pawn_move_wrong_direction(self):
@@ -1121,7 +1120,7 @@ class StrictPGN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
         ae(games[0]._text,
-           ['e4', 'e5', 'e4', 'e3'])
+           ['e4', 'e5', ' e4', ' e3'])
 
     # Added after changes to convertion of chess engine responses to PGN.
     def test_115_long_algebraic_pawn_move(self):
@@ -1130,7 +1129,7 @@ class StrictPGN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text,
-           ['e4', 'e7', 'e5'])
+           ['e4', ' e7', ' e5'])
 
     # Added after changes to convertion of chess engine responses to PGN.
     def test_116_long_algebraic_pawn_move_game_terminated(self):
@@ -1139,7 +1138,7 @@ class StrictPGN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text,
-           ['e4', 'e7', 'e5', '*'])
+           ['e4', ' e7', ' e5', ' *'])
 
     def test_120_bxc8q(self):
         ae = self.assertEqual
@@ -1150,7 +1149,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8qqg3*'])
+            ' bxc8qqg3*'])
 
     def test_121_bxc8_q(self):
         ae = self.assertEqual
@@ -1161,7 +1160,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8=qqg3*'])
+            ' bxc8=qqg3*'])
 
     def test_122_bxc8_qx(self):
         ae = self.assertEqual
@@ -1172,8 +1171,8 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8=q ',
-            'qg3*'])
+            ' bxc8=q ',
+            ' qg3*'])
 
     def test_123_dxc8q(self):
         ae = self.assertEqual
@@ -1184,7 +1183,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'dxc8qqg3*'])
+            ' dxc8qqg3*'])
 
     def test_124_dxc8q(self):
         ae = self.assertEqual
@@ -1195,7 +1194,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'dxc8=qqg3*'])
+            ' dxc8=qqg3*'])
 
     def test_125_bxc8(self):
         ae = self.assertEqual
@@ -1206,7 +1205,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8qg3*'])
+            ' bxc8qg3*'])
 
     def test_126_bxc8(self):
         ae = self.assertEqual
@@ -1217,8 +1216,8 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8 ',
-            'qg3*'])
+            ' bxc8 ',
+            ' qg3*'])
 
     def test_127_bxc8(self):
         ae = self.assertEqual
@@ -1230,7 +1229,7 @@ class StrictPGN(_BasePGN):
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
             'Bxc8',
-            'qg3*'])
+            ' qg3*'])
 
     def test_128_bxc8(self):
         ae = self.assertEqual
@@ -1242,7 +1241,7 @@ class StrictPGN(_BasePGN):
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
             'Bxc8',
-            'qg3*'])
+            ' qg3*'])
 
     def test_129_bxc8(self):
         ae = self.assertEqual
@@ -1253,7 +1252,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8qg3*'])
+            ' bxc8qg3*'])
 
     def test_130_bxc8(self):
         ae = self.assertEqual
@@ -1264,8 +1263,89 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8 ',
-            'qg3*'])
+            ' bxc8 ',
+            ' qg3*'])
+
+    def test_131_game_termination_marker_inside_comment(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4{a1/2-1/2}*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '{a1/2-1/2}', '*'])
+
+    def test_132_game_termination_marker_inside_comment(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4{a\n1/2-1/2}*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '{a\n1/2-1/2}', '*'])
+
+    def test_133_game_termination_marker_inside_comment(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4(d4{a1/2-1/2})*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[A"a"]', 'e4', '(', 'd4', '{a1/2-1/2}', ')', '*'])
+
+    def test_134_game_termination_marker_inside_comment(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4(d4{a\n1/2-1/2})*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[A"a"]', 'e4', '(', 'd4', '{a\n1/2-1/2}', ')', '*'])
+
+    def test_135_game_termination_marker_inside_comment(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4(d4{a\t1/2-1/2})*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[A"a"]', 'e4', '(', 'd4', '{a\t1/2-1/2}', ')', '*'])
+
+    def test_136_game_termination_marker_inside_comment(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4(d4{a 1/2-1/2})*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[A"a"]', 'e4', '(', 'd4', '{a 1/2-1/2}', ')', '*'])
+
+    def test_140_partial_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A"a')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' [A"a'])
+
+    def test_142_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A""a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, ['{::Bad Tag::[A""a" ]::Bad Tag::}'])
+
+    def test_143_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A""a"][B"b"]')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, ['{::Bad Tag::[A""a"]::Bad Tag::}', ' [B"b"]'])
+
+    def test_144_bad_value_in_tag_03(self):
+        ae = self.assertEqual
+        games = self.get(r'[A"\a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"\\a" ]'])
+
+    def test_145_bad_value_in_tag_04(self):
+        ae = self.assertEqual
+        games = self.get(r'[A"\"a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"\\\"a" ]'])
 
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
@@ -1313,7 +1393,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         g = games[0]
         ae(g.state, 2)
-        ae(g._text, ['[SetUp"1"]', '[FEN""]', '*'])
+        ae(g._text, ['[SetUp"1"]', '[FEN""]', ' *'])
         ae(len(g._pieces_on_board), 26)
         for p in 'KQRBNkqrbn':
             ae(g._pieces_on_board[p], [])
@@ -2720,41 +2800,41 @@ class _NonStrictTests:
         ae(games[1].state, None)
         ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
 
-    # StrictPGN version gives error too, but '{C;c' and '[B"b"' tokens are kept.
+    # StrictPGN version gives error too.
     def test_051_1_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"')
         ae(len(games), 1)
-        ae(games[0].state, 6)
+        ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '<r>', 'e4', '(', 'd4', ')'])
+           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"'])
 
-    # StrictPGN version gives error too, but '{C;c' and '[B"b"' tokens are kept.
+    # StrictPGN version gives error too.
     def test_051_2_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"]')
         ae(len(games), 1)
-        ae(games[0].state, 6)
+        ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '<r>', 'e4', '(', 'd4', ')', '[B"b"]'])
+           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"]'])
 
-    # StrictPGN version gives error too, but '<r;c' and '[B"b"' tokens are kept.
+    # StrictPGN version gives error too.
     def test_063_1_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"')
         ae(len(games), 1)
-        ae(games[0].state, 6)
+        ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '{C}', 'e4', '(', 'd4', ')'])
+           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"'])
 
-    # StrictPGN version gives error too, but '<r;c' token is kept.
+    # StrictPGN version gives error too.
     def test_063_2_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"]')
         ae(len(games), 1)
-        ae(games[0].state, 6)
+        ae(games[0].state, 1)
         ae(games[0]._text,
-           ['[A"a"]', '{C}', 'e4', '(', 'd4', ')', '[B"b"]'])
+           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"]'])
 
     # StrictPGN version gives error too, but '%!' token is kept.
     def test_066_tag_and_escaped(self):
@@ -2941,6 +3021,20 @@ class _NonStrictTests:
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
+    def test_142_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A""a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"\\"a" ]'])
+
+    def test_143_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A""a"][B"b"]')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text, ['[A"\\"a"]', '[B"b"]'])
+
 
 class _NonStrictPGNTests:
     """Override StrictPGN tests which have different outcome when alternatives
@@ -2980,6 +3074,20 @@ class _NonStrictPGNTests:
         ae(games[0].state, None)
         ae(games[0]._text,
            ['e4', 'e5', '*'])
+
+    def test_142_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A""a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"\\"a" ]'])
+
+    def test_143_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A""a"][B"b"]')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text, ['[A"\\"a"]', '[B"b"]'])
 
 
 class PGN(_NonStrictPGNTests, StrictPGN):
@@ -3230,6 +3338,11 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameTextPGN)
 
+    def test_140_partial_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A"a')
+        ae(len(games), 0)
+
 
 class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -3256,8 +3369,8 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8',
-            'qqg3*'])
+            ' bxc8',
+            ' qqg3*'])
 
     def test_121_bxc8_q(self):
         ae = self.assertEqual
@@ -3318,9 +3431,9 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8',
-            'qg3',
-            '*'])
+            ' bxc8',
+            ' qg3',
+            ' *'])
 
     def test_126_bxc8(self):
         ae = self.assertEqual
@@ -3331,9 +3444,9 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8',
-            'qg3',
-            '*'])
+            ' bxc8',
+            ' qg3',
+            ' *'])
 
     def test_127_bxc8(self):
         ae = self.assertEqual
@@ -3370,9 +3483,9 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8',
-            'qg3',
-            '*'])
+            ' bxc8',
+            ' qg3',
+            ' *'])
 
     def test_130_bxc8(self):
         ae = self.assertEqual
@@ -3383,9 +3496,14 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8',
-            'qg3',
-            '*'])
+            ' bxc8',
+            ' qg3',
+            ' *'])
+
+    def test_140_partial_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A"a')
+        ae(len(games), 0)
 
 
 if __name__ == '__main__':

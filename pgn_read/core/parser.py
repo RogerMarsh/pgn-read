@@ -43,6 +43,11 @@ from .constants import (
     IFG_RESERVED,
     IFG_ESCAPE,
     IFG_PASS,
+    IFG_CHECK_INDICATOR,
+    IFG_TRADITIONAL_ANNOTATION,
+    IFG_BAD_COMMENT,
+    IFG_BAD_RESERVED,
+    IFG_BAD_TAG,
     IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE,
     )
 
@@ -122,6 +127,11 @@ class PGN:
             game_class.append_reserved,
             game_class.ignore_escape,
             game_class.append_pass_and_set_error,
+            game_class.ignore_check_indicator,
+            game_class.append_glyph_for_traditional_annotation,
+            game_class.append_token_and_set_error,
+            game_class.append_token_and_set_error,
+            game_class.append_bad_tag_and_set_error,
             game_class.append_other_or_disambiguation_pgn,
             )
         self.error_despatch_table = (
@@ -141,15 +151,20 @@ class PGN:
             game_class.append_token_after_error,
             game_class.append_game_termination_after_error,
             game_class.append_token_after_error,
-            game_class.append_token_after_error,
+            game_class.append_token_after_error_without_separator,
             game_class.append_comment_to_eol_after_error,
-            game_class.append_token_after_error,
+            game_class.append_comment_after_error,
             game_class.append_start_rav_after_error,
             game_class.append_end_rav_after_error,
             game_class.append_token_after_error,
             game_class.append_token_after_error,
             game_class.append_escape_after_error,
             game_class.append_pass_after_error,
+            game_class.append_token_after_error_without_separator,
+            game_class.append_token_after_error,
+            game_class.append_token_after_error,
+            game_class.append_token_after_error,
+            game_class.append_bad_tag_after_error,
             game_class.append_token_after_error,
             )
 
@@ -211,6 +226,20 @@ class PGN:
                         yield game
                         game = game_class()
                         despatch_table[match.lastindex](game, match)
+
+                    # '--' moves in the main line cause rest of game moves to
+                    # be wrapped in a {Error} comment.  The game termination
+                    # is processed here.  It is an error sequence in the sense
+                    # that the game is not valid, but the generated PGN is
+                    # valid.
+                    elif match.lastindex == IFG_GAME_TERMINATION:
+                        residue_start_on_error_at_pgntext_end = match.end()
+                        error_despatch_table[match.lastindex](game, match)
+                        if len(game._ravstack) > 1:
+                            game.set_game_error()
+                        yield game
+                        game = game_class()
+
                     else:
                         error_despatch_table[match.lastindex](game, match)
                 elif match.lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE:
@@ -272,6 +301,14 @@ def add_token_to_game(text, game, pos=0):
             game.append_escape_after_error(match)
         elif lastindex == IFG_PASS:
             game.append_pass_after_error(match)
+        elif lastindex == IFG_BAD_TAG:
+            game.append_bad_tag_after_error(match)
+        elif lastindex == IFG_COMMENT:
+            game.append_comment_after_error(match)
+        elif lastindex == IFG_DOTS:
+            game.append_token_after_error_without_separator(match)
+        elif lastindex == IFG_CHECK_INDICATOR:
+            game.append_token_after_error_without_separator(match),
         else:
             game.append_token_after_error(match)
         return match.end()
@@ -311,6 +348,16 @@ def add_token_to_game(text, game, pos=0):
         game.ignore_escape(match)
     elif lastindex == IFG_PASS:
         game.append_pass_and_set_error(match)
+    elif lastindex == IFG_CHECK_INDICATOR:
+        game.ignore_check_indicator(match),
+    elif lastindex == IFG_TRADITIONAL_ANNOTATION:
+        game.append_glyph_for_traditional_annotation(match),
+    elif lastindex == IFG_BAD_COMMENT:
+        game.append_token_and_set_error(match),
+    elif lastindex == IFG_BAD_RESERVED:
+        game.append_token_and_set_error(match),
+    elif lastindex == IFG_BAD_TAG:
+        game.append_bad_tag_and_set_error(match),
     elif lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE:
         game.append_other_or_disambiguation_pgn(match)
     else:

@@ -29,7 +29,6 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Castle)(O-O-O|O-O)',
                 r'(?#sevoM))',
-                r'(?#Suffix)[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Game termination)(1-0|1/2-1/2|0-1|\*)',
                 r'|',
@@ -52,16 +51,25 @@ class Constants(unittest.TestCase):
                 r'(?#Escaped)(\A%[^\n]*|\n%[^\n]*)',
                 r'|',
                 r'(?#Pass)(--)',
+                r'|',
+                r'(?#Check indicators)(?<=[1-8QRBNO])([+#])',
+                r'|',
+                r'(?#Traditional Annonations)',
+                r'(?<=[1-8QRBNO+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'|',
+                r'(?#Bad Comment)(\{[^}]*)',
+                r'|',
+                r'(?#Bad Reserved)(<[^>]*)',
+                r'|',
+                r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
                 )))
         ae(constants.PGN_DISAMBIGUATION,
            r''.join(
                (r'(?#Disambiguation PGN)(x?[a-h][1-8]',
-                r'[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 )))
         ae(constants.TEXT_DISAMBIGUATION,
            r''.join(
                (r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
-                r'[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 )))
         ae(constants.ANYTHING_ELSE,
            r''.join(
@@ -82,7 +90,6 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Castle)(O-O-O|O-O)',
                 r'(?#sevoM))',
-                r'(?#Suffix)[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Game termination)(1-0|1/2-1/2|0-1|\*)',
                 r'|',
@@ -106,8 +113,18 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Pass)(--)',
                 r'|',
+                r'(?#Check indicators)(?<=[1-8QRBNO])([+#])',
+                r'|',
+                r'(?#Traditional Annonations)',
+                r'(?<=[1-8QRBNO+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'|',
+                r'(?#Bad Comment)(\{[^}]*)',
+                r'|',
+                r'(?#Bad Reserved)(<[^>]*)',
+                r'|',
+                r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
                 r'(?#Disambiguation PGN)(x?[a-h][1-8]',
-                r'[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Anything else)\S+[ \t\r\f\v]*)',
                 )))
@@ -126,7 +143,6 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Castle)(O-O-O|O-O|0-0-0|0-0)',
                 r'(?#sevoM))',
-                r'(?#Suffix)[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Game termination)(1-0|1/2-1/2|0-1|\*)',
                 r'|',
@@ -150,8 +166,18 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Pass)(--)',
                 r'|',
+                r'(?#Check indicators)(?<=[1-8QRBNO0])([+#])',
+                r'|',
+                r'(?#Traditional Annonations)',
+                r'(?<=[1-8QRBNO0+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'|',
+                r'(?#Bad Comment)(\{[^}]*)',
+                r'|',
+                r'(?#Bad Reserved)(<[^>]*)',
+                r'|',
+                r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
                 r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
-                r'[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Anything else)\S+[ \t\r\f\v]*)',
                 )))
@@ -171,7 +197,6 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Castle)(O-O-O|O-O|0-0-0|0-0)',
                 r'(?#sevoM))',
-                r'(?#Suffix)[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Game termination)(1-0|1/2-1/2|0-1|\*)',
                 r'|',
@@ -195,8 +220,18 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#Pass)(--)',
                 r'|',
+                r'(?#Check indicators)(?<=[1-8QRBNO0])([+#])',
+                r'|',
+                r'(?#Traditional Annonations)',
+                r'(?<=[1-8QRBNO0+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'|',
+                r'(?#Bad Comment)(\{[^}]*)',
+                r'|',
+                r'(?#Bad Reserved)(<[^>]*)',
+                r'|',
+                r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
                 r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
-                r'[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
                 r'|',
                 r'(?#Anything else)\S+[ \t\r\f\v]*)',
                 )))
@@ -224,28 +259,33 @@ class Constants(unittest.TestCase):
         ae(constants.IFG_RESERVED, 22)
         ae(constants.IFG_ESCAPE, 23)
         ae(constants.IFG_PASS, 24)
-        ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 25)
-        ae(constants.DISAMBIGUATE_TEXT,
-           r'\A(x?)([a-h][1-8])[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?')
-        ae(constants.DISAMBIGUATE_PGN,
-           r'\Ax?[a-h][1-8][+#]?(?:!!|!\?|!|\?\?|\?!|\?)?')
+        ae(constants.IFG_CHECK_INDICATOR, 25)
+        ae(constants.IFG_TRADITIONAL_ANNOTATION, 26)
+        ae(constants.IFG_BAD_COMMENT, 27)
+        ae(constants.IFG_BAD_RESERVED, 28)
+        ae(constants.IFG_BAD_TAG, 29)
+        ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 30)
+        #ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 27)
+        ae(constants.DISAMBIGUATE_TEXT, r'\A(x?)([a-h][1-8])')
+        ae(constants.DISAMBIGUATE_PGN, r'\Ax?[a-h][1-8]')
         ae(constants.DG_CAPTURE, 1)
         ae(constants.DG_DESTINATION, 2)
-        ae(constants.LAN_FORMAT,
-           r''.join((r'\A([-x]?)([a-h][1-8])(?:=(QRBN))?',
-                     r'\s*([+#]?)\s*((?:!!|!\?|!|\?\?|\?!|\?)?)')))
+        ae(constants.LAN_FORMAT, r'\A([-x]?)([a-h][1-8])(?:=(QRBN))?')
         ae(constants.LAN_CAPTURE_OR_MOVE, 1)
         ae(constants.LAN_DESTINATION, 2)
         ae(constants.LAN_PROMOTE_PIECE, 3)
-        ae(constants.LAN_CHECK_INDICATOR, 4)
-        ae(constants.LAN_SUFFIX_ANNOTATION, 5)
+        #ae(constants.LAN_CHECK_INDICATOR, 4)
+        #ae(constants.LAN_SUFFIX_ANNOTATION, 5)
         ae(constants.TEXT_PROMOTION,
-           r''.join((r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])',
-                     r'\s*([+#]?)\s*((?:!!|!\?|!|\?\?|\?!|\?)?)')))
+           r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])')
         ae(constants.TP_MOVE, 1)
         ae(constants.TP_PROMOTE_TO_PIECE, 2)
-        ae(constants.TP_CHECK_INDICATOR, 3)
-        ae(constants.TP_SUFFIX_ANNOTATION, 4)
+        #ae(constants.TP_CHECK_INDICATOR, 3)
+        #ae(constants.TP_SUFFIX_ANNOTATION, 4)
+        ae(constants.UNTERMINATED, '<{')
+        ae(constants.SUFFIX_ANNOTATION_TO_NAG,
+           {'!!': '$3', '!?': '$5', '!': '$1',
+            '??': '$4', '?!': '$6', '?': '$2'})
         ae(constants.TAG_EVENT, 'Event')
         ae(constants.TAG_SITE, 'Site')
         ae(constants.TAG_DATE, 'Date')
@@ -262,6 +302,16 @@ class Constants(unittest.TestCase):
         ae(constants.DEFAULT_SORT_TAG_RESULT_VALUE, ' ')
         ae(constants.SEVEN_TAG_ROSTER_DEFAULTS,
            {'Date': '????.??.??', 'Result': '*'})
+        ae(constants.TAG_WHITETITLE, 'WhiteTitle')
+        ae(constants.TAG_BLACKTITLE, 'BlackTitle')
+        ae(constants.TAG_WHITEELO, 'WhiteElo')
+        ae(constants.TAG_BLACKELO, 'BlackElo')
+        ae(constants.TAG_WHITENA, 'WhiteNA')
+        ae(constants.TAG_BLACKNA, 'BlackNA')
+        ae(constants.SUPPLEMENTAL_TAG_ROSTER,
+           ('WhiteTitle', 'BlackTitle', 'WhiteElo', 'BlackElo',
+            'WhiteNA', 'BlackNA',))
+        ae(constants.DEFAULT_SUPPLEMENTAL_TAG_VALUE, '-')
         ae(constants.TAG_FEN, 'FEN')
         ae(constants.TAG_SETUP, 'SetUp')
         ae(constants.SETUP_VALUE_FEN_ABSENT, '0')

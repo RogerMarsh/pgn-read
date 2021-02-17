@@ -26,7 +26,7 @@ PGN_FORMAT = r'|'.join((
               r'(?#End Tag)(\])')),
     r'(?:(?#Moves)(?#Piece)([KQRBN])([a-h1-8]?)(x?)([a-h][1-8])',
     r'(?#Pawn)(?:([a-h])(?:x([a-h]))?(?:([2-7])|([18])(?:=([QRBN]))))',
-    r'(?#Castle)(O-O-O|O-O)(?#sevoM))(?#Suffix)[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
+    r'(?#Castle)(O-O-O|O-O)(?#sevoM))',
     r'(?#Game termination)(1-0|1/2-1/2|0-1|\*)',
     r'(?#Move number)([1-9][0-9]*)',
     r'(?#Dots)(\.+)',
@@ -38,14 +38,19 @@ PGN_FORMAT = r'|'.join((
     r'(?#Reserved)(<[^>]*>)',
     r'(?#Escaped)(\A%[^\n]*|\n%[^\n]*)',
     r'(?#Pass)(--)',
+    r'(?#Check indicators)(?<=[1-8QRBNO])([+#])',
+    r'(?#Traditional Annonations)(?<=[1-8QRBNO+#])(!!|!\?|!|\?\?|\?!|\?)',
+    r'(?#Bad Comment)(\{[^}]*)',
+    r'(?#Bad Reserved)(<[^>]*)',
+    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
     ))
 PGN_DISAMBIGUATION = r''.join(
     (r'(?#Disambiguation PGN)',
-     r'(x?[a-h][1-8][+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
+     r'(x?[a-h][1-8]',
      ))
 TEXT_DISAMBIGUATION = r''.join(
     (r'(?#Disambiguation Text)',
-     r'((?:-|x[QRBN]?)[a-h][1-8][+#]?(?:!!|!\?|!|\?\?|\?!|\?)?',
+     r'((?:-|x[QRBN]?)[a-h][1-8]',
      ))
 ANYTHING_ELSE = r'(?#Anything else)\S+[ \t\r\f\v]*)'
 IMPORT_FORMAT = r'|'.join((
@@ -55,8 +60,10 @@ IMPORT_FORMAT = r'|'.join((
 TEXT_FORMAT = r'|'.join((
     PGN_FORMAT,
     TEXT_DISAMBIGUATION,
-    ANYTHING_ELSE)).replace(r'O-O-O|O-O', r'O-O-O|O-O|0-0-0|0-0'
-                            ).replace(r'(?:=([QRBN])', r'(?:=?([QRBN])')
+    ANYTHING_ELSE)).replace(
+        r'O-O-O|O-O', r'O-O-O|O-O|0-0-0|0-0').replace(
+            r'(?:=([QRBN])', r'(?:=?([QRBN])').replace(
+                r'8QRBNO', r'8QRBNO0')
 IGNORE_CASE_FORMAT = r'(?#Ignore case)(?i)' + TEXT_FORMAT.replace(r'A-Z', r'')
 
 # Indicies of captured groups in PGN input format for match.group.
@@ -84,13 +91,18 @@ IFG_NUMERIC_ANNOTATION_GLYPH = 21
 IFG_RESERVED = 22
 IFG_ESCAPE = 23
 IFG_PASS = 24
-IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 25
+IFG_CHECK_INDICATOR = 25
+IFG_TRADITIONAL_ANNOTATION = 26
+IFG_BAD_COMMENT = 27
+IFG_BAD_RESERVED = 28
+IFG_BAD_TAG = 29
+IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 30
 
 # For spotting the pawn-move-like string which is the destination of a fully
 # disambiguated piece move, say 'Qb4d4+??' including optional sufficies, where
 # Qb4 has been rejected as a move because there is a Q on b4.
-DISAMBIGUATE_TEXT = r'\A(x?)([a-h][1-8])[+#]?(?:!!|!\?|!|\?\?|\?!|\?)?'
-DISAMBIGUATE_PGN = r'\Ax?[a-h][1-8][+#]?(?:!!|!\?|!|\?\?|\?!|\?)?'
+DISAMBIGUATE_TEXT = r'\A(x?)([a-h][1-8])'
+DISAMBIGUATE_PGN = r'\Ax?[a-h][1-8]'
 
 # Indicies of captured groups for fully disambiguated piece move.
 DG_CAPTURE = 1
@@ -99,29 +111,28 @@ DG_DESTINATION = 2
 # For spotting the second part, of two, of a movetext token in long algebraic
 # format (LAN).  The first part, such as 'Qe2', will have been found by the
 # IMPORT_FORMAT rules.  LAN_FORMAT is similar to DISAMBIGUATE_TEXT.
-LAN_FORMAT = r''.join((r'\A([-x]?)([a-h][1-8])(?:=(QRBN))?',
-                       r'\s*([+#]?)\s*((?:!!|!\?|!|\?\?|\?!|\?)?)'))
+LAN_FORMAT = r'\A([-x]?)([a-h][1-8])(?:=(QRBN))?'
 
 # Indicies of captured groups for long algebraic notation move.
 LAN_CAPTURE_OR_MOVE = 1
 LAN_DESTINATION = 2
 LAN_PROMOTE_PIECE = 3
-LAN_CHECK_INDICATOR = 4
-LAN_SUFFIX_ANNOTATION = 5
 
 # For normalising a text promotion move to PGN.
-TEXT_PROMOTION = r''.join((r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])',
-                           r'\s*([+#]?)\s*((?:!!|!\?|!|\?\?|\?!|\?)?)'))
+TEXT_PROMOTION = r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])'
 
 # Indicies of captured groups for normalising promotion move to PGN.
 TP_MOVE = 1
 TP_PROMOTE_TO_PIECE = 2
-TP_CHECK_INDICATOR = 3
-TP_SUFFIX_ANNOTATION = 4
 
 # The parser.PGN.read_games method uses UNTERMINATED when deciding if a PGN Tag
 # found in an error sequence should start a new game.
 UNTERMINATED = '<{'
+
+# Traditional annotations are mapped to Numeric Annotation Glyphs (NAG).
+# About 100 NAGs are defined in the PGN standard.
+SUFFIX_ANNOTATION_TO_NAG = {
+    '!!': '$3', '!?': '$5', '!': '$1', '??': '$4', '?!': '$6', '?': '$2'}
 
 # Seven Tag Roster.
 TAG_EVENT = 'Event'
@@ -151,6 +162,24 @@ SEVEN_TAG_ROSTER_DEFAULTS = {
     TAG_DATE: DEFAULT_TAG_DATE_VALUE,
     TAG_RESULT: DEFAULT_TAG_RESULT_VALUE,
     }
+
+# Supplemental tags with defined default values.
+# Other supplmental tags exist; the ones defined here have a default value.
+TAG_WHITETITLE = 'WhiteTitle'
+TAG_BLACKTITLE = 'BlackTitle'
+TAG_WHITEELO = 'WhiteElo'
+TAG_BLACKELO = 'BlackElo'
+TAG_WHITENA = 'WhiteNA'
+TAG_BLACKNA = 'BlackNA'
+SUPPLEMENTAL_TAG_ROSTER = (
+    TAG_WHITETITLE,
+    TAG_BLACKTITLE,
+    TAG_WHITEELO,
+    TAG_BLACKELO,
+    TAG_WHITENA,
+    TAG_BLACKNA,
+    )
+DEFAULT_SUPPLEMENTAL_TAG_VALUE = '-'
 
 # FEN Tags.
 TAG_FEN = 'FEN'

@@ -91,15 +91,15 @@ class Game(unittest.TestCase):
         ae = self.assertEqual
         g = game.Game()
         ae(g.state, None)
-        ae(g._append_token_and_set_error(self.match), None)
+        ae(g.append_token_and_set_error(self.match), None)
         ae(g.state, 0)
         ae(g._state, 0)
-        ae(g._text, ['Ke4'])
+        ae(g._text, [' Ke4'])
         ae(g._position_deltas, [])
-        ae(g._append_token_and_set_error(self.match), None)
+        ae(g.append_token_and_set_error(self.match), None)
         ae(g.state, 0)
         ae(g._state, 0)
-        ae(g._text, ['Ke4', 'Ke4'])
+        ae(g._text, [' Ke4', ' Ke4'])
         ae(g._position_deltas, [])
 
     def test_08__append_token_and_set_error(self):
@@ -108,15 +108,15 @@ class Game(unittest.TestCase):
         g._position_deltas.append('some position')
         ae(g._position_deltas, ['some position'])
         ae(g.state, None)
-        ae(g._append_token_and_set_error(self.match), None)
+        ae(g.append_token_and_set_error(self.match), None)
         ae(g.state, 0)
         ae(g._state, 0)
-        ae(g._text, ['Ke4'])
+        ae(g._text, [' Ke4'])
         ae(g._position_deltas, ['some position', 'some position'])
-        ae(g._append_token_and_set_error(self.match), None)
+        ae(g.append_token_and_set_error(self.match), None)
         ae(g.state, 0)
         ae(g._state, 0)
-        ae(g._text, ['Ke4', 'Ke4'])
+        ae(g._text, [' Ke4', ' Ke4'])
         ae(g._position_deltas,
            ['some position', 'some position', 'some position'])
 
@@ -130,7 +130,7 @@ class Game(unittest.TestCase):
 
         ae(g.state, 0)
         ae(g._state, 0)
-        ae(g._text, ['Ke4'])
+        ae(g._text, [' Ke4'])
         ae(g._position_deltas, [])
 
     def test_10_append_other_or_disambiguation_pgn(self):
@@ -139,7 +139,7 @@ class Game(unittest.TestCase):
 
         # Calls append_token_and_set_error.
         ae(g.append_other_or_disambiguation_pgn(self.match), None)
-        ae(g._text, ['Ke4'])
+        ae(g._text, [' Ke4'])
         ae(g._state, 0)
 
     def test_11_append_other_or_disambiguation_pgn(self):
@@ -149,7 +149,7 @@ class Game(unittest.TestCase):
 
         # Calls append_token_and_set_error.
         ae(g.append_other_or_disambiguation_pgn(self.match), None)
-        ae(g._text, ['Ke4'])
+        ae(g._text, [' Ke4'])
         ae(g._state, 0)
         ae('_full_disambiguation_detected' in g.__dict__, False)
         ae(g._full_disambiguation_detected, False)
@@ -673,7 +673,7 @@ class Termination(unittest.TestCase):
         ae(g.append_game_termination(self.match), None)
         ae(g._state, 0)
         ae(g._position_deltas, [])
-        ae(g._text, ['Ke4'])
+        ae(g._text, [' Ke4'])
 
     def test_03_append_game_termination(self):
         ae = self.assertEqual
@@ -746,6 +746,82 @@ class GenerateFENForPosition(unittest.TestCase):
            '4k3/4p3/8/8/8/4P3/8/7K w - - 0 1')
 
 
+class GameIndicateCheck(unittest.TestCase):
+
+    def setUp(self):
+        self.game = game.GameIndicateCheck()
+        self.game._tags[constants.TAG_SETUP] = constants.SETUP_VALUE_FEN_PRESENT
+
+    def tearDown(self):
+        del self.game
+
+    def setposition(self, fen):
+        self.game._tags[constants.TAG_FEN] = fen
+
+    def test_01_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('r3K3/8/4k3/8/8/8/8/8 w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), True)
+
+    def test_02_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('r3K3/8/4k3/8/8/8/7B/8 w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), False)
+
+    def test_03_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('r3K3/8/4k3/8/8/8/8/7B w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), False)
+
+    def test_04_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('rr6/8/8/1Pp5/1KN5/8/2k2b2/7q w - c6 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), True)
+
+    def test_05_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('rr6/2p5/8/1P6/1KN5/8/2k2b2/4q3 w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), False)
+
+    def test_06_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('rr6/2p5/8/1Pb5/1KN5/8/2k5/7q w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), False)
+
+    def test_07_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('r7/8/8/1Pp5/1KN5/8/2k2b2/7q w - c6 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), False)
+
+    def test_08_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('r7/8/8/1Pp5/1KN5/8/2k2b2/7q w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), True)
+
+    def test_09_is_position_checkmate(self):
+        ae = self.assertEqual
+        self.setposition('r7/2p5/8/1P6/1KN4r/8/2k2b2/4q3 w - - 1 1')
+        g = self.game
+        g.set_initial_position()
+        ae(g.is_position_checkmate(), True)
+
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner
     loader = unittest.defaultTestLoader.loadTestsFromTestCase
@@ -754,3 +830,4 @@ if __name__ == '__main__':
     runner().run(loader(Ravstack))
     runner().run(loader(Termination))
     runner().run(loader(GenerateFENForPosition))
+    runner().run(loader(GameIndicateCheck))

@@ -5,7 +5,7 @@
 
 """Portable Game Notation (PGN) position and game navigation data structures.
 
-Four classes are provided:
+Five classes are provided:
 
 Game expects Import Format PGN, which includes Export Format PGN, and allows
 some transgressions which occur in real PGN files that do not stop extraction
@@ -23,6 +23,9 @@ outcome, when ignoring case leads to ambiguity.  The advantage is movetext like
 'B4' is accepted as a pawn move and 'bb4' is accepted as a bishop move.  The
 problem is processing PGN text takes about 30% longer than the other classes
 for typical game scores without variations.
+
+GameIndicateCheck extends Game by adding check indicators, '+' and '#', to
+movetext from games stored on the database.
 
 Some differences are implemented by redefining methods in subclasses.  The rest
 are implemented by reference to the class attribute _strict_pgn.
@@ -116,8 +119,6 @@ from .constants import (
     LAN_CAPTURE_OR_MOVE,
     LAN_DESTINATION,
     LAN_PROMOTE_PIECE,
-    LAN_CHECK_INDICATOR,
-    LAN_SUFFIX_ANNOTATION,
     PGN_PROMOTION,
     PGN_BISHOP,
     IMPORT_FORMAT,
@@ -125,8 +126,6 @@ from .constants import (
     TEXT_PROMOTION,
     TP_MOVE,
     TP_PROMOTE_TO_PIECE,
-    TP_CHECK_INDICATOR,
-    TP_SUFFIX_ANNOTATION,
     WHITE_PAWN_CAPTURES,
     BLACK_PAWN_CAPTURES,
     PGN_NAMED_PIECES,
@@ -138,6 +137,7 @@ from .constants import (
     TAG_BLACK,
     TAG_RESULT,
     SEVEN_TAG_ROSTER,
+    SUPPLEMENTAL_TAG_ROSTER,
     DEFAULT_TAG_VALUE,
     DEFAULT_TAG_DATE_VALUE,
     DEFAULT_TAG_RESULT_VALUE,
@@ -148,6 +148,9 @@ from .constants import (
     PGN_LINE_SEPARATOR,
     PGN_TOKEN_SEPARATOR,
     PGN_DOT,
+    SUFFIX_ANNOTATION_TO_NAG,
+    KING_MOVES,
+    KNIGHT_MOVES,
     )
 from .piece import Piece
 from .squares import Squares
@@ -159,6 +162,9 @@ disambiguate_text_format = re.compile(DISAMBIGUATE_TEXT)
 lan_format = re.compile(LAN_FORMAT)
 text_promotion_format = re.compile(TEXT_PROMOTION)
 white_black_tag_value_format = re.compile('\s*([^,.\s]+)')
+suffix_annotations = re.compile(r'(!!|!\?|!|\?\?|\?!|\?)$')
+SIDE_TO_MOVE_KING = {FEN_WHITE_ACTIVE: FEN_WHITE_KING,
+                     FEN_BLACK_ACTIVE: FEN_BLACK_KING}
 
 
 class GameError(Exception):
@@ -294,14 +300,17 @@ class Game:
     def is_tag_roster_valid(self):
         """Return True if the game's tag roster is valid."""
         tags = self._tags
-        for v in tags.values():
-            if len(v) == 0:
-                # Tag value must not be null
-                return False
         for t in SEVEN_TAG_ROSTER:
             if t not in tags:
-                # A mandatory tag is missing
+                # A mandatory tag is missing.
                 return False
+            if len(tags[t]) == 0:
+                # Mandatory tags must have a non-null value.
+                return False
+        for t in SUPPLEMENTAL_TAG_ROSTER:
+            if t in tags:
+                if len(tags[t]) == 0:
+                    return False
         return True
     
     # May be replaced, or just removed, if a suitable property is available
@@ -409,7 +418,19 @@ class Game:
     # Some subclasses of Game ignore anything which is not PGN.  These two
     # methods ensure '--' is always captured because the associated moves will
     # not make sense, when eyeballed, if the '--' is missing.
+    # '--' has been seen as the first or only move after the tags, where it
+    # makes no sense, and is therefore treated as legal as the first movetext
+    # token.  However it is not allowed as the first token of a game score, in
+    # PGN files the first token after a game termination token, to minimise
+    # the risk of swallowing valid games from it's use in PGN files: the
+    # Craftynn.pgn series for example.
     def append_pass_and_set_error(self, match):
+        if self._movetext_offset is None and len(self._text):
+            if not self.set_initial_position():
+                self.append_token_and_set_error(match)
+                return
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
         self.append_token_and_set_error(match)
 
     def append_pass_after_error(self, match):
@@ -443,7 +464,27 @@ class Game:
         """
         pass
 
-    def _append_token_and_set_error(self, match):
+    def pgn_mark_comment_in_error(self, comment):
+        """Return comment.  Subclasses should override to fit requirements.
+
+        When not overridden the game_ok or game_ok_with_variation_errors
+        properties should be used to test for errors rather than the state
+        or game_has_errors properties.  self._state can be None even if there
+        are errors in recursive annotation variations.  The detail of the
+        subclass will determine if this is still the case.
+
+        One possibility is to wrap the error in a '{...}' comment.  The '}'
+        token in any wrapped commment would end the comment wrapping the error
+        prematurely, so some action may be needed.
+        
+        """
+        return comment
+
+    def append_token_and_set_error(self, match):
+        """Append first invalid token in main line or variation to game score.
+
+        The game error state is adjusted so the error condition can be removed
+        at the end of the variation in which it occured."""
         if self._state is None:
             self._state = len(self._text)
             self._state_stack[-1] = self._state
@@ -453,7 +494,7 @@ class Game:
             # buffer errors too, so be sure the error to be seen is in first
             # buffer.  The method raises an AssertionError.
             #self.display_placement_and_board_and_fen_then_assert_false(match)
-        self._text.append(match.group())
+        self._text.append(PGN_TOKEN_SEPARATOR + match.group())
 
         # len(self._position_deltas) will be 0 if end of buffer reached while
         # collecting PGN Tags.
@@ -463,16 +504,80 @@ class Game:
             if len(self._position_deltas):
                 raise
 
-    def append_token_and_set_error(self, match):
-        """Append first invalid token in main line or variation to game score.
-
-        The game error state is adjusted so the error condition can be removed
-        at the end of the variation in which it occured."""
-        self._append_token_and_set_error(match)
-
     def append_token_after_error(self, match):
         """Append token to game score after an error has been found."""
+        self._text.append(PGN_TOKEN_SEPARATOR + match.group())
+
+    def append_token_after_error_without_separator(self, match):
+        """Append token without separator to game score after an error has
+        been found.
+
+        Sequences of dots after an error are kept together, there is not a
+        space before each dot.  When there is no error dots are ignored.
+
+        Check indicators are not prefixed with a separator.
+
+        """
         self._text.append(match.group())
+
+    def append_comment_after_error(self, match):
+        """Append comment token to game score after an error has been found."""
+        self._text.append(
+            PGN_TOKEN_SEPARATOR + self.pgn_mark_comment_in_error(match.group()))
+
+    def append_bad_tag_and_set_error(self, match):
+        """Append incomplete or badly formed tag to game score and set error.
+
+        The tag is formed like '[ Tagname "Tagvalue" ]' with extra, or
+        less, whitespace allowed.  In particular there is at least one '\' or
+        '"' without the '\' escape prefix.  If _state and _movetext_offset
+        allow and the rules do not state _strict_pgn the escape prefix is
+        added as needed, rather than declare an error and terminate the game.
+
+        The tag is wrapped in a comment, '{}' and the game is terminated with
+        the unknown result symbol '*'.
+
+        """
+        if (self._strict_pgn or
+            self._state is not None or
+            self._movetext_offset is not None):
+            if self._state is None:
+                self._state = len(self._text)
+                self._state_stack[-1] = self._state
+                self._error_list.append(self._state)
+            self._text.append(match.group().join(
+                ('{::Bad Tag::', '::Bad Tag::}')))
+            #self._text.append('*')
+            try:
+                self.repeat_board_state(self._position_deltas[-1])
+            except IndexError:
+                if len(self._position_deltas):
+                    raise
+                self.add_board_state_none(None)
+            return
+        g = match.group().split('"')
+        v = '"'.join(g[1:-1]
+                     ).replace('\"', '"').replace('\\\\', '\\').replace(
+                         '\\', '\\\\').replace('"', r'\"')
+
+        # Copy from append_start_tag() to apply correctly formatted PGN tag,
+        # which must not be duplicated.
+        self._text.append('"'.join((g[0], v, g[-1])))
+        self.add_board_state_none(None)
+        tag_name = g[0].lstrip('[').strip()
+        if tag_name in self._tags:
+            if self._state is None:
+                self._state = len(self._tags) - 1
+                self._state_stack[-1] = self._state
+            return
+        self._tags[tag_name] = v
+        return
+
+    def append_bad_tag_after_error(self, match):
+        """Append token to game score after an error has been found."""
+        self._text.append(match.group())
+        if self._state is not None or self._movetext_offset is not None:
+            self.add_board_state_none(None)
 
     def append_game_termination_after_error(self, match):
         """Delegate action to append_token_after_error method.
@@ -517,10 +622,10 @@ class Game:
                 # Cannot call append_end_rav() method because it tests some
                 # conditions that should be true when errors are absent.
                 if self._movetext_offset is None:
-                    self._append_token_and_set_error(match)
+                    self.append_token_and_set_error(match)
                     return
                 if len(self._ravstack) == 1:
-                    self._append_token_and_set_error(match)
+                    self.append_token_and_set_error(match)
                     return
                 del self._ravstack[-1]
                 del self._state_stack[-1]
@@ -576,7 +681,7 @@ class Game:
 
         """
         if self._state is not None or self._movetext_offset is not None:
-            self._append_token_and_set_error(match)
+            self.append_token_and_set_error(match)
             return
         group = match.group
         self._text.append(group())
@@ -691,6 +796,7 @@ class Game:
          self._halfmove_clock,
          self._fullmove_number,
          ) = self._position_deltas[-1][1][1:]
+        self.append_check_indicator()
 
     def append_piece_move(self, match):
         """Append piece move token to game score and update board state.
@@ -783,6 +889,7 @@ class Game:
                  self._halfmove_clock,
                  self._fullmove_number,
                  ) = self._position_deltas[-1][1][1:]
+                self.append_check_indicator()
                 return
             from_file_or_rank = group(IFG_PIECE_MOVE_FROM_FILE_OR_RANK)
             if from_file_or_rank:
@@ -861,6 +968,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
             return
 
         # Piece move without capture.
@@ -943,6 +1051,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
             return
         from_file_or_rank = group(IFG_PIECE_MOVE_FROM_FILE_OR_RANK)
         if from_file_or_rank:
@@ -1016,6 +1125,7 @@ class Game:
          self._halfmove_clock,
          self._fullmove_number,
          ) = self._position_deltas[-1][1][1:]
+        self.append_check_indicator()
 
     def append_pawn_move(self, match):
         """Append pawn move token to game score and update board state.
@@ -1123,6 +1233,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
             return
 
         # Pawn move without capture.
@@ -1204,6 +1315,7 @@ class Game:
          self._halfmove_clock,
          self._fullmove_number,
          ) = self._position_deltas[-1][1][1:]
+        self.append_check_indicator()
 
     def append_pawn_promote_move(self, match):
         """Append pawn promotion move token to game score and update board
@@ -1317,6 +1429,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
             return
 
         # Promotion move without capture.
@@ -1383,6 +1496,7 @@ class Game:
          self._halfmove_clock,
          self._fullmove_number,
          ) = self._position_deltas[-1][1][1:]
+        self.append_check_indicator()
 
     def append_start_rav(self, match):
         """Append start recursive annotation variation token to game score and
@@ -1404,12 +1518,12 @@ class Game:
         # annotation variations must be preceded by a SAN-move.  Section 8.2.5
         # is implemented here because a variation varies from something.
         if self._movetext_offset is None:
-            self._append_token_and_set_error(match)
+            self.append_token_and_set_error(match)
             return
 
         if len(self._ravstack[-1]) == 1:
             if self._position_deltas[-1] is None:
-                self._append_token_and_set_error(match)
+                self.append_token_and_set_error(match)
                 return
             if len(self._position_deltas[-1]) == 1:
                 self.set_position_to_play_right_nested_rav_at_move()
@@ -1474,14 +1588,14 @@ class Game:
         # '( e4 ...12... 13 )'
         # This program ignores numbers and dots for state and storage of games.
         if self._state is not None or self._movetext_offset is None:
-            self._append_token_and_set_error(match)
+            self.append_token_and_set_error(match)
             return
 
         if self._movetext_offset is None:
-            self._append_token_and_set_error(match)
+            self.append_token_and_set_error(match)
             return
         if len(self._ravstack) == 1:
-            self._append_token_and_set_error(match)
+            self.append_token_and_set_error(match)
             return
         del self._ravstack[-1]
         del self._state_stack[-1]
@@ -1492,7 +1606,7 @@ class Game:
         # The commented code bans this sequence.
         #if (self._active_color == self._ravstack[-1][3][1] and
         #    self._fullmove_number == self._ravstack[-1][3][5]):
-        #    self._append_token_and_set_error(match)
+        #    self.append_token_and_set_error(match)
         #    return
 
         if self._ravstack[-1][2] is None:
@@ -1521,6 +1635,19 @@ class Game:
         self._text.append(match.group())
         self.add_board_state_none(None)
 
+    def append_glyph_for_traditional_annotation(self, match):
+        """Append NAG for traditional annotation to game score.
+
+        The game position for this token is the same as for the adjacent token,
+        and the game state is adjusted to fit.
+
+        """
+        self._text.append(SUFFIX_ANNOTATION_TO_NAG[match.group()])
+        try:
+            self.repeat_board_state(self._position_deltas[-1])
+        except IndexError:
+            self.add_board_state_none(None)
+        
     def ignore_escape(self, match):
         """Ignore escape token and rest of line containing the token.
 
@@ -1541,6 +1668,17 @@ class Game:
         The PGN specification mentions dots as part of move number indication,
         '12.' and '12...' for example.  This class ignores any sequence of
         dots containing at least one dot in sequences of valid tokens.
+
+        """
+
+    def ignore_check_indicator(self, match):
+        """Ignore check indicator indication token.
+
+        Check indicators are required in PGN export format.  This PGN parser
+        verifies a move does not leave the moving side's king in check, but
+        takes no interest in whether a move gives check or checkmate except
+        for output in PGN export format.  Game.append_check_indicator can
+        be overridden to do this.
 
         """
 
@@ -1637,6 +1775,7 @@ class Game:
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
             self._full_disambiguation_detected = True
+            self.append_check_indicator()
             return
 
         # Piece move without capture.
@@ -1698,6 +1837,7 @@ class Game:
          self._halfmove_clock,
          self._fullmove_number,
          ) = self._position_deltas[-1][1][1:]
+        self.append_check_indicator()
         self._full_disambiguation_detected = True
 
     def _long_algebraic_notation_piece_move(self, match):
@@ -1719,7 +1859,7 @@ class Game:
             return
 
         piece_placement_data = self._piece_placement_data
-        capture, destination, promotion_piece, check, suffix = lm.groups()
+        capture, destination, promotion_piece = lm.groups()
         if capture != PGN_CAPTURE_MOVE:
             if destination in piece_placement_data:
                 self.append_token_and_set_error(match)
@@ -1835,6 +1975,7 @@ class Game:
                  self._halfmove_clock,
                  self._fullmove_number,
                  ) = self._position_deltas[-1][1][1:]
+                self.append_check_indicator()
                 self._full_disambiguation_detected = True
                 return
 
@@ -1923,6 +2064,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
             self._full_disambiguation_detected = True
             return
 
@@ -1945,7 +2087,7 @@ class Game:
             return
 
         piece_placement_data = self._piece_placement_data
-        capture, destination, promotion_piece, check, suffix = lm.groups()
+        capture, destination, promotion_piece = lm.groups()
         if capture != PGN_CAPTURE_MOVE:
             if destination in piece_placement_data:
                 self.append_token_and_set_error(match)
@@ -2034,6 +2176,7 @@ class Game:
                  self._halfmove_clock,
                  self._fullmove_number,
                  ) = self._position_deltas[-1][1][1:]
+                self.append_check_indicator()
                 return
 
             # Promotion move without capture.
@@ -2078,6 +2221,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
 
             self.append_token_and_set_error(match)
             return
@@ -2156,6 +2300,7 @@ class Game:
              self._halfmove_clock,
              self._fullmove_number,
              ) = self._position_deltas[-1][1][1:]
+            self.append_check_indicator()
             return
 
         # Pawn move without capturing or promoting.
@@ -2205,6 +2350,7 @@ class Game:
          self._halfmove_clock,
          self._fullmove_number,
          ) = self._position_deltas[-1][1][1:]
+        self.append_check_indicator()
         self._full_disambiguation_detected = True
 
     def set_initial_position(self):
@@ -2736,10 +2882,9 @@ class Game:
             return FEN_NULL
         return adjusted_castling_availability
 
-    # In all but one case this method tests if a move is illegal because of an
-    # attack on the king of the active_color.  The exception is validation of
-    # a FEN Tag where the square of the king of the side of the inactive color
-    # is tested.  So 'side' is not one of the arguments passed to the method.
+    # There is a case for piece_placement_data and active_color to be arguments
+    # of is_square_attacked_by_other_side to avoid temporary adjustment of the
+    # attributes validating FEN Tags and determining check indicators.
     def is_square_attacked_by_other_side(self, square):
         piece_placement_data = self._piece_placement_data
         active_color = self._active_color
@@ -3013,7 +3158,13 @@ class Game:
             return len(token) + length + 1
 
     def get_export_pgn_movetext(self):
-        """Return Export format PGN movetext."""
+        """Return Export format PGN movetext.
+
+        Where check or checkmate moves are present the text is not in export
+        format unless generated by the GameIndicateCheck class, because these
+        indicators are not included in the text otherwise.
+
+        """
         fullmove_number, active_color = self._set_movetext_indicators()
         movetext = ['\n']
         if self._movetext_offset is None:
@@ -3030,7 +3181,6 @@ class Game:
                 insert_fullmove_number = True
             elif t.startswith('$'):
                 length = _attm(t, movetext, length)
-                insert_fullmove_number = True
             elif t.startswith(';'):
                 if len(t) + length >= PGN_MAXIMUM_LINE_LENGTH:
                     movetext.append(PGN_LINE_SEPARATOR)
@@ -3058,7 +3208,13 @@ class Game:
                 length = _attm(str(fullmove_number) + PGN_DOT,
                                movetext,
                                length)
+                m = suffix_annotations.search(t)
+                if m:
+                    t = t[:m.start()]
                 length = _attm(t, movetext, length)
+                if m:
+                    length = _attm(
+                        SUFFIX_ANNOTATION_TO_NAG[m.group()], movetext, length)
                 active_color = OTHER_SIDE[active_color]
                 insert_fullmove_number = False
             else:
@@ -3067,13 +3223,25 @@ class Game:
                                    movetext,
                                    length)
                     insert_fullmove_number = False
+                m = suffix_annotations.search(t)
+                if m:
+                    t = t[:m.start()]
                 length = _attm(t, movetext, length)
+                if m:
+                    length = _attm(
+                        SUFFIX_ANNOTATION_TO_NAG[m.group()], movetext, length)
                 active_color = OTHER_SIDE[active_color]
                 fullmove_number += 1
         return ''.join(movetext)
 
     def get_archive_movetext(self):
-        """Return Reduced Export format PGN movetext."""
+        """Return Reduced Export format PGN movetext.
+
+        Where check or checkmate moves are present the text is not in export
+        format unless generated by the GameIndicateCheck class, because these
+        indicators are not included in the text otherwise.
+
+        """
         fullmove_number, active_color = self._set_movetext_indicators()
         movetext = ['\n']
         if self._movetext_offset is None:
@@ -3099,7 +3267,13 @@ class Game:
                 length = _attm(str(fullmove_number) + PGN_DOT,
                                movetext,
                                length)
+                m = suffix_annotations.search(t)
+                if m:
+                    t = t[:m.start()]
                 length = _attm(t, movetext, length)
+                if m:
+                    length = _attm(
+                        SUFFIX_ANNOTATION_TO_NAG[m.group()], movetext, length)
                 active_color = OTHER_SIDE[active_color]
                 insert_fullmove_number = False
             else:
@@ -3108,13 +3282,25 @@ class Game:
                                    movetext,
                                    length)
                     insert_fullmove_number = False
+                m = suffix_annotations.search(t)
+                if m:
+                    t = t[:m.start()]
                 length = _attm(t, movetext, length)
+                if m:
+                    length = _attm(
+                        SUFFIX_ANNOTATION_TO_NAG[m.group()], movetext, length)
                 active_color = OTHER_SIDE[active_color]
                 fullmove_number += 1
         return ''.join(movetext)
 
     def get_export_pgn_rav_movetext(self):
-        """Return Export format PGN moves and RAVs but no comments."""
+        """Return Export format PGN moves and RAVs but no comments.
+
+        Where check or checkmate moves are present the text is not in export
+        format unless generated by the GameIndicateCheck class, because these
+        indicators are not included in the text otherwise.
+
+        """
         fullmove_number, active_color = self._set_movetext_indicators()
         movetext = ['\n']
         if self._movetext_offset is None:
@@ -3146,7 +3332,13 @@ class Game:
                 length = _attm(str(fullmove_number) + PGN_DOT,
                                movetext,
                                length)
+                m = suffix_annotations.search(t)
+                if m:
+                    t = t[:m.start()]
                 length = _attm(t, movetext, length)
+                if m:
+                    length = _attm(
+                        SUFFIX_ANNOTATION_TO_NAG[m.group()], movetext, length)
                 active_color = OTHER_SIDE[active_color]
                 insert_fullmove_number = False
             else:
@@ -3155,27 +3347,62 @@ class Game:
                                    movetext,
                                    length)
                     insert_fullmove_number = False
+                m = suffix_annotations.search(t)
+                if m:
+                    t = t[:m.start()]
                 length = _attm(t, movetext, length)
+                if m:
+                    length = _attm(
+                        SUFFIX_ANNOTATION_TO_NAG[m.group()], movetext, length)
                 active_color = OTHER_SIDE[active_color]
                 fullmove_number += 1
         return ''.join(movetext)
 
     def get_export_pgn_elements(self):
-        """Return Export format PGN version of game."""
+        """Return Export format PGN version of game.
+
+        Where check or checkmate moves are present the text is not in export
+        format unless generated by the GameIndicateCheck class, because these
+        indicators are not included in the text otherwise.
+
+        """
         return (self.get_seven_tag_roster_tags(),
                 self.get_export_pgn_movetext(),
                 self.get_non_seven_tag_roster_tags())
 
     def get_archive_pgn_elements(self):
-        """Return Archive format PGN version of game. (Reduced Export Format"""
+        """Return Archive format PGN version of game. (Reduced Export Format).
+
+        Where check or checkmate moves are present the text is not in export
+        format unless generated by the GameIndicateCheck class, because these
+        indicators are not included in the text otherwise.
+
+        """
         return self.get_seven_tag_roster_tags(), self.get_archive_movetext()
 
     def get_export_pgn_rav_elements(self):
         """Return Export format PGN version of game with RAVs but no comments.
+
+        Where check or checkmate moves are present the text is not in export
+        format unless generated by the GameIndicateCheck class, because these
+        indicators are not included in the text otherwise.
+
         """
         return (self.get_seven_tag_roster_tags(),
                 self.get_export_pgn_rav_movetext(),
                 self.get_non_seven_tag_roster_tags())
+
+    def append_check_indicator(self):
+        """Do nothing.
+
+        Check and checkmate indicators are not added to movetext where the
+        move gives check or checkmate.
+
+        Use the GameIndicateCheck class to append these indicators to movetext.
+
+        This method is used after the move in self._text[-1] has been applied
+        to the board, but before processing the next token starts.
+        """
 
 
 class GameStrictPGN(Game):
@@ -3343,8 +3570,6 @@ class GameIgnoreCasePGN(GameTextPGN):
                 promotion_match = text_format.match(
                     ''.join((promotion_match.group(TP_MOVE),
                              promotion_match.group(TP_PROMOTE_TO_PIECE).upper(),
-                             promotion_match.group(TP_CHECK_INDICATOR),
-                             promotion_match.group(TP_SUFFIX_ANNOTATION),
                              )))
                 if promotion_match is None:
                     self.append_token_and_set_error(match)
@@ -3421,13 +3646,284 @@ class GameIgnoreCasePGN(GameTextPGN):
         promotion_match = text_format.match(
             ''.join((promotion_match.group(TP_MOVE),
                      promotion_match.group(TP_PROMOTE_TO_PIECE).upper(),
-                     promotion_match.group(TP_CHECK_INDICATOR),
-                     promotion_match.group(TP_SUFFIX_ANNOTATION),
                      )))
         if promotion_match is None:
             self.append_token_and_set_error(match)
             return
         super().append_pawn_promote_move(promotion_match)
+
+
+class GameIndicateCheck(Game):
+    """Add check and checkmate indicators to games extracted from database.
+
+    Append check and checkmate indicators, '+' and '#', to movetext where the
+    move gives check or checkmate by overriding append_check_indicator()
+    method.
+    
+    Note the methods in this class are not needed to determine legality of a
+    move.  Their purpose is to decide if a move needs a check indicator to
+    comply with the Export Format defined in the PGN standard.
+
+    """
+    def append_check_indicator(self):
+        """Append correct check indicator, '+' and '#', suffix to movetext.
+
+        This method is used after the move in self._text[-1] has been applied
+        to the board, but before processing the next token starts.
+
+        '#' indicators are replaced by '+' because checkmate is not validated
+        explicitly unless the move is not followed by a valid move in the game
+        or variation.  This is done later, and the positions to test must be
+        set here but is not implemented yet.
+
+        """
+        if self.is_square_attacked_by_other_side(
+            self._pieces_on_board[
+                SIDE_TO_MOVE_KING[self._active_color]][0].square.name):
+            self._text[-1] += '#' if self.is_position_checkmate() else '+'
+
+    def is_position_checkmate(self):
+        """Return True if the side to move is checkmated."""
+        piece_placement_data = self._piece_placement_data.copy()
+        pieces_on_board = self._pieces_on_board
+        side_to_move_king = SIDE_TO_MOVE_KING[self._active_color]
+        king_square = pieces_on_board[side_to_move_king][0].square.name
+        escape_squares = KING_MOVES[king_square]
+
+        # Be sure to put king back!
+        del self._piece_placement_data[king_square]
+
+        # Can king avoid check by moving?
+        # Test all possible destination squares without putting king on them.
+        for s in escape_squares:
+            if s not in piece_placement_data:
+                if not self.is_square_attacked_by_other_side(s):
+                    self._piece_placement_data[
+                        king_square] = piece_placement_data[king_square]
+                    return False
+            elif PIECE_TO_KING[piece_placement_data[s].name
+                               ] != side_to_move_king:
+                if not self.is_square_attacked_by_other_side(s):
+                    self._piece_placement_data[
+                        king_square] = piece_placement_data[king_square]
+                    return False
+
+        # Put king back.
+        self._piece_placement_data[
+            king_square] = piece_placement_data[king_square]
+
+        # Can side to move block the check?
+        attack_lines = self.get_attacks_on_square_by_other_side(king_square)
+        if len(attack_lines) > 1:
+            return True
+        elif len(attack_lines) == 0:
+            return False
+        if self.legal_move_to_square_exists(
+            attack_lines[0], PGN_CAPTURE_MOVE, king_square):
+            return False
+        ptp = POINT_TO_POINT.get((attack_lines[0], king_square))
+        if ptp is not None:
+            for s in ptp[2][ptp[0]:ptp[1]]:
+                if self.legal_move_to_square_exists(s, '', king_square):
+                    return False
+            return True
+        ptp = KNIGHT_MOVES.get(attack_lines[0])
+        if ptp is not None:
+            for s in ptp:
+                if self.legal_move_to_square_exists(s, '', king_square):
+                    return False
+            return True
+        return False
+
+    def get_attacks_on_square_by_other_side(self, square):
+        """Return list of attacking squares.
+
+        This method is intended for deciding if a check is checkmate, so the
+        list is returned early if it's length reaches two because a single
+        move cannot block checks from two squares.
+
+        It is assumed the king cannot escape check by moving itself.
+
+        """
+        piece_placement_data = self._piece_placement_data
+        active_color = self._active_color
+        attacking_squares = []
+
+        so, fa = FILE_ATTACKS[square]
+        for square_list in reversed(fa[:so]), fa[so+1:]:
+            for sq in square_list:
+                if sq not in piece_placement_data:
+                    continue
+                piece = piece_placement_data[sq]
+                if piece.color == active_color:
+                    break
+                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                if sources is None or sq not in sources.get(square, ''):
+                    break
+                attacking_squares.append(sq)
+                if len(attacking_squares) > 1:
+                    return attacking_squares
+                break
+
+        so, ra = RANK_ATTACKS[square]
+        for square_list in reversed(ra[:so]), ra[so+1:]:
+            for sq in square_list:
+                if sq not in piece_placement_data:
+                    continue
+                piece = piece_placement_data[sq]
+                if piece.color == active_color:
+                    break
+                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                if sources is None or sq not in sources.get(square, ''):
+                    break
+                attacking_squares.append(sq)
+                if len(attacking_squares) > 1:
+                    return attacking_squares
+                break
+
+        so, d = LRD_DIAGONAL_ATTACKS[square]
+        for square_list in reversed(d[:so]), d[so+1:]:
+            for sq in square_list:
+                if sq not in piece_placement_data:
+                    continue
+                piece = piece_placement_data[sq]
+                if piece.color == active_color:
+                    break
+                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                if sources is None or sq not in sources.get(square, ''):
+                    break
+                attacking_squares.append(sq)
+                if len(attacking_squares) > 1:
+                    return attacking_squares
+                break
+
+        so, d = RLD_DIAGONAL_ATTACKS[square]
+        for square_list in reversed(d[:so]), d[so+1:]:
+            for sq in square_list:
+                if sq not in piece_placement_data:
+                    continue
+                piece = piece_placement_data[sq]
+                if piece.color == active_color:
+                    break
+                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                if sources is None or sq not in sources.get(square, ''):
+                    break
+                attacking_squares.append(sq)
+                if len(attacking_squares) > 1:
+                    return attacking_squares
+                break
+
+        if active_color == FEN_WHITE_ACTIVE:
+            knight_search = FEN_BLACK_KNIGHT
+        else:
+            knight_search = FEN_WHITE_KNIGHT
+        square_list = FEN_SOURCE_SQUARES[knight_search]
+        for sq in square_list:
+            if sq not in piece_placement_data:
+                continue
+            piece = piece_placement_data[sq]
+            if piece.color == active_color:
+                break
+            if piece.name == knight_search:
+                if square in square_list[sq]:
+                    attacking_squares.append(sq)
+                    if len(attacking_squares) > 1:
+                        return attacking_squares
+
+        return attacking_squares
+
+    def legal_move_to_square_exists(self, square, capture, king_square):
+        """Return True if a legal move to square exists.
+
+        This method is intended for deciding if a check is checkmate, and it
+        is assumed the king cannot move.
+
+        En-passant captures cannot block a check but they can remove a pawn
+        giving check.  Test if en-passant prevents checkmate as last thing
+        because it seems least likely case and the algorithm is unlike any of
+        the other line and point-to-point cases.
+
+        """
+        ppd = self._piece_placement_data
+        checked_king = ppd[king_square].name
+        for from_square, piece in ppd.copy().items():
+            if piece.color != self._active_color:
+                continue
+            pn = piece.name
+            if pn == checked_king:
+                continue
+            if pn in FEN_PAWNS:
+                pn += capture
+                if square in SOURCE_SQUARES[pn]:
+                    if from_square not in SOURCE_SQUARES[pn][square]:
+                        continue
+                    ppd_to = ppd.pop(square, None)
+                    ppd_from = ppd.pop(from_square)
+                    ppd[square] = ppd_from
+                    check = self.is_square_attacked_by_other_side(king_square)
+                    del ppd[square]
+                    if ppd_to is not None:
+                        ppd[square] = ppd_to
+                    ppd[from_square] = ppd_from
+                    if not check:
+                        return True
+                continue
+            if from_square in FEN_SOURCE_SQUARES[pn][square]:
+                if pn in (FEN_WHITE_KNIGHT, FEN_BLACK_KNIGHT):
+                    ppd_to = ppd.pop(square, None)
+                    ppd_from = ppd.pop(from_square)
+                    ppd[square] = ppd_from
+                    check = self.is_square_attacked_by_other_side(king_square)
+                    del ppd[square]
+                    if ppd_to is not None:
+                        ppd[square] = ppd_to
+                    ppd[from_square] = ppd_from
+                    if not check:
+                        return True
+                    continue
+                ptp = POINT_TO_POINT[from_square, square]
+                for sq in ptp[2][ptp[0]:ptp[1]]:
+                    if sq in ppd:
+                        break
+                else:
+                    ppd_to = ppd.pop(square, None)
+                    ppd_from = ppd.pop(from_square)
+                    ppd[square] = ppd_from
+                    check = self.is_square_attacked_by_other_side(king_square)
+                    del ppd[square]
+                    if ppd_to is not None:
+                        ppd[square] = ppd_to
+                    ppd[from_square] = ppd_from
+                    if not check:
+                        return True
+        if capture and self._en_passant_target_square != FEN_NULL:
+            for k, v in EN_PASSANT_TARGET_SQUARES[self._active_color].items():
+                if v != self._en_passant_target_square:
+                    continue
+                if k[0] != square:
+                    continue
+                if self._active_color == FEN_WHITE_ACTIVE:
+                    pawn = FEN_WHITE_PAWN
+                else:
+                    pawn = FEN_BLACK_PAWN
+                for from_square in FEN_SOURCE_SQUARES[
+                    pawn][self._en_passant_target_square]:
+                    piece = ppd.get(from_square)
+                    if piece is None:
+                        continue
+                    if piece.name != pawn:
+                        continue
+                    ppd_to = ppd.pop(square, None)
+                    ppd_from = ppd.pop(from_square)
+                    ppd[self._en_passant_target_square] = ppd_from
+                    check = self.is_square_attacked_by_other_side(king_square)
+                    del ppd[self._en_passant_target_square]
+                    if ppd_to is not None:
+                        ppd[square] = ppd_to
+                    ppd[from_square] = ppd_from
+                    if not check:
+                        return True
+        return False
 
 
 def generate_fen_for_position(pieces,
