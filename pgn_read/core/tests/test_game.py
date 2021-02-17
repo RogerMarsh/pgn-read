@@ -139,7 +139,8 @@ class Game(unittest.TestCase):
 
         # Calls append_token_and_set_error.
         ae(g.append_other_or_disambiguation_pgn(self.match), None)
-        ae(g._state, None)
+        ae(g._text, ['Ke4'])
+        ae(g._state, 0)
 
     def test_11_append_other_or_disambiguation_pgn(self):
         ae = self.assertEqual
@@ -148,7 +149,8 @@ class Game(unittest.TestCase):
 
         # Calls append_token_and_set_error.
         ae(g.append_other_or_disambiguation_pgn(self.match), None)
-        ae(g._state, None)
+        ae(g._text, ['Ke4'])
+        ae(g._state, 0)
         ae('_full_disambiguation_detected' in g.__dict__, False)
         ae(g._full_disambiguation_detected, False)
 

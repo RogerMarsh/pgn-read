@@ -566,7 +566,7 @@ class Game:
             if disambiguate_pgn_format.match(match.group()):
                 return
 
-        if self._strict_pgn:
+        if self._strict_pgn is not None:
             self.append_token_and_set_error(match)
 
     def append_start_tag(self, match):

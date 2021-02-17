@@ -176,9 +176,9 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')',
-             '$5', 'Nf3', 'Nf6', '*'])
-        self.assertEqual(g.state, None)
+            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', 'arbitrary ', 'non-PGN ',
+             'text ', '$5', 'Nf3', '3', '...', 'Nf6', '*'])
+        self.assertEqual(g.state, 6)
 
     def test_04(self):
         g = game.GameStrictPGN()

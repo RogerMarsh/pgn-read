@@ -2942,46 +2942,62 @@ class _NonStrictTests:
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
 
-class PGN(_NonStrictTests, StrictPGN):
+class _NonStrictPGNTests:
+    """Override StrictPGN tests which have different outcome when alternatives
+    to GameStrictPGN are used.
+
+    Usage is 'class C(_NonStrictPGNTests, StrictPGN)'.
+
+    For example, Game class allows Nge2 when a knight on c3 is pinned against
+    the king on e1, while GameStrictPGN class does not allow Nge2.
+
+    """
+
+    # Added on seeing results when crash traced to game in crafty06_03.pgn.
+    # Strict version gives an error: c4c5 is long algebraic notation.
+    def test_113_start_rav_after_moves_after_nags(self):
+        ae = self.assertEqual
+        games = self.get('$10$21$10$22c4e5c4c5(()')
+        ae(len(games), 1)
+        ae(games[0].state, 10)
+        ae(games[0]._text,
+           ['$10', '$21', '$10', '$22', 'c4', 'e5', 'c5', '(', '(', ')'])
+
+    # Added after changes to convertion of chess engine responses to PGN.
+    def test_115_long_algebraic_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added after changes to convertion of chess engine responses to PGN.
+    def test_116_long_algebraic_pawn_move_game_terminated(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+
+class PGN(_NonStrictPGNTests, StrictPGN):
     """Provide tests for Game version of parser."""
 
     def setUp(self):
         self.pgn = parser.PGN()
 
 
-class PGNOneCharacterAtATime(_NonStrictTests, StrictPGNOneCharacterAtATime):
-    """Repeat PGN tests reading text one character at a time.
+class PGNOneCharacterAtATime(_NonStrictPGNTests, StrictPGNOneCharacterAtATime):
+    """Repeat PGN tests reading text one character at a time."""
 
-    The two tests overridden in this class may indicate a design flaw, or
-    may just imply relaxing strictness is incompatible with detecting the
-    PGN error instantiated in the tests when reading PGN text one character
-    at a time.
-
-    """
     def setUp(self):
         self.pgn = parser.PGN()
 
-    # Added on seeing results when test_025_calgames_05 run with _strict_pgn
-    # set False.
-    def test_110_game_termination_marker_inside_comment(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4{\n1/2-1/2}*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '1/2-1/2'])
 
-    # Added on seeing results when test_025_calgames_05 run with _strict_pgn
-    # set False.
-    def test_112_game_termination_marker_inside_comment(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4(d4{\n1/2-1/2})*')
-        ae(len(games), 1)
-        ae(games[0].state, 5)
-        ae(games[0]._text,
-           ['[A"a"]', 'e4', '(', 'd4', '1/2-1/2'])
-
-
-class PGNExtendByOneCharacter(_NonStrictTests, StrictPGNExtendByOneCharacter):
+class PGNExtendByOneCharacter(_NonStrictPGNTests,
+                              StrictPGNExtendByOneCharacter):
     """Repeat PGN tests reading text in two chunks, last is length 1."""
 
     def setUp(self):

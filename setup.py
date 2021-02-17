@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     setup(
         name='pgn-read',
-        version='2.0',
+        version='2.0.1',
         description='Portable Game Notation (PGN) parser',
         author='Roger Marsh',
         author_email='roger.marsh@solentware.co.uk',

@@ -270,10 +270,11 @@ class StrictPGN(_StrictPGN):
     def test_021_twic95n_10_pgn(self):
         self.do_standard_tests('twic95n_10.pgn', None, [], '', 50)
 
+    # Needs rewriting to clearly distinguish the _strict_pgn cases.
     def test_022_twic9nn_error_pgn(self):
         ae = self.assertEqual
         games = self.get('twic9nn_error.pgn')
-        ae(len(games), 12 if games[0]._strict_pgn else 10)
+        ae(len(games), 12 if games[0]._strict_pgn is not None else 10)
         ae(games[0].state, None)
         ae(games[1].state, None)
         ae(games[1]._text, ['*'])
@@ -292,7 +293,12 @@ class StrictPGN(_StrictPGN):
             ae(games[i].state, 0)
             ae(games[i]._text, ['ff'])
             i += 1
-        ae(games[i].state, None)
+        if games[i]._strict_pgn:
+            ae(games[i].state, None)
+        elif games[i]._strict_pgn is None:
+            ae(games[i].state, None)
+        else:
+            ae(games[i].state, 0)
         i += 1
         if games[i]._strict_pgn:
             ae(games[i].state, 0)
@@ -310,9 +316,12 @@ class StrictPGN(_StrictPGN):
                 g._fullmove_number),
                '8/6qk/8/5KPp/1Q3p2/4P1P1/1p6/8 b - - 1 69')
             ae(g._text[g.state], 'b1')
+        elif g._strict_pgn is False:
+            ae(g.state, None)
+            ae(g._text[17], '1-0')
         else:
             ae(g.state, None)
-            ae(g.state, None)
+            ae(g._text[17], 'e5')
             ae(g._text[153], '0-1')
 
     def test_023_4ncl_97_98_07_pgn(self):
@@ -368,7 +377,11 @@ class StrictPGN(_StrictPGN):
     def test_032_calgames_06(self):
         ae = self.assertEqual
         games = self.get('calgames_06.pgn')
-        if games[0]._strict_pgn:
+        if games[0]._strict_pgn is None:
+            ae(len(games), 1)
+            ae(games[0].state, None)
+            ae(games[0]._text[0], '[Site "Los Angeles, CA"]')
+        else:
             ae(len(games), 2)
             ae(games[0].state, 0)
             ae(games[1].state, None)
@@ -376,10 +389,6 @@ class StrictPGN(_StrictPGN):
                 games[0], 6, 0,
                ['[Event ', '"LA ',])
             ae(games[1]._text[0], '[Site "Los Angeles, CA"]')
-        else:
-            ae(len(games), 1)
-            ae(games[0].state, None)
-            ae(games[0]._text[0], '[Site "Los Angeles, CA"]')
 
     # calgames_07.pgn is calgames_06.pgn with the Event Tag corrected.
     def test_033_calgames_07(self):
@@ -429,16 +438,16 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 90, 7,
+                g, 101, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4',
-                 '; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n',
-                 'Ng1', '-f3; ',
-                 ])
+                 'd4', '-d4 ',
+                 '; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n'])
+            ae(g._text[5],
+               'd4')
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 47, 7,
@@ -470,14 +479,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 136, 12,
+                g, 160, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'Ng1', '-f3 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 145, 12,
@@ -505,15 +513,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 134, 20,
+                g, 162, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'Nf3', 'Nbd7', '<br>', 'Qb3', 'Bb4', 'xNc3 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 143, 20,
@@ -542,16 +548,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 136, 22,
+                g, 163, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Nbd7', '<br>',
-                 'Qb3', 'Bb4', 'xNc3 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 145, 22,
@@ -581,15 +584,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 141, 20,
+                g, 164, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'Nb8', '-d7 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 147, 24,
@@ -619,16 +620,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 138, 24,
+                g, 166, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bb4', 'xNc3 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 147, 24,
@@ -658,16 +656,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 138, 24,
+                g, 165, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bb4', 'xNc3 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 147, 24,
@@ -697,16 +692,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 131, 26,
+                g, 165, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bxc3', 'bxc3', 'a2', '-a4 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 140, 26,
@@ -736,18 +728,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 104, 43,
+                g, 166, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
-                 'Ne5', 'Ng4', 'Nxg4', 'Bxg4', 'f3', 'Be6', '<br>', 'Qc2',
-                 'Qh4', 'e4', 'Bd7', 'Be3', '<br>', 'Rf1', '-b1 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 113, 43,
@@ -780,19 +767,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 98, 47,
+                g, 167, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
-                 'Ne5', 'Ng4', 'Nxg4', 'Bxg4', 'f3', 'Be6', '<br>', 'Qc2',
-                 'Qh4', 'e4', 'Bd7', 'Be3', 'Re7', '<br>', 'Rfb1', 'Bc6', 'Bf2',
-                 'e4', 'xd5',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 89, 60,
@@ -827,20 +808,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 84, 57,
+                g, 169, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
-                 'Ne5', 'Ng4', 'Nxg4', 'Bxg4', 'f3', 'Be6', '<br>', 'Qc2',
-                 'Qh4', 'e4', 'Bd7', 'Be3', 'Re7', '<br>', 'Rfb1', 'Bc6', 'Bf2',
-                 'Qg5', 'exd5', 'Nxd5', '<br>', 'Bxh7', 'Kh8', 'h4', 'Qf4',
-                 'Re1', '<br>', 'Re1', 'xe7',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 89, 60,
@@ -875,20 +849,13 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if g._strict_pgn is False:
             self.do_game_text_tests(
-                g, 88, 59,
+                g, 175, 6,
                 ['[Event "EM/CL/Q19-2"]',
                  '[White "Silva, ABC (BRA)"]',
                  '[Black "Player, Riccardo (ITA)"]',
                  '[Result "1/2 - Â"]',
                  '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                 '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
-                 'Ne5', 'Ng4', 'Nxg4', 'Bxg4', 'f3', 'Be6', '<br>', 'Qc2',
-                 'Qh4', 'e4', 'Bd7', 'Be3', 'Re7', '<br>', 'Rfb1', 'Bc6', 'Bf2',
-                 'Qg5', 'exd5', 'Nxd5', '<br>', 'Bxh7', 'Kh8', 'h4', 'Qf4',
-                 'Re1', 'Rae8', '<br>', 'Rxe7', 'Re8', 'xRe7 ',
-                 ])
+                 'd4', '-d4  ', 'Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 89, 60,
@@ -922,25 +889,16 @@ class StrictPGN(_StrictPGN):
         strict_pgn = self.pgn._game_class._strict_pgn
         g = games[0]
         if strict_pgn is False:
-            ae(len(games), 2)
-            ae(g.state, None)
-            ae(len(g._text), 69)
-            ae(g.state, None)
-            ae(g._text,
-               ['[Event "EM/CL/Q19-2"]',
-                '[White "Silva, ABC (BRA)"]',
-                '[Black "Player, Riccardo (ITA)"]',
-                '[Result "1/2 - Â"]',
-                '<br>',
-                'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
-                'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-                '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
-                'Ne5', 'Ng4', 'Nxg4', 'Bxg4', 'f3', 'Be6', '<br>', 'Qc2',
-                'Qh4', 'e4', 'Bd7', 'Be3', 'Re7', '<br>', 'Rfb1', 'Bc6', 'Bf2',
-                'Qg5', 'exd5', 'Nxd5', '<br>', 'Bxh7', 'Kh8', 'h4', 'Qf4',
-                'Re1', 'Rae8', '<br>', 'Rxe7', 'Rxe7', 'Be4', 'Ne3', 'Qe2',
-                'Ng4', '<br>', 'g3', 'Qd6', 'Qd3', '1-0',
-                ])
+            ae(len(games), 1)
+            ae(g.state, 6)
+            self.do_game_text_tests(
+                g, 175, 6,
+                ['[Event "EM/CL/Q19-2"]',
+                 '[White "Silva, ABC (BRA)"]',
+                 '[Black "Player, Riccardo (ITA)"]',
+                 '[Result "1/2 - Â"]',
+                 '<br>',
+                 'd4', '-d4  ', 'Ng8'])
         elif strict_pgn is None:
             ae(len(games), 2)
             ae(g.state, None)
@@ -1004,9 +962,9 @@ class StrictPGN(_StrictPGN):
             ae(gt[4], '[White "crafty"]')
             ae(gt[-1], '1/2-1/2')
             gt = games[1]._text
-            ae(gt[0], '<crafty@localhost>')
-            ae(gt[2], '(')
-            ae(gt[1], '; Mon, 4 Dec 2006 12:17:10 -0600\n')
+            ae(gt[0], 'for ')
+            ae(gt[2], '; Mon, 4 Dec 2006 12:17:10 -0600\n')
+            ae(gt[1], '<crafty@localhost>')
             ae(gt[-1], 'CST)')
             gt = games[2]._text
             ae(gt[0], '[Event "ICC 5 3"]')
@@ -1052,15 +1010,14 @@ class StrictPGN(_StrictPGN):
         g = games[0]
         if strict_pgn is False:
             ae(len(games), 1)
-            ae(g.state, 22)
+            ae(g.state, 9)
             self.do_game_text_tests(
-                g, 145, 22,
+                g, 168, 9,
                 ['[Event "EM/CL/Q19-2"]', '<br>',
                  '[White "Silva, ABC (BRA)"]', '<br>',
                  '[Black "Player, Riccardo (ITA)"]', '<br>',
                  '[Result "1/2 - Â"]', '<br>',
-                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O',
-                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'Nb8', '-d7 ',
+                 'd4', '-d4  ', 'Ng8',
                  ])
         elif strict_pgn is None:
             ae(len(games), 2)
@@ -1106,9 +1063,10 @@ class StrictPGN(_StrictPGN):
         gt = games[0]._text
         if strict_pgn is False:
             ae(gt[0],
+               'MIME-Version: ')
+            ae(gt[2], '.')
+            ae(gt[4],
                '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">')
-            ae(gt[2], '<HEAD>')
-            ae(gt[4], '</TITLE>')
             ae(gt[-1], '</HTML>')
         elif strict_pgn is None:
             ae(gt[0],
@@ -1248,36 +1206,18 @@ class StrictPGNExtendByOneCharacter(StrictPGN):
 
 class _StrictFalseTests:
 
-    # Incrementally adjust little_01.pgn until state is True.
-    # When state is True the trailing </p> tokens are collected too by the
-    # non-strict rules.
-    def test_048_little_15(self):
-        games = super().test_048_little_15()
-        ae = self.assertEqual
-        g = games[1]
-        ae(g.state, 3)
-        ae(games[1]._text, ['</p>', '<p>', '</p>'])
-        return games
-
     def test_055_crafty06_03(self):
         ae = self.assertEqual
         games = self.get('crafty06_03.pgn')
         strict_pgn = self.pgn._game_class._strict_pgn
-        ae(len(games), 3)
+        ae(len(games), 1)
         gt = games[0]._text
         if strict_pgn is False:
             ae(gt[0],
+               'MIME-Version: ')
+            ae(gt[2], '.')
+            ae(gt[4],
                '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">')
-            ae(gt[2], '<HEAD>')
-            ae(gt[4], '</TITLE>')
-            ae(gt[-1], '*')
-            gt = games[1]._text
-            ae(gt[0], '*')
-            ae(gt[-1], '*')
-            gt = games[2]._text
-            ae(gt[0], '<br>')
-            ae(gt[2], '<br>')
-            ae(gt[5], '<br>')
             ae(gt[-1], '</HTML>')
         elif strict_pgn is None:
             ae(gt[0],
@@ -1350,14 +1290,11 @@ class PGNOneCharacterAtATime(_StrictFalseTests, StrictPGNOneCharacterAtATime):
     def test_031_calgames_05(self):
         ae = self.assertEqual
         games = self.get('calgames_05.pgn')
-        ae(len(games), 2)
+        ae(len(games), 1)
         g = games[0]
-        ae(g.state, 35)
-        ae(len(g._text), 35)
-        ae(g._text[len(g._text)-2:], ['Nbd7', '1/2-1/2'])
-        g = games[1]
-        ae(g.state, 0)
-        ae(g._text[:3], ['(', '8', ')'])
+        ae(g.state, None)
+        ae(len(g._text), 411)
+        ae(g._text[len(g._text)-2:], ['{mate}', '0-1'])
 
 
 class PGNExtendByOneCharacter(_StrictFalseTests, StrictPGNExtendByOneCharacter):
