@@ -1,0 +1,40 @@
+[Event "Calchess State Championship"]
+[Site "San Jose, CA"]
+[Date "2009.05.02"]
+[Round "3"]
+[White "Kalyanpur, Armaan"]
+[Black "Vasudeva, Tanuj"]
+[Result "1-0"]
+[ECO "B43"]
+[WhiteElo "1612"]
+[BlackElo "1818"]
+[Annotator "Kalyanpur,Armaan"]
+[PlyCount "95"]
+[EventDate "2009.05.02"]
+
+1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Nc3 Qc7 6. Be3 Nf6 7. Qd2 Be7 8.
+Be2 O-O 9. g4 (9. f4 d6 10. Bf3 Nc6 11. Nb3 d5 12. exd5 Nb4 13. O-O Nbxd5 14.
+Nxd5 Nxd5 15. Bd4 $15) 9... b5 10. O-O-O (10. g5 b4 11. Ncb5 axb5 12. gxf6 Bxf6
+13. f4 Bb7 14. Bd3 Bxd4 15. Bxd4 Nc6 16. Be3 d5 17. O-O $19) 10... b4 11. Na4
+Nxe4 12. Qd3 Bb7 13. f3 (13. Bf3 d5 14. Nb3 Ng5 15. Bg2 Nd7 16. f4 Bc6 17. Nac5
+Nxc5 18. Nxc5 Bb5 19. Qd4 Rac8 20. fxg5 Bxc5 21. Qxc5 Qxc5 22. Bxc5 Rxc5 $19)
+13... Nc5 14. Nxc5 Bxc5 15. Rhg1 Qb6 (15... Bd5 $19) 16. Rg3 Nc6 17. Rh3 g6 18.
+f4 Bxd4 ({0.00 Fritz 10:} 18... Nxd4 19. Bxd4 Bg2 20. Rg3 Bd5 21. f5 d6 22.
+Bxc5 Qxc5 $19) 19. Bxd4 Nxd4 20. Qxd4 Qxd4 21. Rxd4 a5 22. Rxd7 Bd5 23. Bd3
+Rac8 24. b3 (24. a3 b3 25. Ra7 Rc5 26. Kd2 bxc2 27. Bxc2 Rb5 28. b3 Rfb8 29.
+Rc3 Bxb3 30. Rcc7 Bxc2 31. Kxc2 Rb2+ 32. Kc3 $11) 24... Rc5 25. Kb2 Rfc8 26.
+Rg3 Rc3 27. Ra7 R3c5 28. Rd7 h6 29. f5 e5 30. fxg6 e4 31. gxf7+ Kf8 32. Bc4
+Bxc4 33. bxc4 Rxc4 34. Rg2 {Diagram #} 34... Rc3 $18 (34... R8c7 $143 35. Rd6
+R7c6 36. Rd5 R4c5 37. Rd4 Rc4 38. Rd5 $11 {
+}) 35. g5 h5 36. g6 Kg7 37. Rd5 a4
+(37... R3c6 38. Re5 Rf8 39. Re8 Rc8 40. Rxe4 Rh8 41. a3 bxa3+ 42. Kxa3 h4 43.
+c4 h3 44. Rg5 Rhd8 45. Ka4 Rd2 $18 {
+}) 38. Rxh5 a3+ 39. Kb1 Rf3 40. Rg1 Kf6
+41. Rd5 (41. Rh7 $142 Ke6 42. Rh8 Rxh8 43. g7 Rg3 44. hxg3 Rh1 45. f8=N+ Kf7
+46. Rxh1 Kxg7 47. Ne6+ Kf6 48. Nd4 e3 49. Rf1+ Kg5 50. Kc1 $18) 41... e3 42.
+Rd3 Kg7 (42... Rh3 43. c3 bxc3 44. Rxc3 Rb8+ 45. Ka1 Kg7 46. Rxa3 Rf8 47. Rb3
+Ra8 48. Rb2 Rh4 49. Kb1 Re4 50. Rgg2 Rd8 $18) 43. h4 Rc3 (43... Rf8 $18) 44.
+Rd8 e2 (44... Rxf7 $143 45. gxf7+ Kxf7 $18) 45. Rg8+ Kh6 46. f8=Q+ (46. Rh8+
+Kg7 47. Rh7+ Kf8 48. g7+ Ke7 49. f8=Q+ Rxf8 50. g8=Q+ Kd6 $18) 46... Rxf8 47.
+Rxf8 Rg3 48. Re1 {Resigns} 1-0
+

@@ -1,0 +1,23 @@
+[Event "NCL967 Wood Green-Richmond"]
+[Site "Rd3"]
+[Date "1996.11.23"]
+[Round "3.2"]
+[White "Williams, Simon"]
+[Black "Pein, Malcolm"]
+[Result "1-0"]
+[ECO "D36"]
+[WhiteElo "2350"]
+[BlackElo "2425"]
+[PlyCount "39"]
+[EventDate "1996.11.23"]
+[Source "J.Saunders"]
+[SourceDate "1998.06.06"]
+
+1. c4 e6 2. Nc3 d5 3. d4 Nf6 4. cxd5 exd5 5. Bg5 c6 6. e3 Be7 7. Bd3 Nbd7 8.
+Qc2 O-O 9. Nge2 Re8 10. O-O Nf8 11. f3 Be6 12. Rad1 Qd7 $5 $146 13. Nf4 Ng6 $2
+(13... Ng4 14. Bxe7 Nxe3 15. Qc1 Nxd1 16. Bxf8 Nxc3 17. Bxg7 $1 Kxg7 18. Nh5+
+Kh8 19. Nf6 $1 {Qh6+-}) 14. Nxe6 Qxe6 15. Bf5 Qd6 16. e4 Qd8 (16... dxe4 {
+is the continuation quoted in the press:} 17. fxe4 Qd8 18. Bxf6 Bxf6 19. e5 Be7
+20. e6 Rf8 $2 21. exf7+ {1-0 Williams,S-Pein,M/4*NCL 1996}) 17. Bxf6 Bxf6 18.
+e5 Be7 19. e6 Rf8 20. exf7+ 1-0
+

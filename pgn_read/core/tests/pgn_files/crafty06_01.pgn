@@ -1,0 +1,57 @@
+[Event "ICC 5 3"]
+[Site "Internet Chess Club"]
+[Date "2006.06.13"]
+[Round "-"]
+[White "crafty"]
+[Black "Capone"]
+[Result "1/2-1/2"]
+[ICCResult "Game drawn by mutual agreement"]
+[WhiteElo "2796"]
+[BlackElo "2821"]
+[Opening "Polish defense"]
+[ECO "A40"]
+[NIC "QO.17"]
+[Time "11:02:59"]
+[TimeControl "300+3"]
+
+1. d4 b5 2. e4 Bb7 3. Bd3 c5 4. dxc5 Na6 5. Bxb5 Nxc5 6. Nf3 Nxe4 7. O-O
+Ngf6 8. Nbd2 Qc7 9. Nxe4 Bxe4 10. Bd3 e6 11. Bxe4 Nxe4 12. Qd4 d5 13. Qa4+
+Qd7 14. Qxd7+ Kxd7 15. Ne5+ Ke8 16. Nd3 Bd6 17. Be3 a5 18. Bd4 Rc8 19. f3
+Nf6 20. c3 Ke7 21. Rfe1 h5 22. a4 Rc4 23. b3 Rc7 24. b4 axb4 25. cxb4 Rc4
+26. Bb2 Kd7 27. b5 Kc7 28. a5 Ra8 29. Reb1 Kb7 30. Bc1 Nd7 31. Bd2 d4 32.
+Rb2 Rac8 33. Be1 Rc2 34. Rbb1 f6 35. Bf2 e5 36. Be1 Re2 37. a6+ Ka7 38. Bb4
+Re3 39. Bxd6 Rxd3 40. Bb4 Nb6 41. Ba5 h4 42. Kf2 Rc7 43. Rb2 Rc8 44. Raa2
+Rd1 45. Ke2 Rh1 46. h3 Rg1 47. Kd3 Nc4 48. Rc2 Rd1+ 49. Bd2 Rxd2+ 50. Rxd2
+Nxd2 51. Kxd2 f5 52. Ra4 Kb6 53. Rb4 g5 54. Rb3 e4 55. Rb4 Rd8 56. Rb2 Re8
+57. fxe4 fxe4 58. Ke1 Rf8 59. Rb4 Rd8 60. Kd2 Rd6 61. Rb3 Rd7 62. Rb4 Rd8
+63. Rb3 Rf8 {Game drawn by mutual agreement} 1/2-1/2
+
+	for <crafty@localhost>; Mon, 4 Dec 2006 12:17:10 -0600
+	by localhost with POP3 (fetchmail-6.2.5)
+	for crafty@localhost (single-drop); Mon, 04 Dec 2006 12:17:10 -0600 (CST)
+
+[Event "ICC 5 3"]
+[Site "Internet Chess Club"]
+[Date "2006.06.13"]
+[Round "-"]
+[White "Capone"]
+[Black "crafty"]
+[Result "1-0"]
+[ICCResult "Black resigns"]
+[WhiteElo "2820"]
+[BlackElo "2797"]
+[Opening "Sicilian defense"]
+[ECO "B40"]
+[NIC "SI.43"]
+[Time "11:30:21"]
+[TimeControl "300+3"]
+
+1. e4 c5 2. Nf3 e6 3. c3 d5 4. exd5 exd5 5. d4 Nc6 6. Be3 c4 7. b3 cxb3 8.
+axb3 Bd6 9. Bd3 Nf6 10. O-O O-O 11. Bg5 h6 12. Bh4 Re8 13. Re1 g5 14. Bg3
+Bxg3 15. Rxe8+ Nxe8 16. fxg3 g4 17. Nh4 Nd6 18. Na3 Qg5 19. Kh1 Bd7 20. Nb5
+Nxb5 21. Bxb5 Re8 22. Bd3 Re3 23. Qd2 Re8 24. Qd1 a5 25. Ra2 Rc8 26. Qg1 Be6
+27. Re2 Rc7 28. Qf1 Re7 29. h3 h5 30. Kh2 b6 31. Rf2 Qe3 32. Rf5 Qh6 33. Rf4
+Rc7 34. Qc1 Kh8 35. Qa3 Rc8 36. Ba6 Rd8 37. Bb7 Na7 38. Qe7 Rd7 39. Qe8+ Kg7
+40. Qb8 Qg5 41. Qxa7 Qe7 42. Qb8 Rxb7 43. Qe5+ f6 44. Qxh5 Qf7 45. Nf5+ Bxf5
+46. Qxf5 Rc7 47. Rxg4+ Kf8 48. Rh4 Qg7 49. Qxd5 {Black resigns} 1-0
+

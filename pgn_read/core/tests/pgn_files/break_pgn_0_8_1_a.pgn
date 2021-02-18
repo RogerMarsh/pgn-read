@@ -1,0 +1,46 @@
+
+[Event "Second C.F.N.C. Experts Tournament"]
+[Site "Oakland"]
+[Date "1960.05.30"]
+[Round "9"]
+[White "Sutherland, Donald"]
+[Black "Osbun, Erik"]
+[Result "0-1"]
+[ECO "B03"]
+[PlyCount "52"]
+[EventDate "1960.??.??"]
+
+1. e4 Nf6 2. e5 Nd5 3. d4 d6 4. f4 {%02 [ An unusual move, which should lead
+to nothing unusual as White can transpose back into the main line of the Four
+Pawns Attack. ]} 4... dxe5 5. fxe5 Nc6 {%02 [ 5...Bf5 6.c4 Nb6 7.Nc3 e6
+transposes to the innovative continuation of Victor Korchnoi against Ewfim
+Geller, U.S.S.R. Champ., 1960. The development of Black's Queen Knight is
+deferred. ]} 6. Nf3 {
+[ ?! An old mistake. Correct is 6.c4 Nb6 7.Be3 avoiding the pin. ]} 6... Bg4 7.
+Be2 e6 8. O-O Qd7 9. c3 {%02 [ A solid move. If 9.c4?! Nb6 10.Be3 0-0-0, with
+more than sufficient counterplay against the center Pawns. ]} 9... O-O-O 10. b4
+{[ ? Too ambitious, 'better is' 10.Qe1. If 10.Ng5 Bf5, followed by ...f6. ]}
+10... f6 11. exf6 gxf6 12. a4 h5 13. a5 Bh6 {%02 [ ?! 13...Bd6 is more
+effective, as 14.b5 N6e7 15.c4 Nf4 16.c5 fails: 16...Nxe2+ 17.Qxe2 Bxf3 18.
+Qxf3 Bxc5, etc. ]} 14. b5 {%02 [ ?! Stronger is 14.Bxh6 Rxh6 15.Qd2 Rh7 16.b5.
+Now 16...Nb8 is forced, because if 16...N6e7? 17.c4 Bxf3 18.Bxf3 Nb4 19.Rd1 (
+19.Qxb4? Qxd4+ wins ) c5 20.dc and White has a P ( John Collins in Chess Life,
+January, 1961 ). ]} 14... Nce7 15. Qb3 {%02 [ ?! White is consistent, but he
+gets a losing position. If, instead, 15.Bxh6 Rxh6 16.Qd2 Nf5, and Black has a
+fine game. ]} 15... Bxc1 16. Rxc1 Nf4 17. Re1 Ned5 18. Nbd2 Rhg8 19. c4 {
+[ ? 19.Bf1 is cracked by 19...Qg7, again threatening 20...Nxg2. The text move
+weakens d4, giving Black more than enough basis for a combination.]} 19... Nxg2
+{%02 [ ! A decisive stroke. ]} 20. Kxg2 Bxf3+ {%02 + [ ?! The White K will be
+caught in the center. However, the quickest win is 20...Bh3+ 21.Kh1 ( forced )
+Bg2+ 22.Kg1 Bxf3+, one tempo ahead of the game varia-tion. ]} 21. Kxf3 e5 {
+[ ! Striking at the weak d4 square. If now 22.cxd5 Qh3+, and Black wins. ]} 22.
+Kf2 Nf4 23. d5 Rg2+ {+} 24. Ke3 Qh3+ {+} 25. Bf3 {
+[ If 25.Ke4 f5+, and Black wins. If 25.Nf3 e4, and Black wins. ]} 25... Ne6 {
+%02 [ ! Consistently exploiting the weak dark-colored squares. ]} 26. dxe6 {
+[ ? Allows a forced mate, but what can White do? Sutherland had only one
+minute on his clock to my two minutes. Black threatens to win material with ...
+f5. If 1) 26.Qc3 Nd4 27.Rf1 Re2+ 28.Kd3 f5 is very strong. If 2) 26.b6! Nd4!
+is only a variant of the first line as 27.ba Nxb3 28.a8Q+ Kd7 29.Qxb7 Nxd2,
+and Black wins easily. White must play 27.Qc3 cb 28.ab a6 29.Rf1 Re2+ 30.Kd3
+f5, with a similar dilemma.]} 26... Qxh2 {
+White resigns. [ If 27.Bxg2 Qf4+ 28.Ke2 Rxd2#. Diabolic! ]} 0-1

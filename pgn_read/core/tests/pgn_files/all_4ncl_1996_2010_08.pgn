@@ -1,0 +1,41 @@
+
+[Event "4NCL/Div1a/CAMB1 vs. JUTK"]
+[Site "Sunningdale ENG"]
+[Date "2009.10.25"]
+[Round "2.8"]
+[White "Howell, Chris I"]
+[Black "Kourtseva, Julie"]
+[Result "1-0"]
+[ECO "B01"]
+[WhiteElo "2077"]
+[BlackElo "1706"]
+[Annotator "Howell, Chris"]
+[PlyCount "151"]
+[EventDate "2009.10.25"]
+[EventCountry "ENG"]
+[SourceDate "2009.10.24"]
+
+1. e4 d5 2. exd5 Qxd5 3. Nf3 c6 4. Nc3 Qa5 5. Bc4 Bf5 6. O-O e6 7. d3 Be7 8.
+Bd2 $146 (8. Be3 Nf6 9. h3 Nbd7 10. a3 Qc7 11. Qd2 Bd6 12. Rfe1 Ne5 13. Nxe5
+Bxe5 14. d4 Bd6 15. Bd3 Bg6 16. Ne2 Nd5 17. c3 Nxe3 18. Qxe3 Bxd3 19. Qxd3
+O-O-O 20. Qc2 Rdg8 21. b4 h5 22. a4 g5 23. b5 h4 24. Qe4 Qd7 25. bxc6 Qxc6 26.
+Qxc6+ bxc6 27. f3 Kc7 28. Rab1 Re8 29. Nc1 Bf4 30. Rd1 Rb8 {1-0 Yurkina,
+Y-Gelivanova,Y/Dagomys 2004}) 8... Qc7 9. Nd4 Bg6 10. Qf3 $1 Bf6 $6 11. Nb3 $2
+(11. Bf4 $1 e5 12. Bg3 Nd7 13. h4 h5 14. a4 $14) 11... Ne7 $2 (11... Nd7 $14)
+12. Bf4 Be5 13. Bxe5 Qxe5 14. Rfe1 Qc7 15. Nd4 O-O $2 (15... e5 16. Qg3 Nd7 17.
+Nf3 $16) 16. Bxe6 $1 Qd8 $5 17. Bb3 Nd7 18. a4 $6 (18. Qf4 $1 $18) 18... Nc5
+19. Bc4 Re8 20. Nb3 $6 (20. Qf4 $1) 20... Nxb3 21. Bxb3 Nf5 22. Bc4 $2 (22.
+Rxe8+ Qxe8 23. Qe4 $16) 22... Nd4 23. Rxe8+ Qxe8 24. Qd1 Qe7 25. Qd2 (25. Ne4
+$1 $16) 25... Re8 26. h3 Qb4 27. Re1 Rxe1+ 28. Qxe1 h6 29. Qe8+ Kh7 30. Bxf7
+Bxf7 31. Qxf7 Qxb2 32. Ne4 Qa1+ 33. Kh2 Ne2 34. Ng5+ hxg5 35. Qh5+ Kg8 36. Qe8+
+Kh7 37. Qxe2 Qxa4 38. Qh5+ Kg8 39. c4 Qc2 40. Qe8+ Kh7 41. Qe4+ Kh8 42. Qd4 Qa2
+43. h4 gxh4 44. Qxh4+ Kg8 45. Qd8+ Kh7 46. Qh4+ Kg8 47. g4 Qb2 48. Kg2 Qd4 49.
+Qg3 Qd8 (49... a5 $1) 50. g5 g6 51. Qe3 Qd7 52. Kf1 c5 53. Ke2 b6 54. Qe4 Kf7
+55. Qf4+ Ke8 56. Kd2 Qe7 57. Qg4 Kf8 {(=)} 58. f4 Qf7 59. Kc2 Kg7 60. Qf3 b5
+61. Qe4 $1 bxc4 62. dxc4 Kg8 63. Kb3 $1 Kg7 64. Qe5+ Kg8 65. Qd5 Kg7 66. Qxf7+
+Kxf7 67. Ka4 Ke6 68. Kb5 Kf5 69. Kxc5 Kxf4 {Diagram #} 70. Kc6 $3 (70. Kb5 Ke4
+71. Kc6 $3 $18) (70. Kd4 $4 Kxg5 71. c5 Kf6 72. Kd5 Ke7 73. Kc6 g5 74. Kb7 g4
+75. c6 g3 76. c7 g2 77. c8=Q g1=Q 78. Qc7+ Ke6 79. Qc6+ Kf5 80. Qb5+ Kg6 81.
+Qa6+ Kf5 82. Qxa7 $11) 70... Kxg5 71. c5 $1 a5 72. Kb5 $1 a4 73. Kxa4 $1 Kf6
+74. Kb5 (74. Ka5 $18) 74... Ke7 75. Kb6 Kd8 76. Kb7 $1 1-0
+

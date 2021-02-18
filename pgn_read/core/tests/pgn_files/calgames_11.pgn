@@ -1,0 +1,45 @@
+[Event "LERA Sunnyvale, CA"]
+[Site "?"]
+[Date "1976.11.27"]
+[Round "?"]
+[White "Hobbs, Richard P."]
+[Black "Watson, John"]
+[Result "1/2-1/2"]
+[WhiteElo "1699"]
+[BlackElo "2325"]
+[Annotator "Wood"]
+[PlyCount "48"]
+
+1. e4 c5 {Wood:   Watson  arrived late and had already used 9 minutes on his
+clock.    For those interested in the exact time used for each move, e-mail
+rph@rphobbs.com for the details.} 2. d4 e6 3. Nf3 cxd4 4. Nxd4 a6 5. Nc3 Qc7 6.
+g3 Bb4 7. Bd2 Nf6 8. Bg2 Be7 9. O-O O-O 10. Qe2 d6 11. Rae1 Nfd7 $6 {Wood:   mo
+ving an already developed Knight away from the kingside while neglecting
+development sets the stage for a Hobbsian attack} (11... Nc6 $1) 12. f4 Bf6 13.
+Nf3 Qb6+ 14. Kh1 Qxb2 $6 {Wood:   again neglecting development} (14... Nc6 $1)
+15. e5 dxe5 (15... Be7 16. exd6 Bxd6 17. Rb1 Qxc2 18. Rfc1 Qg6 19. Nh4 Qh6 20.
+Ne4 Be7 21. f5 $18) 16. fxe5 Be7 17. Nd4 Qb6 {Diagram #} (17... Bc5 $5) 18. Qg4
+$1 {Wood:   with two threats -- Watson  answers only the threat of 19. Bh6}
+18... Kh8 $2 {Wood:   18...f5!  keeps Black in the game} (18... f5 $1 19. exf6
+Nxf6 $14 20. Rxf6 $140 Bxf6 21. Nxe6 Bxe6 22. Qxe6+ Qxe6 23. Rxe6 Nc6 $17) 19.
+Nd5 $1 {Wood:   Watson probably overlooked this  sacrifice with the idea to
+deflect the Black e6 pawn away from control of f5} 19... exd5 (19... Qd8 20.
+Nxe7 Qxe7 21. Bg5 Qe8 22. Qh4 -- 23. Be4 $40) 20. Nf5 $1 {Diagram   -- Wood:  
+the point of Black's sacrifice -- according to Fritz Black's best chance is
+now to give back the piece with 20...Qg6#} 20... Bf6 $2 {
+Wood:   Watson might have been in shock and does not find the best move} (20...
+Qg6 $1 21. Qxg6 hxg6 22. Nxe7 Nc6 23. e6 (23. Nxd5 $16) 23... Nf6 24. exf7 Rxf7
+25. Nxd5) 21. exf6 Qxf6 (21... g6 22. Ne7 Nxf6 23. Qh4 Nbd7 24. Bc3 $18) 22.
+Nh6 $1 Qg6 {Diagram #} 23. Qxg6 {Wood:   White has more than one way to win --
+23. Nxf7+! is particularly crushing} (23. Nxf7+ Kg8 (23... Rxf7 24. Re8+ Nf8
+25. Rxf8+ Rxf8 26. Rxf8#) 24. Nh6+ Kh8 (24... gxh6 25. Bxd5+ Kg7 26. Re7+ Kh8
+27. Rxf8+ Nxf8 28. Bc3+ Qg7 29. Qxg7#) 25. Rxf8+ Nxf8 26. Qxc8 Nbd7 27. Qxa8
+$18) 23... hxg6 {Diagram #-- Possibly due to time pressure or afraid of the
+relatively high rating of his opponent, White now offered a draw, then made
+move 24.} 24. Nxf7+ Kg8 {Black made is move and accepted the draw offer
+simultaneously.   Post-game analysis confirmed White could have won by
+continuing the game with  25. Bxd5!} (24... Kg8 25. Bxd5 -- $140 (25... -- 26.
+Re4 Nf6 27. Nd6+ Nxd5 28. Rxf8+ Kxf8 29. Re8#) (25... Nf6 26. Rxf6 gxf6 27.
+Ng5+ Kh8 28. Re7 fxg5 29. Bc3+ Rf6 30. Bxf6#) 26. Ng5+ Kh8 27. Rxf8+ Nxf8 28.
+Re4 $18) 1/2-1/2
+

@@ -1,0 +1,26 @@
+[Event "4NCL/Div1/RIC-WG1"]
+[Site "Rd7-Birmingham"]
+[Date "2000.03.25"]
+[Round "7.3"]
+[White "Bates, Richard"]
+[Black "Emms, John"]
+[Result "1-0"]
+[ECO "A61"]
+[WhiteElo "2368"]
+[BlackElo "2546"]
+[PlyCount "67"]
+[EventDate "2000.03.25"]
+[SourceDate "2000.01.01"]
+
+1. d4 Nf6 2. Nf3 e6 3. c4 c5 4. d5 d6 5. Nc3 exd5 6. cxd5 g6 7. h3 a6 8. e4 b5
+9. Bd3 Bg7 10. O-O c4 11. Bc2 O-O 12. Bf4 Re8 13. Re1 Bb7 14. Qd2 Qb6 15. Bh6
+Bh8 16. Ne2 Nbd7 17. Ng3 Rac8 18. Be3 Nc5 19. Bd4 a5 (19... b4 20. Nf5 b3 21.
+axb3 (21. Qh6 bxc2 22. Bxf6 Bxf6 23. Ng5 Rc7 24. Qxh7+ Kf8 25. e5 Rxe5 26. Rxe5
+Bxe5) 21... cxb3 22. Nh6+ (22. Bb1) 22... Kf8 23. Bb1) (19... Bg7 20. Rad1 (20.
+a4 b4 21. a5 Qb5 22. Qf4 b3 23. Bb1 (23. Bxf6 bxc2 24. Bxg7 (24. Nf5 Bxf6 25.
+Nh6+ Kg7 26. Ng4) 24... Kxg7 25. Nf5+ gxf5 26. Qg5+ Kh8 27. Qf6+ Kg8 28. exf5
+Rxe1+ 29. Rxe1 Ne4 30. Rxe4 c1=Q+ 31. Kh2 h5) 23... Nxd5 24. exd5 Rxe1+ 25.
+Nxe1 Re8 26. Nf3) 20... Qd8 21. Qf4 h6) 20. Nf5 Qd8 21. Nh6+ Kf8 22. Ng5 Rc7
+23. Bxf6 Bxf6 24. Nxh7+ Kg7 25. Nxf6 Qxf6 26. Ng4 Qd8 27. Qh6+ Kg8 28. Qf4 Kg7
+29. e5 dxe5 30. Rxe5 Rxe5 31. Qxe5+ Kg8 32. d6 Rc6 33. Nh6+ Kh7 34. Nxf7 1-0
+

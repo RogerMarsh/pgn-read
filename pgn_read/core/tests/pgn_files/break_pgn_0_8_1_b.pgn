@@ -1,0 +1,69 @@
+
+[Event "California State Championship"]
+[Site "San Francisco"]
+[Date "1970.12.28"]
+[Round "7"]
+[White "Loftsson, Julius"]
+[Black "Osbun, Erik"]
+[Result "1/2-1/2"]
+[ECO "D30"]
+[PlyCount "154"]
+[EventDate "1970.??.??"]
+
+1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. e3 Be7 5. Bd3 Bb7 6. O-O O-O 7. b3 d5 8. Bb2 c5
+9. Qe2 {%02 [ 9.Nc3 is the major alternative in this variation of the QID.
+Model games are Keres - Taimanov, U.S.S.R. Champ.,1951, and Keres - Smyslov,
+Zurich,1953. ]} 9... Nc6 10. Nbd2 cxd4 11. exd4 Nb4 {%02 [ Black's treatment
+diverges at this point. Spassky played 11...a5 12.a3 Rc8 13.Rfe1 Bd6 14.Ne5
+Ne7 15.Ndf3 h6 16.Nd2 ( why? ) Bb8 17.Nf1 a4! against Langeweg at Beverwijk,
+1967. Filip - Portisch, Moscow,1959, continued 11...Rc8 12.Rac1 Rc7? 13.a3! dc
+14.bc Re8 15.Rfd1 Bd6? 16.Ne4! Nxe4 17.Qxe4 g6 18.Qe3 Bf8 19.Be4 with a great
+advantage for White ( d5 is imminent ). Portisch improved his play in his game
+against Najdorf at Santa Monica,1966: 11...Re8 12.Rad1 Bf8 13.Bb1? Rc8 14.Ne5
+dc 15.Nxc6 Bxc6 16.bc g6 17.Bd3 Bg7 18.Nf3 Nd7! 19.Rfe1! Bb7 with an edge for
+Black. The main line, according to the Russian analyst Voronkov, is 11...Re8
+12.Rac1 Rc8 13.Rfd1 Bf8 14.Nf1! ( Najdorf - Unzicker, Varna,1962, went 14.Bb1
+g6 15.Nf1 dc? 16.bc Bg7 17.Ng3 Qc7 18.Bc3! Ne7? 19.d5! with a winning
+advantage for White ) g6! 15.Ne3! Nb4 ( 15...Nh5 16.g3 Nf6 is better ) 16.Bb1
+Bg7 17.Ne5 Rc7 18.c5! with advantage for White, Hort - Langeweg, Beverwijk,
+1967 ). The text move is an idea of Alekhine's ( consultation game vs.
+Tartakower, Paris,1932 ) except Black was not castled and White's Q unmoved. ]}
+12. Bb1 Rc8 13. a3 {%02 [ Loftsson suggested 13.Ne5, but his move is not bad
+if followed up correctly. ]} 13... Nc6 14. Bd3 Re8 15. Rac1 {[ Preparing c5. ]}
+15... Bf8 16. Rfe1 dxc4 {%02 [ Correct timing, because White threatened to
+play 17.c5 with his last move as the resource, ...e5, is prevented. ]} 17. bxc4
+g6 18. Qe3 {%02 [ ? I think White begins to lose the thread of the position
+hereabouts. 'better is' 18.Nf1 Bg7 19.Ng3. ]} 18... Bg7 19. h3 Qe7 {%02 [ The b
+est idea of the game. Black takes care to prevent the critical advance d5,
+strengthens the dark-colored squares around his K, observes the a3 P, and
+prepares to mount a direct attack on the hanging Ps. White offered a draw with
+his next move. ]} 20. Rc2 Qf8 21. Nf1 Red8 22. Rd1 Ba6 23. Qe2 {%02 [ White's
+time trouble panic begins. There may be a better move, but what is it? ]} 23...
+Nh5 24. Qe3 Na5 25. N1d2 Bh6 26. Qe1 Nf4 27. Bf1 Qe8 28. Qe5 Nd5 {
+%02 [ Blockades the d-P! ]} 29. Qe4 Ne7 {%02 [ ? A grossie provoked by time
+trouble. Consistent is 29...Qa4 30.R1c1 Nb3 31.Nxb3 ( if 31. cxd5 Nxc1 32.Rxc8
+Rxc8, Black wins the exchange for only temporary discomfort ) Bxc1 32.Nxc1
+Bxc4 33.Bxc4 Rxc4 34.Rxc4 Qxc4, and Black has winning chances based on: 1)
+control of the light-colored squares, 2) the weak B, and 3) a possible passed
+P on the b-file. ]} 30. d5 Nf5 {%02 [ The best chance, Black gives up a piece
+to defend the long diagonal. The next 12 moves were made as fast as we could
+move the pieces and punch the clock. ]} 31. g4 exd5 32. Qxe8+ {+} 32... Rxe8
+33. gxf5 dxc4 34. Bc3 Nb7 35. fxg6 hxg6 36. Nxc4 {%02 [ ?? White thought the N
+retreat left the P unprotected. The position may still be equal without this
+blunder. ]} 36... Bxc4 37. Bf6 Bxf1 38. Rxc8 Rxc8 39. Kxf1 Rc1 40. Rxc1 Bxc1
+41. Be7 Nc5 {%02 [ ? The time control point passed undiscerned because we had
+no written score. 41...Na5 wins easily. ]} 42. Bxc5 bxc5 43. a4 Kg7 {
+%02 [ The first move after reconstruction. ]} 44. Ke2 Kf6 45. Kd3 Ke6 {
+[ ? Walks into an unproductive blockade. It was difficult to see that 45...
+Kf5 46.Kc4 Ke4 47.Ne1 Ba3 48.Nc2 Bb4 49.Nxb4 cxb4 50.Kxb4 Kf3 51.Ka5 Kxf2 52.
+Ka6 f5 53.Kxa7 f4 54.a5 f3 55.a6 Kg3 56.Kb6 f2 57.a7 f1Q 58.a8Q Qxh3 was
+Black's only slim chance to win. Can the g-P reach the seventhrank?]} 46. Kc4
+Kd6 47. Ne1 Bb2 48. Nd3 Bd4 49. f3 g5 50. Nc1 Bf2 51. Nd3 Be3 52. Ne1 Kc6 53.
+Nd3 f6 54. Ne1 Kb6 55. Nc2 Bf2 56. Na3 Kc6 57. Nb5 a6 58. Nc3 Bd4 59. Ne2 {
+[ ? A blunder before the second time control. 59.Ne4 draws. ]} 59... Kb6 60.
+Kb3 Be5 {%02 Adjourned.} 61. Nc1 Ka5 62. Nd3 c4+ {+} 63. Kxc4 Kxa4 64. f4 Ba1 {
+%02 [ ? An inexcusable mistake. 64...Bd6 should win. Now Black must play
+carefully to draw.]} 65. fxg5 fxg5 66. Nc5+ {+} 66... Ka3 {
+[ Alas, 66...Ka5??, protecting the P, loses the B to the fork, 67.Nb3+. ]} 67.
+Nxa6 Bb2 68. Nc5 Bc1 69. Kd5 Be3 70. Ne6 Kb4 71. Ke4 Bc1 72. Kf5 Kc4 73. Nxg5
+Kd5 74. h4 Kd6 75. Kf6 Bb2+ {+} 76. Kg6 Ke7 77. h5 Bc1 {%02 Draw.} 1/2-1/2

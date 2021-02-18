@@ -1,0 +1,51 @@
+[Event "Fremont,  Chess Camp"]
+[Site "?"]
+[Date "2003.06.23"]
+[Round "1"]
+[White "Lan, Trisha"]
+[Black "Wai, Wesley"]
+[Result "0-1"]
+[ECO "C21"]
+[Annotator "Fritz 6 (10s)"]
+[PlyCount "50"]
+[EventDate "2003.??.??"]
+
+1. e4 {C21: Danish Gambit} 1... e5 2. d4 d5 3. Nf3 $146 (3. exd5 exd4 4. Nf3 (
+4. Bd3) 4... Nf6 5. Bd3 Bd6 6. O-O O-O 7. Bg5 Bg4 8. Nbd2 Nbd7 {
+1/2-1/2 Shtyrenkov,V-Kiriakov,P/Orel 1997/EXT 99 (8)}) (3. Nd2 dxe4 4. Nxe4 Nd7
+5. Nf3 Ngf6 6. Nxf6+ Nxf6 7. Bd3 c5 8. dxc5 Bxc5 9. O-O h6 10. Qe2 O-O 11. Bf4
+Bd6 12. Nxe5 Qc7 13. Rad1 b6 14. Bg3 Rd8 15. c3 Bb7 16. Bb1 Ba6 17. Qxa6 Bxe5
+18. Bxe5 Qxe5 19. h3 Qc7 {
+1/2-1/2 Tiviakov,S-Hodgson,J/Istanbul 2000/EXT 2001 (19)}) (3. Nc3 Nf6 4. Bg5
+Be7 5. exd5 Nxd5 6. Bd2 Nxc3 7. bxc3 O-O 8. Nf3 Nd7 9. Bd3 Nf6 10. Nxe5 c5 11.
+dxc5 {1/2-1/2 Markovic,M-Weinzettl,E/Belgrade 2002/EXT 2003 (11)}) (3. dxe5 Be6
+4. exd5 Bxd5 5. Nf3 Nc6 6. Bb5 Qd7 7. O-O O-O-O 8. Nc3 Nge7 9. Bg5 h6 10. Bxe7
+Bxe7 11. Nxd5 Qxd5 12. Qxd5 Rxd5 13. c4 Rd3 14. Bxc6 bxc6 15. Rfd1 Rhd8 16.
+Rxd3 Rxd3 17. Kf1 Kb8 18. Ke2 Rd7 19. e6 fxe6 20. Ne5 Rd4 21. Nxc6+ {
+1-0 Mason,W-Beck,A/Timaru 1911/EXT 2003 (21)}) 3... dxe4 4. Nxe5 Nc6 (4... Be6
+$5 $11) 5. Nxc6 bxc6 6. Nc3 f5 7. Bc4 Be6 $4 (7... Rb8 8. Bb3 $11) 8. Ba6 (8.
+Bxe6 $142 {and the rest is a matter of technique} 8... Qf6 9. Bxg8 Rxg8 10.
+Qh5+ Qg6 11. Qxg6+ hxg6 12. Ke2 $18) 8... Nf6 (8... Rb8 9. f3 $11) 9. Bf4 (9.
+Bb7 Rb8 10. Bxc6+ Bd7 $14) 9... Nd5 10. Nxd5 Bxd5 (10... cxd5 11. Qh5+ g6 12.
+Qe2 $11) 11. O-O (11. c4 Be6 12. Qa4 $16) 11... g5 (11... Rb8 $142 $11) 12.
+Bxg5 $4 {there were better ways to keep up the pressure} (12. Be5 $142 Rg8 13.
+c4 $18) 12... Be7 $4 {ruins a clearly superior position} (12... Qxg5 $142 {
+Black had this great chance} 13. c4 Rg8 $19) 13. Bf4 (13. Bxe7 $5 Kxe7 14. Qh5
+Qd7 $18) 13... Qd7 $16 14. Be5 Rg8 15. Bg3 (15. c4 Bf7 $18) 15... f4 (15... Rb8
+$142 16. b3 Bd6 17. Qh5+ Rg6 $16) 16. c4 $4 {
+allows the opponent back into the game} (16. Bxf4 $142 Bd6 17. Qh5+ Rg6 18.
+Bxd6 cxd6 19. f4 exf3 20. Bd3 $18) 16... Bh4 $4 {Black loses the upper hand} (
+16... fxg3 17. cxd5 gxh2+ 18. Kxh2 cxd5 19. Qh5+ Kd8 20. Bb7 $15) 17. Qd2 (17.
+Bxh4 $142 {and the result of the game is clear: White will win} 17... f3 18.
+Bg3 (18. cxd5 $4 {would spoil everything} 18... Rxg2+ 19. Kh1 Qh3 20. Bg3 Rxh2+
+21. Bxh2 Qg2#) 18... fxg2 19. Re1 $18 (19. cxd5 $6 {is clearly inferior} 19...
+gxf1=Q+ 20. Bxf1 Qxd5 $18) (19. Kxg2 $143 Bf7 $18)) 17... fxg3 $11 18. Rfc1 $4
+(18. fxg3 $142 {this is the best way to fight back} 18... Bg5 19. Qe2 $11)
+18... gxh2+ (18... gxf2+ $142 {might be the shorter path} 19. Kh1 Qg4 $19) 19.
+Kf1 (19. Kh1 Qg7 20. f3 exf3 21. cxd5 fxg2+ 22. Kxh2 Qg3+ 23. Kg1 $19) 19...
+h1=Q+ (19... Qg4 20. f3 h1=Q+ 21. Ke2 Qgxg2+ 22. Ke3 Qxf3# {#}) 20. Ke2 Qxg2 (
+20... Qg4+ 21. Ke3 Qf3+ 22. gxf3 Qxf3# {#}) 21. Kd1 $19 Bg5 22. Kc2 Bxd2 23.
+Kxd2 Qxf2+ 24. Kc3 Rb8 (24... Rg3+ 25. Kb4 Qxb2+ 26. Ka5 Qa3# {#}) 25. Rc2 (25.
+Bb5 {is no salvation} 25... Rxb5 26. cxb5 Rg3+ 27. Kb4 Qxb2+ 28. Ka5 Qxb5# {#})
+25... Qe3# {mate} 0-1
+

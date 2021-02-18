@@ -1,0 +1,39 @@
+[Event "Hayward Mt.Eden vs Sunset HS League Mat"]
+[Site "?"]
+[Date "1969.??.??"]
+[Round "?"]
+[White "Martinez, Robert"]
+[Black "Lopez, Lupe"]
+[Result "1-0"]
+[ECO "C43"]
+[Annotator "Fritz 10 (10s)"]
+[PlyCount "53"]
+[EventDate "1969.??.??"]
+
+{C24: Bishop's Opening: 2...Nf6
+} 1. e4 e5 2. Nf3 Nf6 3. d4 exd4 4. Bc4 Nxe4 5.
+Qxd4 Nf6 6. Bg5 Be7 7. Nc3 Nc6 8. Qh4 d6 9. O-O-O O-O (9... Be6 10. Bd3 Qd7 11.
+Bb5 O-O 12. Ne5 Qc8 13. Nxc6 bxc6 14. Bxc6 h6 15. Bd2 Rb8 16. Qg3 Qa6 17. Ba4
+Bxa2 18. b3 d5 19. Kb2 Ne4 20. Qd3 Rxb3+ 21. Ka1 Qxd3 22. cxd3 Ra3 23. dxe4
+Bb3+ 24. Kb2 {Levi,E (2300)-Solomon,S (2445)/Melbourne 1992/EXT 1997/0-1 (31)})
+10. Rhe1 h6 11. Bxh6 $146 (11. Be3 Ng4 12. Qg3 Nxe3 13. Rxe3 Bf6 14. Ne2 Re8
+15. Rxe8+ Qxe8 16. Nf4 Be5 17. Nxe5 Qxe5 18. Nd5 Qxg3 19. fxg3 Bg4 20. Re1 Ne5
+21. Bb3 c6 22. Ne3 Be6 23. Kd2 Bxb3 24. axb3 f6 25. Nf5 Rd8 {
+Vala,F-Jancarik,J/Czechia 2004/EXT 2007/1/2-1/2 (50)}) 11... gxh6 12. Qxh6 Nh7
+$4 {an unnecessary retreat} (12... Ng4 $142 13. Qg6+ Kh8 14. Bxf7 Rxf7 15. Qxf7
+Qf8 16. Qxf8+ Bxf8 $16) 13. Rd5 $18 Ne5 (13... Bf6 {
+the only chance to get some counterplay} 14. Rh5 Bf5 15. Rxf5 Bg7 $18) 14.
+Rexe5 dxe5 15. Rxd8 Bxd8 16. Ne4 Bf5 (16... b5 {
+doesn't change the outcome of the game} 17. Neg5 Nxg5 18. Nxg5 Bxg5+ 19. Qxg5+
+Kh7 20. Bd3+ f5 21. Qe7+ Kg8 22. Bxb5 $18) 17. Neg5 (17. Ng3 {seems even better
+} 17... Bg4 18. Qg6+ Kh8 19. Qxg4 Rg8 $18) 17... e4 (17... Bxg5+ {
+doesn't do any good} 18. Nxg5 Rad8 19. Nxh7 Bxh7 20. Qg5+ Kh8 21. Qf6+ Kg8 22.
+Bxf7+ Rxf7 23. Qxd8+ Kg7 24. Qg5+ Kf8 25. Qxe5 $18) 18. Nxh7 exf3 {Diagram #} (
+18... Bxh7 {is one last hope} 19. Ne5 Be7 20. Nxf7 Rxf7 21. Bxf7+ Kxf7 22.
+Qxh7+ Kf6 23. Qxe4 Bd6 $18) 19. Qxf8+ $1 (19. Nxf8 fxg2 20. Bxf7+ Kxf7 21. Qh5+
+Kg8 22. Qxf5 g1=Q+ 23. Kd2 Qg5+ 24. Qxg5+ Bxg5+ 25. Kd3 Rxf8 $19) 19... Kxh7
+20. Qxf7+ Kh6 21. Qxf5 Bg5+ 22. Kd1 fxg2 23. Qh3+ Kg6 24. Qxg2 Rd8+ 25. Bd3+
+Kf6 26. h4 (26. Qe4 $142 {and White has it in the bag} 26... Bh6 27. Qf5+ Ke7
+28. Qh7+ Ke8 29. Qxc7 Bg5 $18) 26... Bf4 27. Qg6+ {Resigns.} (27. Qg6+ Ke7 28.
+Qe4+ Kd7 29. Qd4+ Ke8 30. Qxf4 $18) 1-0
+

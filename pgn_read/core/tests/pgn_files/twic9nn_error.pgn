@@ -1,0 +1,128 @@
+[Event "St. Pauli Open 2012"]
+[Site "Hamburg GER"]
+[Date "2012.07.07"]
+[Round "1.18"]
+[White "Kahlert,T"]
+[Black "Kosovs,Ernst"]
+[Result "*"]
+[WhiteElo "2229"]
+[BlackElo "1974"]
+[WhiteFideId "4625242"]
+[BlackFideId "12921289"]
+[EventDate "2012.07.07"]
+
+* *
+
+[Event "St. Pauli Open 2012"]
+[Site "Hamburg GER"]
+[Date "2012.07.10"]
+[Round "4.7"]
+[White "Thingstad,E"]
+[Black "Svane,R"]
+[Result "*"]
+[WhiteElo "2198"]
+[BlackElo "2367"]
+[WhiteFideId "1506439"]
+[BlackFideId "4657101"]
+[EventDate "2012.07.07"]
+
+* *
+
+[Event "St. Pauli Open 2012"]
+[Site "Hamburg GER"]
+[Date "2012.07.13"]
+[Round "7.9"]
+[White "Hochgraefe,M"]
+[Black "Schiele,L"]
+[Result "*"]
+[WhiteTitle "FM"]
+[WhiteElo "2345"]
+[BlackElo "2089"]
+[WhiteFideId "4615484"]
+[BlackFideId "4693868"]
+[EventDate "2012.07.07"]
+
+* *
+
+[Event "ch-Commonwealth 2012"]
+[Site "Chennai IND"]
+[Date "2012.11.28"]
+[Round "8"]
+[White "Karthikeyan,P2"]
+[Black "Adly,A"]
+[Result "(+)-(-)"]
+[WhiteTitle "IM"]
+[BlackTitle "GM"]
+[WhiteElo "2414"]
+[BlackElo "2607"]
+[WhiteFideId "5018226"]
+[BlackFideId "10601619"]
+[EventDate "2012.11.23"]
+
+(+)-(-) (+)-(-)
+
+[Event "Dvorkovich Mem 2013"]
+[Site "Taganrog RUS"]
+[Date "2013.01.17"]
+[Round "3.31"]
+[White "Golubov,Saveliy"]
+[Black "Osipov,Ad"]
+[Result "1-0 ff"]
+[WhiteElo "2227"]
+[BlackElo "2080"]
+[ECO "B00"]
+[Opening "King's pawn opening"]
+[WhiteFideId "24176729"]
+[BlackFideId "4162641"]
+[EventDate "2013.01.15"]
+
+1. e4 1-0 ff
+
+[Event "Dvorkovich Mem 2013"]
+[Site "Taganrog RUS"]
+[Date "2013.01.21"]
+[Round "7.25"]
+[White "Baraeva,I"]
+[Black "Isaev,Y"]
+[Result "1-0 ff"]
+[WhiteTitle "WF"]
+[BlackTitle "FM"]
+[WhiteElo "2159"]
+[BlackElo "2238"]
+[ECO "A40"]
+[Opening "Queen's pawn"]
+[WhiteFideId "24142565"]
+[BlackFideId "4173350"]
+[EventDate "2013.01.15"]
+
+1. d4 1-0 ff
+
+[Event "6th Mayors Cup 2013"]
+[Site "Mumbai IND"]
+[Date "2013.06.05"]
+[Round "10"]
+[White "Swathi,G"]
+[Black "Neelotpal,D"]
+[Result "0-1"]
+[WhiteTitle "WGM"]
+[BlackTitle "GM"]
+[WhiteElo "2260"]
+[BlackElo "2461"]
+[ECO "C55"]
+[Opening "Two knights defence (Modern bishop's opening)"]
+[WhiteFideId "5003474"]
+[BlackFideId "5003512"]
+[EventDate "2013.05.29"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. d3 Be7 5. Bb3 O-O 6. Nbd2 d6 7. c3 Na5 8. Bc2
+c5 9. O-O Nc6 10. Re1 Re8 11. Nf1 h6 12. Ng3 Bf8 13. h3 Qc7 14. Nh2 Be6 15. Qf3
+Nh7 16. Nf5 Rad8 17. Ng4 d5 18. Ba4 Kh8 19. h4 dxe4 20. dxe4 f6 21. Nge3 Qf7 22.
+Qe2 g6 23. Ng3 h5 24. b3 Qc7 25. Bb2 Bh6 26. Rad1 Rxd1 27. Rxd1 Rd8 28. Ngf1
+Rxd1 29. Qxd1 a6 30. Nd5 Qd8 31. c4 Nd4 32. b4 Bf8 33. bxc5 Bxc5 34. Nfe3 b5 35.
+cxb5 axb5 36. Bc2 Nxc2 37. Nxc2 Kg7 38. Qd3 Bxd5 39. exd5 Qb6 40. Ne3 Nf8 41.
+Bc1 f5 42. Nd1 Nd7 43. Qd2 Nf6 44. Bb2 Bd4 45. Kf1 Nxd5 46. g3 b4 47. Bxd4 Qxd4
+48. Ke1 Qc4 49. Ne3 Nxe3 50. Qxe3 e4 51. Qb6 Qc3+ 52. Ke2 Qd3+ 53. Ke1 Qb1+ 54.
+Ke2 Qxa2+ 55. Ke3 Qb3+ 56. Kf4 Qf3+ 57. Ke5 Qc3+ 58. Kd5 b3 59. Qb7+ Kh6 60. Qb8
+b2 61. Ke6 Kh7 62. Qb7+ Qg7 63. Qb5 Qg8+ 64. Kf6 Qf8+ 65. Ke6 Qg7 66. Qb4 g5 67.
+hxg5 e3 68. fxe3 f4 69. Kf5 b1 0-1
+

@@ -1,0 +1,53 @@
+[Event "Vladimir Pafnatieff Memorial"]
+[Site "San Francisco"]
+[Date "2007.08.11"]
+[Round "4"]
+[White "Agarwal, Rohan"]
+[Black "Sandberg, Evan"]
+[Result "1-0"]
+[ECO "B20"]
+[WhiteElo "1996"]
+[BlackElo "1758"]
+[Annotator "Fritz 10 (10s)"]
+[PlyCount "83"]
+
+{B20: Sicilian: Unusual White 2nd moves
+} 1. e4 c5 2. b4 cxb4 3. a3 bxa3 4.
+Bxa3 d6 5. d4 Nf6 6. Bd3 Nc6 7. c3 g6 (7... e6 8. Ne2 Be7 9. O-O b6 10. Nd2 e5
+11. h3 O-O 12. f4 Bb7 13. Qb1 Qc7 14. g4 h6 15. Nf3 Rfe8 16. f5 d5 17. exd5
+Nxd5 18. Bc1 exd4 19. cxd4 Bf6 20. Ra3 Nxd4 21. Nexd4 Qg3+ 22. Kh1 {
+Frink,F (2256)-Kubin,P (2058)/Tatranske Zruby 2006/CBM 114 ext/0-1}) 8. Nd2
+$146 (8. f4 Bg7 9. Nf3 O-O 10. O-O a6 11. Nbd2 b5 12. d5 Na5 13. Bb4 Nc4 14.
+Bxc4 bxc4 15. Ba5 Qe8 16. Re1 Bg4 17. Nxc4 Qb5 18. Ncd2 Rfc8 19. h3 Qc5+ 20.
+Kh1 Bd7 21. Nd4 Nh5 22. Qf3 Bh6 {
+Nanu,C (2417)-Orso,M (2401)/Miercurea Ciuc 2001/EXT 2002/1/2-1/2 (83)}) 8...
+Bg7 9. h4 (9. Ne2 $5 $15 {is noteworthy}) 9... O-O $17 10. h5 Re8 (10... Nxh5
+$142 11. Ne2 Rb8 $17) 11. hxg6 $11 fxg6 (11... hxg6 12. Qf3 $11) 12. f4 e5 {
+Black threatens to win material: e5xd4} 13. Qb3+ (13. fxe5 dxe5 14. d5 Na5 $14)
+13... Kh8 {White has an active position} (13... Be6 14. Qxb7 Na5 15. Qb5 $17)
+14. Ngf3 $14 Na5 (14... exd4 15. Ng5 (15. Nxd4 $143 Nxd4 16. cxd4 Be6 $17)
+15... Re7 16. e5 dxe5 17. Bxe7 Qxe7 18. Rxh7+ Nxh7 19. Nf7+ Qxf7 20. Qxf7 exf4
+21. Qe8+ Nf8 22. O-O-O $18) 15. Qb4 (15. Qf7 exd4 16. Ng5 dxc3 $18) 15... Be6 (
+15... exd4 $5 16. cxd4 d5 $16) 16. fxe5 ({Instead of} 16. dxe5 dxe5 17. Bb5 Nc6
+18. Bxc6 bxc6 19. fxe5 Ng4 $17) 16... dxe5 17. Nxe5 Kg8 (17... Nh5 18. Bb5 Bxe5
+19. Bxe8 (19. dxe5 $143 Nc6 20. Qc5 Qg5 $15) 19... Bg3+ 20. Kd1 Qxe8 21. Qxa5
+$18) 18. Ndf3 (18. Bb5 Nc6 19. Bxc6 bxc6 $16) 18... Ng4 19. Nxg4 Bxg4 20. Qd6
+Bf5 21. Qxd8 Raxd8 22. Nd2 Rc8 23. Bc5 (23. Bb4 Nc6 24. Bd6 Nxd4 25. cxd4 Bxd4
+$16) 23... b6 $2 (23... Rxc5 24. dxc5 Bxc3 25. O-O-O $11) 24. O-O (24. Bb4 $5
+Nc6 25. Ba3 $16) 24... Be6 $14 25. Bb4 {White threatens to win material: Bb4xa5
+} 25... Nc6 26. Nf3 Nxb4 27. cxb4 {Black has the pair of bishops.} 27... Rc3 {
+Black threatens to win material: Rc3xd3} 28. Rfd1 (28. Bb5 Re7 29. d5 Bg4 $18)
+28... Bg4 (28... Bb3 $142 $5 $15 {and Black can hope to live}) 29. e5 $14 {
+This push gains space} 29... Rd8 30. Be4 Rc4 (30... Rb3 31. Rxa7 Rxb4 32. Ra8
+Rxa8 33. Bxa8 $14) 31. Rxa7 (31. b5 Bxf3 32. Bxf3 Rcxd4 33. Rxd4 Rxd4 $16)
+31... Bxf3 32. Bxf3 ({Inferior is} 32. gxf3 Bxe5 33. Re1 Bg7 $11) 32... Rcxd4 (
+32... Rxb4 $5 33. Ra8 Rxa8 34. Bxa8 Kf7 $16) 33. Rxd4 Rxd4 34. e6 Bf6 35. Rf7 (
+35. Rb7 Rd2 $16) 35... Bg5 (35... Bh4 36. Bc6 Rd6 37. Bd7 Rd1+ 38. Kh2 $14) 36.
+Rc7 (36. Bc6 Rd1+ 37. Kf2 Rd2+ 38. Kf3 Rd6 $18) 36... Be3+ (36... Kf8 $5 $14 {
+must definitely be considered}) 37. Kf1 $16 Bg5 38. b5 Rd6 $4 {
+causes further problems for ?} (38... h5 $142 $16) 39. Rc6 (39. Bc6 $142 $18 {
+and White takes home the point}) 39... Rxc6 40. bxc6 {A bishop endgame occured}
+40... Bd8 $4 (40... Bf4 $142 $11 {would be a reprieve}) 41. e7 $1 $18 {
+Mate threat} 41... Bxe7 (41... Bxe7 42. c7 {Passed pawn}) (41... -- 42. e8=Q+ {
+Mate threat}) 42. c7 {Resigns} 1-0
+
