@@ -48,6 +48,7 @@ from .constants import (
     IFG_BAD_COMMENT,
     IFG_BAD_RESERVED,
     IFG_BAD_TAG,
+    IFG_END_OF_FILE_MARKER,
     IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE,
     )
 
@@ -132,6 +133,7 @@ class PGN:
             game_class.append_token_and_set_error,
             game_class.append_token_and_set_error,
             game_class.append_bad_tag_and_set_error,
+            game_class.ignore_end_of_file_marker_prefix_to_tag,
             game_class.append_other_or_disambiguation_pgn,
             )
         self.error_despatch_table = (
@@ -165,6 +167,7 @@ class PGN:
             game_class.append_token_after_error,
             game_class.append_token_after_error,
             game_class.append_bad_tag_after_error,
+            game_class.append_token_after_error,
             game_class.append_token_after_error,
             )
 
@@ -360,6 +363,8 @@ def add_token_to_game(text, game, pos=0):
         game.append_bad_tag_and_set_error(match),
     elif lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE:
         game.append_other_or_disambiguation_pgn(match)
+    elif lastindex == IFG_END_OF_FILE_MARKER:
+        game.ignore_end_of_file_marker_prefix_to_tag(match)
     else:
         game.append_token_and_set_error(match)
     return match.end()

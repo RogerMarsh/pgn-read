@@ -39,10 +39,11 @@ PGN_FORMAT = r'|'.join((
     r'(?#Escaped)(\A%[^\n]*|\n%[^\n]*)',
     r'(?#Pass)(--)',
     r'(?#Check indicators)(?<=[1-8QRBNO])([+#])',
-    r'(?#Traditional Annonations)(?<=[1-8QRBNO+#])(!!|!\?|!|\?\?|\?!|\?)',
+    r'(?#Traditional Annonations)(?<=[1-8QRBNO+#])([!?][!?]?)',
     r'(?#Bad Comment)(\{[^}]*)',
     r'(?#Bad Reserved)(<[^>]*)',
     r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+    r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
     ))
 PGN_DISAMBIGUATION = r''.join(
     (r'(?#Disambiguation PGN)',
@@ -96,7 +97,8 @@ IFG_TRADITIONAL_ANNOTATION = 26
 IFG_BAD_COMMENT = 27
 IFG_BAD_RESERVED = 28
 IFG_BAD_TAG = 29
-IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 30
+IFG_END_OF_FILE_MARKER = 30
+IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 31
 
 # For spotting the pawn-move-like string which is the destination of a fully
 # disambiguated piece move, say 'Qb4d4+??' including optional sufficies, where

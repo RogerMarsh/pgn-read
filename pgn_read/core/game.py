@@ -287,15 +287,13 @@ class Game:
     def movetext_offset(self):
         return self._movetext_offset
     
-    # May be replaced, or just removed, if a suitable property is available
-    # for chesstab compatible with GameMove.
-    # May be overridden in subclasses.
+    # May be removed in future, or converted to property.
+    # Property game_has_errors is equivalent but meaning of True and False is
+    # reversed.
     def is_movetext_valid(self):
         """Return True if there are no error_tokens in the collected game."""
         return self._state is None
     
-    # May be replaced, or just removed, if a suitable property is available
-    # for chesstab compatible with GameMove.
     # May be overridden in subclasses.
     def is_tag_roster_valid(self):
         """Return True if the game's tag roster is valid."""
@@ -313,8 +311,6 @@ class Game:
                     return False
         return True
     
-    # May be replaced, or just removed, if a suitable property is available
-    # for chesstab compatible with GameMove.
     def is_pgn_valid(self):
         """Return True if the tags and movetext in the game are valid.
 
@@ -323,6 +319,18 @@ class Game:
 
         """
         return self.is_movetext_valid() and self.is_tag_roster_valid()
+    
+    def is_pgn_valid_export_format(self):
+        """Return True if the tags and movetext in the game are valid and the
+        Result Tag value is the same as the Game termination Marker.
+
+        This method always returns False if is_pgn_valid returns False, but
+        may return False if is_pgn_valid returns True.
+
+        """
+        if not self.is_pgn_valid():
+            return False
+        return self._tags.get(TAG_RESULT) == self._text[-1]
 
     def add_board_state_none(self, position_delta):
         """Append placeholder, None, for token being processed.
@@ -562,9 +570,9 @@ class Game:
 
         # Copy from append_start_tag() to apply correctly formatted PGN tag,
         # which must not be duplicated.
-        self._text.append('"'.join((g[0], v, g[-1])))
         self.add_board_state_none(None)
         tag_name = g[0].lstrip('[').strip()
+        self._text.append(''.join(('[', tag_name, '"', v, '"]')))
         if tag_name in self._tags:
             if self._state is None:
                 self._state = len(self._tags) - 1
@@ -684,7 +692,9 @@ class Game:
             self.append_token_and_set_error(match)
             return
         group = match.group
-        self._text.append(group())
+        tag_name = group(IFG_TAG_NAME)
+        tag_value = group(IFG_TAG_VALUE)
+        self._text.append(''.join(('[', tag_name, '"', tag_value, '"]')))
         self.add_board_state_none(None)
 
         # Iniitialized None and set True when first valid match is applied.
@@ -694,7 +704,6 @@ class Game:
         #    self._state_stack[-1] = self._state
 
         # Tag names must not be duplicated.
-        tag_name = group(IFG_TAG_NAME)
         if tag_name in self._tags:
             #if self._state == 'True':
             if self._state is None:
@@ -702,7 +711,7 @@ class Game:
                 self._state_stack[-1] = self._state
             return
 
-        self._tags[tag_name] = group(IFG_TAG_VALUE)
+        self._tags[tag_name] = tag_value
         return
 
     def append_castles(self, match):
@@ -752,7 +761,7 @@ class Game:
         if rook_square not in piece_placement_data:
             self.append_token_and_set_error(match)
             return
-        if not self.line_empty(king_square, king_destination):
+        if not self.line_empty(king_square, rook_square):
             self.append_token_and_set_error(match)
             return
 
@@ -1657,6 +1666,22 @@ class Game:
         The '\n' must be appended to the token in subclasses which capture
         the escaped line.
         
+        """
+
+    def ignore_end_of_file_marker_prefix_to_tag(self, match):
+        """Ignore end of file marker if it is prefix to a PGN tag.
+
+        Concatenated PGN files may have an end of file marker, '\032' also
+        called Ctrl-Z, followed immediately by the PGN Tag which was at start
+        of next file.  This breaks the PGN specification because the PGN tag is
+        not at the start of a line.
+
+        Strictly Ctrl-Z is one of the ASCII control characters not permitted
+        in PGN files, 4.1 in PGN specification, but according to Wikipedia,
+        en.wikipedia.org/wiki/End-of-file, the end of file marker exists for
+        two reasons.  One suggestion on the 'talk' page is Ctrl-Z was never
+        necessary but in practice useful for a while in the 1980s.
+
         """
 
     def ignore_move_number(self, match):
@@ -3082,6 +3107,21 @@ class Game:
             return False
         return False
 
+    def get_tags(self, name_value_separator=' '):
+        """Return list of PGN tags in an undefined order.
+
+        The default name_value_separator gives PGN tags in export format.
+
+        """
+        return [''.join(('[', k, name_value_separator, '"', v, '"]'))
+                for k, v in self._tags.items()]
+
+    def get_tags_in_text_order(self):
+        """Return list of tags in their order in game text in export format."""
+        if self._movetext_offset is None:
+            return []
+        return self._text[:self._movetext_offset]
+
     def get_non_seven_tag_roster_tags(self):
         """Return string of sorted tags not in Seven Tag Roster."""
         return '\n'.join([''.join(('[', k, ' "', v, '"]'))
@@ -3157,8 +3197,20 @@ class Game:
             movetext.append(token)
             return len(token) + length + 1
 
-    def get_export_pgn_movetext(self):
-        """Return Export format PGN movetext.
+    def get_movetext(self):
+        """Return list of movetext.
+
+        Moves have check and checkmate indicators, but not the black move
+        indicators found in export format if a black move follows a comment
+        or is first move in a RAV, nor move numbers.
+
+        """
+        if self._movetext_offset is None:
+            return []
+        return self._text[self._movetext_offset:]
+
+    def get_all_movetext_in_pgn_export_format(self):
+        """Return all movetext in pgn export format.
 
         Where check or checkmate moves are present the text is not in export
         format unless generated by the GameIndicateCheck class, because these
@@ -3293,8 +3345,8 @@ class Game:
                 fullmove_number += 1
         return ''.join(movetext)
 
-    def get_export_pgn_rav_movetext(self):
-        """Return Export format PGN moves and RAVs but no comments.
+    def get_movetext_without_comments_in_pgn_export_format(self):
+        """Return movetext without comments in pgn export format.
 
         Where check or checkmate moves are present the text is not in export
         format unless generated by the GameIndicateCheck class, because these
@@ -3361,17 +3413,23 @@ class Game:
     def get_export_pgn_elements(self):
         """Return Export format PGN version of game.
 
+        This method will be removed without notice in future.  It seems more
+        convenient and clearer to use the called methods directly.
+
         Where check or checkmate moves are present the text is not in export
         format unless generated by the GameIndicateCheck class, because these
         indicators are not included in the text otherwise.
 
         """
         return (self.get_seven_tag_roster_tags(),
-                self.get_export_pgn_movetext(),
+                self.get_all_movetext_in_pgn_export_format(),
                 self.get_non_seven_tag_roster_tags())
 
     def get_archive_pgn_elements(self):
         """Return Archive format PGN version of game. (Reduced Export Format).
+
+        This method will be removed without notice in future.  It seems more
+        convenient and clearer to use the called methods directly.
 
         Where check or checkmate moves are present the text is not in export
         format unless generated by the GameIndicateCheck class, because these
@@ -3383,14 +3441,21 @@ class Game:
     def get_export_pgn_rav_elements(self):
         """Return Export format PGN version of game with RAVs but no comments.
 
+        This method will be removed without notice in future.  It seems more
+        convenient and clearer to use the called methods directly.
+
         Where check or checkmate moves are present the text is not in export
         format unless generated by the GameIndicateCheck class, because these
         indicators are not included in the text otherwise.
 
         """
         return (self.get_seven_tag_roster_tags(),
-                self.get_export_pgn_rav_movetext(),
+                self.get_movetext_without_comments_in_pgn_export_format(),
                 self.get_non_seven_tag_roster_tags())
+
+    def get_text_of_game(self):
+        """Return current text version of game."""
+        return ''.join(self._text)
 
     def append_check_indicator(self):
         """Do nothing.

@@ -55,13 +55,15 @@ class Constants(unittest.TestCase):
                 r'(?#Check indicators)(?<=[1-8QRBNO])([+#])',
                 r'|',
                 r'(?#Traditional Annonations)',
-                r'(?<=[1-8QRBNO+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'(?<=[1-8QRBNO+#])([!?][!?]?)',
                 r'|',
                 r'(?#Bad Comment)(\{[^}]*)',
                 r'|',
                 r'(?#Bad Reserved)(<[^>]*)',
                 r'|',
                 r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
+                r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 )))
         ae(constants.PGN_DISAMBIGUATION,
            r''.join(
@@ -116,13 +118,15 @@ class Constants(unittest.TestCase):
                 r'(?#Check indicators)(?<=[1-8QRBNO])([+#])',
                 r'|',
                 r'(?#Traditional Annonations)',
-                r'(?<=[1-8QRBNO+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'(?<=[1-8QRBNO+#])([!?][!?]?)',
                 r'|',
                 r'(?#Bad Comment)(\{[^}]*)',
                 r'|',
                 r'(?#Bad Reserved)(<[^>]*)',
                 r'|',
                 r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
+                r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 r'|',
                 r'(?#Disambiguation PGN)(x?[a-h][1-8]',
                 r'|',
@@ -169,13 +173,15 @@ class Constants(unittest.TestCase):
                 r'(?#Check indicators)(?<=[1-8QRBNO0])([+#])',
                 r'|',
                 r'(?#Traditional Annonations)',
-                r'(?<=[1-8QRBNO0+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'(?<=[1-8QRBNO0+#])([!?][!?]?)',
                 r'|',
                 r'(?#Bad Comment)(\{[^}]*)',
                 r'|',
                 r'(?#Bad Reserved)(<[^>]*)',
                 r'|',
                 r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
+                r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 r'|',
                 r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
                 r'|',
@@ -223,13 +229,15 @@ class Constants(unittest.TestCase):
                 r'(?#Check indicators)(?<=[1-8QRBNO0])([+#])',
                 r'|',
                 r'(?#Traditional Annonations)',
-                r'(?<=[1-8QRBNO0+#])(!!|!\?|!|\?\?|\?!|\?)',
+                r'(?<=[1-8QRBNO0+#])([!?][!?]?)',
                 r'|',
                 r'(?#Bad Comment)(\{[^}]*)',
                 r'|',
                 r'(?#Bad Reserved)(<[^>]*)',
                 r'|',
                 r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                r'|',
+                r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 r'|',
                 r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
                 r'|',
@@ -264,8 +272,8 @@ class Constants(unittest.TestCase):
         ae(constants.IFG_BAD_COMMENT, 27)
         ae(constants.IFG_BAD_RESERVED, 28)
         ae(constants.IFG_BAD_TAG, 29)
-        ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 30)
-        #ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 27)
+        ae(constants.IFG_END_OF_FILE_MARKER, 30)
+        ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 31)
         ae(constants.DISAMBIGUATE_TEXT, r'\A(x?)([a-h][1-8])')
         ae(constants.DISAMBIGUATE_PGN, r'\Ax?[a-h][1-8]')
         ae(constants.DG_CAPTURE, 1)
@@ -274,14 +282,10 @@ class Constants(unittest.TestCase):
         ae(constants.LAN_CAPTURE_OR_MOVE, 1)
         ae(constants.LAN_DESTINATION, 2)
         ae(constants.LAN_PROMOTE_PIECE, 3)
-        #ae(constants.LAN_CHECK_INDICATOR, 4)
-        #ae(constants.LAN_SUFFIX_ANNOTATION, 5)
         ae(constants.TEXT_PROMOTION,
            r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])')
         ae(constants.TP_MOVE, 1)
         ae(constants.TP_PROMOTE_TO_PIECE, 2)
-        #ae(constants.TP_CHECK_INDICATOR, 3)
-        #ae(constants.TP_SUFFIX_ANNOTATION, 4)
         ae(constants.UNTERMINATED, '<{')
         ae(constants.SUFFIX_ANNOTATION_TO_NAG,
            {'!!': '$3', '!?': '$5', '!': '$1',

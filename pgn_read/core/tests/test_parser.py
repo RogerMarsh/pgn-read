@@ -87,7 +87,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A "a"]')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A "a"]'])
+        ae(games[0]._text, ['[A"a"]'])
 
     def test_008_tag_and_star(self):
         ae = self.assertEqual
@@ -133,7 +133,7 @@ class StrictPGN(_BasePGN):
         games = self.get('[A "a"]*')
         ae(len(games), 1)
         ae(games[0].state, None)
-        ae(games[0]._text, ['[A "a"]', '*'])
+        ae(games[0]._text, ['[A"a"]', '*'])
 
     # Added len(pgntext) test in parser.PGN.read_games to pass this test.
     def test_010_bare_legal_move_in_default_initial_position(self):
@@ -1338,14 +1338,38 @@ class StrictPGN(_BasePGN):
         games = self.get(r'[A"\a" ]')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"\\a" ]'])
+        ae(games[0]._text, ['[A"\\a"]'])
 
     def test_145_bad_value_in_tag_04(self):
         ae = self.assertEqual
         games = self.get(r'[A"\"a" ]')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"\\\"a" ]'])
+        ae(games[0]._text, ['[A"\\\"a"]'])
+
+    # Added while fixing problem.
+    def test_146_castles_O_O_g1_occupied(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"4k3/8/8/8/8/8/8/RN2K1NR w KQ - 0 1"]O-OKe7*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"4k3/8/8/8/8/8/8/RN2K1NR w KQ - 0 1"]',
+            ' O-O', ' Ke7', ' *'])
+
+    # Added while fixing problem.
+    def test_147_castles_O_O_O_b1_occupied(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"4k3/8/8/8/8/8/8/RN2K1NR w KQ - 0 1"]O-O-OKe7*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"4k3/8/8/8/8/8/8/RN2K1NR w KQ - 0 1"]',
+            ' O-O-O', ' Ke7', ' *'])
 
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
@@ -3026,7 +3050,7 @@ class _NonStrictTests:
         games = self.get('[A""a" ]')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"\\"a" ]'])
+        ae(games[0]._text, ['[A"\\"a"]'])
 
     def test_143_bad_value_in_tag_02(self):
         ae = self.assertEqual
@@ -3080,7 +3104,7 @@ class _NonStrictPGNTests:
         games = self.get('[A""a" ]')
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"\\"a" ]'])
+        ae(games[0]._text, ['[A"\\"a"]'])
 
     def test_143_bad_value_in_tag_02(self):
         ae = self.assertEqual
