@@ -279,125 +279,125 @@ class StrictPGN(_StrictPGN):
             (13, 1, 13, 1, 14, 1, 18, 16, 1, 18, 1, 155))
         ae = self.assertEqual
         ae(games[0]._text,
-           ['[Event "St. Pauli Open 2012"]',
-            '[Site "Hamburg GER"]',
-            '[Date "2012.07.07"]',
-            '[Round "1.18"]',
-            '[White "Kahlert,T"]',
-            '[Black "Kosovs,Ernst"]',
-            '[Result "*"]',
-            '[WhiteElo "2229"]',
-            '[BlackElo "1974"]',
-            '[WhiteFideId "4625242"]',
-            '[BlackFideId "12921289"]',
-            '[EventDate "2012.07.07"]',
+           ['[Event"St. Pauli Open 2012"]',
+            '[Site"Hamburg GER"]',
+            '[Date"2012.07.07"]',
+            '[Round"1.18"]',
+            '[White"Kahlert,T"]',
+            '[Black"Kosovs,Ernst"]',
+            '[Result"*"]',
+            '[WhiteElo"2229"]',
+            '[BlackElo"1974"]',
+            '[WhiteFideId"4625242"]',
+            '[BlackFideId"12921289"]',
+            '[EventDate"2012.07.07"]',
             '*'])
         ae(games[1]._text, ['*'])
         ae(games[2]._text,
-           ['[Event "St. Pauli Open 2012"]',
-            '[Site "Hamburg GER"]',
-            '[Date "2012.07.10"]',
-            '[Round "4.7"]',
-            '[White "Thingstad,E"]',
-            '[Black "Svane,R"]',
-            '[Result "*"]',
-            '[WhiteElo "2198"]',
-            '[BlackElo "2367"]',
-            '[WhiteFideId "1506439"]',
-            '[BlackFideId "4657101"]',
-            '[EventDate "2012.07.07"]',
+           ['[Event"St. Pauli Open 2012"]',
+            '[Site"Hamburg GER"]',
+            '[Date"2012.07.10"]',
+            '[Round"4.7"]',
+            '[White"Thingstad,E"]',
+            '[Black"Svane,R"]',
+            '[Result"*"]',
+            '[WhiteElo"2198"]',
+            '[BlackElo"2367"]',
+            '[WhiteFideId"1506439"]',
+            '[BlackFideId"4657101"]',
+            '[EventDate"2012.07.07"]',
             '*'])
         ae(games[3]._text, ['*'])
         ae(games[4]._text,
-           ['[Event "St. Pauli Open 2012"]',
-            '[Site "Hamburg GER"]',
-            '[Date "2012.07.13"]',
-            '[Round "7.9"]',
-            '[White "Hochgraefe,M"]',
-            '[Black "Schiele,L"]',
-            '[Result "*"]',
-            '[WhiteTitle "FM"]',
-            '[WhiteElo "2345"]',
-            '[BlackElo "2089"]',
-            '[WhiteFideId "4615484"]',
-            '[BlackFideId "4693868"]',
-            '[EventDate "2012.07.07"]',
+           ['[Event"St. Pauli Open 2012"]',
+            '[Site"Hamburg GER"]',
+            '[Date"2012.07.13"]',
+            '[Round"7.9"]',
+            '[White"Hochgraefe,M"]',
+            '[Black"Schiele,L"]',
+            '[Result"*"]',
+            '[WhiteTitle"FM"]',
+            '[WhiteElo"2345"]',
+            '[BlackElo"2089"]',
+            '[WhiteFideId"4615484"]',
+            '[BlackFideId"4693868"]',
+            '[EventDate"2012.07.07"]',
             '*'])
         ae(games[5]._text, ['*'])
         ae(games[6]._text,
-           ['[Event "ch-Commonwealth 2012"]',
-            '[Site "Chennai IND"]',
-            '[Date "2012.11.28"]',
-            '[Round "8"]',
-            '[White "Karthikeyan,P2"]',
-            '[Black "Adly,A"]',
-            '[Result "(+)-(-)"]',
-            '[WhiteTitle "IM"]',
-            '[BlackTitle "GM"]',
-            '[WhiteElo "2414"]',
-            '[BlackElo "2607"]',
-            '[WhiteFideId "5018226"]',
-            '[BlackFideId "10601619"]',
-            '[EventDate "2012.11.23"]',
+           ['[Event"ch-Commonwealth 2012"]',
+            '[Site"Chennai IND"]',
+            '[Date"2012.11.28"]',
+            '[Round"8"]',
+            '[White"Karthikeyan,P2"]',
+            '[Black"Adly,A"]',
+            '[Result"(+)-(-)"]',
+            '[WhiteTitle"IM"]',
+            '[BlackTitle"GM"]',
+            '[WhiteElo"2414"]',
+            '[BlackElo"2607"]',
+            '[WhiteFideId"5018226"]',
+            '[BlackFideId"10601619"]',
+            '[EventDate"2012.11.23"]',
             ' (',
             ' +)-(-) ',
             ' (',
             ' +)-(-)'])
         ae(games[7]._text,
-           ['[Event "Dvorkovich Mem 2013"]',
-            '[Site "Taganrog RUS"]',
-            '[Date "2013.01.17"]',
-            '[Round "3.31"]',
-            '[White "Golubov,Saveliy"]',
-            '[Black "Osipov,Ad"]',
-            '[Result "1-0 ff"]',
-            '[WhiteElo "2227"]',
-            '[BlackElo "2080"]',
-            '[ECO "B00"]',
-            '[Opening "King\'s pawn opening"]',
-            '[WhiteFideId "24176729"]',
-            '[BlackFideId "4162641"]',
-            '[EventDate "2013.01.15"]',
+           ['[Event"Dvorkovich Mem 2013"]',
+            '[Site"Taganrog RUS"]',
+            '[Date"2013.01.17"]',
+            '[Round"3.31"]',
+            '[White"Golubov,Saveliy"]',
+            '[Black"Osipov,Ad"]',
+            '[Result"1-0 ff"]',
+            '[WhiteElo"2227"]',
+            '[BlackElo"2080"]',
+            '[ECO"B00"]',
+            '[Opening"King\'s pawn opening"]',
+            '[WhiteFideId"24176729"]',
+            '[BlackFideId"4162641"]',
+            '[EventDate"2013.01.15"]',
             'e4',
             '1-0'])
         ae(games[8]._text, [' ff'])
         ae(games[9]._text,
-           ['[Event "Dvorkovich Mem 2013"]',
-            '[Site "Taganrog RUS"]',
-            '[Date "2013.01.21"]',
-            '[Round "7.25"]',
-            '[White "Baraeva,I"]',
-            '[Black "Isaev,Y"]',
-            '[Result "1-0 ff"]',
-            '[WhiteTitle "WF"]',
-            '[BlackTitle "FM"]',
-            '[WhiteElo "2159"]',
-            '[BlackElo "2238"]',
-            '[ECO "A40"]',
-            '[Opening "Queen\'s pawn"]',
-            '[WhiteFideId "24142565"]',
-            '[BlackFideId "4173350"]',
-            '[EventDate "2013.01.15"]',
+           ['[Event"Dvorkovich Mem 2013"]',
+            '[Site"Taganrog RUS"]',
+            '[Date"2013.01.21"]',
+            '[Round"7.25"]',
+            '[White"Baraeva,I"]',
+            '[Black"Isaev,Y"]',
+            '[Result"1-0 ff"]',
+            '[WhiteTitle"WF"]',
+            '[BlackTitle"FM"]',
+            '[WhiteElo"2159"]',
+            '[BlackElo"2238"]',
+            '[ECO"A40"]',
+            '[Opening"Queen\'s pawn"]',
+            '[WhiteFideId"24142565"]',
+            '[BlackFideId"4173350"]',
+            '[EventDate"2013.01.15"]',
             'd4',
             '1-0'])
         ae(games[10]._text, [' ff'])
         ae(games[11]._text,
-           ['[Event "6th Mayors Cup 2013"]',
-            '[Site "Mumbai IND"]',
-            '[Date "2013.06.05"]',
-            '[Round "10"]',
-            '[White "Swathi,G"]',
-            '[Black "Neelotpal,D"]',
-            '[Result "0-1"]',
-            '[WhiteTitle "WGM"]',
-            '[BlackTitle "GM"]',
-            '[WhiteElo "2260"]',
-            '[BlackElo "2461"]',
-            '[ECO "C55"]',
-            '[Opening "Two knights defence (Modern bishop\'s opening)"]',
-            '[WhiteFideId "5003474"]',
-            '[BlackFideId "5003512"]',
-            '[EventDate "2013.05.29"]',
+           ['[Event"6th Mayors Cup 2013"]',
+            '[Site"Mumbai IND"]',
+            '[Date"2013.06.05"]',
+            '[Round"10"]',
+            '[White"Swathi,G"]',
+            '[Black"Neelotpal,D"]',
+            '[Result"0-1"]',
+            '[WhiteTitle"WGM"]',
+            '[BlackTitle"GM"]',
+            '[WhiteElo"2260"]',
+            '[BlackElo"2461"]',
+            '[ECO"C55"]',
+            '[Opening"Two knights defence (Modern bishop\'s opening)"]',
+            '[WhiteFideId"5003474"]',
+            '[BlackFideId"5003512"]',
+            '[EventDate"2013.05.29"]',
             'e4', 'e5', 'Nf3', 'Nc6', 'Bc4', 'Nf6', 'd3', 'Be7', 'Bb3', 'O-O',
             'Nbd2', 'd6', 'c3', 'Na5', 'Bc2', 'c5', 'O-O', 'Nc6', 'Re1', 'Re8',
             'Nf1', 'h6', 'Ng3', 'Bf8', 'h3', 'Qc7', 'Nh2', 'Be6', 'Qf3', 'Nh7',
@@ -479,7 +479,7 @@ class StrictPGN(_StrictPGN):
         games = self.get('calgames_07.pgn')
         ae(len(games), 1)
         ae(games[0].state, None)
-        ae(games[0]._text[0], r'[Event "LA CC Handicap Tour \"C\""]')
+        ae(games[0]._text[0], r'[Event"LA CC Handicap Tour \"C\""]')
         ae(games[0]._tags['Event'], r'LA CC Handicap Tour \"C\"')
 
     # Incrementally adjust little_01.pgn until state is True.
@@ -493,11 +493,11 @@ class StrictPGN(_StrictPGN):
         ae(len(games[1]._text), 3)
         self.do_game_text_tests(
             games[0], 108, 6, 6,
-            ['[Event "EM/CL/Q19-2"]', '<br>',
-             '[White "Silva, ABC (BRA)"]', '<br>',
-             '[Black "Player, Riccardo (ITA)"]', '<br>',
+            ['[Event"EM/CL/Q19-2"]', '<br>',
+             '[White"Silva, ABC (BRA)"]', '<br>',
+             '[Black"Player, Riccardo (ITA)"]', '<br>',
              ' (', ' Result '])
-        ae(games[0]._text[2], '[White "Silva, ABC (BRA)"]')
+        ae(games[0]._text[2], '[White"Silva, ABC (BRA)"]')
 
     # Incrementally adjust little_01.pgn until state is True.
     def test_035_little_02(self):
@@ -508,9 +508,9 @@ class StrictPGN(_StrictPGN):
         ae(g.state, 3)
         self.do_game_text_tests(
             g, 64 if g._strict_pgn is None else 105, 3, 3,
-            ['[Event "EM/CL/Q19-2"]',
-             '[White "Silva, ABC (BRA)"]',
-             '[Black "Player, Riccardo (ITA)"]',
+            ['[Event"EM/CL/Q19-2"]',
+             '[White"Silva, ABC (BRA)"]',
+             '[Black"Player, Riccardo (ITA)"]',
              ' (',
              ' Result '])
         ae(games[1].state, 3)
@@ -525,10 +525,10 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 99, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4 ',
                  '; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n'])
@@ -539,10 +539,10 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 1)
             self.do_game_text_tests(
                 g, 48, 7, 7,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4',
                  '; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n',
                  ' Ng1', ' -f3',
@@ -551,10 +551,10 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 99, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4 '])
             ae(g._text[5], ' d2')
@@ -570,30 +570,30 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 158, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 143, 12, 12,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', ' Ng1', ' -f3',
                  ])
         else:
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 158, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -607,20 +607,20 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 160, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 141, 20, 20,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'Nf3', 'Nbd7', '<br>', 'Qb3', ' Bb4', ' xNc3',
                  ])
@@ -628,10 +628,10 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 160, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -645,20 +645,20 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 161, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 143, 22, 22,
-               ['[Event "EM/CL/Q19-2"]',
-                '[White "Silva, ABC (BRA)"]',
-                '[Black "Player, Riccardo (ITA)"]',
-                '[Result "1/2 - Â"]', '<br>',
+               ['[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                '[Result"1/2 - Â"]', '<br>',
                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Nbd7', '<br>',
                 'Qb3', ' Bb4', ' xNc3',
@@ -667,10 +667,10 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 161, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -684,20 +684,20 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 162, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 145, 24, 24,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', ' Bb4', ' xNc3',
@@ -706,10 +706,10 @@ class StrictPGN(_StrictPGN):
             ae(len(games), 2)
             self.do_game_text_tests(
                 g, 162, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -723,19 +723,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 164, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 145, 24, 24,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', ' Bb4', ' xNc3',
@@ -743,10 +743,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 164, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -760,19 +760,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 163, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 145, 24, 24,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', ' Bb4', ' xNc3',
@@ -780,10 +780,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 163, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -797,19 +797,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 163, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 138, 26, 26,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', 'Bxc3', 'bxc3', ' a2', ' -a4',
@@ -817,10 +817,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 163, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -834,19 +834,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 164, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 111, 43, 43,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
@@ -857,10 +857,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 164, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -874,19 +874,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 165, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 86, 60, 60,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
@@ -899,10 +899,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 165, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -916,19 +916,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 167, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 86, 60, 60,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
@@ -941,10 +941,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 167, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -958,19 +958,19 @@ class StrictPGN(_StrictPGN):
         if g._strict_pgn is False:
             self.do_game_text_tests(
                 g, 173, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif g._strict_pgn is None:
             self.do_game_text_tests(
                 g, 86, 60, 60,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                  'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                  '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
@@ -983,10 +983,10 @@ class StrictPGN(_StrictPGN):
         else:
             self.do_game_text_tests(
                 g, 173, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
 
@@ -1002,10 +1002,10 @@ class StrictPGN(_StrictPGN):
             ae(g.state, 6)
             self.do_game_text_tests(
                 g, 173, 6, 6,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  'd4', ' -d4  ', ' Ng8'])
         elif strict_pgn is None:
@@ -1014,10 +1014,10 @@ class StrictPGN(_StrictPGN):
             ae(len(g._text), 70)
             ae(g.state, None)
             ae(g._text,
-               ['[Event "EM/CL/Q19-2"]',
-                '[White "Silva, ABC (BRA)"]',
-                '[Black "Player, Riccardo (ITA)"]',
-                '[Result "1/2 - Â"]', '<br>',
+               ['[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                '[Result"1/2 - Â"]', '<br>',
                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
                 'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
                 '<br>', 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
@@ -1033,10 +1033,10 @@ class StrictPGN(_StrictPGN):
             ae(g.state, 5)
             self.do_game_text_tests(
                 g, 173, 5, 5,
-                ['[Event "EM/CL/Q19-2"]',
-                 '[White "Silva, ABC (BRA)"]',
-                 '[Black "Player, Riccardo (ITA)"]',
-                 '[Result "1/2 - Â"]',
+                ['[Event"EM/CL/Q19-2"]',
+                 '[White"Silva, ABC (BRA)"]',
+                 '[Black"Player, Riccardo (ITA)"]',
+                 '[Result"1/2 - Â"]',
                  '<br>',
                  ' d2', ' -d4  '])
         return games
@@ -1066,9 +1066,9 @@ class StrictPGN(_StrictPGN):
         ae(len(games), 3)
         gt = games[0]._text
         if strict_pgn is False:
-            ae(gt[0], '[Event "ICC 5 3"]')
-            ae(gt[2], '[Date "2006.06.13"]')
-            ae(gt[4], '[White "crafty"]')
+            ae(gt[0], '[Event"ICC 5 3"]')
+            ae(gt[2], '[Date"2006.06.13"]')
+            ae(gt[4], '[White"crafty"]')
             ae(gt[-1], '1/2-1/2')
             gt = games[1]._text
             ae(gt[0], ' for ')
@@ -1076,14 +1076,14 @@ class StrictPGN(_StrictPGN):
             ae(gt[1], ' <crafty@localhost>')
             ae(gt[-1], ' CST)')
             gt = games[2]._text
-            ae(gt[0], '[Event "ICC 5 3"]')
-            ae(gt[2], '[Date "2006.06.13"]')
-            ae(gt[5], '[Black "crafty"]')
+            ae(gt[0], '[Event"ICC 5 3"]')
+            ae(gt[2], '[Date"2006.06.13"]')
+            ae(gt[5], '[Black"crafty"]')
             ae(gt[-1], '1-0')
         elif strict_pgn is None:
-            ae(gt[0], '[Event "ICC 5 3"]')
-            ae(gt[2], '[Date "2006.06.13"]')
-            ae(gt[4], '[White "crafty"]')
+            ae(gt[0], '[Event"ICC 5 3"]')
+            ae(gt[2], '[Date"2006.06.13"]')
+            ae(gt[4], '[White"crafty"]')
             ae(gt[-1], '1/2-1/2')
             gt = games[1]._text
             ae(gt[0], '<crafty@localhost>')
@@ -1091,14 +1091,14 @@ class StrictPGN(_StrictPGN):
             ae(gt[1], '; Mon, 4 Dec 2006 12:17:10 -0600\n')
             ae(gt[-1], ' CST)')
             gt = games[2]._text
-            ae(gt[0], '[Event "ICC 5 3"]')
-            ae(gt[2], '[Date "2006.06.13"]')
-            ae(gt[5], '[Black "crafty"]')
+            ae(gt[0], '[Event"ICC 5 3"]')
+            ae(gt[2], '[Date"2006.06.13"]')
+            ae(gt[5], '[Black"crafty"]')
             ae(gt[-1], '1-0')
         else:
-            ae(gt[0], '[Event "ICC 5 3"]')
-            ae(gt[2], '[Date "2006.06.13"]')
-            ae(gt[4], '[White "crafty"]')
+            ae(gt[0], '[Event"ICC 5 3"]')
+            ae(gt[2], '[Date"2006.06.13"]')
+            ae(gt[4], '[White"crafty"]')
             ae(gt[-1], '1/2-1/2')
             gt = games[1]._text
             ae(gt[0], ' for ')
@@ -1106,9 +1106,9 @@ class StrictPGN(_StrictPGN):
             ae(gt[1], ' <crafty@localhost>')
             ae(gt[-1], ' CST)')
             gt = games[2]._text
-            ae(gt[0], '[Event "ICC 5 3"]')
-            ae(gt[2], '[Date "2006.06.13"]')
-            ae(gt[5], '[Black "crafty"]')
+            ae(gt[0], '[Event"ICC 5 3"]')
+            ae(gt[2], '[Date"2006.06.13"]')
+            ae(gt[5], '[Black"crafty"]')
             ae(gt[-1], '1-0')
 
     # Minimum adjustments little_01.pgn until state is True for TextPGN.
@@ -1122,10 +1122,10 @@ class StrictPGN(_StrictPGN):
             ae(g.state, 9)
             self.do_game_text_tests(
                 g, 166, 9, 9,
-                ['[Event "EM/CL/Q19-2"]', '<br>',
-                 '[White "Silva, ABC (BRA)"]', '<br>',
-                 '[Black "Player, Riccardo (ITA)"]', '<br>',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]', '<br>',
+                 '[White"Silva, ABC (BRA)"]', '<br>',
+                 '[Black"Player, Riccardo (ITA)"]', '<br>',
+                 '[Result"1/2 - Â"]', '<br>',
                  'd4', ' -d4  ', ' Ng8',
                  ])
         elif strict_pgn is None:
@@ -1134,10 +1134,10 @@ class StrictPGN(_StrictPGN):
             ae(len(g._text), 72)
             ae(g.state, None)
             ae(g._text,
-               ['[Event "EM/CL/Q19-2"]', '<br>',
-                '[White "Silva, ABC (BRA)"]', '<br>',
-                '[Black "Player, Riccardo (ITA)"]', '<br>',
-                '[Result "1/2 - Â"]', '<br>',
+               ['[Event"EM/CL/Q19-2"]', '<br>',
+                '[White"Silva, ABC (BRA)"]', '<br>',
+                '[Black"Player, Riccardo (ITA)"]', '<br>',
+                '[Result"1/2 - Â"]', '<br>',
                 'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', 'Bd3',
                 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7', '<br>',
                 'Qb3', 'Bxc3', 'bxc3', 'Nb6', 'a4', 'a5', '<br>',
@@ -1153,10 +1153,10 @@ class StrictPGN(_StrictPGN):
             ae(g.state, 8)
             self.do_game_text_tests(
                 g, 166, 8, 8,
-                ['[Event "EM/CL/Q19-2"]', '<br>',
-                 '[White "Silva, ABC (BRA)"]', '<br>',
-                 '[Black "Player, Riccardo (ITA)"]', '<br>',
-                 '[Result "1/2 - Â"]', '<br>',
+                ['[Event"EM/CL/Q19-2"]', '<br>',
+                 '[White"Silva, ABC (BRA)"]', '<br>',
+                 '[Black"Player, Riccardo (ITA)"]', '<br>',
+                 '[Result"1/2 - Â"]', '<br>',
                  ' d2', ' -d4  ',
                  ])
         return games
@@ -1259,8 +1259,8 @@ class _StrictFalseTests:
         ae(len(games), 1)
         self.do_game_text_tests(
             games[0], 75, None, 0,
-           [r'[Event "LA CC Handicap Tour \"C\""]',
-            '[Site "Los Angeles, CA"]'])
+           [r'[Event"LA CC Handicap Tour \"C\""]',
+            '[Site"Los Angeles, CA"]'])
         ae(games[0].is_tag_roster_valid(), True)
 
     # calgames_10.pgn added when castling options missing in a samples report.
@@ -1304,123 +1304,123 @@ class _TextFormatTests:
             (13, 1, 13, 1, 14, 1, 18, 16, 18, 154,))
         ae = self.assertEqual
         ae(games[0]._text,
-           ['[Event "St. Pauli Open 2012"]',
-            '[Site "Hamburg GER"]',
-            '[Date "2012.07.07"]',
-            '[Round "1.18"]',
-            '[White "Kahlert,T"]',
-            '[Black "Kosovs,Ernst"]',
-            '[Result "*"]',
-            '[WhiteElo "2229"]',
-            '[BlackElo "1974"]',
-            '[WhiteFideId "4625242"]',
-            '[BlackFideId "12921289"]',
-            '[EventDate "2012.07.07"]',
+           ['[Event"St. Pauli Open 2012"]',
+            '[Site"Hamburg GER"]',
+            '[Date"2012.07.07"]',
+            '[Round"1.18"]',
+            '[White"Kahlert,T"]',
+            '[Black"Kosovs,Ernst"]',
+            '[Result"*"]',
+            '[WhiteElo"2229"]',
+            '[BlackElo"1974"]',
+            '[WhiteFideId"4625242"]',
+            '[BlackFideId"12921289"]',
+            '[EventDate"2012.07.07"]',
             '*'])
         ae(games[1]._text, ['*'])
         ae(games[2]._text,
-           ['[Event "St. Pauli Open 2012"]',
-            '[Site "Hamburg GER"]',
-            '[Date "2012.07.10"]',
-            '[Round "4.7"]',
-            '[White "Thingstad,E"]',
-            '[Black "Svane,R"]',
-            '[Result "*"]',
-            '[WhiteElo "2198"]',
-            '[BlackElo "2367"]',
-            '[WhiteFideId "1506439"]',
-            '[BlackFideId "4657101"]',
-            '[EventDate "2012.07.07"]',
+           ['[Event"St. Pauli Open 2012"]',
+            '[Site"Hamburg GER"]',
+            '[Date"2012.07.10"]',
+            '[Round"4.7"]',
+            '[White"Thingstad,E"]',
+            '[Black"Svane,R"]',
+            '[Result"*"]',
+            '[WhiteElo"2198"]',
+            '[BlackElo"2367"]',
+            '[WhiteFideId"1506439"]',
+            '[BlackFideId"4657101"]',
+            '[EventDate"2012.07.07"]',
             '*'])
         ae(games[3]._text, ['*'])
         ae(games[4]._text,
-           ['[Event "St. Pauli Open 2012"]',
-            '[Site "Hamburg GER"]',
-            '[Date "2012.07.13"]',
-            '[Round "7.9"]',
-            '[White "Hochgraefe,M"]',
-            '[Black "Schiele,L"]',
-            '[Result "*"]',
-            '[WhiteTitle "FM"]',
-            '[WhiteElo "2345"]',
-            '[BlackElo "2089"]',
-            '[WhiteFideId "4615484"]',
-            '[BlackFideId "4693868"]',
-            '[EventDate "2012.07.07"]',
+           ['[Event"St. Pauli Open 2012"]',
+            '[Site"Hamburg GER"]',
+            '[Date"2012.07.13"]',
+            '[Round"7.9"]',
+            '[White"Hochgraefe,M"]',
+            '[Black"Schiele,L"]',
+            '[Result"*"]',
+            '[WhiteTitle"FM"]',
+            '[WhiteElo"2345"]',
+            '[BlackElo"2089"]',
+            '[WhiteFideId"4615484"]',
+            '[BlackFideId"4693868"]',
+            '[EventDate"2012.07.07"]',
             '*'])
         ae(games[5]._text, ['*'])
         ae(games[6]._text,
-           ['[Event "ch-Commonwealth 2012"]',
-            '[Site "Chennai IND"]',
-            '[Date "2012.11.28"]',
-            '[Round "8"]',
-            '[White "Karthikeyan,P2"]',
-            '[Black "Adly,A"]',
-            '[Result "(+)-(-)"]',
-            '[WhiteTitle "IM"]',
-            '[BlackTitle "GM"]',
-            '[WhiteElo "2414"]',
-            '[BlackElo "2607"]',
-            '[WhiteFideId "5018226"]',
-            '[BlackFideId "10601619"]',
-            '[EventDate "2012.11.23"]',
+           ['[Event"ch-Commonwealth 2012"]',
+            '[Site"Chennai IND"]',
+            '[Date"2012.11.28"]',
+            '[Round"8"]',
+            '[White"Karthikeyan,P2"]',
+            '[Black"Adly,A"]',
+            '[Result"(+)-(-)"]',
+            '[WhiteTitle"IM"]',
+            '[BlackTitle"GM"]',
+            '[WhiteElo"2414"]',
+            '[BlackElo"2607"]',
+            '[WhiteFideId"5018226"]',
+            '[BlackFideId"10601619"]',
+            '[EventDate"2012.11.23"]',
             ' (',
             ' +)-(-) ',
             ' (',
             ' +)-(-)'])
         ae(games[7]._text,
-           ['[Event "Dvorkovich Mem 2013"]',
-            '[Site "Taganrog RUS"]',
-            '[Date "2013.01.17"]',
-            '[Round "3.31"]',
-            '[White "Golubov,Saveliy"]',
-            '[Black "Osipov,Ad"]',
-            '[Result "1-0 ff"]',
-            '[WhiteElo "2227"]',
-            '[BlackElo "2080"]',
-            '[ECO "B00"]',
-            '[Opening "King\'s pawn opening"]',
-            '[WhiteFideId "24176729"]',
-            '[BlackFideId "4162641"]',
-            '[EventDate "2013.01.15"]',
+           ['[Event"Dvorkovich Mem 2013"]',
+            '[Site"Taganrog RUS"]',
+            '[Date"2013.01.17"]',
+            '[Round"3.31"]',
+            '[White"Golubov,Saveliy"]',
+            '[Black"Osipov,Ad"]',
+            '[Result"1-0 ff"]',
+            '[WhiteElo"2227"]',
+            '[BlackElo"2080"]',
+            '[ECO"B00"]',
+            '[Opening"King\'s pawn opening"]',
+            '[WhiteFideId"24176729"]',
+            '[BlackFideId"4162641"]',
+            '[EventDate"2013.01.15"]',
             'e4',
             '1-0'])
         ae(games[8]._text,
-           ['[Event "Dvorkovich Mem 2013"]',
-            '[Site "Taganrog RUS"]',
-            '[Date "2013.01.21"]',
-            '[Round "7.25"]',
-            '[White "Baraeva,I"]',
-            '[Black "Isaev,Y"]',
-            '[Result "1-0 ff"]',
-            '[WhiteTitle "WF"]',
-            '[BlackTitle "FM"]',
-            '[WhiteElo "2159"]',
-            '[BlackElo "2238"]',
-            '[ECO "A40"]',
-            '[Opening "Queen\'s pawn"]',
-            '[WhiteFideId "24142565"]',
-            '[BlackFideId "4173350"]',
-            '[EventDate "2013.01.15"]',
+           ['[Event"Dvorkovich Mem 2013"]',
+            '[Site"Taganrog RUS"]',
+            '[Date"2013.01.21"]',
+            '[Round"7.25"]',
+            '[White"Baraeva,I"]',
+            '[Black"Isaev,Y"]',
+            '[Result"1-0 ff"]',
+            '[WhiteTitle"WF"]',
+            '[BlackTitle"FM"]',
+            '[WhiteElo"2159"]',
+            '[BlackElo"2238"]',
+            '[ECO"A40"]',
+            '[Opening"Queen\'s pawn"]',
+            '[WhiteFideId"24142565"]',
+            '[BlackFideId"4173350"]',
+            '[EventDate"2013.01.15"]',
             'd4',
             '1-0'])
         ae(games[9]._text,
-           ['[Event "6th Mayors Cup 2013"]',
-            '[Site "Mumbai IND"]',
-            '[Date "2013.06.05"]',
-            '[Round "10"]',
-            '[White "Swathi,G"]',
-            '[Black "Neelotpal,D"]',
-            '[Result "0-1"]',
-            '[WhiteTitle "WGM"]',
-            '[BlackTitle "GM"]',
-            '[WhiteElo "2260"]',
-            '[BlackElo "2461"]',
-            '[ECO "C55"]',
-            '[Opening "Two knights defence (Modern bishop\'s opening)"]',
-            '[WhiteFideId "5003474"]',
-            '[BlackFideId "5003512"]',
-            '[EventDate "2013.05.29"]',
+           ['[Event"6th Mayors Cup 2013"]',
+            '[Site"Mumbai IND"]',
+            '[Date"2013.06.05"]',
+            '[Round"10"]',
+            '[White"Swathi,G"]',
+            '[Black"Neelotpal,D"]',
+            '[Result"0-1"]',
+            '[WhiteTitle"WGM"]',
+            '[BlackTitle"GM"]',
+            '[WhiteElo"2260"]',
+            '[BlackElo"2461"]',
+            '[ECO"C55"]',
+            '[Opening"Two knights defence (Modern bishop\'s opening)"]',
+            '[WhiteFideId"5003474"]',
+            '[BlackFideId"5003512"]',
+            '[EventDate"2013.05.29"]',
             'e4', 'e5', 'Nf3', 'Nc6', 'Bc4', 'Nf6', 'd3', 'Be7', 'Bb3', 'O-O',
             'Nbd2', 'd6', 'c3', 'Na5', 'Bc2', 'c5', 'O-O', 'Nc6', 'Re1', 'Re8',
             'Nf1', 'h6', 'Ng3', 'Bf8', 'h3', 'Qc7', 'Nh2', 'Be6', 'Qf3', 'Nh7',
@@ -1446,8 +1446,8 @@ class _TextFormatTests:
         ae(len(games), 1)
         self.do_game_text_tests(
             games[0], 75, None, 0,
-           [r'[Event "LA CC Handicap Tour \"C\""]',
-            '[Site "Los Angeles, CA"]'])
+           [r'[Event"LA CC Handicap Tour \"C\""]',
+            '[Site"Los Angeles, CA"]'])
 
     # Incrementally adjust little_01.pgn until state is True.
     def test_034_little_01(self):
@@ -1456,9 +1456,9 @@ class _TextFormatTests:
         ae(len(games), 1)
         ae(len(games[0]._text), 68)
         ae(games[0].state, 6)
-        ae(games[0]._text[:6], ['[Event "EM/CL/Q19-2"]', '<br>',
-                                '[White "Silva, ABC (BRA)"]', '<br>',
-                                '[Black "Player, Riccardo (ITA)"]', '<br>'])
+        ae(games[0]._text[:6], ['[Event"EM/CL/Q19-2"]', '<br>',
+                                '[White"Silva, ABC (BRA)"]', '<br>',
+                                '[Black"Player, Riccardo (ITA)"]', '<br>'])
         ae(games[0]._text[6], ' (')
 
     # Incrementally adjust little_01.pgn until state is True.
@@ -1468,9 +1468,9 @@ class _TextFormatTests:
         ae(len(games), 1)
         ae(len(games[0]._text), 65)
         ae(games[0].state, 3)
-        ae(games[0]._text[:6], ['[Event "EM/CL/Q19-2"]',
-                                '[White "Silva, ABC (BRA)"]',
-                                '[Black "Player, Riccardo (ITA)"]',
+        ae(games[0]._text[:6], ['[Event"EM/CL/Q19-2"]',
+                                '[White"Silva, ABC (BRA)"]',
+                                '[Black"Player, Riccardo (ITA)"]',
                                 ' (', ' Result ', ' "1/2 '])
         ae(games[0]._text[6], ' - ')
 
@@ -2013,7 +2013,7 @@ class ExportPGN(_StrictPGN):
         text = self.read(filename)
         for g in games:
             if g.state and not g._error_list:
-                et = g.get_export_pgn_movetext()
+                et = g.get_all_movetext_in_pgn_export_format()
                 ae(et in text, True)
 
     def test_002_4ncl_96_97_01_pgn(self):
