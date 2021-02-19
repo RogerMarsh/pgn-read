@@ -28,8 +28,6 @@ The generate_fen_for_position function returns the Forsyth English Notation (FEN
 Installation Instructions
 =========================
 
-Usually this package will be installed by installing `ChessTab`_.
-
 Install the package by typing
 
    python setup.py install
@@ -53,6 +51,18 @@ You may need to give the path and version of Python depending on your system's c
 Use `Python`_ 3.3 or later.
 
 
+Tests
+=====
+
+Tests are available at the `repository`_ in the pgn_read.core.tests sub-package.
+
+Copy the tests directory and run tests by typing, for example,
+
+   python -m pgn_read.core.tests.test_squares
+
+at the command prompt with setup.py in the current directory.
+
+
 Notes
 =====
 
@@ -60,7 +70,9 @@ Project name and package name changed from 'pgn' to 'pgn-read' prior to upload t
 
 The version numbers of pgn-read continue on from pgn.
 
+The pgn_read.core.tests sub-package was removed from the distribution created by setup when the `repository`_ was created.
+
 
 .. _Python: https://python.org
 .. _PGN: http://www6.chessclub/help/PGN-spec
-.. _`ChessTab`: http://solentware.co.uk/downloads.html
+.. _repository: https://github.com/RogerMarsh/pgn-read
