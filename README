@@ -74,5 +74,5 @@ The pgn_read.core.tests sub-package was removed from the distribution created by
 
 
 .. _Python: https://python.org
-.. _PGN: http://www6.chessclub/help/PGN-spec
+.. _PGN: https://www.chessclub.com/help/PGN-spec
 .. _repository: https://github.com/RogerMarsh/pgn-read
