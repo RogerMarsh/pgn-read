@@ -65,7 +65,21 @@ TEXT_FORMAT = r'|'.join((
         r'O-O-O|O-O', r'O-O-O|O-O|0-0-0|0-0').replace(
             r'(?:=([QRBN])', r'(?:=?([QRBN])').replace(
                 r'8QRBNO', r'8QRBNO0')
-IGNORE_CASE_FORMAT = r'(?#Ignore case)(?i)' + TEXT_FORMAT.replace(r'A-Z', r'')
+
+# Fix bishop and b-pawn processing when ignoring case.
+# A more complete solution is to reverse the order of piece and pawn parts
+# of PGN_FORMAT and leave IGNORE_CASE_FORMAT alone, but that needs changes
+# to the Game class too.
+IGNORE_CASE_FORMAT = TEXT_FORMAT.replace(
+    r'QRBNO', r'QRBNOqrbno').replace(
+        r'[KQRBN]', r'[KQRBNkqrn]').replace(
+            r'[QRBN]', r'[QRBNqrbn]').replace(
+                r'[a-h][1-8]', r'[a-hA-H][1-8]').replace(
+                    r'[a-h1-8]', r'[a-hA-H1-8]').replace(
+                        r'[a-h]', r'[a-hA-H]').replace(
+                            r'(x?)', r'([xX]?)').replace(
+                                r'?:x', r'?:[xX]').replace(
+                                    r'O-O-O|O-O', r'[Oo]-[Oo]-[Oo]|[Oo]-[Oo]')
 
 # Indicies of captured groups in PGN input format for match.group.
 IFG_TAG_NAME = 1

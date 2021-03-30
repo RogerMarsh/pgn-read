@@ -3496,23 +3496,26 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
         ae(len(games), 1)
-        ae(games[0].state, 2)
+        ae(games[0].state, None)
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8',
-            ' qqg3*'])
+            'bxc8Q',
+            'Qg3',
+            '*'])
 
     def test_121_bxc8_q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
         ae(len(games), 1)
-        ae(games[0].state, 3)
+        ae(games[0].state, None)
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8=Q'])
+            'bxc8=Q',
+            'Qg3',
+            '*'])
 
     def test_122_bxc8_qx(self):
         ae = self.assertEqual
@@ -3562,8 +3565,8 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8',
-            ' qg3',
+            ' bxc8Q',
+            ' g3',
             ' *'])
 
     def test_126_bxc8(self):
@@ -3575,8 +3578,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8',
-            ' qg3',
+            ' Qg3',
             ' *'])
 
     def test_127_bxc8(self):
@@ -3614,8 +3616,8 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8',
-            ' qg3',
+            ' bxc8Q',
+            ' g3',
             ' *'])
 
     def test_130_bxc8(self):
@@ -3627,8 +3629,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8',
-            ' qg3',
+            ' Qg3',
             ' *'])
 
     def test_140_partial_tag_01(self):
@@ -3637,30 +3638,30 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(len(games), 0)
 
     # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
-    # The first 'b', in 'b4', causes an error.
+    # The first 'b', in 'b4', caused an error.
     def test_154_move_and_left_right_nested_ravs_and_star(self):
         ae = self.assertEqual
         games = self.get('b4b5Nf3((Nc3)a3(e3))*')
         ae(len(games), 1)
         ae(len(games[0]._ravstack), 1)
-        ae(len(games[0]._ravstack[-1]), 1)
-        ae(games[0]._state, 0)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
         ae(games[0]._text,
-           [' B4b5', ' Nf3', ' (', ' (', ' Nc3', ' )', ' a3',
-            ' (', ' e3', ' )', ' )', ' *'])
+           ['b4', 'b5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
+            '(', 'e3', ')', ')', '*'])
 
     # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
-    # The first 'b', in 'b4', causes an error.
+    # The first 'b', in 'b4', caused an error.
     def test_156_move_and_left_right_nested_ravs_and_star(self):
         ae = self.assertEqual
         games = self.get('b4h5Nf3((Nc3)a3(e3))*')
         ae(len(games), 1)
         ae(len(games[0]._ravstack), 1)
-        ae(len(games[0]._ravstack[-1]), 1)
-        ae(games[0]._state, 0)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
         ae(games[0]._text,
-           [' B4h5', ' Nf3', ' (', ' (', ' Nc3', ' )', ' a3',
-            ' (', ' e3', ' )', ' )', ' *'])
+           ['b4', 'h5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
+            '(', 'e3', ')', ')', '*'])
 
 
 if __name__ == '__main__':
