@@ -1371,6 +1371,113 @@ class StrictPGN(_BasePGN):
             '[FEN"4k3/8/8/8/8/8/8/RN2K1NR w KQ - 0 1"]',
             ' O-O-O', ' Ke7', ' *'])
 
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_148_move_and_left_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('Nf3((Nc3)a3(e3))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['Nf3', '(', '(', 'Nc3', ')', 'a3', '(', 'e3', ')', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_149_move_and_double_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('Nf3(((e3)Nc3)a3)*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['Nf3', '(', '(', '(', 'e3', ')', 'Nc3', ')', 'a3', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_150_move_and_triple_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('Nf3((((g3)e3)Nc3)a3)*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['Nf3', '(', '(', '(', '(', 'g3', ')', 'e3', ')', 'Nc3', ')',
+            'a3', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_151_move_and_double_left_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('Nf3(Nc3(a3(g3)))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['Nf3', '(', 'Nc3', '(', 'a3', '(', 'g3', ')', ')', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_152_move_and_triple_left_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('Nf3(Nc3(a3(g3(e3))))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['Nf3', '(', 'Nc3', '(', 'a3', '(', 'g3', '(', 'e3', ')',
+            ')', ')', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_153_move_and_left_nested_move_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('Nf3((Nc3)a3)e6(c6(d6))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['Nf3', '(', '(', 'Nc3', ')', 'a3', ')',
+            'e6', '(', 'c6', '(', 'd6', ')', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    # See version for GameIgnoreCasePGN, and test_155_* and test_156_* below
+    # which change b4 or b5 to h4 or h5.
+    def test_154_move_and_left_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('b4b5Nf3((Nc3)a3(e3))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['b4', 'b5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
+            '(', 'e3', ')', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_155_move_and_left_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('h4b5Nf3((Nc3)a3(e3))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['h4', 'b5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
+            '(', 'e3', ')', ')', '*'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    def test_156_move_and_left_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('b4h5Nf3((Nc3)a3(e3))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 4)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['b4', 'h5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
+            '(', 'e3', ')', ')', '*'])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -3528,6 +3635,32 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae = self.assertEqual
         games = self.get('[A"a')
         ae(len(games), 0)
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    # The first 'b', in 'b4', causes an error.
+    def test_154_move_and_left_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('b4b5Nf3((Nc3)a3(e3))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 1)
+        ae(games[0]._state, 0)
+        ae(games[0]._text,
+           [' B4b5', ' Nf3', ' (', ' (', ' Nc3', ' )', ' a3',
+            ' (', ' e3', ' )', ' )', ' *'])
+
+    # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
+    # The first 'b', in 'b4', causes an error.
+    def test_156_move_and_left_right_nested_ravs_and_star(self):
+        ae = self.assertEqual
+        games = self.get('b4h5Nf3((Nc3)a3(e3))*')
+        ae(len(games), 1)
+        ae(len(games[0]._ravstack), 1)
+        ae(len(games[0]._ravstack[-1]), 1)
+        ae(games[0]._state, 0)
+        ae(games[0]._text,
+           [' B4h5', ' Nf3', ' (', ' (', ' Nc3', ' )', ' a3',
+            ' (', ' e3', ' )', ' )', ' *'])
 
 
 if __name__ == '__main__':

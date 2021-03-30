@@ -1507,6 +1507,32 @@ class Game:
          ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
 
+    def _continue_current_choice(self):
+        # 'Nf3((Nc3)a3(e3))' is a valid way of expressing alternatives to Nf3.
+        # Continue with e3 as an alternative to Nf3 if the two RAVs starting
+        # before Nc3 refer to same position and there is only one move in the
+        # RAV interrupted by '(e3)'.
+        rs = self._ravstack
+        if len(rs) < 2:
+            return False
+        if rs[-1][2] is not None:
+            return False
+        rsac = rs[-1][1][1]
+        rsfmc = rs[-1][1][5]
+        if rsfmc != rs[-2][3][5]:
+            return False
+        if rsac != rs[-2][3][1]:
+            return False
+        if (self._active_color == FEN_WHITE_ACTIVE and
+            rsac == FEN_BLACK_ACTIVE and
+            int(rsfmc) + 1 == int(self._fullmove_number)):
+            return True
+        if (self._active_color == FEN_BLACK_ACTIVE and
+            rsac == FEN_WHITE_ACTIVE and
+            int(rsfmc) == int(self._fullmove_number)):
+            return True
+        return False
+
     def append_start_rav(self, match):
         """Append start recursive annotation variation token to game score and
         update board state.
@@ -1538,6 +1564,16 @@ class Game:
                 self.set_position_to_play_right_nested_rav_at_move()
             else:
                 self.set_position_to_play_first_rav_at_move()
+
+        # The 'Nf3((Nc3)a3(e3))' cases caught here fail the tests below on
+        # self._ravstack[-1][2] because it is None, but are processed in
+        # the same way.
+        elif self._continue_current_choice():
+
+            # Clear out stuff left over from previous RAV at this level.
+            del self._ravstack[-1][1:]
+
+            self.set_position_to_play_first_rav_at_move()
         elif (self._ravstack[-1][2][1] != self._active_color or
               self._ravstack[-1][2][5] != self._fullmove_number):
 
