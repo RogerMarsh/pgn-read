@@ -1478,6 +1478,46 @@ class StrictPGN(_BasePGN):
            ['b4', 'h5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
             '(', 'e3', ')', ')', '*'])
 
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # The first 'b', in 'bb5', caused an error when lower case allowed.
+    def test_157_lower_case_movetext(self):
+        ae = self.assertEqual
+        games = self.get('e4e5nf3nc6bb5a6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' nf3nc6bb5a6*'])
+
+    # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
+    # The first 'b', in 'bb4', caused an error when lower case allowed.
+    def test_158_lower_case_movetext(self):
+        ae = self.assertEqual
+        games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 4)
+        ae(games[0]._text,
+           ['e4', 'c5', 'd4', 'e6', ' nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # The first 'b', in 'bb5', caused an error when lower case allowed.
+    def test_159_lower_case_movetext_except_bishops(self):
+        ae = self.assertEqual
+        games = self.get('e4e5nf3nc6Bb5a6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' nf3nc6Bb5a6*'])
+
+    # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
+    # The first 'b', in 'bb4', caused an error when lower case allowed.
+    def test_160_lower_case_movetext_except_bishops(self):
+        ae = self.assertEqual
+        games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3Bb4Bd2nf6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 4)
+        ae(games[0]._text,
+           ['e4', 'c5', 'd4', 'e6', ' nf3cxd4nxd4a6nc3qc7g3Bb4Bd2nf6*'])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -3474,6 +3514,46 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
         games = self.get('[A"a')
         ae(len(games), 0)
 
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # The first 'b', in 'bb5', caused an error when lower case allowed.
+    def test_157_lower_case_movetext(self):
+        ae = self.assertEqual
+        games = self.get('e4e5nf3nc6bb5a6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
+    # The first 'b', in 'bb4', caused an error when lower case allowed.
+    def test_158_lower_case_movetext(self):
+        ae = self.assertEqual
+        games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 4)
+        ae(games[0]._text,
+           ['e4', 'c5', 'd4', 'e6'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # The first 'b', in 'bb5', caused an error when lower case allowed.
+    def test_159_lower_case_movetext_except_bishops(self):
+        ae = self.assertEqual
+        games = self.get('e4e5nf3nc6Bb5a6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
+    # The first 'b', in 'bb4', caused an error when lower case allowed.
+    def test_160_lower_case_movetext_except_bishops(self):
+        ae = self.assertEqual
+        games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3Bb4Bd2nf6*')
+        ae(len(games), 1)
+        ae(games[0]._state, 4)
+        ae(games[0]._text,
+           ['e4', 'c5', 'd4', 'e6'])
+
 
 class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -3662,6 +3742,48 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['b4', 'h5', 'Nf3', '(', '(', 'Nc3', ')', 'a3',
             '(', 'e3', ')', ')', '*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # The first 'b', in 'bb5', caused an error when lower case allowed.
+    def test_157_lower_case_movetext(self):
+        ae = self.assertEqual
+        games = self.get('e4e5nf3nc6bb5a6*')
+        ae(len(games), 1)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', '*'])
+
+    # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
+    # The first 'b', in 'bb4', caused an error when lower case allowed.
+    def test_158_lower_case_movetext(self):
+        ae = self.assertEqual
+        games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6*')
+        ae(len(games), 1)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['e4', 'c5', 'd4', 'e6', 'Nf3', 'cxd4', 'Nxd4', 'a6', 'Nc3',
+            'Qc7', 'g3', 'Bb4', 'Bd2', 'Nf6', '*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # 'Bb5' is accepted.
+    def test_159_lower_case_movetext_except_bishops(self):
+        ae = self.assertEqual
+        games = self.get('e4e5nf3nc6Bb5a6*')
+        ae(len(games), 1)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', '*'])
+
+    # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
+    # 'Bb4Bd2' is accepted.
+    def test_160_lower_case_movetext_except_bishops(self):
+        ae = self.assertEqual
+        games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3Bb4Bd2nf6*')
+        ae(len(games), 1)
+        ae(games[0]._state, None)
+        ae(games[0]._text,
+           ['e4', 'c5', 'd4', 'e6', 'Nf3', 'cxd4', 'Nxd4', 'a6', 'Nc3',
+            'Qc7', 'g3', 'Bb4', 'Bd2', 'Nf6', '*'])
 
 
 if __name__ == '__main__':
