@@ -2342,7 +2342,8 @@ class ExportPGN(_StrictPGN):
     def read(self, filename):
         """Return sequence of Game instances derived from file at path p."""
         p = os.path.join(os.path.dirname(__file__), 'pgn_files', filename)
-        return open(p, encoding='iso-8859-1').read()
+        with open(p, encoding='iso-8859-1') as o:
+            return o.read()
 
     def do_export_tests(self, filename):
         # The export is same as import in some cases for movetext, particularly
