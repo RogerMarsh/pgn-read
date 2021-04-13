@@ -66,20 +66,28 @@ TEXT_FORMAT = r'|'.join((
             r'(?:=([QRBN])', r'(?:=?([QRBN])').replace(
                 r'8QRBNO', r'8QRBNO0')
 
-# Fix bishop and b-pawn processing when ignoring case.
-# A more complete solution is to reverse the order of piece and pawn parts
-# of PGN_FORMAT and leave IGNORE_CASE_FORMAT alone, but that needs changes
-# to the Game class too.
+# Assume 'B' means bishop unless followed by '[1-8]', and 'b' means bishop
+# unless followed by '[1-8xX]'.  There are positions where both a bishop and
+# a pawn on the b-file can capture on a square on the 'a' and 'c' files: upper
+# or lower case is the only practical way to decide (the following moves may
+# be legal after either bishop or pawn capture).  It is almost certain a SAN
+# sequence like 'B8d5' will not be used in games to distinguish between two
+# bishops able to move to 'd5'.
+# The FIDE notation for pawn promotion is not supported when ignoring case
+# because the sequence 'bxc8q' is ambiguous, in upper or lower case, until
+# after the position has been examined.
 IGNORE_CASE_FORMAT = TEXT_FORMAT.replace(
     r'QRBNO', r'QRBNOqrbno').replace(
-        r'[KQRBN]', r'[KQRBNkqrn]').replace(
-            r'[QRBN]', r'[QRBNqrbn]').replace(
+        r'[KQRBN]', r'[KQRNkqrn]|B(?![1-8])|b(?![1-8xX])').replace(
+            r'(?:=?([QRBN])', r'(?:=([QRBN])').replace(
                 r'[a-h][1-8]', r'[a-hA-H][1-8]').replace(
                     r'[a-h1-8]', r'[a-hA-H1-8]').replace(
                         r'[a-h]', r'[a-hA-H]').replace(
                             r'(x?)', r'([xX]?)').replace(
                                 r'?:x', r'?:[xX]').replace(
-                                    r'O-O-O|O-O', r'[Oo]-[Oo]-[Oo]|[Oo]-[Oo]')
+                                    r'O-O-O|O-O',
+                                    r'[Oo]-[Oo]-[Oo]|[Oo]-[Oo]').replace(
+                                        r'[QRBN]', r'[QRBNqrbn]')
 
 # Indicies of captured groups in PGN input format for match.group.
 IFG_TAG_NAME = 1

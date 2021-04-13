@@ -1140,6 +1140,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['e4', ' e7', ' e5', ' *'])
 
+    # Compare with test_163_bxc8q.
     def test_120_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -1174,6 +1175,8 @@ class StrictPGN(_BasePGN):
             ' bxc8=q ',
             ' qg3*'])
 
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_162_dxc8q.
     def test_123_dxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -1517,6 +1520,45 @@ class StrictPGN(_BasePGN):
         ae(games[0]._state, 4)
         ae(games[0]._text,
            ['e4', 'c5', 'd4', 'e6', ' nf3cxd4nxd4a6nc3qc7g3Bb4Bd2nf6*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_129_bxc8.
+    def test_161_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' bxc8=qg3*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_123_dxc8q.
+    def test_162_dxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' dxc8=qqg3*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_120_bxc8q.
+    def test_163_bxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' bxc8=qqg3*'])
 
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
@@ -3554,6 +3596,42 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['e4', 'c5', 'd4', 'e6'])
 
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_129_bxc8.
+    def test_161_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_123_dxc8q.
+    def test_162_dxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_120_bxc8q.
+    def test_163_bxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
 
 class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -3571,18 +3649,17 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
 
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_163_bxc8q.
     def test_120_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
         ae(len(games), 1)
-        ae(games[0].state, None)
+        ae(games[0].state, 2)
         ae(games[0]._text,
            ['[SetUp"1"]',
-            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'bxc8Q',
-            'Qg3',
-            '*'])
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     def test_121_bxc8_q(self):
         ae = self.assertEqual
@@ -3610,18 +3687,17 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_162_dxc8q.
     def test_123_dxc8q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8qqg3*')
         ae(len(games), 1)
-        ae(games[0].state, None)
+        ae(games[0].state, 2)
         ae(games[0]._text,
            ['[SetUp"1"]',
-            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'dxc8Q',
-            'Qg3',
-            '*'])
+            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     def test_124_dxc8q(self):
         ae = self.assertEqual
@@ -3636,6 +3712,8 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_128_bxc8 (and test_129_bxc8).
     def test_125_bxc8(self):
         ae = self.assertEqual
         games = self.get(
@@ -3644,10 +3722,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0].state, 2)
         ae(games[0]._text,
            ['[SetUp"1"]',
-            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8Q',
-            ' g3',
-            ' *'])
+            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     def test_126_bxc8(self):
         ae = self.assertEqual
@@ -3687,6 +3762,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
+    # Compare with test_161_bxc8.
     def test_129_bxc8(self):
         ae = self.assertEqual
         games = self.get(
@@ -3695,10 +3771,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0].state, 2)
         ae(games[0]._text,
            ['[SetUp"1"]',
-            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' bxc8Q',
-            ' g3',
-            ' *'])
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     def test_130_bxc8(self):
         ae = self.assertEqual
@@ -3744,7 +3817,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             '(', 'e3', ')', ')', '*'])
 
     # Added while fixing 'e4e5nf3nc6bb5a6' problem.
-    # The first 'b', in 'bb5', caused an error when lower case allowed.
+    # 'bb5' is accepted.
     def test_157_lower_case_movetext(self):
         ae = self.assertEqual
         games = self.get('e4e5nf3nc6bb5a6*')
@@ -3754,7 +3827,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
            ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', '*'])
 
     # Added while fixing 'e4e5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6' problem.
-    # The first 'b', in 'bb4', caused an error when lower case allowed.
+    # 'bb4' and 'bd2' are accepted.
     def test_158_lower_case_movetext(self):
         ae = self.assertEqual
         games = self.get('e4c5d4e6nf3cxd4nxd4a6nc3qc7g3bb4bd2nf6*')
@@ -3784,6 +3857,51 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['e4', 'c5', 'd4', 'e6', 'Nf3', 'cxd4', 'Nxd4', 'a6', 'Nc3',
             'Qc7', 'g3', 'Bb4', 'Bd2', 'Nf6', '*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_129_bxc8.
+    def test_161_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' bxc8=Q',
+            ' g3',
+            ' *'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_123_dxc8q.
+    def test_162_dxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'dxc8=Q',
+            'Qg3',
+            '*'])
+
+    # Added while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_120_bxc8q.
+    def test_163_bxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'bxc8=Q',
+            'Qg3',
+            '*'])
 
 
 if __name__ == '__main__':
