@@ -87,7 +87,8 @@ IGNORE_CASE_FORMAT = TEXT_FORMAT.replace(
                                 r'?:x', r'?:[xX]').replace(
                                     r'O-O-O|O-O',
                                     r'[Oo]-[Oo]-[Oo]|[Oo]-[Oo]').replace(
-                                        r'[QRBN]', r'[QRBNqrbn]')
+                                        r'[QRBN]', r'[QRBNqrbn]').replace(
+                                            r'-|x', r'-|[xX]')
 
 # Indicies of captured groups in PGN input format for match.group.
 IFG_TAG_NAME = 1

@@ -1591,7 +1591,7 @@ class StrictPGNExtendByOneCharacter(StrictPGN):
 class StrictFEN(_BasePGN):
     """FEN and SetUp tag tests only.  StrictPGN tests are not done."""
 
-    def test_001_null_fen_illegal_game(self):
+    def test_401_null_fen_illegal_game(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN""]')
         ae(len(games), 1)
@@ -1600,7 +1600,7 @@ class StrictFEN(_BasePGN):
         ae(g._text, ['[SetUp"1"]', '[FEN""]'])
         ae(g._pieces_on_board, {})
 
-    def test_002_null_fen(self):
+    def test_402_null_fen(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN""]*')
         ae(len(games), 1)
@@ -1614,7 +1614,7 @@ class StrictFEN(_BasePGN):
                   'eP', 'ep', 'fP', 'fp', 'gP', 'gp', 'hP', 'hp'):
             ae(g._pieces_on_board[p], [])
 
-    def test_003_fen_all_unknown(self):
+    def test_403_fen_all_unknown(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"? ? ? ? ? ?"]')
         ae(len(games), 1)
@@ -1622,7 +1622,7 @@ class StrictFEN(_BasePGN):
         ae(g.state, 2)
         ae(g._text, ['[SetUp"1"]', '[FEN"? ? ? ? ? ?"]'])
 
-    def test_004_fen_illegal_piece_placement(self):
+    def test_404_fen_illegal_piece_placement(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"? w - - 0 1"]')
         ae(len(games), 1)
@@ -1630,7 +1630,7 @@ class StrictFEN(_BasePGN):
         ae(g.state, 2)
         ae(g._text, ['[SetUp"1"]', '[FEN"? w - - 0 1"]'])
 
-    def test_005_fen_empty_board(self):
+    def test_405_fen_empty_board(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"8/8/8/8/8/8/8/8 w - - 0 1"]')
         ae(len(games), 1)
@@ -1638,7 +1638,7 @@ class StrictFEN(_BasePGN):
         ae(g.state, 2)
         ae(g._text, ['[SetUp"1"]', '[FEN"8/8/8/8/8/8/8/8 w - - 0 1"]'])
 
-    def test_006_fen_two_kings(self):
+    def test_406_fen_two_kings(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"k7/8/8/8/8/8/8/7K w - - 0 1"]')
         ae(len(games), 1)
@@ -1646,7 +1646,7 @@ class StrictFEN(_BasePGN):
         ae(g.state, 2)
         ae(g._text, ['[SetUp"1"]', '[FEN"k7/8/8/8/8/8/8/7K w - - 0 1"]'])
 
-    def test_007_fen_two_kings_and_move(self):
+    def test_407_fen_two_kings_and_move(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"k7/8/8/8/8/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
@@ -1657,104 +1657,104 @@ class StrictFEN(_BasePGN):
         ae({k: str(v) for k, v in g._piece_placement_data.items()},
            {'a8': 'ka8', 'h2': 'Kh2'})
 
-    def test_008_fen_too_many_kings(self):
+    def test_408_fen_too_many_kings(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"k7/8/8/8/7K/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_009_fen_too_many_pawns(self):
+    def test_409_fen_too_many_pawns(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pppppppp/8/8/7p/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_010_fen_maximum_black_pawns(self):
+    def test_410_fen_maximum_black_pawns(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pppppppp/8/8/7P/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_011_fen_black_pawn_on_rank_1(self):
+    def test_411_fen_black_pawn_on_rank_1(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/ppppppp1/8/8/7P/8/8/6pK w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_012_fen_black_pawn_on_rank_8(self):
+    def test_412_fen_black_pawn_on_rank_8(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k6p/ppppppp1/8/8/7P/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_013_fen_white_pawn_on_rank_1(self):
+    def test_413_fen_white_pawn_on_rank_1(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/ppppppp1/8/8/7P/8/8/6PK w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_014_fen_white_pawn_on_rank_8(self):
+    def test_414_fen_white_pawn_on_rank_8(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k6P/ppppppp1/8/8/7P/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_015_fen_too_few_squares_middle_rank(self):
+    def test_415_fen_too_few_squares_middle_rank(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pppppppp/8/8/7P/7/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_016_fen_too_few_squares_first_rank(self):
+    def test_416_fen_too_few_squares_first_rank(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pppppppp/8/7P/8/8/8/6K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_017_fen_ep_no_pawns_in_place(self):
+    def test_417_fen_ep_no_pawns_in_place(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pppppppp/8/7P/8/8/8/7K w - c6 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_018_fen_ep_no_pawns_to_capture(self):
+    def test_418_fen_ep_no_pawns_to_capture(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pppppppp/8/1P5P/8/8/8/7K w - c6 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_019_fen_ep_allowed(self):
+    def test_419_fen_ep_allowed(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pp1ppppp/8/1Pp4P/8/8/8/7K w - c6 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_020_fen_ep_target_square_occupied(self):
+    def test_420_fen_ep_target_square_occupied(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"k7/pp2pppp/2p5/1Pp4P/8/8/8/7K w - c6 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_021_fen_too_many_black_pieces(self):
+    def test_421_fen_too_many_black_pieces(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"rnbqkbnr/pppppppp/n7/1P5P/8/8/8/7K w - - 0 1"]Kh2*')
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_022_fen_too_many_white_pieces(self):
+    def test_422_fen_too_many_white_pieces(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1763,7 +1763,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_023_fen_white_O_O_option(self):
+    def test_423_fen_white_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1772,7 +1772,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_024_fen_white_O_O_option(self):
+    def test_424_fen_white_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1781,7 +1781,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_025_fen_white_O_O_O_option(self):
+    def test_425_fen_white_O_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1790,7 +1790,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_026_fen_white_O_O_O_option(self):
+    def test_426_fen_white_O_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1799,7 +1799,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_027_fen_black_O_O_option(self):
+    def test_427_fen_black_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1808,7 +1808,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_028_fen_black_O_O_option(self):
+    def test_428_fen_black_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1817,7 +1817,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_029_fen_black_O_O_O_option(self):
+    def test_429_fen_black_O_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1826,7 +1826,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_030_fen_black_O_O_O_option(self):
+    def test_430_fen_black_O_O_O_option(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1835,7 +1835,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_031_fen_inactive_color_not_in_check(self):
+    def test_431_fen_inactive_color_not_in_check(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1844,7 +1844,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, None)
 
-    def test_032_fen_inactive_color_in_check(self):
+    def test_432_fen_inactive_color_in_check(self):
         ae = self.assertEqual
         games = self.get(
             ''.join(
@@ -1853,7 +1853,7 @@ class StrictFEN(_BasePGN):
         ae(len(games), 1)
         ae(games[0].state, 2)
 
-    def test_033_fen_adjacent_kings_and_move(self):
+    def test_433_fen_adjacent_kings_and_move(self):
         ae = self.assertEqual
         games = self.get('[SetUp"1"][FEN"8/8/8/4kK2/8/8/8/ w - - 0 1"]Kg5*')
         ae(len(games), 1)
@@ -1870,819 +1870,819 @@ class StrictDisambiguate(_BasePGN):
     when only one rook can legally move to c7 (from rank 7 or file c).
 
     """
-    def test_001_disambiguate_move_needed(self):
+    def test_501_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"7q/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qbb8*')
         self.assertEqual(games[0].state, None)
 
-    def test_002_disambiguate_move_needed(self):
+    def test_502_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"7q/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qhb8*')
         self.assertEqual(games[0].state, None)
 
-    def test_003_disambiguate_move_needed(self):
+    def test_503_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"5q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6d8Kh3*')
         self.assertEqual(games[0].state, None)
 
-    def test_004_disambiguate_move_needed(self):
+    def test_504_disambiguate_move_needed(self):
         games = self.get(
             ''.join(
                 ('[SetUp"1"]'
                  '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6xd8Kh3*')))
         self.assertEqual(games[0].state, None)
 
-    def test_006_disambiguate_move_needed(self):
+    def test_506_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_007_disambiguate_move_needed(self):
+    def test_507_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_008_disambiguate_move_needed(self):
+    def test_508_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, None)
 
-    def test_009_disambiguate_move_needed(self):
+    def test_509_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_010_disambiguate_move_needed(self):
+    def test_510_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_011_disambiguate_move_needed(self):
+    def test_511_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_012_disambiguate_move_needed(self):
+    def test_512_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_013_disambiguate_move_needed(self):
+    def test_513_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_014_disambiguate_move_and_rank_pin_one(self):
+    def test_514_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_015_disambiguate_move_and_rank_pin_one(self):
+    def test_515_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_016_disambiguate_move_and_rank_pin_one(self):
+    def test_516_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, None)
 
-    def test_017_disambiguate_move_and_rank_pin_one(self):
+    def test_517_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_018_disambiguate_move_and_rank_pin_one(self):
+    def test_518_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_019_disambiguate_move_and_rank_pin_one(self):
+    def test_519_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_020_disambiguate_move_and_rank_pin_one(self):
+    def test_520_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_021_disambiguate_move_and_rank_pin_one(self):
+    def test_521_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_022_disambiguate_move_and_rank_pin_two(self):
+    def test_522_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_023_disambiguate_move_and_rank_pin_two(self):
+    def test_523_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_024_disambiguate_move_and_rank_pin_two(self):
+    def test_524_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_025_disambiguate_move_and_rank_pin_two(self):
+    def test_525_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_026_disambiguate_move_and_rank_pin_two(self):
+    def test_526_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_027_disambiguate_move_and_rank_pin_two(self):
+    def test_527_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_028_disambiguate_move_and_rank_pin_two(self):
+    def test_528_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_029_disambiguate_move_and_rank_pin_two(self):
+    def test_529_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_030_disambiguate_move_and_rank_both_pins(self):
+    def test_530_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_031_disambiguate_move_and_rank_both_pins(self):
+    def test_531_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_032_disambiguate_move_and_rank_both_pins(self):
+    def test_532_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_033_disambiguate_move_and_rank_both_pins(self):
+    def test_533_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_034_disambiguate_move_and_rank_both_pins(self):
+    def test_534_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_035_disambiguate_move_and_rank_both_pins(self):
+    def test_535_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_036_disambiguate_move_and_rank_both_pins(self):
+    def test_536_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_037_disambiguate_move_and_rank_both_pins(self):
+    def test_537_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_038_disambiguate_move_and_file_pin_one(self):
+    def test_538_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_039_disambiguate_move_and_file_pin_one(self):
+    def test_539_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_040_disambiguate_move_and_file_pin_one(self):
+    def test_540_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, None)
 
-    def test_041_disambiguate_move_and_file_pin_one(self):
+    def test_541_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_042_disambiguate_move_and_file_pin_one(self):
+    def test_542_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_043_disambiguate_move_and_file_pin_one(self):
+    def test_543_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_044_disambiguate_move_and_file_pin_one(self):
+    def test_544_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_045_disambiguate_move_and_file_pin_one(self):
+    def test_545_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_046_disambiguate_move_and_file_pin_two(self):
+    def test_546_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_047_disambiguate_move_and_file_pin_two(self):
+    def test_547_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_048_disambiguate_move_and_file_pin_two(self):
+    def test_548_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_049_disambiguate_move_and_file_pin_two(self):
+    def test_549_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_050_disambiguate_move_and_file_pin_two(self):
+    def test_550_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_051_disambiguate_move_and_file_pin_two(self):
+    def test_551_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_052_disambiguate_move_and_file_pin_two(self):
+    def test_552_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_053_disambiguate_move_and_file_pin_two(self):
+    def test_553_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, None)
 
-    def test_054_disambiguate_move_and_file_both_pins(self):
+    def test_554_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_055_disambiguate_move_and_file_both_pins(self):
+    def test_555_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_056_disambiguate_move_and_file_both_pins(self):
+    def test_556_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_057_disambiguate_move_and_file_both_pins(self):
+    def test_557_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_058_disambiguate_move_and_file_both_pins(self):
+    def test_558_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_059_disambiguate_move_and_file_both_pins(self):
+    def test_559_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_060_disambiguate_move_and_file_both_pins(self):
+    def test_560_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_061_disambiguate_move_and_file_both_pins(self):
+    def test_561_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_062_disambiguate_move_and_diagonal_pin_one(self):
+    def test_562_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_063_disambiguate_move_and_diagonal_pin_one(self):
+    def test_563_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_064_disambiguate_move_and_diagonal_pin_one(self):
+    def test_564_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_065_disambiguate_move_and_diagonal_pin_one(self):
+    def test_565_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_066_disambiguate_move_and_diagonal_pin_one(self):
+    def test_566_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_067_disambiguate_move_and_diagonal_pin_one(self):
+    def test_567_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_068_disambiguate_move_and_diagonal_pin_one(self):
+    def test_568_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_069_disambiguate_move_and_diagonal_pin_one(self):
+    def test_569_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_070_disambiguate_move_and_diagonal_pin_two(self):
+    def test_570_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_071_disambiguate_move_and_diagonal_pin_two(self):
+    def test_571_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_072_disambiguate_move_and_diagonal_pin_two(self):
+    def test_572_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_073_disambiguate_move_and_diagonal_pin_two(self):
+    def test_573_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_074_disambiguate_move_and_diagonal_pin_two(self):
+    def test_574_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_075_disambiguate_move_and_diagonal_pin_two(self):
+    def test_575_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, None)
 
-    def test_076_disambiguate_move_and_diagonal_pin_two(self):
+    def test_576_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_077_disambiguate_move_and_diagonal_pin_two(self):
+    def test_577_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_078_disambiguate_move_and_diagonal_both_pins(self):
+    def test_578_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_079_disambiguate_move_and_diagonal_both_pins(self):
+    def test_579_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_080_disambiguate_move_and_diagonal_both_pins(self):
+    def test_580_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_081_disambiguate_move_and_diagonal_both_pins(self):
+    def test_581_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_082_disambiguate_move_and_diagonal_both_pins(self):
+    def test_582_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qbe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_083_disambiguate_move_and_diagonal_both_pins(self):
+    def test_583_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qee3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_084_disambiguate_move_and_diagonal_both_pins(self):
+    def test_584_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Q6e3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_085_disambiguate_move_and_diagonal_both_pins(self):
+    def test_585_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Q3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_108_disambiguate_capture_needed(self):
+    def test_608_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_109_disambiguate_capture_needed(self):
+    def test_609_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_110_disambiguate_capture_needed(self):
+    def test_610_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_111_disambiguate_capture_needed(self):
+    def test_611_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_112_disambiguate_capture_needed(self):
+    def test_612_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_113_disambiguate_capture_needed(self):
+    def test_613_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_114_disambiguate_capture_and_rank_pin_one(self):
+    def test_614_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_115_disambiguate_capture_and_rank_pin_one(self):
+    def test_615_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_116_disambiguate_capture_and_rank_pin_one(self):
+    def test_616_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_117_disambiguate_capture_and_rank_pin_one(self):
+    def test_617_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_118_disambiguate_capture_and_rank_pin_one(self):
+    def test_618_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_119_disambiguate_capture_and_rank_pin_one(self):
+    def test_619_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_120_disambiguate_capture_and_rank_pin_one(self):
+    def test_620_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_121_disambiguate_capture_and_rank_pin_one(self):
+    def test_621_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_122_disambiguate_capture_and_rank_pin_two(self):
+    def test_622_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_123_disambiguate_capture_and_rank_pin_two(self):
+    def test_623_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_124_disambiguate_capture_and_rank_pin_two(self):
+    def test_624_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_125_disambiguate_capture_and_rank_pin_two(self):
+    def test_625_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_126_disambiguate_capture_and_rank_pin_two(self):
+    def test_626_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_127_disambiguate_capture_and_rank_pin_two(self):
+    def test_627_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_128_disambiguate_capture_and_rank_pin_two(self):
+    def test_628_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_129_disambiguate_capture_and_rank_pin_two(self):
+    def test_629_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_130_disambiguate_capture_and_rank_both_pins(self):
+    def test_630_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_131_disambiguate_capture_and_rank_both_pins(self):
+    def test_631_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_132_disambiguate_capture_and_rank_both_pins(self):
+    def test_632_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_133_disambiguate_capture_and_rank_both_pins(self):
+    def test_633_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_134_disambiguate_capture_and_rank_both_pins(self):
+    def test_634_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_135_disambiguate_capture_and_rank_both_pins(self):
+    def test_635_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_136_disambiguate_capture_and_rank_both_pins(self):
+    def test_636_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_137_disambiguate_capture_and_rank_both_pins(self):
+    def test_637_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_138_disambiguate_capture_and_file_pin_one(self):
+    def test_638_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_139_disambiguate_capture_and_file_pin_one(self):
+    def test_639_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_140_disambiguate_capture_and_file_pin_one(self):
+    def test_640_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_141_disambiguate_capture_and_file_pin_one(self):
+    def test_641_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_142_disambiguate_capture_and_file_pin_one(self):
+    def test_642_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_143_disambiguate_capture_and_file_pin_one(self):
+    def test_643_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_144_disambiguate_capture_and_file_pin_one(self):
+    def test_644_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_145_disambiguate_capture_and_file_pin_one(self):
+    def test_645_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_146_disambiguate_capture_and_file_pin_two(self):
+    def test_646_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_147_disambiguate_capture_and_file_pin_two(self):
+    def test_647_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_148_disambiguate_capture_and_file_pin_two(self):
+    def test_648_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_149_disambiguate_capture_and_file_pin_two(self):
+    def test_649_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_150_disambiguate_capture_and_file_pin_two(self):
+    def test_650_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_151_disambiguate_capture_and_file_pin_two(self):
+    def test_651_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_152_disambiguate_capture_and_file_pin_two(self):
+    def test_652_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_153_disambiguate_capture_and_file_pin_two(self):
+    def test_653_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_154_disambiguate_capture_and_file_both_pins(self):
+    def test_654_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_155_disambiguate_capture_and_file_both_pins(self):
+    def test_655_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_156_disambiguate_capture_and_file_both_pins(self):
+    def test_656_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_157_disambiguate_capture_and_file_both_pins(self):
+    def test_657_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_158_disambiguate_capture_and_file_both_pins(self):
+    def test_658_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_159_disambiguate_capture_and_file_both_pins(self):
+    def test_659_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_160_disambiguate_capture_and_file_both_pins(self):
+    def test_660_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_161_disambiguate_capture_and_file_both_pins(self):
+    def test_661_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_162_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_662_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_163_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_663_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_164_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_664_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_165_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_665_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_166_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_666_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_167_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_667_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_168_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_668_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_169_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_669_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_170_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_670_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_171_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_671_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_172_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_672_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_173_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_673_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_174_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_674_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_175_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_675_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_176_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_676_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_177_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_677_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_178_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_678_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_179_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_679_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_180_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_680_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_181_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_681_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_182_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_682_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qbxe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_183_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_683_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qexe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_184_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_684_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Q6xe3*')
         self.assertEqual(games[0].state, 2 if games[0]._strict_pgn else None)
 
-    def test_185_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_685_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Q3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_186_FIDE_longest_possible_game_move_1461_by_white(self):
+    def test_686_FIDE_longest_possible_game_move_1461_by_white(self):
         games = self.get(''.join(
             ('[SetUp"1"]',
              '[FEN"2r3kq/Q1pnnpq1/3pp1pp/1q1bb3/3B4/2Q1NNP1/2PPPPBP/R1QK4 ',
@@ -2690,82 +2690,82 @@ class StrictDisambiguate(_BasePGN):
              'Q1a3*')))
         self.assertEqual(games[0].state, None)
 
-    def test_206_disambiguate_move_needed(self):
+    def test_706_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_207_disambiguate_move_needed(self):
+    def test_707_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]R3e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_208_disambiguate_move_needed(self):
+    def test_708_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Ree3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_209_disambiguate_move_needed(self):
+    def test_709_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Rbe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_210_disambiguate_move_needed(self):
+    def test_710_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]R6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_211_disambiguate_move_needed(self):
+    def test_711_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re1e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_212_disambiguate_move_needed(self):
+    def test_712_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re6e3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_213_disambiguate_move_needed(self):
+    def test_713_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]R6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_306_disambiguate_move_needed(self):
+    def test_806_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Rxe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_307_disambiguate_move_needed(self):
+    def test_807_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R3xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_308_disambiguate_move_needed(self):
+    def test_808_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Rexe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_309_disambiguate_move_needed(self):
+    def test_809_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Rbxe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_310_disambiguate_move_needed(self):
+    def test_810_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_311_disambiguate_move_needed(self):
+    def test_811_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re1xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_312_disambiguate_move_needed(self):
+    def test_812_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re6xe3*')
         self.assertEqual(games[0].state, 2)
 
-    def test_313_disambiguate_move_needed(self):
+    def test_813_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6xe3*')
         self.assertEqual(games[0].state, None)
@@ -2786,114 +2786,114 @@ class StrictRAV(_BasePGN):
                 g._fullmove_number),
             fen)
 
-    def test_001_rav_after_piece_move(self):
+    def test_451_rav_after_piece_move(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6NK/8/8/8 b - - 0 1"]Kh7Nf6(Ne5)*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/7k/5N1p/8/7K/8/8/8 b - - 2 2")
 
-    def test_001_01_rav_after_piece_move(self):
+    def test_451_01_rav_after_piece_move(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6NK/8/8/8 b - - 0 1"]Kh7Nf6(Ne5)Kg6*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/8/5Nkp/8/7K/8/8/8 w - - 3 3")
 
-    def test_002_rav_after_piece_capture(self):
+    def test_452_rav_after_piece_capture(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6NK/8/8/8 b - - 0 1"]Kh7Nxh6(Ne5)*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/7k/7N/8/7K/8/8/8 b - - 0 2")
 
-    def test_002_01_rav_after_piece_capture(self):
+    def test_452_01_rav_after_piece_capture(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6NK/8/8/8 b - - 0 1"]Kh7Nxh6(Ne5)Kg6*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/8/6kN/8/7K/8/8/8 w - - 1 3")
 
-    def test_002_02_rav_after_piece_capture(self):
+    def test_452_02_rav_after_piece_capture(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6NK/8/8/8 b - - 0 1"]Kh7Nxh6(Ne5)Kxh6*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/8/7k/8/7K/8/8/8 w - - 0 3")
 
-    def test_003_rav_after_pawn_move(self):
+    def test_453_rav_after_pawn_move(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6PK/8/8/8 b - - 0 1"]Kh7g5(Kh5)*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/7k/7p/6P1/7K/8/8/8 b - - 0 2")
 
-    def test_003_01_rav_after_pawn_move(self):
+    def test_453_01_rav_after_pawn_move(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/8/6PK/8/8/8 b - - 0 1"]Kh7g5(Kh5)Kg6*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/8/6kp/6P1/7K/8/8/8 w - - 1 3")
 
-    def test_004_rav_after_pawn_capture(self):
+    def test_454_rav_after_pawn_capture(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/8/7p/6P1/7K/8/8/8 b - - 0 1"]Kh7gxh6(Kh5)*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/7k/7P/8/7K/8/8/8 b - - 0 2")
 
-    def test_004_01_rav_after_pawn_capture(self):
+    def test_454_01_rav_after_pawn_capture(self):
         games = self.get(''.join((
             '[SetUp"1"][FEN"6k1/8/7p/6P1/7K/8/8/8 b - - 0 1"]',
             'Kh7gxh6(Kh5)Kg6*')))
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/8/6kP/8/7K/8/8/8 w - - 1 3")
 
-    def test_004_02_rav_after_pawn_capture(self):
+    def test_454_02_rav_after_pawn_capture(self):
         games = self.get(''.join((
             '[SetUp"1"][FEN"6k1/8/7p/6P1/7K/8/8/8 b - - 0 1"]',
             'Kh7gxh6(Kh5)Kxh6*')))
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/8/7k/8/7K/8/8/8 w - - 0 3")
 
-    def test_005_rav_after_pawn_promote(self):
+    def test_455_rav_after_pawn_promote(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/6P1/7p/8/7K/8/8/8 b - - 0 1"]Kh7g8=B(Kh5)*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "6B1/7k/7p/8/7K/8/8/8 b - - 0 2")
 
-    def test_005_01_rav_after_pawn_promote(self):
+    def test_455_01_rav_after_pawn_promote(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/6P1/7p/8/7K/8/8/8 b - - 0 1"]Kh7g8=B(Kh5)Kg6*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "6B1/8/6kp/8/7K/8/8/8 w - - 1 3")
 
-    def test_005_02_rav_after_pawn_promote(self):
+    def test_455_02_rav_after_pawn_promote(self):
         games = self.get(
             '[SetUp"1"][FEN"6k1/6P1/7p/8/7K/8/8/8 b - - 0 1"]Kh7g8=B(Kh5)Kxg8*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "6k1/8/7p/8/7K/8/8/8 w - - 0 3")
 
-    def test_006_rav_after_pawn_promote_capture(self):
+    def test_456_rav_after_pawn_promote_capture(self):
         games = self.get(
             '[SetUp"1"][FEN"6kn/6P1/7p/8/7K/8/8/8 b - - 0 1"]Kh7gxh8=B(Kh5)*')
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "7B/7k/7p/8/7K/8/8/8 b - - 0 2")
 
-    def test_006_01_rav_after_pawn_promote_capture(self):
+    def test_456_01_rav_after_pawn_promote_capture(self):
         games = self.get(''.join((
             '[SetUp"1"][FEN"6kn/6P1/7p/8/7K/8/8/8 b - - 0 1"]',
             'Kh7gxh8=B(Kh5)Kg6*')))
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "7B/8/6kp/8/7K/8/8/8 w - - 1 3")
 
-    def test_006_02_rav_after_pawn_promote_capture(self):
+    def test_456_02_rav_after_pawn_promote_capture(self):
         games = self.get(''.join((
             '[SetUp"1"][FEN"6kn/6P1/7p/8/7K/8/8/8 b - - 0 1"]',
             'Kh7gxh8=B(Kh5)Kxh8*')))
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "7k/8/7p/8/7K/8/8/8 w - - 0 3")
 
-    def test_007_rav_extract_from_4ncl(self):
+    def test_457_rav_extract_from_4ncl(self):
         games = self.get(''.join((
             '[SetUp"1"][FEN"8/p7/6p1/2K3P1/2P2k2/8/8/8 w - - 0 70"]',
             'Kc6(Kb5Ke4Kc6)(Kd4Kxg5)*')))
         self.assertEqual(games[0].state, None)
         self.fen_position(games[0], "8/p7/2K3p1/6P1/2P2k2/8/8/8 b - - 1 70")
 
-    def test_008_rav_extract_from_calgames_02(self):
+    def test_458_rav_extract_from_calgames_02(self):
         games = self.get(''.join((
             '[SetUp"1"]',
             '[FEN"r2b1rk1/ppp2p1n/7Q/4pb2/2B1N3/5N2/PPP2PPP/2K5 w - - 2 17"]',
@@ -3347,192 +3347,192 @@ class Disambiguate(StrictDisambiguate):
     def setUp(self):
         self.pgn = parser.PGN()
 
-    def test_012_disambiguate_move_needed(self):
+    def test_512_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_013_disambiguate_move_needed(self):
+    def test_513_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_018_disambiguate_move_and_rank_pin_one(self):
+    def test_518_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_019_disambiguate_move_and_rank_pin_one(self):
+    def test_519_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_027_disambiguate_move_and_rank_pin_two(self):
+    def test_527_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_029_disambiguate_move_and_rank_pin_two(self):
+    def test_529_disambiguate_move_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_034_disambiguate_move_and_rank_both_pins(self):
+    def test_534_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_044_disambiguate_move_and_file_pin_one(self):
+    def test_544_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_045_disambiguate_move_and_file_pin_one(self):
+    def test_545_disambiguate_move_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_047_disambiguate_move_and_file_pin_two(self):
+    def test_547_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_048_disambiguate_move_and_file_pin_two(self):
+    def test_548_disambiguate_move_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_056_disambiguate_move_and_file_both_pins(self):
+    def test_556_disambiguate_move_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_063_disambiguate_move_and_diagonal_pin_one(self):
+    def test_563_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_065_disambiguate_move_and_diagonal_pin_one(self):
+    def test_565_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qb3e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_071_disambiguate_move_and_diagonal_pin_two(self):
+    def test_571_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_072_disambiguate_move_and_diagonal_pin_two(self):
+    def test_572_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_079_disambiguate_move_and_diagonal_both_pins(self):
+    def test_579_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_112_disambiguate_capture_needed(self):
+    def test_612_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_113_disambiguate_capture_needed(self):
+    def test_613_disambiguate_capture_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_118_disambiguate_capture_and_rank_pin_one(self):
+    def test_618_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_119_disambiguate_capture_and_rank_pin_one(self):
+    def test_619_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_127_disambiguate_capture_and_rank_pin_two(self):
+    def test_627_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_129_disambiguate_capture_and_rank_pin_two(self):
+    def test_629_disambiguate_capture_and_rank_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_134_disambiguate_capture_and_rank_both_pins(self):
+    def test_634_disambiguate_capture_and_rank_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_144_disambiguate_capture_and_file_pin_one(self):
+    def test_644_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_145_disambiguate_capture_and_file_pin_one(self):
+    def test_645_disambiguate_capture_and_file_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_147_disambiguate_capture_and_file_pin_two(self):
+    def test_647_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_148_disambiguate_capture_and_file_pin_two(self):
+    def test_648_disambiguate_capture_and_file_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_156_disambiguate_capture_and_file_both_pins(self):
+    def test_656_disambiguate_capture_and_file_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q2N3/1R4K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_163_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_663_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_165_disambiguate_capture_and_diagonal_pin_one(self):
+    def test_665_disambiguate_capture_and_diagonal_pin_one(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/6K1/8 b - - 0 1"]Qb3xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_171_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_671_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_172_disambiguate_capture_and_diagonal_pin_two(self):
+    def test_672_disambiguate_capture_and_diagonal_pin_two(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qe6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_179_disambiguate_capture_and_diagonal_both_pins(self):
+    def test_679_disambiguate_capture_and_diagonal_both_pins(self):
         games = self.get(
             '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q2N3/B5K1/8 b - - 0 1"]Qb6xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_211_disambiguate_move_needed(self):
+    def test_711_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re1e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_212_disambiguate_move_needed(self):
+    def test_712_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re6e3*')
         self.assertEqual(games[0].state, None)
 
-    def test_311_disambiguate_move_needed(self):
+    def test_811_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re1xe3*')
         self.assertEqual(games[0].state, None)
 
-    def test_312_disambiguate_move_needed(self):
+    def test_812_disambiguate_move_needed(self):
         games = self.get(
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re6xe3*')
         self.assertEqual(games[0].state, None)

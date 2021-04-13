@@ -2405,61 +2405,61 @@ class _IgnoreCasePGNUpper:
         self.do_standard_tests('calgames_07.pgn', None, None, [], [], 75)
 
     def test_034_little_01(self):
-        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 77)
+        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 68)
 
     def test_035_little_02(self):
-        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 74)
+        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 65)
 
     def test_036_little_03(self):
-        self.do_standard_tests('Little_03.pgn', None, 5, [5], [' d2'], 68)
+        self.do_standard_tests('Little_03.pgn', None, 5, [5], [' d2'], 59)
 
     def test_037_little_04(self):
         self.do_standard_tests(
-            'Little_04.pgn', None, (5, 3), ([5], []), ([' d2'], []), [161, 3])
+            'Little_04.pgn', None, (5, 3), ([5], []), ([' d2'], []), [167, 3])
 
     def test_038_little_05(self):
         self.do_standard_tests(
-            'Little_05.pgn', None, (5, 3), ([5], []), ([' d2'], []), [161, 3])
+            'Little_05.pgn', None, (5, 3), ([5], []), ([' d2'], []), [167, 3])
 
     def test_039_little_06(self):
         self.do_standard_tests(
-            'Little_06.pgn', None, (5, 3), ([5], []), ([' d2'], []), [162, 3])
+            'Little_06.pgn', None, (5, 3), ([5], []), ([' d2'], []), [168, 3])
 
     def test_040_little_07(self):
         self.do_standard_tests(
-            'Little_07.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [165, 3])
+            'Little_07.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [171, 3])
 
     def test_041_little_08(self):
         self.do_standard_tests(
-            'Little_08.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [165, 3])
+            'Little_08.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [171, 3])
 
     def test_042_little_09(self):
         self.do_standard_tests(
-            'Little_09.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [165, 3])
+            'Little_09.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [171, 3])
 
     def test_043_little_10(self):
         self.do_standard_tests(
-            'Little_10.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [165, 3])
+            'Little_10.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [171, 3])
 
     def test_044_little_11(self):
         self.do_standard_tests(
-            'Little_11.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [165, 3])
+            'Little_11.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [172, 3])
 
     def test_045_little_12(self):
         self.do_standard_tests(
-            'Little_12.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [166, 3])
+            'Little_12.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [173, 3])
 
     def test_046_little_13(self):
         self.do_standard_tests(
-            'Little_13.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [166, 3])
+            'Little_13.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [173, 3])
 
     def test_047_little_14(self):
         self.do_standard_tests(
-            'Little_14.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [166, 3])
+            'Little_14.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [173, 3])
 
     def test_048_little_15(self):
         self.do_standard_tests(
-            'Little_15.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [166, 3])
+            'Little_15.pgn', None, (5, 3), ([5],[]), ([' d2'], []), [173, 3])
 
     def test_050_calgames_09(self):
         self.do_standard_tests(
@@ -2474,7 +2474,7 @@ class _IgnoreCasePGNUpper:
 
     def test_052_little_16(self):
         self.do_standard_tests(
-            'Little_16.pgn', None, (8, 3), ([8], []), ([' d2'], []), (168, 3))
+            'Little_16.pgn', None, (8, 3), ([8], []), ([' d2'], []), (175, 3))
 
     def test_053_twic92n_11_pgn(self):
         self.do_standard_tests('twic92n_11.pgn', None,
@@ -2482,7 +2482,7 @@ class _IgnoreCasePGNUpper:
 
     def test_058_little_17(self):
         self.do_standard_tests(
-            'Little_17.pgn', None, (8, 3), ([8], []), ([' d2'], []), (170, 3))
+            'Little_17.pgn', None, (8, 3), ([8], []), ([' d2'], []), (177, 3))
 
 
 # Any move starting with B is interpreted as a bishop move if possible.
