@@ -51,7 +51,7 @@ PGN_DISAMBIGUATION = r''.join(
      ))
 TEXT_DISAMBIGUATION = r''.join(
     (r'(?#Disambiguation Text)',
-     r'((?:-|x[QRBN]?)[a-h][1-8]',
+     r'((?:-|x[QRBN]?)?[a-h][1-8]',
      ))
 ANYTHING_ELSE = r'(?#Anything else)\S+[ \t\r\f\v]*)'
 IMPORT_FORMAT = r'|'.join((
@@ -136,7 +136,7 @@ DG_DESTINATION = 2
 # For spotting the second part, of two, of a movetext token in long algebraic
 # format (LAN).  The first part, such as 'Qe2', will have been found by the
 # IMPORT_FORMAT rules.  LAN_FORMAT is similar to DISAMBIGUATE_TEXT.
-LAN_FORMAT = r'\A([-x]?)([a-h][1-8])(?:=(QRBN))?'
+LAN_FORMAT = r'(?#Lower case)\A([-x]?)([a-h][1-8])(?:=(qrbn))?'
 
 # Indicies of captured groups for long algebraic notation move.
 LAN_CAPTURE_OR_MOVE = 1

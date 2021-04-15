@@ -71,7 +71,7 @@ class Constants(unittest.TestCase):
                 )))
         ae(constants.TEXT_DISAMBIGUATION,
            r''.join(
-               (r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
+               (r'(?#Disambiguation Text)((?:-|x[QRBN]?)?[a-h][1-8]',
                 )))
         ae(constants.ANYTHING_ELSE,
            r''.join(
@@ -183,7 +183,7 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 r'|',
-                r'(?#Disambiguation Text)((?:-|x[QRBN]?)[a-h][1-8]',
+                r'(?#Disambiguation Text)((?:-|x[QRBN]?)?[a-h][1-8]',
                 r'|',
                 r'(?#Anything else)\S+[ \t\r\f\v]*)',
                 )))
@@ -239,7 +239,7 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 r'|',
-                r'(?#Disambiguation Text)((?:-|[xX][QRBNqrbn]?)[a-hA-H][1-8]',
+                r'(?#Disambiguation Text)((?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8]',
                 r'|',
                 r'(?#Anything else)\S+[ \t\r\f\v]*)',
                 )))
@@ -278,7 +278,8 @@ class Constants(unittest.TestCase):
         ae(constants.DISAMBIGUATE_PGN, r'\Ax?[a-h][1-8]')
         ae(constants.DG_CAPTURE, 1)
         ae(constants.DG_DESTINATION, 2)
-        ae(constants.LAN_FORMAT, r'\A([-x]?)([a-h][1-8])(?:=(QRBN))?')
+        ae(constants.LAN_FORMAT,
+           r'(?#Lower case)\A([-x]?)([a-h][1-8])(?:=(qrbn))?')
         ae(constants.LAN_CAPTURE_OR_MOVE, 1)
         ae(constants.LAN_DESTINATION, 2)
         ae(constants.LAN_PROMOTE_PIECE, 3)

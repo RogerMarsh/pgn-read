@@ -1560,6 +1560,176 @@ class StrictPGN(_BasePGN):
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
             ' bxc8=qqg3*'])
 
+    # Added while fixing Little.pgn upper case processing.
+    def test_164_long_algebraic_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2d4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' d2', ' d4', ' *'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_165_long_algebraic_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2-d4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' d2', ' -d4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_166_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2b4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' b2', ' b4', ' *'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_167_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2-b4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' b2', ' -b4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    def test_168_long_algebraic_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' e7', ' e5', ' *'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_169_long_algebraic_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e7-e5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' e7', ' -e5*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_170_long_algebraic_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4b7b5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' b7', ' b5', ' *'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_171_long_algebraic_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4b7-b5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' b7', ' -b5*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_172_long_algebraic_uc_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2D4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' D2D4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_173_long_algebraic_uc_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2-D4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' D2-D4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_174_long_algebraic_uc_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2B4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' B2B4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_175_long_algebraic_uc_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2-B4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' B2-B4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    def test_176_long_algebraic_uc_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4E7E5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' E7E5*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_177_long_algebraic_uc_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4E7-E5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' E7-E5*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_178_long_algebraic_uc_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4B7B5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' B7B5*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_179_long_algebraic_uc_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4B7-B5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4', ' B7-B5*'])
+
+    def test_180_01_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('N1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text,
+           [' N1f3', ' *'])
+
+    def test_180_02_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ngf3*')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text,
+           [' Ngf3', ' *'])
+
+    def test_180_03_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ng1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text,
+           [' Ng1', ' f3', ' *'])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -1891,6 +2061,19 @@ class StrictDisambiguate(_BasePGN):
                 ('[SetUp"1"]'
                  '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6xd8Kh3*')))
         self.assertEqual(games[0].state, None)
+
+    def test_505_disambiguate_move_needed(self):
+        games = self.get(
+            ''.join(
+                ('[SetUp"1"]'
+                 '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6Xd8Kh3*')))
+        self.assertEqual(games[0].state, 2)
+        self.assertEqual(
+            games[0]._text,
+            ['[SetUp"1"]',
+             '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]',
+             ' Qf6',
+             ' Xd8Kh3*'])
 
     def test_506_disambiguate_move_needed(self):
         games = self.get(
@@ -2770,6 +2953,46 @@ class StrictDisambiguate(_BasePGN):
             '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6xe3*')
         self.assertEqual(games[0].state, None)
 
+    def test_816_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]RXe3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_817_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R3Xe3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_818_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]ReXe3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_819_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]RbXe3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_820_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6Xe3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_821_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re1Xe3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_822_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re6xE3*')
+        self.assertEqual(games[0].state, 2)
+
+    def test_823_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6Xe3*')
+        self.assertEqual(games[0].state, 2)
+
 
 class StrictRAV(_BasePGN):
     """Recursive annotation variation tests only.  StrictPGN tests are not done.
@@ -2905,8 +3128,8 @@ class StrictRAV(_BasePGN):
 
 
 class _NonStrictTests:
-    """Override StrictPGN tests which have different outcome when alternatives
-    to GameStrictPGN are used.
+    """Override StrictPGN tests which have a different outcome, but same for
+    both, in GameTextPGN and GameIgnoreCasePGN tests.
 
     Usage is 'class C(_NonStrictTests, StrictPGN)'.
 
@@ -3122,6 +3345,8 @@ class _NonStrictTests:
         ae(games[0]._text,
            ['e4', 'e5', '*'])
 
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_163_bxc8q.
     def test_120_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -3132,26 +3357,8 @@ class _NonStrictTests:
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
-    def test_121_bxc8_q(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
-    def test_122_bxc8_qx(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=q qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_162_dxc8q.
     def test_123_dxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -3162,16 +3369,8 @@ class _NonStrictTests:
            ['[SetUp"1"]',
             '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
-    def test_124_dxc8q(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8=qqg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_128_bxc8 (and test_129_bxc8).
     def test_125_bxc8(self):
         ae = self.assertEqual
         games = self.get(
@@ -3182,38 +3381,7 @@ class _NonStrictTests:
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
-    def test_126_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8 qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
-    def test_127_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]Bxc8qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 3)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'Bxc8'])
-
-    def test_128_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]Bxc8qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 3)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            'Bxc8'])
-
+    # Compare with test_161_bxc8.
     def test_129_bxc8(self):
         ae = self.assertEqual
         games = self.get(
@@ -3224,15 +3392,10 @@ class _NonStrictTests:
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
-    def test_130_bxc8(self):
+    def test_140_partial_tag_01(self):
         ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8 qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
+        games = self.get('[A"a')
+        ae(len(games), 0)
 
     def test_142_bad_value_in_tag_01(self):
         ae = self.assertEqual
@@ -3248,10 +3411,180 @@ class _NonStrictTests:
         ae(games[0].state, 2)
         ae(games[0]._text, ['[A"\\"a"]', '[B"b"]'])
 
+    # Added while fixing Little.pgn upper case processing.
+    def test_164_long_algebraic_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2d4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_165_long_algebraic_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2-d4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_166_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2b4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_167_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2-b4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    def test_168_long_algebraic_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_169_long_algebraic_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e7-e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_170_long_algebraic_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4b7b5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_171_long_algebraic_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4b7-b5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_172_long_algebraic_uc_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2D4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_173_long_algebraic_uc_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2-D4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_174_long_algebraic_uc_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2B4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_175_long_algebraic_uc_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2-B4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    def test_176_long_algebraic_uc_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4E7E5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_177_long_algebraic_uc_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4E7-E5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_178_long_algebraic_uc_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4B7B5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_179_long_algebraic_uc_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4B7-B5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    def test_180_01_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('N1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_02_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ngf3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_03_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ng1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
 
 class _NonStrictPGNTests:
-    """Override StrictPGN tests which have different outcome when alternatives
-    to GameStrictPGN are used.
+    """Override StrictPGN tests which have a different outcome, but same for
+    all, in PGN, PGNOneCharacterAtATime, and PGNExtendByOneCharacter tests.
 
     Usage is 'class C(_NonStrictPGNTests, StrictPGN)'.
 
@@ -3261,7 +3594,7 @@ class _NonStrictPGNTests:
     """
 
     # Added on seeing results when crash traced to game in crafty06_03.pgn.
-    # Strict version gives an error: c4c5 is long algebraic notation.
+    # c4c5 is redundant precision, not long algebraic notation.
     def test_113_start_rav_after_moves_after_nags(self):
         ae = self.assertEqual
         games = self.get('$10$21$10$22c4e5c4c5(()')
@@ -3271,6 +3604,7 @@ class _NonStrictPGNTests:
            ['$10', '$21', '$10', '$22', 'c4', 'e5', 'c5', '(', '(', ')'])
 
     # Added after changes to convertion of chess engine responses to PGN.
+    # e7e5 is redundant precision, not long algebraic notation.
     def test_115_long_algebraic_pawn_move(self):
         ae = self.assertEqual
         games = self.get('e4e7e5')
@@ -3280,6 +3614,7 @@ class _NonStrictPGNTests:
            ['e4', 'e5'])
 
     # Added after changes to convertion of chess engine responses to PGN.
+    # e7e5 is redundant precision, not long algebraic notation.
     def test_116_long_algebraic_pawn_move_game_terminated(self):
         ae = self.assertEqual
         games = self.get('e4e7e5*')
@@ -3301,6 +3636,115 @@ class _NonStrictPGNTests:
         ae(len(games), 1)
         ae(games[0].state, 2)
         ae(games[0]._text, ['[A"\\"a"]', '[B"b"]'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # d2d4 is redundant precision, not long algebraic notation.
+    def test_164_long_algebraic_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2d4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Hyphen noticed but ignored for seeing token d2 and peek ahead -d4 as
+    # over-precise d4, but is not expecting -d4 when deciding if next token
+    # has already been used for disambiguation.
+    def test_165_long_algebraic_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2-d4*')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', ' -d4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # d2d4 is redundant precision, not long algebraic notation.
+    def test_166_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2b4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Hyphen treated like test_165_long_algebraic_white_pawn_move_with_hyphen
+    # but b-pawn used to test for 'bishop or pawn' interpretation confusion.
+    def test_167_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2-b4*')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', ' -b4*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    # e7e5 is redundant precision, not long algebraic notation.
+    def test_168_long_algebraic_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Hyphen treated like test_165_long_algebraic_white_pawn_move_with_hyphen.
+    def test_169_long_algebraic_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e7-e5*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' -e5*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # b7b5 is redundant precision, not long algebraic notation.
+    def test_170_long_algebraic_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4b7b5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Hyphen treated like test_165_long_algebraic_white_pawn_move_with_hyphen
+    # but b-pawn used to test for 'bishop or pawn' interpretation confusion.
+    def test_171_long_algebraic_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4b7-b5*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'b5', ' -b5*'])
+
+    def test_180_01_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('N1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_02_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ngf3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_03_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ng1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
 
 
 class PGN(_NonStrictPGNTests, StrictPGN):
@@ -3538,6 +3982,113 @@ class Disambiguate(StrictDisambiguate):
         self.assertEqual(games[0].state, None)
 
 
+class DisambiguateTextPGN(Disambiguate):
+    """Movetext disambiguation tests only.  StrictPGN tests are not done.
+
+    The strictness rules on movetext precision are relaxed.
+
+    The PGN specification states movetext should use exactly the precision
+    needed to describe the move.  These tests verify, for example, Rcc7 is
+    stated when two rooks on rank 7 can legally move to c7; and is allowed
+    when only one rook can legally move to c7 (from rank 7 or file c).
+
+    """
+
+    def setUp(self):
+        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+
+    def test_505_disambiguate_move_needed(self):
+        games = self.get(
+            ''.join(
+                ('[SetUp"1"]'
+                 '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6Xd8Kh3*')))
+        self.assertEqual(games[0].state, 3)
+        self.assertEqual(
+            games[0]._text,
+            ['[SetUp"1"]',
+             '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]',
+             'Qf6xd8'])
+
+    # Redundant precision removed but GameTextPGN does not allow 'X' for 'x'.
+    # Compare with test_811_disambiguate_move_needed.
+    def test_821_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re1Xe3*')
+        self.assertEqual(games[0].state, 3)
+        self.assertEqual(
+            games[0]._text,
+            ['[SetUp"1"]',
+             '[FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]',
+             'R1xe3'])
+
+    # Redundant precision removed but GameTextPGN does not allow 'E3' for 'e3'.
+    # Compare with test_812_disambiguate_move_needed.
+    def test_822_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re6xE3*')
+        self.assertEqual(games[0].state, 3)
+        self.assertEqual(
+            games[0]._text,
+            ['[SetUp"1"]',
+             '[FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]',
+             'R6xe3'])
+
+
+class DisambiguateIgnoreCasePGN(DisambiguateTextPGN):
+    """Movetext disambiguation tests only.  StrictPGN tests are not done.
+
+    The strictness rules on movetext precision are relaxed.
+
+    The PGN specification states movetext should use exactly the precision
+    needed to describe the move.  These tests verify, for example, Rcc7 is
+    stated when two rooks on rank 7 can legally move to c7; and is allowed
+    when only one rook can legally move to c7 (from rank 7 or file c).
+
+    """
+
+    def setUp(self):
+        self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+
+    def test_505_disambiguate_move_needed(self):
+        games = self.get(
+            ''.join(
+                ('[SetUp"1"]'
+                 '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6Xd8Kh3*')))
+        self.assertEqual(games[0].state, None)
+        self.assertEqual(
+            games[0]._text,
+            ['[SetUp"1"]',
+             '[FEN"3B1q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]',
+             'Qf6xd8',
+             'Kh3',
+             '*'])
+
+    def test_819_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]RbXe3*')
+        self.assertEqual(games[0].state, None)
+
+    def test_820_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6Xe3*')
+        self.assertEqual(games[0].state, None)
+
+    def test_821_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re1Xe3*')
+        self.assertEqual(games[0].state, None)
+
+    def test_822_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]Re6xE3*')
+        self.assertEqual(games[0].state, None)
+
+    def test_823_disambiguate_move_needed(self):
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r2N3/6K1/4r3 b - - 0 1"]R6Xe3*')
+        self.assertEqual(games[0].state, None)
+
+
 class RAV(StrictRAV):
     """Provide tests for Game version of parser."""
 
@@ -3551,10 +4102,77 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameTextPGN)
 
-    def test_140_partial_tag_01(self):
+    def test_121_bxc8_q(self):
         ae = self.assertEqual
-        games = self.get('[A"a')
-        ae(len(games), 0)
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    def test_122_bxc8_qx(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=q qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    def test_124_dxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8=qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    def test_126_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8 qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    def test_127_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]Bxc8qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'Bxc8'])
+
+    def test_128_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]Bxc8qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'Bxc8'])
+
+    def test_130_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8 qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     # Added while fixing 'e4e5nf3nc6bb5a6' problem.
     # The first 'b', in 'bb5', caused an error when lower case allowed.
@@ -3649,18 +4267,6 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
 
-    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_163_bxc8q.
-    def test_120_bxc8q(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
     def test_121_bxc8_q(self):
         ae = self.assertEqual
         games = self.get(
@@ -3687,18 +4293,6 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
-    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_162_dxc8q.
-    def test_123_dxc8q(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8qqg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
     def test_124_dxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -3711,18 +4305,6 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'dxc8=Q',
             'Qg3',
             '*'])
-
-    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_128_bxc8 (and test_129_bxc8).
-    def test_125_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     def test_126_bxc8(self):
         ae = self.assertEqual
@@ -3762,17 +4344,6 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
-    # Compare with test_161_bxc8.
-    def test_129_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
     def test_130_bxc8(self):
         ae = self.assertEqual
         games = self.get(
@@ -3784,11 +4355,6 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
             ' Qg3',
             ' *'])
-
-    def test_140_partial_tag_01(self):
-        ae = self.assertEqual
-        games = self.get('[A"a')
-        ae(len(games), 0)
 
     # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
     # The first 'b', in 'b4', caused an error.
@@ -3903,6 +4469,79 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
+    # Added while fixing Little.pgn upper case processing.
+    def test_172_long_algebraic_uc_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2D4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_173_long_algebraic_uc_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2-D4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_174_long_algebraic_uc_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2B4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_175_long_algebraic_uc_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2-B4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    def test_176_long_algebraic_uc_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4E7E5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_177_long_algebraic_uc_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4E7-E5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_178_long_algebraic_uc_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4B7B5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_179_long_algebraic_uc_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4B7-B5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner
@@ -3918,6 +4557,8 @@ if __name__ == '__main__':
     runner().run(loader(StrictRAV))
     runner().run(loader(FEN))
     runner().run(loader(Disambiguate))
+    runner().run(loader(DisambiguateTextPGN))
+    runner().run(loader(DisambiguateIgnoreCasePGN))
     runner().run(loader(RAV))
     runner().run(loader(GameTextPGN))
     runner().run(loader(GameIgnoreCasePGN))

@@ -1901,6 +1901,17 @@ class Game:
         self.append_check_indicator()
         self._full_disambiguation_detected = True
 
+    def _long_algebraic_notation_destination(self, match):
+        peek_start = match.span(match.lastindex)[-1]
+        ps = match.string[peek_start:peek_start+10]
+        lm = lan_format.match(ps.lower())
+        if lm:
+            if isinstance(self, (GameIgnoreCasePGN, GameTextPGN)):
+                return lm
+            if ps.startswith(lm.group()):
+                return lm
+        return None
+
     def _long_algebraic_notation_piece_move(self, match):
         group = match.group
         if self._active_color == FEN_WHITE_ACTIVE:
@@ -1910,8 +1921,7 @@ class Game:
             piece_name = group(IFG_PIECE_MOVE).lower()
             fullmove_number_for_next_halfmove = self._fullmove_number + 1
         square_name = group(IFG_PIECE_DESTINATION)
-        peek_start = match.span(match.lastindex)[-1]
-        lm = lan_format.match(match.string[peek_start:peek_start+10])
+        lm = self._long_algebraic_notation_destination(match)
 
         # This token must be a match as second part of move, and must be
         # correct as a pawn or piece move in combination with first part.
@@ -2138,8 +2148,7 @@ class Game:
             source_squares_index = FEN_BLACK_PAWN
             fullmove_number_for_next_halfmove = self._fullmove_number + 1
         square_name = group(IFG_PAWN_FROM_FILE) + group(IFG_PAWN_TO_RANK)
-        peek_start = match.span(match.lastindex)[-1]
-        lm = lan_format.match(match.string[peek_start:peek_start+10])
+        lm = self._long_algebraic_notation_destination(match)
 
         # This token must be a match as second part of move, and must be
         # correct as a pawn or piece move in combination with first part.
@@ -2182,6 +2191,7 @@ class Game:
             if not promotion_piece:
                 self.append_token_and_set_error(match)
                 return
+            promotion_piece = promotion_piece.upper()
 
             # Promotion move and capture.
             if capture == PGN_CAPTURE_MOVE:
@@ -2203,8 +2213,7 @@ class Game:
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_from_board(remove[1])
                 promoted_pawn = piece.promoted_pawn(
-                    PROMOTED_PIECE_NAME[self._active_color
-                                        ][group(IFG_PAWN_PROMOTE_PIECE)],
+                    PROMOTED_PIECE_NAME[self._active_color][promotion_piece],
                     destination)
                 place = destination, promoted_pawn
                 self.place_piece_on_board(place)
@@ -2249,8 +2258,7 @@ class Game:
             remove = piece.square.name, piece
             self.remove_piece_from_board(remove)
             promoted_pawn = piece.promoted_pawn(
-                PROMOTED_PIECE_NAME[self._active_color
-                                    ][group(IFG_PAWN_PROMOTE_PIECE)],
+                PROMOTED_PIECE_NAME[self._active_color][promotion_piece],
                 destination)
             place = destination, promoted_pawn
             self.place_piece_on_board(place)
