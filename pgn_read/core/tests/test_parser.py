@@ -1730,6 +1730,38 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            [' Ng1', ' f3', ' *'])
 
+    def test_181_01_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' B1d3', ' *'])
+
+    def test_181_02_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1D3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' B1D3*'])
+
+    def test_181_03_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1D3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' b1', ' D3*'])
+
+    def test_181_04_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' b1', ' d3', ' *'])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -3581,6 +3613,22 @@ class _NonStrictTests:
         ae(games[0]._text,
            ['Nf3', '*'])
 
+    def test_181_01_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
+
+    def test_181_04_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
+
 
 class _NonStrictPGNTests:
     """Override StrictPGN tests which have a different outcome, but same for
@@ -3745,6 +3793,14 @@ class _NonStrictPGNTests:
         ae(games[0].state, None)
         ae(games[0]._text,
            ['Nf3', '*'])
+
+    def test_181_01_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
 
 
 class PGN(_NonStrictPGNTests, StrictPGN):
@@ -4250,6 +4306,22 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
+    def test_181_02_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1D3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    def test_181_03_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1D3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
 
 class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -4541,6 +4613,22 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0].state, None)
         ae(games[0]._text,
            ['e4', 'b5', '*'])
+
+    def test_181_02_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1D3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
+
+    def test_181_03_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1D3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
 
 
 if __name__ == '__main__':

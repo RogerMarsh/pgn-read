@@ -287,6 +287,7 @@ class Constants(unittest.TestCase):
            r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])')
         ae(constants.TP_MOVE, 1)
         ae(constants.TP_PROMOTE_TO_PIECE, 2)
+        ae(constants.PAWN_MOVE_TOKEN_POSSIBLE_BISHOP, r'\A[Bb][1-8]\Z')
         ae(constants.UNTERMINATED, '<{')
         ae(constants.SUFFIX_ANNOTATION_TO_NAG,
            {'!!': '$3', '!?': '$5', '!': '$1',

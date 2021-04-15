@@ -150,6 +150,11 @@ TEXT_PROMOTION = r'(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])'
 TP_MOVE = 1
 TP_PROMOTE_TO_PIECE = 2
 
+# For spotting rejected possible SAN b-pawn move tokens which may be first
+# part of bishop move, ignoring case if necessary.
+# The token is assumed to not represent a pawn move.
+PAWN_MOVE_TOKEN_POSSIBLE_BISHOP = r'\A[Bb][1-8]\Z'
+
 # The parser.PGN.read_games method uses UNTERMINATED when deciding if a PGN Tag
 # found in an error sequence should start a new game.
 UNTERMINATED = '<{'
