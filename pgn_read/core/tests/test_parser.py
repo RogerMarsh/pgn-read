@@ -43,7 +43,7 @@ class StrictPGN(_BasePGN):
         games = self.get('')
         ae(len(games), 0)
 
-    # _NonStrictTests version gives no games.
+    # _NonStrictText version gives no games.
     def test_002_a_character(self):
         ae = self.assertEqual
         games = self.get('A')
@@ -51,7 +51,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 0)
         ae(games[0]._text, [' A'])
 
-    # _NonStrictTests version gives no games.
+    # _NonStrictText version gives no games.
     def test_003_a_word(self):
         ae = self.assertEqual
         games = self.get('abcdef123')
@@ -59,7 +59,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 0)
         ae(games[0]._text, [' abcdef123'])
 
-    # _NonStrictTests version gives no games.
+    # _NonStrictText version gives no games.
     def test_004_a_sentence(self):
         ae = self.assertEqual
         games = self.get('The cat sat on the mat')
@@ -239,7 +239,7 @@ class StrictPGN(_BasePGN):
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
-    # _NonStrictTests version gives just games[0].
+    # _NonStrictText version gives just games[0].
     def test_021_legal_game_and_gash_consuming_legal_game(self):
         ae = self.assertEqual
         games = self.get('[A"a"]e4*ff[B"b"]d41-0')
@@ -249,7 +249,7 @@ class StrictPGN(_BasePGN):
         ae(games[1].state, 0)
         ae(games[1]._text, [' ff[B"b"]d41-0'])
 
-    # _NonStrictTests version gives two games.
+    # _NonStrictText version gives two games.
     # games[1].state is None and 'ff[B"b"]' token is lost.
     def test_022_legal_game_and_gash_consuming_legal_game(self):
         ae = self.assertEqual
@@ -260,7 +260,7 @@ class StrictPGN(_BasePGN):
         ae(games[1].state, 0)
         ae(games[1]._text, [' ff[B"b"] ', ' d4', ' 1-0'])
 
-    # _NonStrictTests version gives two games.
+    # _NonStrictText version gives two games.
     # games[1].state is None and 'ff[B"b"]' token is lost.
     def test_023_legal_game_and_gash_consuming_legal_game(self):
         ae = self.assertEqual
@@ -271,7 +271,7 @@ class StrictPGN(_BasePGN):
         ae(games[1].state, 0)
         ae(games[1]._text, [' ff[B"b"] ', ' 1', '.', ' d4', ' 1-0'])
 
-    # _NonStrictTests version gives two games.
+    # _NonStrictText version gives two games.
     # games[0] and games[2] are same and games[1] is lost.
     def test_024_legal_game_gash_space_legal_game_both_with_moves(self):
         ae = self.assertEqual
@@ -284,7 +284,7 @@ class StrictPGN(_BasePGN):
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
-    # _NonStrictTests version gives two games.
+    # _NonStrictText version gives two games.
     # games[0] and games[2] are same and games[1] is lost.
     def test_025_legal_game_gash_newline_legal_game_both_with_moves(self):
         ae = self.assertEqual
@@ -297,7 +297,7 @@ class StrictPGN(_BasePGN):
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
-    # _NonStrictTests version gives two games.
+    # _NonStrictText version gives two games.
     # games[0] and games[2] are same and games[1] is lost.
     def test_026_legal_game_gash_space_newline_legal_game_both_with_moves(self):
         ae = self.assertEqual
@@ -322,7 +322,7 @@ class StrictPGN(_BasePGN):
         ae(games[2].state, None)
         ae(games[2]._text, ['[B"b"]', 'd4', '1-0'])
 
-    # _NonStrictTests version gives two games.
+    # _NonStrictText version gives two games.
     # games[0] and games[2] are same and games[1] is lost.
     # This one, with realistic tags and movetext, occurs in a TWIC file.
     def test_028_legal_game_and_gash_and_legal_game_both_with_moves(self):
@@ -518,7 +518,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', '{C;c\n<r>e4(d4)[B"b"]%e\n}', '*'])
 
-    # _NonStrictTests version gives error too.
+    # _NonStrictText version gives error too.
     def test_051_1_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"')
@@ -527,7 +527,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"'])
 
-    # _NonStrictTests version gives error too.
+    # _NonStrictText version gives error too.
     def test_051_2_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"]')
@@ -620,7 +620,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', '<r;c\n{C}e4(d4)[B"b"]%e\n>', '*'])
 
-    # _NonStrictTests version gives error too.
+    # _NonStrictText version gives error too.
     def test_063_1_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"')
@@ -629,7 +629,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"'])
 
-    # _NonStrictTests version gives error too.
+    # _NonStrictText version gives error too.
     def test_063_2_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"]')
@@ -667,7 +667,7 @@ class StrictPGN(_BasePGN):
         ae(games[0]._state, None)
         ae(games[0]._text, ['*'])
 
-    # _NonStrictTests version gives error too, but '%!' token is lost.
+    # _NonStrictText version gives error too, but '%!' token is lost.
     def test_066_tag_and_escaped(self):
         ae = self.assertEqual
         games = self.get('[A"a"]%!')
@@ -675,7 +675,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 1)
         ae(games[0]._text, ['[A"a"]', ' %!'])
 
-    # _NonStrictTests version gives error too, but '%!*' token is lost.
+    # _NonStrictText version gives error too, but '%!*' token is lost.
     def test_067_tag_and_escaped_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]%!*')
@@ -683,7 +683,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 1)
         ae(games[0]._text, ['[A"a"]', ' %!*'])
 
-    # _NonStrictTests version gives one game, having lost the '%!\n' token.
+    # _NonStrictText version gives one game, having lost the '%!\n' token.
     def test_068_tag_and_terminated_escaped_and_star(self):
         ae = self.assertEqual
         games = self.get('[A"a"]%!\n*')
@@ -691,7 +691,7 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 1)
         ae(games[0]._text, ['[A"a"]', ' %!', ' *'])
 
-    # _NonStrictTests version gives one game, having lost the
+    # _NonStrictText version gives one game, having lost the
     # '%!{C}<r>e4(d4)[B"b"]%e' token.
     def test_069_tag_and_terminated_escaped_wrapping_tokens_and_star(self):
         ae = self.assertEqual
@@ -722,7 +722,7 @@ class StrictPGN(_BasePGN):
             '[FEN"4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1"]',
             'O-O-O', 'Ke7', '*'])
 
-    # _NonStrictTests version gives error too, but '-' token is lost.
+    # _NonStrictText version gives error too, but '-' token is lost.
     def test_072_castles_O_O_incomplete_0(self):
         ae = self.assertEqual
         games = self.get(
@@ -1140,8 +1140,298 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['e4', ' e7', ' e5', ' *'])
 
+    def test_117_01_bxc4(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/7k/8/2r5/1P6/8/4K3 w - - 0 1"]bxc4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"8/8/7k/8/2r5/1P6/8/4K3 w - - 0 1"]',
+            'bxc4', '*'])
+
+    def test_117_02_dxc4(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"8/8/7k/8/2r5/3P4/8/4K3 w - - 0 1"]dxc4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"8/8/7k/8/2r5/3P4/8/4K3 w - - 0 1"]',
+            'dxc4', '*'])
+
+    def test_118_01_BxC4_without_B_on_board(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"6k1/8/8/8/2p5/1P6/8/6K1 w - - 0 1"]BxC4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"6k1/8/8/8/2p5/1P6/8/6K1 w - - 0 1"]',
+            ' BxC4*'])
+
+    def test_118_02_BxC4_with_B_on_board(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"6k1/8/8/8/2p5/1P6/1B6/6K1 w - - 0 1"]BxC4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"6k1/8/8/8/2p5/1P6/1B6/6K1 w - - 0 1"]',
+            ' BxC4*'])
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_01_b8_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"8/1P5k/8/8/8/8/1p5K/8 w - - 0 1"]b8=Q*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"8/1P5k/8/8/8/8/1p5K/8 w - - 0 1"]',
+            'b8=Q', '*'])
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_02_b1_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"8/1P5k/8/8/8/8/1p5K/8 b - - 0 1"]b1=Q*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"8/1P5k/8/8/8/8/1p5K/8 b - - 0 1"]',
+            'b1=Q', '*'])
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_03_bcd_Q(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa8=Q*', ['bxa8=Q', '*'], None, 'w'),
+                           ('b8=Q*', ['b8=Q', '*'], None, 'w'),
+                           ('bxc8=Q*', ['bxc8=Q', '*'], None, 'w'),
+                           ('dxc8=Q*', ['dxc8=Q', '*'], None, 'w'),
+                           ('d8=Q*', ['d8=Q', '*'], None, 'w'),
+                           ('dxe8=Q*', ['dxe8=Q', '*'], None, 'w'),
+                           ('bxa1=Q*', ['bxa1=Q', '*'], None, 'b'),
+                           ('b1=Q*', ['b1=Q', '*'], None, 'b'),
+                           ('bxc1=Q*', ['bxc1=Q', '*'], None, 'b'),
+                           ('dxc1=Q*', ['dxc1=Q', '*'], None, 'b'),
+                           ('d1=Q*', ['d1=Q', '*'], None, 'b'),
+                           ('dxe1=Q*', ['dxe1=Q', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/1PBP4/8/7B/7b/8/1pbp4/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/1PBP4/8/7B/7b/8/1pbp4/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_04_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('Bxa8*', ['Bxa8', '*'], None, 'w'),
+                           ('Bb8*', ['Bb8', '*'], None, 'w'),
+                           ('Bxc8*', ['Bxc8', '*'], None, 'w'),
+                           ('Bd8*', ['Bd8', '*'], None, 'w'),
+                           ('Bxe8*', ['Bxe8', '*'], None, 'w'),
+                           ('Bxa1*', ['Bxa1', '*'], None, 'b'),
+                           ('Bb1*', ['Bb1', '*'], None, 'b'),
+                           ('Bxc1*', ['Bxc1', '*'], None, 'b'),
+                           ('Bd1*', ['Bd1', '*'], None, 'b'),
+                           ('Bxe1*', ['Bxe1', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/1BB5/8/7B/7b/8/1bb5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/1BB5/8/7B/7b/8/1bb5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_05_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('Bxa8*', ['Bxa8', '*'], None, 'w'),
+                           ('Bb8*', ['Bb8', '*'], None, 'w'),
+                           ('Bxc8*', ['Bxc8', '*'], None, 'w'),
+                           ('Bd8*', ['Bd8', '*'], None, 'w'),
+                           ('Bxe8*', ['Bxe8', '*'], None, 'w'),
+                           ('Bxa1*', ['Bxa1', '*'], None, 'b'),
+                           ('Bb1*', ['Bb1', '*'], None, 'b'),
+                           ('Bxc1*', ['Bxc1', '*'], None, 'b'),
+                           ('Bd1*', ['Bd1', '*'], None, 'b'),
+                           ('Bxe1*', ['Bxe1', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_06_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa8*', [' bxa8*'], 2, 'w'),
+                           ('bb8*', [' bb8*'], 2, 'w'),
+                           ('bxc8*', [' bxc8*'], 2, 'w'),
+                           ('bd8*', [' bd8*'], 2, 'w'),
+                           ('bxe8*', [' bxe8*'], 2, 'w'),
+                           ('bxa1*', [' bxa1*'], 2, 'b'),
+                           ('bb1*', [' bb1*'], 2, 'b'),
+                           ('bxc1*', [' bxc1*'], 2, 'b'),
+                           ('bd1*', [' bd1*'], 2, 'b'),
+                           ('bxe1*', [' bxe1*'], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_07_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('b6xa8*', [' b6', ' xa8', ' *'], 2, 'w'),
+                           ('b7b8*', [' b7', ' b8', ' *'], 2, 'w'),
+                           ('b3xc8*', [' b3', ' xc8', ' *'], 2, 'w'),
+                           ('b7d8*', [' b7', ' d8', ' *'], 2, 'w'),
+                           ('b6xe8*', [' b6', ' xe8', ' *'], 2, 'w'),
+                           ('b3xa1*', [' b3', ' xa1', ' *'], 2, 'b'),
+                           ('b2b1*', [' b2', ' b1', ' *'], 2, 'b'),
+                           ('b6xc1*', [' b6', ' xc1', ' *'], 2, 'b'),
+                           ('b2d1*', [' b2', ' d1', ' *'], 2, 'b'),
+                           ('b3xe1*', [' b3', ' xe1', ' *'], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_08_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa7*', [' bxa7', ' *'], 2, 'w'),
+                           ('bb7*', [' bb7*'], 2, 'w'),
+                           ('bxc7*', [' bxc7', ' *'], 2, 'w'),
+                           ('bd7*', [' bd7*'], 2, 'w'),
+                           ('bxe7*', [' bxe7', ' *'], 2, 'w'),
+                           ('bxa2*', [' bxa2', ' *'], 2, 'b'),
+                           ('bb2*', [' bb2*'], 2, 'b'),
+                           ('bxc2*', [' bxc2', ' *'], 2, 'b'),
+                           ('bd2*', [' bd2*'], 2, 'b'),
+                           ('bxe2*', [' bxe2', ' *'], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_09_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('b5xa7*', [' b5', ' xa7', ' *'], 2, 'w'),
+                           ('b6b7*', [' b6', ' b7', ' *'], 2, 'w'),
+                           ('b4xc7*', [' b4', ' xc7', ' *'], 2, 'w'),
+                           ('b6d7*', [' b6', ' d7', ' *'], 2, 'w'),
+                           ('b5xe7*', [' b5', ' xe7', ' *'], 2, 'w'),
+                           ('b4xa2*', [' b4', ' xa2', ' *'], 2, 'b'),
+                           ('b3b2*', [' b3', ' b2', ' *'], 2, 'b'),
+                           ('b5xc2*', [' b5', ' xc2', ' *'], 2, 'b'),
+                           ('b3d2*', [' b3', ' d2', ' *'], 2, 'b'),
+                           ('b4xe2*', [' b4', ' xe2', ' *'], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # Tests *_118_* through *_122_* renumbered making room for new *_119_*.
+    def test_120_01_dxc8_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/3P4/7k/8/8/8/8/4K3 w - - 0 1"]dxc8=Q*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/3P4/7k/8/8/8/8/4K3 w - - 0 1"]',
+            'dxc8=Q', '*'])
+
+    def test_120_02_bxc8_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/8/8/8/8/4K3 w - - 0 1"]bxc8=Q*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/8/8/8/8/4K3 w - - 0 1"]',
+            'bxc8=Q', '*'])
+
+    def test_120_03_bxc8_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=Qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'bxc8=Q', ' qg3*'])
+
+    def test_120_04_bxc8Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8Qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' bxc8Qqg3*'])
+
     # Compare with test_163_bxc8q.
-    def test_120_bxc8q(self):
+    def test_120_05_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
@@ -1152,7 +1442,7 @@ class StrictPGN(_BasePGN):
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
             ' bxc8qqg3*'])
 
-    def test_121_bxc8_q(self):
+    def test_120_06_bxc8_q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
@@ -1163,7 +1453,7 @@ class StrictPGN(_BasePGN):
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
             ' bxc8=qqg3*'])
 
-    def test_122_bxc8_qx(self):
+    def test_120_07_bxc8_qx(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=q qg3*')
@@ -1174,6 +1464,77 @@ class StrictPGN(_BasePGN):
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
             ' bxc8=q ',
             ' qg3*'])
+
+    # '*_121_*' tests added for error in pgn_files test '055' for version 2.1.
+    def test_121_01_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('((')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' ('])
+
+    def test_121_02_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('(((')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' (', ' ('])
+
+    def test_121_03_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('(zz(')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' zz('])
+
+    def test_121_04_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('(<>(')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' <>', ' ('])
+
+    def test_121_05_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('()(')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' )', ' ('])
+
+    def test_121_06_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('(2729)(')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' 2729', ' )', ' ('])
+
+    def test_121_07_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('(2729) - Svidler,P (')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' 2729', ' )', ' - ',
+                            ' Svidler,P ', ' ('])
+
+    def test_121_08_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('(263,500 USD)! (2729) - Svidler,P (')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [' (', ' 263', ' ,500 ', ' USD)! ',
+                            ' (', ' 2729', ' )', ' - ',
+                            ' Svidler,P ', ' ('])
+
+    # The significant tokens from pgn_files test_055 which caused an exception
+    # in the 'text' classes.
+    def test_121_09_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('c4(263,500 USD)! (2729) - Svidler,P (')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text, ['c4', '(', ' ,500 ', ' USD)! ',
+                            ' (', ' 2729', ' )', ' - ',
+                            ' Svidler,P ', ' ('])
 
     # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
     # Compare with test_162_dxc8q.
@@ -1548,7 +1909,7 @@ class StrictPGN(_BasePGN):
             ' dxc8=qqg3*'])
 
     # Added while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_120_bxc8q.
+    # Compare with test_120_05_bxc8q.
     def test_163_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -1579,7 +1940,7 @@ class StrictPGN(_BasePGN):
            ['e4', 'e5', ' d2', ' -d4*'])
 
     # Added while fixing Little.pgn upper case processing.
-    def test_166_long_algebraic_white_b_pawn_move(self):
+    def test_166_01_long_algebraic_white_b_pawn_move(self):
         ae = self.assertEqual
         games = self.get('e4e5b2b4*')
         ae(len(games), 1)
@@ -1587,14 +1948,78 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            ['e4', 'e5', ' b2', ' b4', ' *'])
 
+    # Accepted as 'b7' in non-strict PGN and text classes.
+    def test_166_02_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6b7*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            ' b6', ' b7', ' *'])
+        ae(games[0].state, 2)
+
+    # Rejected like this in all cases except 'ignore case', where it is seen
+    # as an attempted bishop move from rank 7 to b8, 'B7b8'.
+    def test_166_03_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]b7b8=Q*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
+            ' b7', ' b8=Q', ' *'])
+        ae(games[0].state, 2)
+
+    # Always rejected as an attempt to move a pawn from f6 to f7.
+    def test_166_04_long_algebraic_white_f_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]f7f8=Q*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]',
+            ' f7', ' f8=Q', ' *'])
+        ae(games[0].state, 2)
+
     # Added while fixing Little.pgn upper case processing.
-    def test_167_long_algebraic_white_b_pawn_move_with_hyphen(self):
+    def test_167_01_long_algebraic_white_b_pawn_move_with_hyphen(self):
         ae = self.assertEqual
         games = self.get('e4e5b2-b4*')
         ae(len(games), 1)
         ae(games[0].state, 2)
         ae(games[0]._text,
            ['e4', 'e5', ' b2', ' -b4*'])
+
+    def test_167_02_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6-b7*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            ' b6', ' -b7*'])
+        ae(games[0].state, 2)
+
+    def test_167_03_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]b7-b8=Q*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
+            ' b7', ' -b8=Q*'])
+        ae(games[0].state, 2)
+
+    def test_167_04_long_algebraic_white_f_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]f7-f8=Q*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]',
+            ' f7', ' -f8=Q*'])
+        ae(games[0].state, 2)
 
     # Added while fixing Little.pgn upper case processing.
     # Adds the '*' compared with test_115_long_algebraic_pawn_move.
@@ -1730,6 +2155,14 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text,
            [' Ng1', ' f3', ' *'])
 
+    def test_180_04_long_algebraic(self):
+        ae = self.assertEqual
+        games = self.get('Ng1-f3*')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text,
+           [' Ng1', ' -f3*'])
+
     def test_181_01_pawn_move_or_too_much_precision(self):
         ae = self.assertEqual
         games = self.get('e4e5B1d3*')
@@ -1761,6 +2194,486 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 2)
         ae(games[0]._text,
            ['e4', 'e5', ' b1', ' d3', ' *'])
+
+    def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', [' B3xc4', ' *'], 2),
+                        ('B3xC4*', [' B3xC4*'], 2),
+                        ('b3xc4*', [' b3', ' xc4', ' *'], 2),
+                        ('b3xC4*', [' b3', ' xC4*'], 2),
+                        ('Bxc4*', [' Bxc4', ' *'], 2),
+                        ('BxC4*', [' BxC4*'], 2),
+                        ('bxc4*', ['bxc4', '*'], None),
+                        ('bxC4*', [' bxC4*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', [' B3xc4', ' *'], 2),
+                        ('B3xC4*', [' B3xC4*'], 2),
+                        ('b3xc4*', [' b3', ' xc4', ' *'], 2),
+                        ('b3xC4*', [' b3', ' xC4*'], 2),
+                        ('Bxc4*', ['Bxc4', '*'], None),
+                        ('BxC4*', [' BxC4*'], 2),
+                        ('bxc4*', [' bxc4', ' *'], 2),
+                        ('bxC4*', [' bxC4*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', [' B7xc8', ' =Q*'], 2),
+                        ('B7xc8=q*', [' B7xc8', ' =q*'], 2),
+                        ('B7xC8=Q*', [' B7xC8=Q*'], 2),
+                        ('B7xC8=q*', [' B7xC8=q*'], 2),
+                        ('b7xc8=Q*', [' b7', ' xc8', ' =Q*'], 2),
+                        ('b7xc8=q*', [' b7', ' xc8', ' =q*'], 2),
+                        ('b7xC8=Q*', [' b7', ' xC8=Q*'], 2),
+                        ('b7xC8=q*', [' b7', ' xC8=q*'], 2),
+                        ('B7xc8Q*', [' B7xc8', ' Q*'], 2),
+                        ('B7xc8q*', [' B7xc8', ' q*'], 2),
+                        ('B7xC8Q*', [' B7xC8Q*'], 2),
+                        ('B7xC8q*', [' B7xC8q*'], 2),
+                        ('b7xc8Q*', [' b7', ' xc8', ' Q*'], 2),
+                        ('b7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('b7xC8Q*', [' b7', ' xC8Q*'], 2),
+                        ('b7xC8q*', [' b7', ' xC8q*'], 2),
+                        ('Bxc8=Q*', [' Bxc8', ' =Q*'], 2),
+                        ('Bxc8=q*', [' Bxc8', ' =q*'], 2),
+                        ('BxC8=Q*', [' BxC8=Q*'], 2),
+                        ('BxC8=q*', [' BxC8=q*'], 2),
+                        ('bxc8=Q*', ['bxc8=Q', '*'], None),
+                        ('bxc8=q*', [' bxc8=q*'], 2),
+                        ('bxC8=Q*', [' bxC8=Q*'], 2),
+                        ('bxC8=q*', [' bxC8=q*'], 2),
+                        ('Bxc8Q*', [' Bxc8', ' Q*'], 2),
+                        ('Bxc8q*', [' Bxc8', ' q*'], 2),
+                        ('BxC8Q*', [' BxC8Q*'], 2),
+                        ('BxC8q*', [' BxC8q*'], 2),
+                        ('bxc8Q*', [' bxc8Q*'], 2),
+                        ('bxc8q*', [' bxc8q*'], 2),
+                        ('bxC8Q*', [' bxC8Q*'], 2),
+                        ('bxC8q*', [' bxC8q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', [' B7xc8', ' =Q*'], 2),
+                        ('B7xc8=q*', [' B7xc8', ' =q*'], 2),
+                        ('B7xC8=Q*', [' B7xC8=Q*'], 2),
+                        ('B7xC8=q*', [' B7xC8=q*'], 2),
+                        ('b7xc8=Q*', [' b7', ' xc8', ' =Q*'], 2),
+                        ('b7xc8=q*', [' b7', ' xc8', ' =q*'], 2),
+                        ('b7xC8=Q*', [' b7', ' xC8=Q*'], 2),
+                        ('b7xC8=q*', [' b7', ' xC8=q*'], 2),
+                        ('B7xc8Q*', [' B7xc8', ' Q*'], 2),
+                        ('B7xc8q*', [' B7xc8', ' q*'], 2),
+                        ('B7xC8Q*', [' B7xC8Q*'], 2),
+                        ('B7xC8q*', [' B7xC8q*'], 2),
+                        ('b7xc8Q*', [' b7', ' xc8', ' Q*'], 2),
+                        ('b7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('b7xC8Q*', [' b7', ' xC8Q*'], 2),
+                        ('b7xC8q*', [' b7', ' xC8q*'], 2),
+                        ('Bxc8=Q*', ['Bxc8', ' =Q*'], 3),
+                        ('Bxc8=q*', ['Bxc8', ' =q*'], 3),
+                        ('BxC8=Q*', [' BxC8=Q*'], 2),
+                        ('BxC8=q*', [' BxC8=q*'], 2),
+                        ('bxc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('bxc8=q*', [' bxc8=q*'], 2),
+                        ('bxC8=Q*', [' bxC8=Q*'], 2),
+                        ('bxC8=q*', [' bxC8=q*'], 2),
+                        ('Bxc8Q*', ['Bxc8', ' Q*'], 3),
+                        ('Bxc8q*', ['Bxc8', ' q*'], 3),
+                        ('BxC8Q*', [' BxC8Q*'], 2),
+                        ('BxC8q*', [' BxC8q*'], 2),
+                        ('bxc8Q*', [' bxc8Q*'], 2),
+                        ('bxc8q*', [' bxc8q*'], 2),
+                        ('bxC8Q*', [' bxC8Q*'], 2),
+                        ('bxC8q*', [' bxC8q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8*', [' B7xc8', ' *'], 2),
+                        ('B7xC8*', [' B7xC8*'], 2),
+                        ('b7xc8*', [' b7', ' xc8', ' *'], 2),
+                        ('b7xC8*', [' b7', ' xC8*'], 2),
+                        ('Bxc8*', ['Bxc8', '*'], None),
+                        ('BxC8*', [' BxC8*'], 2),
+                        ('bxc8*', [' bxc8*'], 2),
+                        ('bxC8*', [' bxC8*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8=Q*', [' B7b8', ' =Q*'], 2),
+                        ('B7b8=q*', [' B7b8', ' =q*'], 2),
+                        ('B7B8=Q*', [' B7B8=Q*'], 2),
+                        ('B7B8=q*', [' B7B8=q*'], 2),
+                        ('b7b8=Q*', [' b7', ' b8=Q', ' *'], 2),
+                        ('b7b8=q*', [' b7', ' b8', ' =q*'], 2),
+                        ('b7B8=Q*', [' b7', ' B8=Q*'], 2),
+                        ('b7B8=q*', [' b7', ' B8=q*'], 2),
+                        ('B7b8Q*', [' B7b8', ' Q*'], 2),
+                        ('B7b8q*', [' B7b8', ' q*'], 2),
+                        ('B7B8Q*', [' B7B8Q*'], 2),
+                        ('B7B8q*', [' B7B8q*'], 2),
+                        ('b7b8Q*', [' b7', ' b8', ' Q*'], 2),
+                        ('b7b8q*', [' b7', ' b8', ' q*'], 2),
+                        ('b7B8Q*', [' b7', ' B8Q*'], 2),
+                        ('b7B8q*', [' b7', ' B8q*'], 2),
+                        ('B7-b8=Q*', [' B7-b8=Q*'], 2),
+                        ('B7-b8=q*', [' B7-b8=q*'], 2),
+                        ('B7-B8=Q*', [' B7-B8=Q*'], 2),
+                        ('B7-B8=q*', [' B7-B8=q*'], 2),
+                        ('b7-b8=Q*', [' b7', ' -b8=Q*'], 2),
+                        ('b7-b8=q*', [' b7', ' -b8=q*'], 2),
+                        ('b7-B8=Q*', [' b7', ' -B8=Q*'], 2),
+                        ('b7-B8=q*', [' b7', ' -B8=q*'], 2),
+                        ('B7-b8Q*', [' B7-b8Q*'], 2),
+                        ('B7-b8q*', [' B7-b8q*'], 2),
+                        ('B7-B8Q*', [' B7-B8Q*'], 2),
+                        ('B7-B8q*', [' B7-B8q*'], 2),
+                        ('b7-b8Q*', [' b7', ' -b8Q*'], 2),
+                        ('b7-b8q*', [' b7', ' -b8q*'], 2),
+                        ('b7-B8Q*', [' b7', ' -B8Q*'], 2),
+                        ('b7-B8q*', [' b7', ' -B8q*'], 2),
+                        ('Bb8=Q*', [' Bb8', ' =Q*'], 2),
+                        ('Bb8=q*', [' Bb8', ' =q*'], 2),
+                        ('BB8=Q*', [' BB8=Q*'], 2),
+                        ('BB8=q*', [' BB8=q*'], 2),
+                        ('bb8=Q*', [' bb8=Q*'], 2),
+                        ('bb8=q*', [' bb8=q*'], 2),
+                        ('bB8=Q*', [' bB8=Q*'], 2),
+                        ('bB8=q*', [' bB8=q*'], 2),
+                        ('Bb8Q*', [' Bb8', ' Q*'], 2),
+                        ('Bb8q*', [' Bb8', ' q*'], 2),
+                        ('BB8Q*', [' BB8Q*'], 2),
+                        ('BB8q*', [' BB8q*'], 2),
+                        ('bb8Q*', [' bb8Q*'], 2),
+                        ('bb8q*', [' bb8q*'], 2),
+                        ('bB8Q*', [' bB8Q*'], 2),
+                        ('bB8q*', [' bB8q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_02_bishop_c7_to_b8(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8*', [' B7b8', ' *'], 2),
+                        ('B7B8*', [' B7B8*'], 2),
+                        ('b7b8*', [' b7', ' b8', ' *'], 2),
+                        ('b7B8*', [' b7', ' B8*'], 2),
+                        ('B7-b8*', [' B7-b8*'], 2),
+                        ('B7-B8*', [' B7-B8*'], 2),
+                        ('b7-b8*', [' b7', ' -b8*'], 2),
+                        ('b7-B8*', [' b7', ' -B8*'], 2),
+                        ('Bb8*', ['Bb8', '*'], None),
+                        ('BB8*', [' BB8*'], 2),
+                        ('bb8*', [' bb8*'], 2),
+                        ('bB8*', [' bB8*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_03_bishop_c6_to_b7(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6b7*', [' B6b7', ' *'], 2),
+                        ('B6B7*', [' B6B7*'], 2),
+                        ('b6b7*', [' b6', ' b7', ' *'], 2),
+                        ('b6B7*', [' b6', ' B7*'], 2),
+                        ('B6-b7*', [' B6-b7*'], 2),
+                        ('B6-B7*', [' B6-B7*'], 2),
+                        ('b6-b7*', [' b6', ' -b7*'], 2),
+                        ('b6-B7*', [' b6', ' -B7*'], 2),
+                        ('Bb7*', ['Bb7', '*'], None),
+                        ('BB7*', [' BB7*'], 2),
+                        ('bb7*', [' bb7*'], 2),
+                        ('bB7*', [' bB7*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', [' B6xc5', ' *'], 2),
+                        ('B6xC5*', [' B6xC5*'], 2),
+                        ('b6xc5*', [' b6', ' xc5', ' *'], 2),
+                        ('b6xC5*', [' b6', ' xC5*'], 2),
+                        ('Bxc5*', [' Bxc5', ' *'], 2),
+                        ('BxC5*', [' BxC5*'], 2),
+                        ('bxc5*', ['bxc5', '*'], None),
+                        ('bxC5*', [' bxC5*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', [' B6xc5', ' *'], 2),
+                        ('B6xC5*', [' B6xC5*'], 2),
+                        ('b6xc5*', [' b6', ' xc5', ' *'], 2),
+                        ('b6xC5*', [' b6', ' xC5*'], 2),
+                        ('Bxc5*', ['Bxc5', '*'], None),
+                        ('BxC5*', [' BxC5*'], 2),
+                        ('bxc5*', [' bxc5', ' *'], 2),
+                        ('bxC5*', [' bxC5*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', [' B2xc1', ' =Q*'], 2),
+                        ('B2xc1=q*', [' B2xc1', ' =q*'], 2),
+                        ('B2xC1=Q*', [' B2xC1=Q*'], 2),
+                        ('B2xC1=q*', [' B2xC1=q*'], 2),
+                        ('b2xc1=Q*', [' b2', ' xc1', ' =Q*'], 2),
+                        ('b2xc1=q*', [' b2', ' xc1', ' =q*'], 2),
+                        ('b2xC1=Q*', [' b2', ' xC1=Q*'], 2),
+                        ('b2xC1=q*', [' b2', ' xC1=q*'], 2),
+                        ('B2xc1Q*', [' B2xc1', ' Q*'], 2),
+                        ('B2xc1q*', [' B2xc1', ' q*'], 2),
+                        ('B2xC1Q*', [' B2xC1Q*'], 2),
+                        ('B2xC1q*', [' B2xC1q*'], 2),
+                        ('b2xc1Q*', [' b2', ' xc1', ' Q*'], 2),
+                        ('b2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('b2xC1Q*', [' b2', ' xC1Q*'], 2),
+                        ('b2xC1q*', [' b2', ' xC1q*'], 2),
+                        ('Bxc1=Q*', [' Bxc1', ' =Q*'], 2),
+                        ('Bxc1=q*', [' Bxc1', ' =q*'], 2),
+                        ('BxC1=Q*', [' BxC1=Q*'], 2),
+                        ('BxC1=q*', [' BxC1=q*'], 2),
+                        ('bxc1=Q*', ['bxc1=Q', '*'], None),
+                        ('bxc1=q*', [' bxc1=q*'], 2),
+                        ('bxC1=Q*', [' bxC1=Q*'], 2),
+                        ('bxC1=q*', [' bxC1=q*'], 2),
+                        ('Bxc1Q*', [' Bxc1', ' Q*'], 2),
+                        ('Bxc1q*', [' Bxc1', ' q*'], 2),
+                        ('BxC1Q*', [' BxC1Q*'], 2),
+                        ('BxC1q*', [' BxC1q*'], 2),
+                        ('bxc1Q*', [' bxc1Q*'], 2),
+                        ('bxc1q*', [' bxc1q*'], 2),
+                        ('bxC1Q*', [' bxC1Q*'], 2),
+                        ('bxC1q*', [' bxC1q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', [' B2xc1', ' =Q*'], 2),
+                        ('B2xc1=q*', [' B2xc1', ' =q*'], 2),
+                        ('B2xC1=Q*', [' B2xC1=Q*'], 2),
+                        ('B2xC1=q*', [' B2xC1=q*'], 2),
+                        ('b2xc1=Q*', [' b2', ' xc1', ' =Q*'], 2),
+                        ('b2xc1=q*', [' b2', ' xc1', ' =q*'], 2),
+                        ('b2xC1=Q*', [' b2', ' xC1=Q*'], 2),
+                        ('b2xC1=q*', [' b2', ' xC1=q*'], 2),
+                        ('B2xc1Q*', [' B2xc1', ' Q*'], 2),
+                        ('B2xc1q*', [' B2xc1', ' q*'], 2),
+                        ('B2xC1Q*', [' B2xC1Q*'], 2),
+                        ('B2xC1q*', [' B2xC1q*'], 2),
+                        ('b2xc1Q*', [' b2', ' xc1', ' Q*'], 2),
+                        ('b2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('b2xC1Q*', [' b2', ' xC1Q*'], 2),
+                        ('b2xC1q*', [' b2', ' xC1q*'], 2),
+                        ('Bxc1=Q*', ['Bxc1', ' =Q*'], 3),
+                        ('Bxc1=q*', ['Bxc1', ' =q*'], 3),
+                        ('BxC1=Q*', [' BxC1=Q*'], 2),
+                        ('BxC1=q*', [' BxC1=q*'], 2),
+                        ('bxc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('bxc1=q*', [' bxc1=q*'], 2),
+                        ('bxC1=Q*', [' bxC1=Q*'], 2),
+                        ('bxC1=q*', [' bxC1=q*'], 2),
+                        ('Bxc1Q*', ['Bxc1', ' Q*'], 3),
+                        ('Bxc1q*', ['Bxc1', ' q*'], 3),
+                        ('BxC1Q*', [' BxC1Q*'], 2),
+                        ('BxC1q*', [' BxC1q*'], 2),
+                        ('bxc1Q*', [' bxc1Q*'], 2),
+                        ('bxc1q*', [' bxc1q*'], 2),
+                        ('bxC1Q*', [' bxC1Q*'], 2),
+                        ('bxC1q*', [' bxC1q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1*', [' B2xc1', ' *'], 2),
+                        ('B2xC1*', [' B2xC1*'], 2),
+                        ('b2xc1*', [' b2', ' xc1', ' *'], 2),
+                        ('b2xC1*', [' b2', ' xC1*'], 2),
+                        ('Bxc1*', ['Bxc1', '*'], None),
+                        ('BxC1*', [' BxC1*'], 2),
+                        ('bxc1*', [' bxc1*'], 2),
+                        ('bxC1*', [' bxC1*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1=Q*', [' B2b1', ' =Q*'], 2),
+                        ('B2b1=q*', [' B2b1', ' =q*'], 2),
+                        ('B2B1=Q*', [' B2B1=Q*'], 2),
+                        ('B2B1=q*', [' B2B1=q*'], 2),
+                        ('b2b1=Q*', [' b2', ' b1=Q', ' *'], 2),
+                        ('b2b1=q*', [' b2', ' b1', ' =q*'], 2),
+                        ('b2B1=Q*', [' b2', ' B1=Q*'], 2),
+                        ('b2B1=q*', [' b2', ' B1=q*'], 2),
+                        ('B2b1Q*', [' B2b1', ' Q*'], 2),
+                        ('B2b1q*', [' B2b1', ' q*'], 2),
+                        ('B2B1Q*', [' B2B1Q*'], 2),
+                        ('B2B1q*', [' B2B1q*'], 2),
+                        ('b2b1Q*', [' b2', ' b1', ' Q*'], 2),
+                        ('b2b1q*', [' b2', ' b1', ' q*'], 2),
+                        ('b2B1Q*', [' b2', ' B1Q*'], 2),
+                        ('b2B1q*', [' b2', ' B1q*'], 2),
+                        ('B2-b1=Q*', [' B2-b1=Q*'], 2),
+                        ('B2-b1=q*', [' B2-b1=q*'], 2),
+                        ('B2-B1=Q*', [' B2-B1=Q*'], 2),
+                        ('B2-B1=q*', [' B2-B1=q*'], 2),
+                        ('b2-b1=Q*', [' b2', ' -b1=Q*'], 2),
+                        ('b2-b1=q*', [' b2', ' -b1=q*'], 2),
+                        ('b2-B1=Q*', [' b2', ' -B1=Q*'], 2),
+                        ('b2-B1=q*', [' b2', ' -B1=q*'], 2),
+                        ('B2-b1Q*', [' B2-b1Q*'], 2),
+                        ('B2-b1q*', [' B2-b1q*'], 2),
+                        ('B2-B1Q*', [' B2-B1Q*'], 2),
+                        ('B2-B1q*', [' B2-B1q*'], 2),
+                        ('b2-b1Q*', [' b2', ' -b1Q*'], 2),
+                        ('b2-b1q*', [' b2', ' -b1q*'], 2),
+                        ('b2-B1Q*', [' b2', ' -B1Q*'], 2),
+                        ('b2-B1q*', [' b2', ' -B1q*'], 2),
+                        ('Bb1=Q*', [' Bb1', ' =Q*'], 2),
+                        ('Bb1=q*', [' Bb1', ' =q*'], 2),
+                        ('BB1=Q*', [' BB1=Q*'], 2),
+                        ('BB1=q*', [' BB1=q*'], 2),
+                        ('bb1=Q*', [' bb1=Q*'], 2),
+                        ('bb1=q*', [' bb1=q*'], 2),
+                        ('bB1=Q*', [' bB1=Q*'], 2),
+                        ('bB1=q*', [' bB1=q*'], 2),
+                        ('Bb1Q*', [' Bb1', ' Q*'], 2),
+                        ('Bb1q*', [' Bb1', ' q*'], 2),
+                        ('BB1Q*', [' BB1Q*'], 2),
+                        ('BB1q*', [' BB1q*'], 2),
+                        ('bb1Q*', [' bb1Q*'], 2),
+                        ('bb1q*', [' bb1q*'], 2),
+                        ('bB1Q*', [' bB1Q*'], 2),
+                        ('bB1q*', [' bB1q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_02_bishop_c2_to_b1(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1*', [' B2b1', ' *'], 2),
+                        ('B2B1*', [' B2B1*'], 2),
+                        ('b2b1*', [' b2', ' b1', ' *'], 2),
+                        ('b2B1*', [' b2', ' B1*'], 2),
+                        ('B2-b1*', [' B2-b1*'], 2),
+                        ('B2-B1*', [' B2-B1*'], 2),
+                        ('b2-b1*', [' b2', ' -b1*'], 2),
+                        ('b2-B1*', [' b2', ' -B1*'], 2),
+                        ('Bb1*', ['Bb1', '*'], None),
+                        ('BB1*', [' BB1*'], 2),
+                        ('bb1*', [' bb1*'], 2),
+                        ('bB1*', [' bB1*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_03_bishop_c3_to_b2(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3b2*', [' B3b2', ' *'], 2),
+                        ('B3B2*', [' B3B2*'], 2),
+                        ('b3b2*', [' b3', ' b2', ' *'], 2),
+                        ('b3B2*', [' b3', ' B2*'], 2),
+                        ('B3-b2*', [' B3-b2*'], 2),
+                        ('B3-B2*', [' B3-B2*'], 2),
+                        ('b3-b2*', [' b3', ' -b2*'], 2),
+                        ('b3-B2*', [' b3', ' -B2*'], 2),
+                        ('Bb2*', ['Bb2', '*'], None),
+                        ('BB2*', [' BB2*'], 2),
+                        ('bb2*', [' bb2*'], 2),
+                        ('bB2*', [' bB2*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
 
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
@@ -3159,482 +4072,11 @@ class StrictRAV(_BasePGN):
             "r2b1rk1/ppp2p1N/7Q/5b2/2B5/5p2/PPP2PPP/2K5 w - - 0 19")
 
 
-class _NonStrictTests:
-    """Override StrictPGN tests which have a different outcome, but same for
-    both, in GameTextPGN and GameIgnoreCasePGN tests.
-
-    Usage is 'class C(_NonStrictTests, StrictPGN)'.
-
-    For example, Game class allows Nge2 when a knight on c3 is pinned against
-    the king on e1, while GameStrictPGN class does not allow Nge2.
-
-    """
-
-    # StrictPGN version gives one game with state False and one tokens.
-    def test_002_a_character(self):
-        ae = self.assertEqual
-        games = self.get('A')
-        ae(len(games), 0)
-
-    # StrictPGN version gives one game with state False and one tokens.
-    def test_003_a_word(self):
-        ae = self.assertEqual
-        games = self.get('abcdef123')
-        ae(len(games), 0)
-
-    # StrictPGN version gives one game with state False and six tokens.
-    def test_004_a_sentence(self):
-        ae = self.assertEqual
-        games = self.get('The cat sat on the mat')
-        ae(len(games), 0)
-
-    # StrictPGN version gives two games.
-    # games[1].state is False and 'ff[B"b"]' token is kept.
-    def test_021_legal_game_and_gash_consuming_legal_game(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4*ff[B"b"]d41-0')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
-
-    # StrictPGN version gives two games.
-    # games[1].state is False and 'ff[B"b"]' token is kept.
-    def test_022_legal_game_and_gash_consuming_legal_game(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4*ff[B"b"] d41-0')
-        ae(len(games), 2)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
-        ae(games[1]._state, None)
-        ae(games[1]._text, ['d4', '1-0'])
-
-    # StrictPGN version gives two games.
-    # games[1].state is False and 'ff[B"b"]' token is kept.
-    def test_023_legal_game_and_gash_consuming_legal_game(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4*ff[B"b"] 1. d4 1-0')
-        ae(len(games), 2)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
-        ae(games[1]._state, None)
-        ae(games[1]._text, ['d4', '1-0'])
-
-    # StrictPGN version gives three games.
-    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
-    # token as an error.
-    def test_024_legal_game_gash_space_legal_game_both_with_moves(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4*ff [B"b"]d41-0')
-        ae(len(games), 2)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
-        ae(games[1].state, None)
-        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
-
-    # StrictPGN version gives three games.
-    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
-    # token as an error.
-    def test_025_legal_game_gash_newline_legal_game_both_with_moves(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4*ff\n[B"b"]d41-0')
-        ae(len(games), 2)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
-        ae(games[1].state, None)
-        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
-
-    # StrictPGN version gives three games.
-    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
-    # token as an error.
-    def test_026_legal_game_gash_space_newline_legal_game_both_with_moves(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]e4*ff \n[B"b"]d41-0')
-        ae(len(games), 2)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
-        ae(games[1].state, None)
-        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
-
-    # StrictPGN version gives three games.
-    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
-    # token as an error.
-    # This one, with realistic tags and movetext, occurs in a TWIC file.
-    def test_028_legal_game_and_gash_and_legal_game_both_with_moves(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]1. e4 1-0 ff [B"b"] 1. d4 1-0')
-        ae(len(games), 2)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', 'e4', '1-0'])
-        ae(games[1].state, None)
-        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
-
-    # StrictPGN version gives error too.
-    def test_051_1_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"'])
-
-    # StrictPGN version gives error too.
-    def test_051_2_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"]')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"]'])
-
-    # StrictPGN version gives error too.
-    def test_063_1_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"'])
-
-    # StrictPGN version gives error too.
-    def test_063_2_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"]')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"]'])
-
-    # StrictPGN version gives error too, but '%!' token is kept.
-    def test_066_tag_and_escaped(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]%!')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]'])
-
-    # StrictPGN version gives error too, but '%!*' token is kept.
-    def test_067_tag_and_escaped_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]%!*')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"a"]'])
-
-    # StrictPGN version gives error, having kept the '%!\n' token.
-    def test_068_tag_and_terminated_escaped_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]%!\n*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', '*'])
-
-    # StrictPGN version gives error, having kept the
-    # '%!{C}<r>e4(d4)[B"b"]%e' token.
-    def test_069_tag_and_terminated_escaped_wrapping_tokens_and_star(self):
-        ae = self.assertEqual
-        games = self.get('[A"a"]%!{C}<r>e4(d4)[B"b"]%e\n*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text, ['[A"a"]', '*'])
-
-    # StrictPGN version gives error too, but '-' token is kept.
-    def test_072_castles_O_O_incomplete_0(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1"]O-O-')
-        ae(len(games), 1)
-        ae(games[0].state, 3)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1"]',
-            'O-O'])
-
-    # Added on seeing results when crash traced to game in crafty06_03.pgn.
-    # Strict version gives an error: c4c5 is long algebraic notation.
-    def test_113_start_rav_after_moves_after_nags(self):
-        ae = self.assertEqual
-        games = self.get('$10$21$10$22c4e5c4c5(()')
-        ae(len(games), 1)
-        ae(games[0].state, 10)
-        ae(games[0]._text,
-           ['$10', '$21', '$10', '$22', 'c4', 'e5', 'c5', '(', '(', ')'])
-
-    # Added after changes to convertion of chess engine responses to PGN.
-    def test_115_long_algebraic_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4e7e5')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['e4', 'e5'])
-
-    # Added after changes to convertion of chess engine responses to PGN.
-    def test_116_long_algebraic_pawn_move_game_terminated(self):
-        ae = self.assertEqual
-        games = self.get('e4e7e5*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', '*'])
-
-    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_163_bxc8q.
-    def test_120_bxc8q(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
-    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_162_dxc8q.
-    def test_123_dxc8q(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8qqg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
-    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_128_bxc8 (and test_129_bxc8).
-    def test_125_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
-    # Compare with test_161_bxc8.
-    def test_129_bxc8(self):
-        ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['[SetUp"1"]',
-            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
-
-    def test_140_partial_tag_01(self):
-        ae = self.assertEqual
-        games = self.get('[A"a')
-        ae(len(games), 0)
-
-    def test_142_bad_value_in_tag_01(self):
-        ae = self.assertEqual
-        games = self.get('[A""a" ]')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text, ['[A"\\"a"]'])
-
-    def test_143_bad_value_in_tag_02(self):
-        ae = self.assertEqual
-        games = self.get('[A""a"][B"b"]')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text, ['[A"\\"a"]', '[B"b"]'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_164_long_algebraic_white_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4e5d2d4*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'd4', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_165_long_algebraic_white_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4e5d2-d4*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'd4', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_166_long_algebraic_white_b_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4e5b2b4*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'b4', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_167_long_algebraic_white_b_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4e5b2-b4*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'b4', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
-    def test_168_long_algebraic_black_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4e7e5*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_169_long_algebraic_black_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4e7-e5*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_170_long_algebraic_black_b_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4b7b5*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'b5', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_171_long_algebraic_black_b_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4b7-b5*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'b5', '*'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_172_long_algebraic_uc_white_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4e5D2D4*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['e4', 'e5'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_173_long_algebraic_uc_white_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4e5D2-D4*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['e4', 'e5'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_174_long_algebraic_uc_white_b_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4e5B2B4*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['e4', 'e5'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_175_long_algebraic_uc_white_b_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4e5B2-B4*')
-        ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text,
-           ['e4', 'e5'])
-
-    # Added while fixing Little.pgn upper case processing.
-    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
-    def test_176_long_algebraic_uc_black_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4E7E5*')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['e4'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_177_long_algebraic_uc_black_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4E7-E5*')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['e4'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_178_long_algebraic_uc_black_b_pawn_move(self):
-        ae = self.assertEqual
-        games = self.get('e4B7B5*')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['e4'])
-
-    # Added while fixing Little.pgn upper case processing.
-    def test_179_long_algebraic_uc_black_b_pawn_move_with_hyphen(self):
-        ae = self.assertEqual
-        games = self.get('e4B7-B5*')
-        ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text,
-           ['e4'])
-
-    def test_180_01_too_much_precision(self):
-        ae = self.assertEqual
-        games = self.get('N1f3*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['Nf3', '*'])
-
-    def test_180_02_too_much_precision(self):
-        ae = self.assertEqual
-        games = self.get('Ngf3*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['Nf3', '*'])
-
-    def test_180_03_too_much_precision(self):
-        ae = self.assertEqual
-        games = self.get('Ng1f3*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['Nf3', '*'])
-
-    def test_181_01_pawn_move_or_too_much_precision(self):
-        ae = self.assertEqual
-        games = self.get('e4e5B1d3*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'Bd3', '*'])
-
-    def test_181_04_pawn_move_or_too_much_precision(self):
-        ae = self.assertEqual
-        games = self.get('e4e5b1d3*')
-        ae(len(games), 1)
-        ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'Bd3', '*'])
-
-
-class _NonStrictPGNTests:
+class _NonStrictPGN:
     """Override StrictPGN tests which have a different outcome, but same for
     all, in PGN, PGNOneCharacterAtATime, and PGNExtendByOneCharacter tests.
 
-    Usage is 'class C(_NonStrictPGNTests, StrictPGN)'.
+    Usage is 'class C(_NonStrictPGN, StrictPGN)'.
 
     For example, Game class allows Nge2 when a knight on c3 is pinned against
     the king on e1, while GameStrictPGN class does not allow Nge2.
@@ -3708,8 +4150,8 @@ class _NonStrictPGNTests:
            ['e4', 'e5', 'd4', ' -d4*'])
 
     # Added while fixing Little.pgn upper case processing.
-    # d2d4 is redundant precision, not long algebraic notation.
-    def test_166_long_algebraic_white_b_pawn_move(self):
+    # b2b4 is redundant precision, not long algebraic notation.
+    def test_166_01_long_algebraic_white_b_pawn_move(self):
         ae = self.assertEqual
         games = self.get('e4e5b2b4*')
         ae(len(games), 1)
@@ -3717,16 +4159,36 @@ class _NonStrictPGNTests:
         ae(games[0]._text,
            ['e4', 'e5', 'b4', '*'])
 
+    def test_166_02_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6b7*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            'b7', '*'])
+        ae(games[0].state, None)
+
     # Added while fixing Little.pgn upper case processing.
     # Hyphen treated like test_165_long_algebraic_white_pawn_move_with_hyphen
     # but b-pawn used to test for 'bishop or pawn' interpretation confusion.
-    def test_167_long_algebraic_white_b_pawn_move_with_hyphen(self):
+    def test_167_01_long_algebraic_white_b_pawn_move_with_hyphen(self):
         ae = self.assertEqual
         games = self.get('e4e5b2-b4*')
         ae(len(games), 1)
         ae(games[0].state, 3)
         ae(games[0]._text,
            ['e4', 'e5', 'b4', ' -b4*'])
+
+    def test_167_02_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6-b7*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            'b7', ' -b7*'])
+        ae(games[0].state, 3)
 
     # Added while fixing Little.pgn upper case processing.
     # Adds the '*' compared with test_115_long_algebraic_pawn_move.
@@ -3794,6 +4256,14 @@ class _NonStrictPGNTests:
         ae(games[0]._text,
            ['Nf3', '*'])
 
+    def test_180_04_long_algebraic(self):
+        ae = self.assertEqual
+        games = self.get('Ng1-f3*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['Nf3', ' -f3*'])
+
     def test_181_01_pawn_move_or_too_much_precision(self):
         ae = self.assertEqual
         games = self.get('e4e5B1d3*')
@@ -3802,22 +4272,302 @@ class _NonStrictPGNTests:
         ae(games[0]._text,
            ['e4', 'e5', 'Bd3', '*'])
 
+    def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', [' B3xc4', ' *'], 2),
+                        ('B3xC4*', [' B3xC4*'], 2),
+                        ('b3xc4*', ['bxc4', ' xc4', ' *'], 3),
+                        ('b3xC4*', [' b3', ' xC4*'], 2),
+                        ('Bxc4*', [' Bxc4', ' *'], 2),
+                        ('BxC4*', [' BxC4*'], 2),
+                        ('bxc4*', ['bxc4', '*'], None),
+                        ('bxC4*', [' bxC4*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
 
-class PGN(_NonStrictPGNTests, StrictPGN):
+    def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', ['Bxc4', '*'], None),
+                        ('B3xC4*', [' B3xC4*'], 2),
+                        ('b3xc4*', [' b3', ' xc4', ' *'], 2),
+                        ('b3xC4*', [' b3', ' xC4*'], 2),
+                        ('Bxc4*', ['Bxc4', '*'], None),
+                        ('BxC4*', [' BxC4*'], 2),
+                        ('bxc4*', [' bxc4', ' *'], 2),
+                        ('bxC4*', [' bxC4*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', ['Bxc8', ' =Q*'], 3), #
+                        ('B7xc8=q*', ['Bxc8', ' =q*'], 3), #
+                        ('B7xC8=Q*', [' B7xC8=Q*'], 2),
+                        ('B7xC8=q*', [' B7xC8=q*'], 2),
+                        ('b7xc8=Q*', [' b7', ' xc8', ' =Q*'], 2),
+                        ('b7xc8=q*', [' b7', ' xc8', ' =q*'], 2),
+                        ('b7xC8=Q*', [' b7', ' xC8=Q*'], 2),
+                        ('b7xC8=q*', [' b7', ' xC8=q*'], 2),
+                        ('B7xc8Q*', ['Bxc8', ' Q*'], 3), #
+                        ('B7xc8q*', ['Bxc8', ' q*'], 3), #
+                        ('B7xC8Q*', [' B7xC8Q*'], 2),
+                        ('B7xC8q*', [' B7xC8q*'], 2),
+                        ('b7xc8Q*', [' b7', ' xc8', ' Q*'], 2),
+                        ('b7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('b7xC8Q*', [' b7', ' xC8Q*'], 2),
+                        ('b7xC8q*', [' b7', ' xC8q*'], 2),
+                        ('Bxc8=Q*', ['Bxc8', ' =Q*'], 3),
+                        ('Bxc8=q*', ['Bxc8', ' =q*'], 3),
+                        ('BxC8=Q*', [' BxC8=Q*'], 2),
+                        ('BxC8=q*', [' BxC8=q*'], 2),
+                        ('bxc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('bxc8=q*', [' bxc8=q*'], 2),
+                        ('bxC8=Q*', [' bxC8=Q*'], 2),
+                        ('bxC8=q*', [' bxC8=q*'], 2),
+                        ('Bxc8Q*', ['Bxc8', ' Q*'], 3),
+                        ('Bxc8q*', ['Bxc8', ' q*'], 3),
+                        ('BxC8Q*', [' BxC8Q*'], 2),
+                        ('BxC8q*', [' BxC8q*'], 2),
+                        ('bxc8Q*', [' bxc8Q*'], 2),
+                        ('bxc8q*', [' bxc8q*'], 2),
+                        ('bxC8Q*', [' bxC8Q*'], 2),
+                        ('bxC8q*', [' bxC8q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8*', ['Bxc8', '*'], None),
+                        ('B7xC8*', [' B7xC8*'], 2),
+                        ('b7xc8*', [' b7', ' xc8', ' *'], 2),
+                        ('b7xC8*', [' b7', ' xC8*'], 2),
+                        ('Bxc8*', ['Bxc8', '*'], None),
+                        ('BxC8*', [' BxC8*'], 2),
+                        ('bxc8*', [' bxc8*'], 2),
+                        ('bxC8*', [' bxC8*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_02_bishop_c7_to_b8(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8*', ['Bb8', '*'], None),
+                        ('B7B8*', [' B7B8*'], 2),
+                        ('b7b8*', [' b7', ' b8', ' *'], 2),
+                        ('b7B8*', [' b7', ' B8*'], 2),
+                        ('B7-b8*', [' B7-b8*'], 2),
+                        ('B7-B8*', [' B7-B8*'], 2),
+                        ('b7-b8*', [' b7', ' -b8*'], 2),
+                        ('b7-B8*', [' b7', ' -B8*'], 2),
+                        ('Bb8*', ['Bb8', '*'], None),
+                        ('BB8*', [' BB8*'], 2),
+                        ('bb8*', [' bb8*'], 2),
+                        ('bB8*', [' bB8*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_03_bishop_c6_to_b7(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6b7*', ['Bb7', '*'], None),
+                        ('B6B7*', [' B6B7*'], 2),
+                        ('b6b7*', [' b6', ' b7', ' *'], 2),
+                        ('b6B7*', [' b6', ' B7*'], 2),
+                        ('B6-b7*', [' B6-b7*'], 2),
+                        ('B6-B7*', [' B6-B7*'], 2),
+                        ('b6-b7*', [' b6', ' -b7*'], 2),
+                        ('b6-B7*', [' b6', ' -B7*'], 2),
+                        ('Bb7*', ['Bb7', '*'], None),
+                        ('BB7*', [' BB7*'], 2),
+                        ('bb7*', [' bb7*'], 2),
+                        ('bB7*', [' bB7*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', [' B6xc5', ' *'], 2),
+                        ('B6xC5*', [' B6xC5*'], 2),
+                        ('b6xc5*', ['bxc5', ' xc5', ' *'], 3),
+                        ('b3xC5*', [' b3', ' xC5*'], 2),
+                        ('Bxc5*', [' Bxc5', ' *'], 2),
+                        ('BxC5*', [' BxC5*'], 2),
+                        ('bxc5*', ['bxc5', '*'], None),
+                        ('bxC5*', [' bxC5*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', ['Bxc5', '*'], None),
+                        ('B6xC5*', [' B6xC5*'], 2),
+                        ('b6xc5*', [' b6', ' xc5', ' *'], 2),
+                        ('b6xC5*', [' b6', ' xC5*'], 2),
+                        ('Bxc5*', ['Bxc5', '*'], None),
+                        ('BxC5*', [' BxC5*'], 2),
+                        ('bxc5*', [' bxc5', ' *'], 2),
+                        ('bxC5*', [' bxC5*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', ['Bxc1', ' =Q*'], 3), #
+                        ('B2xc1=q*', ['Bxc1', ' =q*'], 3), #
+                        ('B2xC1=Q*', [' B2xC1=Q*'], 2),
+                        ('B2xC1=q*', [' B2xC1=q*'], 2),
+                        ('b2xc1=Q*', [' b2', ' xc1', ' =Q*'], 2),
+                        ('b2xc1=q*', [' b2', ' xc1', ' =q*'], 2),
+                        ('b2xC1=Q*', [' b2', ' xC1=Q*'], 2),
+                        ('b2xC1=q*', [' b2', ' xC1=q*'], 2),
+                        ('B2xc1Q*', ['Bxc1', ' Q*'], 3), #
+                        ('B2xc1q*', ['Bxc1', ' q*'], 3), #
+                        ('B2xC1Q*', [' B2xC1Q*'], 2),
+                        ('B2xC1q*', [' B2xC1q*'], 2),
+                        ('b2xc1Q*', [' b2', ' xc1', ' Q*'], 2),
+                        ('b2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('b2xC1Q*', [' b2', ' xC1Q*'], 2),
+                        ('b2xC1q*', [' b2', ' xC1q*'], 2),
+                        ('Bxc1=Q*', ['Bxc1', ' =Q*'], 3),
+                        ('Bxc1=q*', ['Bxc1', ' =q*'], 3),
+                        ('BxC1=Q*', [' BxC1=Q*'], 2),
+                        ('BxC1=q*', [' BxC1=q*'], 2),
+                        ('bxc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('bxc1=q*', [' bxc1=q*'], 2),
+                        ('bxC1=Q*', [' bxC1=Q*'], 2),
+                        ('bxC1=q*', [' bxC1=q*'], 2),
+                        ('Bxc1Q*', ['Bxc1', ' Q*'], 3),
+                        ('Bxc1q*', ['Bxc1', ' q*'], 3),
+                        ('BxC1Q*', [' BxC1Q*'], 2),
+                        ('BxC1q*', [' BxC1q*'], 2),
+                        ('bxc1Q*', [' bxc1Q*'], 2),
+                        ('bxc1q*', [' bxc1q*'], 2),
+                        ('bxC1Q*', [' bxC1Q*'], 2),
+                        ('bxC1q*', [' bxC1q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1*', ['Bxc1', '*'], None),
+                        ('B2xC1*', [' B2xC1*'], 2),
+                        ('b2xc1*', [' b2', ' xc1', ' *'], 2),
+                        ('b2xC1*', [' b2', ' xC1*'], 2),
+                        ('Bxc1*', ['Bxc1', '*'], None),
+                        ('BxC1*', [' BxC1*'], 2),
+                        ('bxc1*', [' bxc1*'], 2),
+                        ('bxC1*', [' bxC1*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_02_bishop_c2_to_b1(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1*', ['Bb1', '*'], None),
+                        ('B2B1*', [' B2B1*'], 2),
+                        ('b2b1*', [' b2', ' b1', ' *'], 2),
+                        ('b2B1*', [' b2', ' B1*'], 2),
+                        ('B2-b1*', [' B2-b1*'], 2),
+                        ('B2-B1*', [' B2-B1*'], 2),
+                        ('b2-b1*', [' b2', ' -b1*'], 2),
+                        ('b2-B1*', [' b2', ' -B1*'], 2),
+                        ('Bb1*', ['Bb1', '*'], None),
+                        ('BB1*', [' BB1*'], 2),
+                        ('bb1*', [' bb1*'], 2),
+                        ('bB1*', [' bB1*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_03_bishop_c3_to_b2(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3b2*', ['Bb2', '*'], None),
+                        ('B3B2*', [' B3B2*'], 2),
+                        ('b3b2*', [' b3', ' b2', ' *'], 2),
+                        ('b3B2*', [' b3', ' B2*'], 2),
+                        ('B3-b2*', [' B3-b2*'], 2),
+                        ('B3-B2*', [' B3-B2*'], 2),
+                        ('b3-b2*', [' b3', ' -b2*'], 2),
+                        ('b3-B2*', [' b3', ' -B2*'], 2),
+                        ('Bb2*', ['Bb2', '*'], None),
+                        ('BB2*', [' BB2*'], 2),
+                        ('bb2*', [' bb2*'], 2),
+                        ('bB2*', [' bB2*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+
+class PGN(_NonStrictPGN, StrictPGN):
     """Provide tests for Game version of parser."""
 
     def setUp(self):
         self.pgn = parser.PGN()
 
 
-class PGNOneCharacterAtATime(_NonStrictPGNTests, StrictPGNOneCharacterAtATime):
+class PGNOneCharacterAtATime(_NonStrictPGN, StrictPGNOneCharacterAtATime):
     """Repeat PGN tests reading text one character at a time."""
 
     def setUp(self):
         self.pgn = parser.PGN()
 
 
-class PGNExtendByOneCharacter(_NonStrictPGNTests,
+class PGNExtendByOneCharacter(_NonStrictPGN,
                               StrictPGNExtendByOneCharacter):
     """Repeat PGN tests reading text in two chunks, last is length 1."""
 
@@ -4152,13 +4902,564 @@ class RAV(StrictRAV):
         self.pgn = parser.PGN()
 
 
-class GameTextPGN(_NonStrictTests, StrictPGN):
+class _NonStrictText:
+    """Override StrictPGN tests which have a different outcome, but same for
+    both, in GameTextPGN and GameIgnoreCasePGN tests.
+
+    Usage is 'class C(_NonStrictText, StrictPGN)'.
+
+    For example, Game class allows Nge2 when a knight on c3 is pinned against
+    the king on e1, while GameStrictPGN class does not allow Nge2.
+
+    """
+
+    # StrictPGN version gives one game with state False and one tokens.
+    def test_002_a_character(self):
+        ae = self.assertEqual
+        games = self.get('A')
+        ae(len(games), 0)
+
+    # StrictPGN version gives one game with state False and one tokens.
+    def test_003_a_word(self):
+        ae = self.assertEqual
+        games = self.get('abcdef123')
+        ae(len(games), 0)
+
+    # StrictPGN version gives one game with state False and six tokens.
+    def test_004_a_sentence(self):
+        ae = self.assertEqual
+        games = self.get('The cat sat on the mat')
+        ae(len(games), 0)
+
+    # StrictPGN version gives two games.
+    # games[1].state is False and 'ff[B"b"]' token is kept.
+    def test_021_legal_game_and_gash_consuming_legal_game(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4*ff[B"b"]d41-0')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
+
+    # StrictPGN version gives two games.
+    # games[1].state is False and 'ff[B"b"]' token is kept.
+    def test_022_legal_game_and_gash_consuming_legal_game(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4*ff[B"b"] d41-0')
+        ae(len(games), 2)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
+        ae(games[1]._state, None)
+        ae(games[1]._text, ['d4', '1-0'])
+
+    # StrictPGN version gives two games.
+    # games[1].state is False and 'ff[B"b"]' token is kept.
+    def test_023_legal_game_and_gash_consuming_legal_game(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4*ff[B"b"] 1. d4 1-0')
+        ae(len(games), 2)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
+        ae(games[1]._state, None)
+        ae(games[1]._text, ['d4', '1-0'])
+
+    # StrictPGN version gives three games.
+    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
+    # token as an error.
+    def test_024_legal_game_gash_space_legal_game_both_with_moves(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4*ff [B"b"]d41-0')
+        ae(len(games), 2)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
+        ae(games[1].state, None)
+        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
+
+    # StrictPGN version gives three games.
+    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
+    # token as an error.
+    def test_025_legal_game_gash_newline_legal_game_both_with_moves(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4*ff\n[B"b"]d41-0')
+        ae(len(games), 2)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
+        ae(games[1].state, None)
+        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
+
+    # StrictPGN version gives three games.
+    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
+    # token as an error.
+    def test_026_legal_game_gash_space_newline_legal_game_both_with_moves(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]e4*ff \n[B"b"]d41-0')
+        ae(len(games), 2)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '*'])
+        ae(games[1].state, None)
+        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
+
+    # StrictPGN version gives three games.
+    # games[0] is same and games[1] becomes games[2] with games[1] for 'ff'
+    # token as an error.
+    # This one, with realistic tags and movetext, occurs in a TWIC file.
+    def test_028_legal_game_and_gash_and_legal_game_both_with_moves(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]1. e4 1-0 ff [B"b"] 1. d4 1-0')
+        ae(len(games), 2)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', 'e4', '1-0'])
+        ae(games[1].state, None)
+        ae(games[1]._text, ['[B"b"]', 'd4', '1-0'])
+
+    # StrictPGN version gives error too.
+    def test_051_1_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"'])
+
+    # StrictPGN version gives error too.
+    def test_051_2_tag_and_incomplete_comment_wrapping_tokens_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]{C;c\n<r>e4(d4)[B"b"]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['[A"a"]', ' {C;c\n<r>e4(d4)[B"b"]'])
+
+    # StrictPGN version gives error too.
+    def test_063_1_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"'])
+
+    # StrictPGN version gives error too.
+    def test_063_2_tag_and_incomplete_reserved_wrapping_tokens_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]<r;c\n{C}e4(d4)[B"b"]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"]'])
+
+    # StrictPGN version gives error too, but '%!' token is kept.
+    def test_066_tag_and_escaped(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]%!')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"a"]'])
+
+    # StrictPGN version gives error too, but '%!*' token is kept.
+    def test_067_tag_and_escaped_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]%!*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"a"]'])
+
+    # StrictPGN version gives error, having kept the '%!\n' token.
+    def test_068_tag_and_terminated_escaped_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]%!\n*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', '*'])
+
+    # StrictPGN version gives error, having kept the
+    # '%!{C}<r>e4(d4)[B"b"]%e' token.
+    def test_069_tag_and_terminated_escaped_wrapping_tokens_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]%!{C}<r>e4(d4)[B"b"]%e\n*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ['[A"a"]', '*'])
+
+    # StrictPGN version gives error too, but '-' token is kept.
+    def test_072_castles_O_O_incomplete_0(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1"]O-O-')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1"]',
+            'O-O'])
+
+    # Added on seeing results when crash traced to game in crafty06_03.pgn.
+    # Strict version gives an error: c4c5 is long algebraic notation.
+    def test_113_start_rav_after_moves_after_nags(self):
+        ae = self.assertEqual
+        games = self.get('$10$21$10$22c4e5c4c5(()')
+        ae(len(games), 1)
+        ae(games[0].state, 10)
+        ae(games[0]._text,
+           ['$10', '$21', '$10', '$22', 'c4', 'e5',
+            'c5', '(', '(', ')'])
+
+    # Added after changes to convertion of chess engine responses to PGN.
+    # e7e5 is redundant precision, not long algebraic notation.
+    def test_115_long_algebraic_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added after changes to convertion of chess engine responses to PGN.
+    # e7e5 is redundant precision, not long algebraic notation.
+    def test_116_long_algebraic_pawn_move_game_terminated(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_163_bxc8q.
+    def test_120_05_bxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    # The significant tokens from pgn_files test_055 which caused an exception
+    # in the 'text' classes.
+    def test_121_09_rav_sequences(self):
+        ae = self.assertEqual
+        games = self.get('c4(263,500 USD)! (2729) - Svidler,P (')
+        ae(len(games), 1)
+        ae(games[0].state, 4)
+        ae(games[0]._text, ['c4', '(', '(', ')', ' ('])
+
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_162_dxc8q.
+    def test_123_dxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]dxc8qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    # Changed while fixing 'e4e5nf3nc6bb5a6' problem.
+    # Compare with test_128_bxc8 (and test_129_bxc8).
+    def test_125_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    # Compare with test_161_bxc8.
+    def test_129_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    def test_140_partial_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A"a')
+        ae(len(games), 0)
+
+    def test_142_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A""a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"\\"a"]'])
+
+    def test_143_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A""a"][B"b"]')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text, ['[A"\\"a"]', '[B"b"]'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_164_long_algebraic_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2d4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_165_long_algebraic_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5d2-d4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'd4', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_167_01_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2-b4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    def test_167_02_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6-b7*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            'b7', '*'])
+
+    def test_167_03_long_algebraic_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]b7-b8=Q*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
+            'b8=Q', '*'])
+        ae(games[0].state, None)
+
+    def test_167_04_long_algebraic_white_f_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]f7-f8=Q*')
+        ae(len(games), 1)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]',
+            'f8=Q', '*'])
+        ae(games[0].state, None)
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    # e7e5 is redundant precision, not long algebraic notation.
+    def test_168_long_algebraic_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e7e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_169_long_algebraic_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e7-e5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_171_long_algebraic_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4b7-b5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    def test_180_01_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('N1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_02_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ngf3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_03_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('Ng1f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_180_04_long_algebraic(self):
+        ae = self.assertEqual
+        games = self.get('Ng1-f3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['Nf3', '*'])
+
+    def test_181_01_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
+
+    def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get(''.join((
+            ['[SetUp"1"]', '[FEN"5k2/8/8/8/2n5/1B6/8/5K2 w - - 0 1"]',
+             'B3xc4*'])))
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"5k2/8/8/8/2n5/1B6/8/5K2 w - - 0 1"]',
+            'Bxc4', '*'])
+
+
+class GameTextPGN(_NonStrictText, StrictPGN):
     """Provide tests for GameTextPGN version of parser."""
 
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameTextPGN)
 
-    def test_121_bxc8_q(self):
+    def test_118_01_BxC4_without_B_on_board(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"6k1/8/8/8/2p5/1P6/8/6K1 w - - 0 1"]BxC4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"6k1/8/8/8/2p5/1P6/8/6K1 w - - 0 1"]'])
+
+    def test_118_02_BxC4_with_B_on_board(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"6k1/8/8/8/2p5/1P6/1B6/6K1 w - - 0 1"]BxC4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"6k1/8/8/8/2p5/1P6/1B6/6K1 w - - 0 1"]'])
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_06_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa8*', [], 2, 'w'),
+                           ('bb8*', [], 2, 'w'),
+                           ('bxc8*', [], 2, 'w'),
+                           ('bd8*', [], 2, 'w'),
+                           ('bxe8*', [], 2, 'w'),
+                           ('bxa1*', [], 2, 'b'),
+                           ('bb1*', [], 2, 'b'),
+                           ('bxc1*', [], 2, 'b'),
+                           ('bd1*', [], 2, 'b'),
+                           ('bxe1*', [], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/2B5//2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/2B5//2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_08_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa7*', [' bxa7', ' *'], 2, 'w'),
+                           ('bb7*', [], 2, 'w'),
+                           ('bxc7*', [' bxc7', ' *'], 2, 'w'),
+                           ('bd7*', [], 2, 'w'),
+                           ('bxe7*', [' bxe7', ' *'], 2, 'w'),
+                           ('bxa2*', [' bxa2', ' *'], 2, 'b'),
+                           ('bb2*', [], 2, 'b'),
+                           ('bxc2*', [' bxc2', ' *'], 2, 'b'),
+                           ('bd2*', [], 2, 'b'),
+                           ('bxe2*', [' bxe2', ' *'], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_09_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('b5xa7*', [' bxa7', ' *'], 2, 'w'),
+                           ('b6b7*', [' b6', ' b7', ' *'], 2, 'w'),
+                           ('b4xc7*', [' bxc7', ' *'], 2, 'w'),
+                           ('b6d7*', [' b6', ' d7', ' *'], 2, 'w'),
+                           ('b5xe7*', [' bxe7', ' *'], 2, 'w'),
+                           ('b4xa2*', [' bxa2', ' *'], 2, 'b'),
+                           ('b3b2*', [' b3', ' b2', ' *'], 2, 'b'),
+                           ('b5xc2*', [' bxc2', ' *'], 2, 'b'),
+                           ('b3d2*', [' b3', ' d2', ' *'], 2, 'b'),
+                           ('b4xe2*', [' bxe2', ' *'], 2, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    def test_120_03_bxc8_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=Qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'bxc8=Q'])
+
+    def test_120_04_bxc8Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8Qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' bxc8Q', ' qg3*'])
+
+    def test_120_06_bxc8_q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
@@ -4168,7 +5469,7 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
-    def test_122_bxc8_qx(self):
+    def test_120_07_bxc8_qx(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=q qg3*')
@@ -4295,7 +5596,7 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
             '[FEN"2r5/3P4/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
 
     # Added while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_120_bxc8q.
+    # Compare with test_120_05_bxc8q.
     def test_163_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -4305,6 +5606,110 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # b2b4 is redundant precision, not long algebraic notation.
+    def test_166_01_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2b4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # b6b7 is redundant precision, not long algebraic notation.
+    def test_166_02_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6b7*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            'b7', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # b7b5 is redundant precision, not long algebraic notation.
+    def test_170_long_algebraic_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4b7b5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_172_long_algebraic_uc_white_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2D4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_173_long_algebraic_uc_white_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5D2-D4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_174_long_algebraic_uc_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2B4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_175_long_algebraic_uc_white_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4e5B2-B4*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # Adds the '*' compared with test_115_long_algebraic_pawn_move.
+    def test_176_long_algebraic_uc_black_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4E7E5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_177_long_algebraic_uc_black_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4E7-E5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_178_long_algebraic_uc_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4B7B5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
+
+    # Added while fixing Little.pgn upper case processing.
+    def test_179_long_algebraic_uc_black_b_pawn_move_with_hyphen(self):
+        ae = self.assertEqual
+        games = self.get('e4B7-B5*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text,
+           ['e4'])
 
     def test_181_02_pawn_move_or_too_much_precision(self):
         ae = self.assertEqual
@@ -4322,8 +5727,500 @@ class GameTextPGN(_NonStrictTests, StrictPGN):
         ae(games[0]._text,
            ['e4', 'e5'])
 
+    def test_181_04_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' b1', ' *'])
 
-class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
+    def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', [' B3xc4', ' *'], 2),
+                        ('B3xC4*', [], 2),
+                        ('b3xc4*', ['bxc4', '*'], None),
+                        ('b3xC4*', ['bxc4'], 3),
+                        ('Bxc4*', [' Bxc4', ' *'], 2),
+                        ('BxC4*', [], 2),
+                        ('bxc4*', ['bxc4', '*'], None),
+                        ('bxC4*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', ['Bxc4', '*'], None),
+                        ('B3xC4*', [], 2),
+                        ('b3xc4*', [' bxc4', ' *'], 2),
+                        ('b3xC4*', [' b3', ' xC4*'], 2),
+                        ('Bxc4*', ['Bxc4', '*'], None),
+                        ('BxC4*', [], 2),
+                        ('bxc4*', [' bxc4', ' *'], 2),
+                        ('bxC4*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # Ignore unrecognized tokens is done in text mode when _state is not None,
+    # but why some and not others in this test?
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', [' B7xc8', ' =Q*'], 2),
+                        ('B7xc8=q*', [' B7xc8', ' =q*'], 2),
+                        ('B7xC8=Q*', [], 2),
+                        ('B7xC8=q*', [], 2),
+                        ('b7xc8=Q*', ['bxc8=Q', '*'], None),
+                        ('b7xc8=q*', [' b7', ' xc8', ' =q*'], 2),
+                        ('b7xC8=Q*', [' b7', ' xC8=Q*'], 2),
+                        ('b7xC8=q*', [' b7', ' xC8=q*'], 2),
+                        ('B7xc8Q*', [' B7xc8', ' Q*'], 2),
+                        ('B7xc8q*', [' B7xc8', ' q*'], 2),
+                        ('B7xC8Q*', [], 2),
+                        ('B7xC8q*', [], 2),
+                        ('b7xc8Q*', [' bxc8Q', ' *'], 2),
+                        ('b7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('b7xC8Q*', [' b7', ' xC8Q*'], 2),
+                        ('b7xC8q*', [' b7', ' xC8q*'], 2),
+                        ('Bxc8=Q*', [' Bxc8', ' =Q*'], 2),
+                        ('Bxc8=q*', [' Bxc8', ' =q*'], 2),
+                        ('BxC8=Q*', [], 2),
+                        ('BxC8=q*', [], 2),
+                        ('bxc8=Q*', ['bxc8=Q', '*'], None),
+                        ('bxc8=q*', [], 2),
+                        ('bxC8=Q*', [], 2),
+                        ('bxC8=q*', [], 2),
+                        ('Bxc8Q*', [' Bxc8', ' Q*'], 2),
+                        ('Bxc8q*', [' Bxc8', ' q*'], 2),
+                        ('BxC8Q*', [], 2),
+                        ('BxC8q*', [], 2),
+                        ('bxc8Q*', [' bxc8Q', ' *'], 2),
+                        ('bxc8q*', [], 2),
+                        ('bxC8Q*', [], 2),
+                        ('bxC8q*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', ['Bxc8'], 3),
+                        ('B7xc8=q*', ['Bxc8'], 3),
+                        ('B7xC8=Q*', [], 2),
+                        ('B7xC8=q*', [], 2),
+                        ('b7xc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('b7xc8=q*', [' b7', ' xc8', ' =q*'], 2),
+                        ('b7xC8=Q*', [' b7', ' xC8=Q*'], 2),
+                        ('b7xC8=q*', [' b7', ' xC8=q*'], 2),
+                        ('B7xc8Q*', ['Bxc8'], 3),
+                        ('B7xc8q*', ['Bxc8'], 3),
+                        ('B7xC8Q*', [], 2),
+                        ('B7xC8q*', [], 2),
+                        ('b7xc8Q*', [' bxc8Q', ' *'], 2),
+                        ('b7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('b7xC8Q*', [' b7', ' xC8Q*'], 2),
+                        ('b7xC8q*', [' b7', ' xC8q*'], 2),
+                        ('Bxc8=Q*', ['Bxc8'], 3),
+                        ('Bxc8=q*', ['Bxc8'], 3),
+                        ('BxC8=Q*', [], 2),
+                        ('BxC8=q*', [], 2),
+                        ('bxc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('bxc8=q*', [], 2),
+                        ('bxC8=Q*', [], 2),
+                        ('bxC8=q*', [], 2),
+                        ('Bxc8Q*', ['Bxc8'], 3),
+                        ('Bxc8q*', ['Bxc8'], 3),
+                        ('BxC8Q*', [], 2),
+                        ('BxC8q*', [], 2),
+                        ('bxc8Q*', [' bxc8Q', ' *'], 2),
+                        ('bxc8q*', [], 2),
+                        ('bxC8Q*', [], 2),
+                        ('bxC8q*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8*', ['Bxc8', '*'], None),
+                        ('B7xC8*', [], 2),
+                        ('b7xc8*', [' b7', ' xc8', ' *'], 2),
+                        ('b7xC8*', [' b7', ' xC8*'], 2),
+                        ('Bxc8*', ['Bxc8', '*'], None),
+                        ('BxC8*', [], 2),
+                        ('bxc8*', [], 2),
+                        ('bxC8*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8=Q*', [' B7b8', ' =Q*'], 2),
+                        ('B7b8=q*', [' B7b8', ' =q*'], 2),
+                        ('B7B8=Q*', [], 2),
+                        ('B7B8=q*', [], 2),
+                        ('b7b8=Q*', [' b7', ' b8=Q', ' *'], 2),
+                        ('b7b8=q*', [' b7', ' b8', ' =q*'], 2),
+                        ('b7B8=Q*', [' b7', ' B8=Q*'], 2),
+                        ('b7B8=q*', [' b7', ' B8=q*'], 2),
+                        ('B7b8Q*', [' B7b8', ' Q*'], 2),
+                        ('B7b8q*', [' B7b8', ' q*'], 2),
+                        ('B7B8Q*', [], 2),
+                        ('B7B8q*', [], 2),
+                        ('b7b8Q*', [' b7', ' b8Q', ' *'], 2),
+                        ('b7b8q*', [' b7', ' b8', ' q*'], 2),
+                        ('b7B8Q*', [' b7', ' B8Q*'], 2),
+                        ('b7B8q*', [' b7', ' B8q*'], 2),
+                        ('B7-b8=Q*', [' B7b8', ' =Q*'], 2),
+                        ('B7-b8=q*', [' B7b8', ' =q*'], 2),
+                        ('B7-B8=Q*', [], 2),
+                        ('B7-B8=q*', [], 2),
+                        ('b7-b8=Q*', ['b8=Q', '*'], None),
+                        ('b7-b8=q*', [' b7', ' -b8', ' =q*'], 2),
+                        ('b7-B8=Q*', [' b7', ' -B8=Q*'], 2),
+                        ('b7-B8=q*', [' b7', ' -B8=q*'], 2),
+                        ('B7-b8Q*', [' B7b8', ' Q*'], 2),
+                        ('B7-b8q*', [' B7b8', ' q*'], 2),
+                        ('B7-B8Q*', [], 2),
+                        ('B7-B8q*', [], 2),
+                        ('b7-b8Q*', [' b8', ' *'], 2),
+                        ('b7-b8q*', [' b7', ' -b8', ' q*'], 2),
+                        ('b7-B8Q*', [' b7', ' -B8Q*'], 2),
+                        ('b7-B8q*', [' b7', ' -B8q*'], 2),
+                        ('Bb8=Q*', [' Bb8', ' =Q*'], 2),
+                        ('Bb8=q*', [' Bb8', ' =q*'], 2),
+                        ('BB8=Q*', [], 2),
+                        ('BB8=q*', [], 2),
+                        ('bb8=Q*', [], 2),
+                        ('bb8=q*', [], 2),
+                        ('bB8=Q*', [], 2),
+                        ('bB8=q*', [], 2),
+                        ('Bb8Q*', [' Bb8', ' Q*'], 2),
+                        ('Bb8q*', [' Bb8', ' q*'], 2),
+                        ('BB8Q*', [], 2),
+                        ('BB8q*', [], 2),
+                        ('bb8Q*', [], 2),
+                        ('bb8q*', [], 2),
+                        ('bB8Q*', [], 2),
+                        ('bB8q*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_02_bishop_c7_to_b8(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8*', ['Bb8', '*'], None),
+                        ('B7B8*', [], 2),
+                        ('b7b8*', [' b7', ' b8', ' *'], 2),
+                        ('b7B8*', [' b7', ' B8*'], 2),
+                        ('B7-b8*', ['Bb8', '*'], None),
+                        ('B7-B8*', [], 2),
+                        ('b7-b8*', [' b7', ' -b8', ' *'], 2),
+                        ('b7-B8*', [' b7', ' -B8*'], 2),
+                        ('Bb8*', ['Bb8', '*'], None),
+                        ('BB8*', [], 2),
+                        ('bb8*', [], 2),
+                        ('bB8*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_03_bishop_c6_to_b7(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6b7*', ['Bb7', '*'], None),
+                        ('B6B7*', [], 2),
+                        ('b6b7*', [' b6', ' b7', ' *'], 2),
+                        ('b6B7*', [' b6', ' B7*'], 2),
+                        ('B6-b7*', ['Bb7', '*'], None),
+                        ('B6-B7*', [], 2),
+                        ('b6-b7*', [' b7', ' *'], 2),
+                        ('b6-B7*', [' b6', ' -B7*'], 2),
+                        ('Bb7*', ['Bb7', '*'], None),
+                        ('BB7*', [], 2),
+                        ('bb7*', [], 2),
+                        ('bB7*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', [' B6xc5', ' *'], 2),
+                        ('B6xC5*', [], 2),
+                        ('b6xc5*', ['bxc5', '*'], None),
+                        ('b6xC5*', ['bxc5'], 3),
+                        ('Bxc5*', [' Bxc5', ' *'], 2),
+                        ('BxC5*', [], 2),
+                        ('bxc5*', ['bxc5', '*'], None),
+                        ('bxC5*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', ['Bxc5', '*'], None),
+                        ('B6xC5*', [], 2),
+                        ('b6xc5*', [' bxc5', ' *'], 2),
+                        ('b6xC5*', [' b6', ' xC5*'], 2),
+                        ('Bxc5*', ['Bxc5', '*'], None),
+                        ('BxC5*', [], 2),
+                        ('bxc5*', [' bxc5', ' *'], 2),
+                        ('bxC5*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # Ignore unrecognized tokens is done in text mode when _state is not None,
+    # but why some and not others in this test?
+    def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', [' B2xc1', ' =Q*'], 2),
+                        ('B2xc1=q*', [' B2xc1', ' =q*'], 2),
+                        ('B2xC1=Q*', [], 2),
+                        ('B2xC1=q*', [], 2),
+                        ('b2xc1=Q*', ['bxc1=Q', '*'], None),
+                        ('b2xc1=q*', [' b2', ' xc1', ' =q*'], 2),
+                        ('b2xC1=Q*', [' b2', ' xC1=Q*'], 2),
+                        ('b2xC1=q*', [' b2', ' xC1=q*'], 2),
+                        ('B2xc1Q*', [' B2xc1', ' Q*'], 2),
+                        ('B2xc1q*', [' B2xc1', ' q*'], 2),
+                        ('B2xC1Q*', [], 2),
+                        ('B2xC1q*', [], 2),
+                        ('b2xc1Q*', [' bxc1Q', ' *'], 2),
+                        ('b2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('b2xC1Q*', [' b2', ' xC1Q*'], 2),
+                        ('b2xC1q*', [' b2', ' xC1q*'], 2),
+                        ('Bxc1=Q*', [' Bxc1', ' =Q*'], 2),
+                        ('Bxc1=q*', [' Bxc1', ' =q*'], 2),
+                        ('BxC1=Q*', [], 2),
+                        ('BxC1=q*', [], 2),
+                        ('bxc1=Q*', ['bxc1=Q', '*'], None),
+                        ('bxc1=q*', [], 2),
+                        ('bxC1=Q*', [], 2),
+                        ('bxC1=q*', [], 2),
+                        ('Bxc1Q*', [' Bxc1', ' Q*'], 2),
+                        ('Bxc1q*', [' Bxc1', ' q*'], 2),
+                        ('BxC1Q*', [], 2),
+                        ('BxC1q*', [], 2),
+                        ('bxc1Q*', [' bxc1Q', ' *'], 2),
+                        ('bxc1q*', [], 2),
+                        ('bxC1Q*', [], 2),
+                        ('bxC1q*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', ['Bxc1'], 3),
+                        ('B2xc1=q*', ['Bxc1'], 3),
+                        ('B2xC1=Q*', [], 2),
+                        ('B2xC1=q*', [], 2),
+                        ('b2xc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('b2xc1=q*', [' b2', ' xc1', ' =q*'], 2),
+                        ('b2xC1=Q*', [' b2', ' xC1=Q*'], 2),
+                        ('b2xC1=q*', [' b2', ' xC1=q*'], 2),
+                        ('B2xc1Q*', ['Bxc1'], 3),
+                        ('B2xc1q*', ['Bxc1'], 3),
+                        ('B2xC1Q*', [], 2),
+                        ('B2xC1q*', [], 2),
+                        ('b2xc1Q*', [' bxc1Q', ' *'], 2),
+                        ('b2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('b2xC1Q*', [' b2', ' xC1Q*'], 2),
+                        ('b2xC1q*', [' b2', ' xC1q*'], 2),
+                        ('Bxc1=Q*', ['Bxc1'], 3),
+                        ('Bxc1=q*', ['Bxc1'], 3),
+                        ('BxC1=Q*', [], 2),
+                        ('BxC1=q*', [], 2),
+                        ('bxc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('bxc1=q*', [], 2),
+                        ('bxC1=Q*', [], 2),
+                        ('bxC1=q*', [], 2),
+                        ('Bxc1Q*', ['Bxc1'], 3),
+                        ('Bxc1q*', ['Bxc1'], 3),
+                        ('BxC1Q*', [], 2),
+                        ('BxC1q*', [], 2),
+                        ('bxc1Q*', [' bxc1Q', ' *'], 2),
+                        ('bxc1q*', [], 2),
+                        ('bxC1Q*', [], 2),
+                        ('bxC1q*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1*', ['Bxc1', '*'], None),
+                        ('B2xC1*', [], 2),
+                        ('b2xc1*', [' b2', ' xc1', ' *'], 2),
+                        ('b2xC1*', [' b2', ' xC1*'], 2),
+                        ('Bxc1*', ['Bxc1', '*'], None),
+                        ('BxC1*', [], 2),
+                        ('bxc1*', [], 2),
+                        ('bxC1*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1=Q*', [' B2b1', ' =Q*'], 2),
+                        ('B2b1=q*', [' B2b1', ' =q*'], 2),
+                        ('B2B1=Q*', [], 2),
+                        ('B2B1=q*', [], 2),
+                        ('b2b1=Q*', [' b2', ' b1=Q', ' *'], 2),
+                        ('b2b1=q*', [' b2', ' b1', ' =q*'], 2),
+                        ('b2B1=Q*', [' b2', ' B1=Q*'], 2),
+                        ('b2B1=q*', [' b2', ' B1=q*'], 2),
+                        ('B2b1Q*', [' B2b1', ' Q*'], 2),
+                        ('B2b1q*', [' B2b1', ' q*'], 2),
+                        ('B2B1Q*', [], 2),
+                        ('B2B1q*', [], 2),
+                        ('b2b1Q*', [' b2', ' b1Q', ' *'], 2),
+                        ('b2b1q*', [' b2', ' b1', ' q*'], 2),
+                        ('b2B1Q*', [' b2', ' B1Q*'], 2),
+                        ('b2B1q*', [' b2', ' B1q*'], 2),
+                        ('B2-b1=Q*', [' B2b1', ' =Q*'], 2),
+                        ('B2-b1=q*', [' B2b1', ' =q*'], 2),
+                        ('B2-B1=Q*', [], 2),
+                        ('B2-B1=q*', [], 2),
+                        ('b2-b1=Q*', ['b1=Q', '*'], None),
+                        ('b2-b1=q*', [' b2', ' -b1', ' =q*'], 2),
+                        ('b2-B1=Q*', [' b2', ' -B1=Q*'], 2),
+                        ('b2-B1=q*', [' b2', ' -B1=q*'], 2),
+                        ('B2-b1Q*', [' B2b1', ' Q*'], 2),
+                        ('B2-b1q*', [' B2b1', ' q*'], 2),
+                        ('B2-B1Q*', [], 2),
+                        ('B2-B1q*', [], 2),
+                        ('b2-b1Q*', [' b1', ' *'], 2),
+                        ('b2-b1q*', [' b2', ' -b1', ' q*'], 2),
+                        ('b2-B1Q*', [' b2', ' -B1Q*'], 2),
+                        ('b2-B1q*', [' b2', ' -B1q*'], 2),
+                        ('Bb1=Q*', [' Bb1', ' =Q*'], 2),
+                        ('Bb1=q*', [' Bb1', ' =q*'], 2),
+                        ('BB1=Q*', [], 2),
+                        ('BB1=q*', [], 2),
+                        ('bb1=Q*', [], 2),
+                        ('bb1=q*', [], 2),
+                        ('bB1=Q*', [], 2),
+                        ('bB1=q*', [], 2),
+                        ('Bb1Q*', [' Bb1', ' Q*'], 2),
+                        ('Bb1q*', [' Bb1', ' q*'], 2),
+                        ('BB1Q*', [], 2),
+                        ('BB1q*', [], 2),
+                        ('bb1Q*', [], 2),
+                        ('bb1q*', [], 2),
+                        ('bB1Q*', [], 2),
+                        ('bB1q*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_02_bishop_c2_to_b1(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1*', ['Bb1', '*'], None),
+                        ('B2B1*', [], 2),
+                        ('b2b1*', [' b2', ' b1', ' *'], 2),
+                        ('b2B1*', [' b2', ' B1*'], 2),
+                        ('B2-b1*', ['Bb1', '*'], None),
+                        ('B2-B1*', [], 2),
+                        ('b2-b1*', [' b2', ' -b1', ' *'], 2),
+                        ('b2-B1*', [' b2', ' -B1*'], 2),
+                        ('Bb1*', ['Bb1', '*'], None),
+                        ('BB1*', [], 2),
+                        ('bb1*', [], 2),
+                        ('bB1*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_03_bishop_c3_to_b2(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3b2*', ['Bb2', '*'], None),
+                        ('B3B2*', [], 2),
+                        ('b3b2*', [' b3', ' b2', ' *'], 2),
+                        ('b3B2*', [' b3', ' B2*'], 2),
+                        ('B3-b2*', ['Bb2', '*'], None),
+                        ('B3-B2*', [], 2),
+                        ('b3-b2*', [' b2', ' *'], 2),
+                        ('b3-B2*', [' b3', ' -B2*'], 2),
+                        ('Bb2*', ['Bb2', '*'], None),
+                        ('BB2*', [], 2),
+                        ('bb2*', [], 2),
+                        ('bB2*', [], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+
+class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
 
     GameIgnoreCasePGN provides a few simple tests of lower and upper case
@@ -4339,7 +6236,174 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
 
-    def test_121_bxc8_q(self):
+    # Added after changes to convertion of chess engine responses to PGN.
+    def test_114_long_algebraic_pawn_move_wrong_direction(self):
+        ae = self.assertEqual
+        games = self.get('e4e5e4e3')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['e4', 'e5', ' e4'])
+
+    def test_118_01_BxC4_without_B_on_board(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"6k1/8/8/8/2p5/1P6/8/6K1 w - - 0 1"]BxC4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"6k1/8/8/8/2p5/1P6/8/6K1 w - - 0 1"]',
+            'bxc4', '*'])
+
+    def test_118_02_BxC4_with_B_on_board(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"6k1/8/8/8/2p5/1P6/1B6/6K1 w - - 0 1"]BxC4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"6k1/8/8/8/2p5/1P6/1B6/6K1 w - - 0 1"]',
+            'bxc4', '*'])
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_06_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa8*', ['Bxa8', '*'], None, 'w'),
+                           ('bb8*', ['Bb8', '*'], None, 'w'),
+                           ('bxc8*', ['Bxc8', '*'], None, 'w'),
+                           ('bd8*', ['Bd8', '*'], None, 'w'),
+                           ('bxe8*', ['Bxe8', '*'], None, 'w'),
+                           ('bxa1*', ['Bxa1', '*'], None, 'b'),
+                           ('bb1*', ['Bb1', '*'], None, 'b'),
+                           ('bxc1*', ['Bxc1', '*'], None, 'b'),
+                           ('bd1*', ['Bd1', '*'], None, 'b'),
+                           ('bxe1*', ['Bxe1', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_07_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('b6xa8*', ['Bxa8', '*'], None, 'w'),
+                           ('b7b8*', ['Bb8', '*'], None, 'w'),
+                           ('b3xc8*', ['Bxc8', '*'], None, 'w'),
+                           ('b7d8*', ['Bd8', '*'], None, 'w'),
+                           ('b6xe8*', ['Bxe8', '*'], None, 'w'),
+                           ('b3xa1*', ['Bxa1', '*'], None, 'b'),
+                           ('b2b1*', ['Bb1', '*'], None, 'b'),
+                           ('b6xc1*', ['Bxc1', '*'], None, 'b'),
+                           ('b2d1*', ['Bd1', '*'], None, 'b'),
+                           ('b3xe1*', ['Bxe1', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                c.join(('[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_08_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('bxa7*', ['Bxa7', '*'], None, 'w'),
+                           ('bb7*', ['Bb7', '*'], None, 'w'),
+                           ('bxc7*', ['Bxc7', '*'], None, 'w'),
+                           ('bd7*', ['Bd7', '*'], None, 'w'),
+                           ('bxe7*', ['Bxe7', '*'], None, 'w'),
+                           ('bxa2*', ['Bxa2', '*'], None, 'b'),
+                           ('bb2*', ['Bb2', '*'], None, 'b'),
+                           ('bxc2*', ['Bxc2', '*'], None, 'b'),
+                           ('bd2*', ['Bd2', '*'], None, 'b'),
+                           ('bxe2*', ['Bxe2', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
+    def test_119_09_bcd_bishop(self):
+        ae = self.assertEqual
+        for m, t, s, c in (('b5xa7*', ['Bxa7', '*'], None, 'w'),
+                           ('b6b7*', ['Bb7', '*'], None, 'w'),
+                           ('b4xc7*', ['Bxc7', '*'], None, 'w'),
+                           ('b6d7*', ['Bd7', '*'], None, 'w'),
+                           ('b5xe7*', ['Bxe7', '*'], None, 'w'),
+                           ('b4xa2*', ['Bxa2', '*'], None, 'b'),
+                           ('b3b2*', ['Bb2', '*'], None, 'b'),
+                           ('b5xc2*', ['Bxc2', '*'], None, 'b'),
+                           ('b3d2*', ['Bd2', '*'], None, 'b'),
+                           ('b4xe2*', ['Bxe2', '*'], None, 'b'),
+                           ):
+            games = self.get(''.join((
+                ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]')), m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]',
+                 c.join(('[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                         ' - - 0 1"]'))]+t)
+            ae(games[0].state, s)
+
+    def test_120_03_bxc8_Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=Qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'bxc8=Q', 'Qg3', '*'])
+
+    # Detected tokens changed following test_119_06_bcd_bishop at version 2.1.
+    def test_120_04_bxc8Q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8Qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' Bxc8', ' Qqg3*'])
+
+    # Compare with test_163_bxc8q.
+    # Detected tokens changed following test_119_06_bcd_bishop at version 2.1.
+    def test_120_05_bxc8q(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qqg3*')
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            ' Bxc8', ' qqg3*'])
+
+    def test_120_06_bxc8_q(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=qqg3*')
@@ -4352,7 +6416,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
-    def test_122_bxc8_qx(self):
+    def test_120_07_bxc8_qx(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1P6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8=q qg3*')
@@ -4378,17 +6442,29 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
+    # Detected tokens changed following test_119_06_bcd_bishop at version 2.1.
+    def test_125_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'Bxc8', 'Qg3', '*'])
+
+    # Detected tokens changed following test_119_06_bcd_bishop at version 2.1.
     def test_126_bxc8(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]bxc8 qg3*')
         ae(len(games), 1)
-        ae(games[0].state, 2)
+        ae(games[0].state, None)
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/1B6/7k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' Qg3',
-            ' *'])
+            'Bxc8', 'Qg3', '*'])
 
     def test_127_bxc8(self):
         ae = self.assertEqual
@@ -4416,17 +6492,29 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             'Qg3',
             '*'])
 
+    # Detected tokens changed following test_119_06_bcd_bishop at version 2.1.
+    def test_129_bxc8(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8qg3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]',
+            '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
+            'Bxc8', 'Qg3', '*'])
+
+    # Detected tokens changed following test_119_06_bcd_bishop at version 2.1.
     def test_130_bxc8(self):
         ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]bxc8 qg3*')
         ae(len(games), 1)
-        ae(games[0].state, 2)
+        ae(games[0].state, None)
         ae(games[0]._text,
            ['[SetUp"1"]',
             '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]',
-            ' Qg3',
-            ' *'])
+            'Bxc8', 'Qg3', '*'])
 
     # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
     # The first 'b', in 'b4', caused an error.
@@ -4527,7 +6615,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             '*'])
 
     # Added while fixing 'e4e5nf3nc6bb5a6' problem.
-    # Compare with test_120_bxc8q.
+    # Compare with test_120_05_bxc8q.
     def test_163_bxc8q(self):
         ae = self.assertEqual
         games = self.get(
@@ -4542,13 +6630,63 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
             '*'])
 
     # Added while fixing Little.pgn upper case processing.
+    # b2b4 is redundant precision, not long algebraic notation.
+    def test_166_01_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b2b4*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'b4', '*'])
+
+    # b6b7 is redundant precision, not long algebraic notation.
+    def test_166_02_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]b6b7*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
+            'b7', '*'])
+
+    def test_166_03_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]b7b8=Q*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
+            'b8=Q', '*'])
+
+    def test_166_04_long_algebraic_white_f_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]f7f8=Q*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['[SetUp"1"]', '[FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]',
+            'f8=Q', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
+    # b7b5 is redundant precision, not long algebraic notation.
+    def test_170_long_algebraic_black_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get('e4b7b5*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'b5', '*'])
+
+    # Added while fixing Little.pgn upper case processing.
     def test_172_long_algebraic_uc_white_pawn_move(self):
         ae = self.assertEqual
         games = self.get('e4e5D2D4*')
         ae(len(games), 1)
         ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'd4', '*'])
+        ae(games[0]._text, ['e4', 'e5', 'd4', '*'])
 
     # Added while fixing Little.pgn upper case processing.
     def test_173_long_algebraic_uc_white_pawn_move_with_hyphen(self):
@@ -4565,8 +6703,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         games = self.get('e4e5B2B4*')
         ae(len(games), 1)
         ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', 'b4', '*'])
+        ae(games[0]._text, ['e4', 'e5', 'b4', '*'])
 
     # Added while fixing Little.pgn upper case processing.
     def test_175_long_algebraic_uc_white_b_pawn_move_with_hyphen(self):
@@ -4584,8 +6721,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         games = self.get('e4E7E5*')
         ae(len(games), 1)
         ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'e5', '*'])
+        ae(games[0]._text, ['e4', 'e5', '*'])
 
     # Added while fixing Little.pgn upper case processing.
     def test_177_long_algebraic_uc_black_pawn_move_with_hyphen(self):
@@ -4602,8 +6738,7 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         games = self.get('e4B7B5*')
         ae(len(games), 1)
         ae(games[0].state, None)
-        ae(games[0]._text,
-           ['e4', 'b5', '*'])
+        ae(games[0]._text, ['e4', 'b5', '*'])
 
     # Added while fixing Little.pgn upper case processing.
     def test_179_long_algebraic_uc_black_b_pawn_move_with_hyphen(self):
@@ -4629,6 +6764,524 @@ class GameIgnoreCasePGN(_NonStrictTests, StrictPGN):
         ae(games[0].state, None)
         ae(games[0]._text,
            ['e4', 'e5', 'Bd3', '*'])
+
+    def test_181_04_pawn_move_or_too_much_precision(self):
+        ae = self.assertEqual
+        games = self.get('e4e5b1d3*')
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text,
+           ['e4', 'e5', 'Bd3', '*'])
+
+    def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', ['bxc4', '*'], None),
+                        ('B3xC4*', ['bxc4', '*'], None),
+                        ('b3xc4*', ['bxc4', '*'], None),
+                        ('b3xC4*', ['bxc4', '*'], None),
+                        ('Bxc4*', ['bxc4', '*'], None),
+                        ('BxC4*', ['bxc4', '*'], None),
+                        ('bxc4*', ['bxc4', '*'], None),
+                        ('bxC4*', ['bxc4', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B3xc4*', ['Bxc4', '*'], None),
+                        ('B3xC4*', ['Bxc4', '*'], None),
+                        ('b3xc4*', ['Bxc4', '*'], None),
+                        ('b3xC4*', ['Bxc4', '*'], None),
+                        ('Bxc4*', ['Bxc4', '*'], None),
+                        ('BxC4*', ['Bxc4', '*'], None),
+                        ('bxc4*', ['Bxc4', '*'], None),
+                        ('bxC4*', ['Bxc4', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # Like '183_02' but a 'P' is on 'b7'.
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', ['bxc8=Q', '*'], None),
+                        ('B7xc8=q*', ['bxc8=Q', '*'], None),
+                        ('B7xC8=Q*', ['bxc8=Q', '*'], None),
+                        ('B7xC8=q*', ['bxc8=Q', '*'], None),
+                        ('b7xc8=Q*', ['bxc8=Q', '*'], None),
+                        ('b7xc8=q*', ['bxc8=Q', '*'], None),
+                        ('b7xC8=Q*', ['bxc8=Q', '*'], None),
+                        ('b7xC8=q*', ['bxc8=Q', '*'], None),
+                        ('B7xc8Q*', [' b7', ' xc8', ' Q*'], 2),
+                        ('B7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('B7xC8Q*', [' b7', ' xC8', ' Q*'], 2),
+                        ('B7xC8q*', [' b7', ' xC8', ' q*'], 2),
+                        ('b7xc8Q*', [' b7', ' xc8', ' Q*'], 2),
+                        ('b7xc8q*', [' b7', ' xc8', ' q*'], 2),
+                        ('b7xC8Q*', [' b7', ' xC8', ' Q*'], 2),
+                        ('b7xC8q*', [' b7', ' xC8', ' q*'], 2),
+                        ('Bxc8=Q*', ['bxc8=Q', '*'], None),
+                        ('Bxc8=q*', ['bxc8=Q', '*'], None),
+                        ('BxC8=Q*', ['bxc8=Q', '*'], None),
+                        ('BxC8=q*', ['bxc8=Q', '*'], None),
+                        ('bxc8=Q*', ['bxc8=Q', '*'], None),
+                        ('bxc8=q*', ['bxc8=Q', '*'], None),
+                        ('bxC8=Q*', ['bxc8=Q', '*'], None),
+                        ('bxC8=q*', ['bxc8=Q', '*'], None),
+                        ('Bxc8Q*', [' Bxc8', ' Q*'], 2),
+                        ('Bxc8q*', [' Bxc8', ' q*'], 2),
+                        ('BxC8Q*', [' BxC8', ' Q*'], 2),
+                        ('BxC8q*', [' BxC8', ' q*'], 2),
+                        ('bxc8Q*', [' Bxc8', ' Q*'], 2),
+                        ('bxc8q*', [' Bxc8', ' q*'], 2),
+                        ('bxC8Q*', [' Bxc8', ' Q*'], 2),
+                        ('bxC8q*', [' Bxc8', ' q*'], 2),
+                        ('BxC8ignored*', [' BxC8', ' ignored*'], 2),
+                        ('bxC8ignored*', [' Bxc8', ' ignored*'], 2),
+                        ('Bxc8ignored* *', [' Bxc8', ' ignored* ', ' *'], 2),
+                        ('bxc8ignored* *', [' Bxc8', ' ignored* ', ' *'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # Like '183_01' but a 'B' is on 'b7'.
+    # When compared the results for 'Bxc8' and 'bxc8' are inconsistent when
+    # followed by '=Q' or '=q'.  In isolation the results are fine: see the
+    # examples with 'ignored' rather than '=Q' or '=q'.
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('B7xc8=q*', [' bxc8=Q', ' *'], 2),
+                        ('B7xC8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('B7xC8=q*', [' bxc8=Q', ' *'], 2),
+                        ('b7xc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('b7xc8=q*', [' bxc8=Q', ' *'], 2),
+                        ('b7xC8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('b7xC8=q*', [' bxc8=Q', ' *'], 2),
+                        ('B7xc8Q*', ['Bxc8'], 3),
+                        ('B7xc8q*', ['Bxc8'], 3),
+                        ('B7xC8Q*', ['Bxc8'], 3),
+                        ('B7xC8q*', ['Bxc8'], 3),
+                        ('b7xc8Q*', ['Bxc8'], 3),
+                        ('b7xc8q*', ['Bxc8'], 3),
+                        ('b7xC8Q*', ['Bxc8'], 3),
+                        ('b7xC8q*', ['Bxc8'], 3),
+                        ('Bxc8=Q*', ['Bxc8', '*'], None),
+                        ('Bxc8=q*', ['Bxc8', '*'], None),
+                        ('BxC8=Q*', ['Bxc8', '*'], None),
+                        ('BxC8=q*', ['Bxc8', '*'], None),
+                        ('bxc8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('bxc8=q*', [' bxc8=Q', ' *'], 2),
+                        ('bxC8=Q*', [' bxc8=Q', ' *'], 2),
+                        ('bxC8=q*', [' bxc8=Q', ' *'], 2),
+                        ('Bxc8Q*', ['Bxc8'], 3),
+                        ('Bxc8q*', ['Bxc8'], 3),
+                        ('BxC8Q*', ['Bxc8'], 3),
+                        ('BxC8q*', ['Bxc8'], 3),
+                        ('bxc8Q*', ['Bxc8'], 3),
+                        ('bxc8q*', ['Bxc8'], 3),
+                        ('bxC8Q*', ['Bxc8'], 3),
+                        ('bxC8q*', ['Bxc8'], 3),
+                        ('BxC8ignored*', ['Bxc8'], 3),
+                        ('bxC8ignored*', ['Bxc8'], 3),
+                        ('Bxc8ignored* *', ['Bxc8', '*'], None),
+                        ('bxc8ignored* *', ['Bxc8', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7xc8*', ['Bxc8', '*'], None),
+                        ('B7xC8*', ['Bxc8', '*'], None),
+                        ('b7xc8*', ['Bxc8', '*'], None),
+                        ('b7xC8*', ['Bxc8', '*'], None),
+                        ('Bxc8*', ['Bxc8', '*'], None),
+                        ('BxC8*', ['Bxc8', '*'], None),
+                        ('bxc8*', ['Bxc8', '*'], None),
+                        ('bxC8*', ['Bxc8', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # All tests with '-' should be accepted, like tests _170_*, *_171_*,
+    # *_174_*, and *_175_*.
+    def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8=Q*', ['b8=Q', '*'], None),
+                        ('B7b8=q*', ['b8=Q', '*'], None),
+                        ('B7B8=Q*', ['b8=Q', '*'], None),
+                        ('B7B8=q*', ['b8=Q', '*'], None),
+                        ('b7b8=Q*', ['b8=Q', '*'], None),
+                        ('b7b8=q*', ['b8=Q', '*'], None),
+                        ('b7B8=Q*', ['b8=Q', '*'], None),
+                        ('b7B8=q*', ['b8=Q', '*'], None),
+                        ('B7b8Q*', [' b7', ' b8', ' Q*'], 2),
+                        ('B7b8q*', [' b7', ' b8', ' q*'], 2),
+                        ('B7B8Q*', [' b7', ' B8', ' Q*'], 2),
+                        ('B7B8q*', [' b7', ' B8', ' q*'], 2),
+                        ('b7b8Q*', [' b7', ' b8', ' Q*'], 2),
+                        ('b7b8q*', [' b7', ' b8', ' q*'], 2),
+                        ('b7B8Q*', [' b7', ' B8', ' Q*'], 2),
+                        ('b7B8q*', [' b7', ' B8', ' q*'], 2),
+                        ('B7-b8=Q*', ['b8=Q', '*'], None),
+                        ('B7-b8=q*', ['b8=Q', '*'], None),
+                        ('B7-B8=Q*', ['b8=Q', '*'], None),
+                        ('B7-B8=q*', ['b8=Q', '*'], None),
+                        ('b7-b8=Q*', ['b8=Q', '*'], None),
+                        ('b7-b8=q*', ['b8=Q', '*'], None),
+                        ('b7-B8=Q*', ['b8=Q', '*'], None),
+                        ('b7-B8=q*', ['b8=Q', '*'], None),
+                        ('B7-b8Q*', [' b7', ' -b8', ' Q*'], 2),
+                        ('B7-b8q*', [' b7', ' -b8', ' q*'], 2),
+                        ('B7-B8Q*', [' b7', ' -B8', ' Q*'], 2),
+                        ('B7-B8q*', [' b7', ' -B8', ' q*'], 2),
+                        ('b7-b8Q*', [' b7', ' -b8', ' Q*'], 2),
+                        ('b7-b8q*', [' b7', ' -b8', ' q*'], 2),
+                        ('b7-B8Q*', [' b7', ' -B8', ' Q*'], 2),
+                        ('b7-B8q*', [' b7', ' -B8', ' q*'], 2),
+                        ('Bb8=Q*', [' Bb8', ' =Q', ' *'], 2),
+                        ('Bb8=q*', [' Bb8', ' =q', ' *'], 2),
+                        ('BB8=Q*', [' BB8', ' =Q', ' *'], 2),
+                        ('BB8=q*', [' BB8', ' =q', ' *'], 2),
+                        ('bb8=Q*', [' bb8', ' =Q', ' *'], 2),
+                        ('bb8=q*', [' bb8', ' =q', ' *'], 2),
+                        ('bB8=Q*', [' bB8', ' =Q', ' *'], 2),
+                        ('bB8=q*', [' bB8', ' =q', ' *'], 2),
+                        ('Bb8Q*', [' Bb8', ' Q*'], 2),
+                        ('Bb8q*', [' Bb8', ' q*'], 2),
+                        ('BB8Q*', [' BB8', ' Q*'], 2),
+                        ('BB8q*', [' BB8', ' q*'], 2),
+                        ('bb8Q*', [' bb8', ' Q*'], 2),
+                        ('bb8q*', [' bb8', ' q*'], 2),
+                        ('bB8Q*', [' bB8', ' Q*'], 2),
+                        ('bB8q*', [' bB8', ' q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_02_bishop_c7_to_b8(self):
+        ae = self.assertEqual
+        for m, t, s in (('B7b8*', ['Bb8', '*'], None),
+                        ('B7B8*', ['Bb8', '*'], None),
+                        ('b7b8*', ['Bb8', '*'], None),
+                        ('b7B8*', ['Bb8', '*'], None),
+                        ('B7-b8*', ['Bb8', '*'], None),
+                        ('B7-B8*', ['Bb8', '*'], None),
+                        ('b7-b8*', ['Bb8', '*'], None),
+                        ('b7-B8*', ['Bb8', '*'], None),
+                        ('Bb8*', ['Bb8', '*'], None),
+                        ('BB8*', ['Bb8', '*'], None),
+                        ('bb8*', ['Bb8', '*'], None),
+                        ('bB8*', ['Bb8', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_184_03_bishop_c6_to_b7(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6b7*', ['Bb7', '*'], None),
+                        ('B6B7*', ['Bb7', '*'], None),
+                        ('b6b7*', ['Bb7', '*'], None),
+                        ('b6B7*', ['Bb7', '*'], None),
+                        ('B6-b7*', ['Bb7', '*'], None),
+                        ('B6-B7*', ['Bb7', '*'], None),
+                        ('b6-b7*', ['Bb7', '*'], None),
+                        ('b6-B7*', ['Bb7', '*'], None),
+                        ('Bb7*', ['Bb7', '*'], None),
+                        ('BB7*', ['Bb7', '*'], None),
+                        ('bb7*', ['Bb7', '*'], None),
+                        ('bB7*', ['Bb7', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', ['bxc5', '*'], None),
+                        ('B6xC5*', ['bxc5', '*'], None),
+                        ('b6xc5*', ['bxc5', '*'], None),
+                        ('b6xC5*', ['bxc5', '*'], None),
+                        ('Bxc5*', ['bxc5', '*'], None),
+                        ('BxC5*', ['bxc5', '*'], None),
+                        ('bxc5*', ['bxc5', '*'], None),
+                        ('bxC5*', ['bxc5', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6xc5*', ['Bxc5', '*'], None),
+                        ('B6xC5*', ['Bxc5', '*'], None),
+                        ('b6xc5*', ['Bxc5', '*'], None),
+                        ('b6xC5*', ['Bxc5', '*'], None),
+                        ('Bxc5*', ['Bxc5', '*'], None),
+                        ('BxC5*', ['Bxc5', '*'], None),
+                        ('bxc5*', ['Bxc5', '*'], None),
+                        ('bxC5*', ['Bxc5', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # Like '183_02' but a 'P' is on 'b7'.
+    def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', ['bxc1=Q', '*'], None),
+                        ('B2xc1=q*', ['bxc1=Q', '*'], None),
+                        ('B2xC1=Q*', ['bxc1=Q', '*'], None),
+                        ('B2xC1=q*', ['bxc1=Q', '*'], None),
+                        ('b2xc1=Q*', ['bxc1=Q', '*'], None),
+                        ('b2xc1=q*', ['bxc1=Q', '*'], None),
+                        ('b2xC1=Q*', ['bxc1=Q', '*'], None),
+                        ('b2xC1=q*', ['bxc1=Q', '*'], None),
+                        ('B2xc1Q*', [' b2', ' xc1', ' Q*'], 2),
+                        ('B2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('B2xC1Q*', [' b2', ' xC1', ' Q*'], 2),
+                        ('B2xC1q*', [' b2', ' xC1', ' q*'], 2),
+                        ('b2xc1Q*', [' b2', ' xc1', ' Q*'], 2),
+                        ('b2xc1q*', [' b2', ' xc1', ' q*'], 2),
+                        ('b2xC1Q*', [' b2', ' xC1', ' Q*'], 2),
+                        ('b2xC1q*', [' b2', ' xC1', ' q*'], 2),
+                        ('Bxc1=Q*', ['bxc1=Q', '*'], None),
+                        ('Bxc1=q*', ['bxc1=Q', '*'], None),
+                        ('BxC1=Q*', ['bxc1=Q', '*'], None),
+                        ('BxC1=q*', ['bxc1=Q', '*'], None),
+                        ('bxc1=Q*', ['bxc1=Q', '*'], None),
+                        ('bxc1=q*', ['bxc1=Q', '*'], None),
+                        ('bxC1=Q*', ['bxc1=Q', '*'], None),
+                        ('bxC1=q*', ['bxc1=Q', '*'], None),
+                        ('Bxc1Q*', [' Bxc1', ' Q*'], 2),
+                        ('Bxc1q*', [' Bxc1', ' q*'], 2),
+                        ('BxC1Q*', [' BxC1', ' Q*'], 2),
+                        ('BxC1q*', [' BxC1', ' q*'], 2),
+                        ('bxc1Q*', [' Bxc1', ' Q*'], 2),
+                        ('bxc1q*', [' Bxc1', ' q*'], 2),
+                        ('bxC1Q*', [' Bxc1', ' Q*'], 2),
+                        ('bxC1q*', [' Bxc1', ' q*'], 2),
+                        ('BxC1ignored*', [' BxC1', ' ignored*'], 2),
+                        ('bxC1ignored*', [' Bxc1', ' ignored*'], 2),
+                        ('Bxc1ignored* *', [' Bxc1', ' ignored* ', ' *'], 2),
+                        ('bxc1ignored* *', [' Bxc1', ' ignored* ', ' *'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # Like '183_01' but a 'B' is on 'b2'.
+    # When compared the results for 'Bxc1' and 'bxc1' are inconsistent when
+    # followed by '=Q' or '=q'.  In isolation the results are fine: see the
+    # examples with 'ignored' rather than '=Q' or '=q'.
+    def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('B2xc1=q*', [' bxc1=Q', ' *'], 2),
+                        ('B2xC1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('B2xC1=q*', [' bxc1=Q', ' *'], 2),
+                        ('b2xc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('b2xc1=q*', [' bxc1=Q', ' *'], 2),
+                        ('b2xC1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('b2xC1=q*', [' bxc1=Q', ' *'], 2),
+                        ('B2xc1Q*', ['Bxc1'], 3),
+                        ('B2xc1q*', ['Bxc1'], 3),
+                        ('B2xC1Q*', ['Bxc1'], 3),
+                        ('B2xC1q*', ['Bxc1'], 3),
+                        ('b2xc1Q*', ['Bxc1'], 3),
+                        ('b2xc1q*', ['Bxc1'], 3),
+                        ('b2xC1Q*', ['Bxc1'], 3),
+                        ('b2xC1q*', ['Bxc1'], 3),
+                        ('Bxc1=Q*', ['Bxc1', '*'], None),
+                        ('Bxc1=q*', ['Bxc1', '*'], None),
+                        ('BxC1=Q*', ['Bxc1', '*'], None),
+                        ('BxC1=q*', ['Bxc1', '*'], None),
+                        ('bxc1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('bxc1=q*', [' bxc1=Q', ' *'], 2),
+                        ('bxC1=Q*', [' bxc1=Q', ' *'], 2),
+                        ('bxC1=q*', [' bxc1=Q', ' *'], 2),
+                        ('Bxc1Q*', ['Bxc1'], 3),
+                        ('Bxc1q*', ['Bxc1'], 3),
+                        ('BxC1Q*', ['Bxc1'], 3),
+                        ('BxC1q*', ['Bxc1'], 3),
+                        ('bxc1Q*', ['Bxc1'], 3),
+                        ('bxc1q*', ['Bxc1'], 3),
+                        ('bxC1Q*', ['Bxc1'], 3),
+                        ('bxC1q*', ['Bxc1'], 3),
+                        ('BxC1ignored*', ['Bxc1'], 3),
+                        ('bxC1ignored*', ['Bxc1'], 3),
+                        ('Bxc1ignored* *', ['Bxc1', '*'], None),
+                        ('bxc1ignored* *', ['Bxc1', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2xc1*', ['Bxc1', '*'], None),
+                        ('B2xC1*', ['Bxc1', '*'], None),
+                        ('b2xc1*', ['Bxc1', '*'], None),
+                        ('b2xC1*', ['Bxc1', '*'], None),
+                        ('Bxc1*', ['Bxc1', '*'], None),
+                        ('BxC1*', ['Bxc1', '*'], None),
+                        ('bxc1*', ['Bxc1', '*'], None),
+                        ('bxC1*', ['Bxc1', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    # All tests with '-' should be accepted, like tests _170_*, *_171_*,
+    # *_174_*, and *_175_*.
+    def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1=Q*', ['b1=Q', '*'], None),
+                        ('B2b1=q*', ['b1=Q', '*'], None),
+                        ('B2B1=Q*', ['b1=Q', '*'], None),
+                        ('B2B1=q*', ['b1=Q', '*'], None),
+                        ('b2b1=Q*', ['b1=Q', '*'], None),
+                        ('b2b1=q*', ['b1=Q', '*'], None),
+                        ('b2B1=Q*', ['b1=Q', '*'], None),
+                        ('b2B1=q*', ['b1=Q', '*'], None),
+                        ('B2b1Q*', [' b2', ' b1', ' Q*'], 2),
+                        ('B2b1q*', [' b2', ' b1', ' q*'], 2),
+                        ('B2B1Q*', [' b2', ' B1', ' Q*'], 2),
+                        ('B2B1q*', [' b2', ' B1', ' q*'], 2),
+                        ('b2b1Q*', [' b2', ' b1', ' Q*'], 2),
+                        ('b2b1q*', [' b2', ' b1', ' q*'], 2),
+                        ('b2B1Q*', [' b2', ' B1', ' Q*'], 2),
+                        ('b2B1q*', [' b2', ' B1', ' q*'], 2),
+                        ('B2-b1=Q*', ['b1=Q', '*'], None),
+                        ('B2-b1=q*', ['b1=Q', '*'], None),
+                        ('B2-B1=Q*', ['b1=Q', '*'], None),
+                        ('B2-B1=q*', ['b1=Q', '*'], None),
+                        ('b2-b1=Q*', ['b1=Q', '*'], None),
+                        ('b2-b1=q*', ['b1=Q', '*'], None),
+                        ('b2-B1=Q*', ['b1=Q', '*'], None),
+                        ('b2-B1=q*', ['b1=Q', '*'], None),
+                        ('B2-b1Q*', [' b2', ' -b1', ' Q*'], 2),
+                        ('B2-b1q*', [' b2', ' -b1', ' q*'], 2),
+                        ('B2-B1Q*', [' b2', ' -B1', ' Q*'], 2),
+                        ('B2-B1q*', [' b2', ' -B1', ' q*'], 2),
+                        ('b2-b1Q*', [' b2', ' -b1', ' Q*'], 2),
+                        ('b2-b1q*', [' b2', ' -b1', ' q*'], 2),
+                        ('b2-B1Q*', [' b2', ' -B1', ' Q*'], 2),
+                        ('b2-B1q*', [' b2', ' -B1', ' q*'], 2),
+                        ('Bb1=Q*', [' Bb1', ' =Q', ' *'], 2),
+                        ('Bb1=q*', [' Bb1', ' =q', ' *'], 2),
+                        ('BB1=Q*', [' BB1', ' =Q', ' *'], 2),
+                        ('BB1=q*', [' BB1', ' =q', ' *'], 2),
+                        ('bb1=Q*', [' bb1', ' =Q', ' *'], 2),
+                        ('bb1=q*', [' bb1', ' =q', ' *'], 2),
+                        ('bB1=Q*', [' bB1', ' =Q', ' *'], 2),
+                        ('bB1=q*', [' bB1', ' =q', ' *'], 2),
+                        ('Bb1Q*', [' Bb1', ' Q*'], 2),
+                        ('Bb1q*', [' Bb1', ' q*'], 2),
+                        ('BB1Q*', [' BB1', ' Q*'], 2),
+                        ('BB1q*', [' BB1', ' q*'], 2),
+                        ('bb1Q*', [' bb1', ' Q*'], 2),
+                        ('bb1q*', [' bb1', ' q*'], 2),
+                        ('bB1Q*', [' bB1', ' Q*'], 2),
+                        ('bB1q*', [' bB1', ' q*'], 2),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_02_bishop_c2_to_b1(self):
+        ae = self.assertEqual
+        for m, t, s in (('B2b1*', ['Bb1', '*'], None),
+                        ('B2B1*', ['Bb1', '*'], None),
+                        ('b2b1*', ['Bb1', '*'], None),
+                        ('b2B1*', ['Bb1', '*'], None),
+                        ('B2-b1*', ['Bb1', '*'], None),
+                        ('B2-B1*', ['Bb1', '*'], None),
+                        ('b2-b1*', ['Bb1', '*'], None),
+                        ('b2-B1*', ['Bb1', '*'], None),
+                        ('Bb1*', ['Bb1', '*'], None),
+                        ('BB1*', ['Bb1', '*'], None),
+                        ('bb1*', ['Bb1', '*'], None),
+                        ('bB1*', ['Bb1', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]']+t)
+            ae(games[0].state, s)
+
+    def test_187_03_bishop_c3_to_b2(self):
+        ae = self.assertEqual
+        for m, t, s in (('B6b2*', ['Bb2', '*'], None),
+                        ('B6B2*', ['Bb2', '*'], None),
+                        ('b6b2*', ['Bb2', '*'], None),
+                        ('b6B2*', ['Bb2', '*'], None),
+                        ('B6-b2*', ['Bb2', '*'], None),
+                        ('B6-B2*', ['Bb2', '*'], None),
+                        ('b6-b2*', ['Bb2', '*'], None),
+                        ('b6-B2*', ['Bb2', '*'], None),
+                        ('Bb2*', ['Bb2', '*'], None),
+                        ('BB2*', ['Bb2', '*'], None),
+                        ('bb2*', ['Bb2', '*'], None),
+                        ('bB2*', ['Bb2', '*'], None),
+                     ):
+            games = self.get(''.join((
+                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]', m])))
+            ae(len(games), 1)
+            ae(games[0]._text,
+               ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]']+t)
+            ae(games[0].state, s)
 
 
 if __name__ == '__main__':

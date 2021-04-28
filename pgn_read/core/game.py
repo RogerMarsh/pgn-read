@@ -81,6 +81,7 @@ from .constants import (
     IFG_PAWN_TO_RANK,
     IFG_PAWN_PROMOTE_TO_RANK,
     IFG_PAWN_PROMOTE_PIECE,
+    IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE,
     FEN_FIELD_COUNT,
     FEN_PIECE_PLACEMENT_FIELD_INDEX,
     FEN_ACTIVE_COLOR_FIELD_INDEX,
@@ -115,10 +116,12 @@ from .constants import (
     DG_CAPTURE,
     DG_DESTINATION,
     DISAMBIGUATE_PGN,
+    DISAMBIGUATE_PROMOTION,
     LAN_FORMAT,
     LAN_CAPTURE_OR_MOVE,
     LAN_DESTINATION,
     LAN_PROMOTE_PIECE,
+    LAN_MOVE_SEPARATOR,
     PGN_PROMOTION,
     PGN_BISHOP,
     IMPORT_FORMAT,
@@ -160,9 +163,10 @@ import_format = re.compile(IMPORT_FORMAT)
 text_format = re.compile(TEXT_FORMAT)
 disambiguate_pgn_format = re.compile(DISAMBIGUATE_PGN)
 disambiguate_text_format = re.compile(DISAMBIGUATE_TEXT)
+disambiguate_promotion_format = re.compile(DISAMBIGUATE_PROMOTION)
 lan_format = re.compile(LAN_FORMAT)
 text_promotion_format = re.compile(TEXT_PROMOTION)
-possible_bishop_and_rank = re.compile(PAWN_MOVE_TOKEN_POSSIBLE_BISHOP)
+possible_bishop_or_bpawn = re.compile(PAWN_MOVE_TOKEN_POSSIBLE_BISHOP)
 white_black_tag_value_format = re.compile('\s*([^,.\s]+)')
 suffix_annotations = re.compile(r'(!!|!\?|!|\?\?|\?!|\?)$')
 SIDE_TO_MOVE_KING = {FEN_WHITE_ACTIVE: FEN_WHITE_KING,
@@ -3553,7 +3557,7 @@ class GameTextPGN(Game):
     
     """
     _strict_pgn = None
-    _possible_bishop = None
+    _bishop_or_bpawn = None
 
     # bx[a-h][1-8] is ambiguous when case is ignored and always matches as a
     # piece, not a pawn, capturing something.  This method forces 'b' to be a
@@ -3570,48 +3574,101 @@ class GameTextPGN(Game):
         """
         if match.group(IFG_PIECE_CAPTURE) == PGN_CAPTURE_MOVE:
             if match.group(IFG_PIECE_MOVE) == PGN_BISHOP.lower():
-                pawn_match = import_format.match(match.group())
-                if pawn_match is None:
-                    self.append_token_and_set_error(match)
-                    return
-                if pawn_match.group(IFG_PAWN_TO_RANK):
-                    super().append_pawn_move(pawn_match)
-                    if self._state is not None:
-                        self._text[-1] = match.group()
-                    self._possible_bishop = None
-                    return
-                if pawn_match.group(IFG_PAWN_PROMOTE_TO_RANK):
-                    super().append_pawn_promote_move(pawn_match)
-                    if self._state is not None:
-                        self._text[-1] = match.group()
-                    self._possible_bishop = None
-                    return
                 self.append_token_and_set_error(match)
+                self._bishop_or_bpawn = None
                 return
+        if match.group(IFG_PIECE_CAPTURE) == LAN_MOVE_SEPARATOR:
+            if match.group(IFG_PIECE_MOVE) == PGN_BISHOP.lower():
+                self.append_token_and_set_error(match)
+                self._bishop_or_bpawn = None
+                return
+            pgn_match = import_format.match(
+                ''.join((match.group().split(LAN_MOVE_SEPARATOR))))
+            if not pgn_match:
+                self.append_token_and_set_error(match)
+                self._bishop_or_bpawn = None
+                return
+            super().append_piece_move(pgn_match)
+            self._bishop_or_bpawn = None
+            return
         super().append_piece_move(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_other_or_disambiguation_pgn(self, match):
-        """"""
+        """Delegate to superclass then set _bishop_or_bpawn from match.
+        """
         super().append_other_or_disambiguation_pgn(match)
-        self._possible_bishop = possible_bishop_and_rank.match(match.group())
+        self._bishop_or_bpawn = possible_bishop_or_bpawn.match(match.group())
 
     def append_pawn_move(self, match):
-        if self._possible_bishop:
+        if self._bishop_or_bpawn:
             bishop = text_format.match(
-                self._possible_bishop.group().upper()+match.group())
+                self._bishop_or_bpawn.group()+match.group())
             if bishop:
                 super().append_piece_move(bishop)
-                self._possible_bishop = None
+                self._bishop_or_bpawn = None
                 return
             self.append_token_and_set_error()
             return
-        super().append_pawn_move(match)
-        self._possible_bishop = None
+        mgl = match.group()
+
+        # So the test on self._piece_placement_data gives a helpful answer.
+        # Cannot wait till it's done in 'super().append_pawn_move(pgn_match)'.
+        if self._movetext_offset is None:
+            if not self.set_initial_position():
+                self.append_token_and_set_error(match)
+                self._bishop_or_bpawn = None
+                return
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
+
+        if PGN_CAPTURE_MOVE in mgl:
+            pgn_match = text_format.match(mgl[0]+mgl[-3:])
+        elif LAN_MOVE_SEPARATOR in mgl:
+            for sr, dr, es in ('243', '756'):
+                if mgl[1] == sr and mgl[4] == dr:
+                    if mgl[0] != mgl[3]:
+                        self.append_token_and_set_error(match)
+                        self._bishop_or_bpawn = None
+                        return
+                    if mgl[0] + es in self._piece_placement_data:
+                        self.append_token_and_set_error(match)
+                        self._bishop_or_bpawn = None
+                        return
+            pgn_match = text_format.match(mgl[-2:])
+        elif mgl not in self._piece_placement_data:
+            pgn_match = text_format.match(mgl)
+        elif self._full_disambiguation_detected:
+            del self._full_disambiguation_detected
+            self._bishop_or_bpawn = None
+            return
+        else:
+            self._long_algebraic_notation_pawn_move(match)
+            self._bishop_or_bpawn = None
+            return
+        super().append_pawn_move(pgn_match)
+        self._bishop_or_bpawn = None
 
     def append_pawn_promote_move(self, match):
-        super().append_pawn_promote_move(match)
-        self._possible_bishop = None
+        mgl = match.group()
+        if PGN_CAPTURE_MOVE in mgl:
+            if PGN_PROMOTION in mgl:
+                promotion_match = import_format.match(mgl[0]+mgl[-5:])
+            else:
+                promotion_match = import_format.match(mgl[0]+mgl[-4:])
+        elif LAN_MOVE_SEPARATOR in mgl:
+            if PGN_PROMOTION in mgl:
+                promotion_match = import_format.match(mgl[-4:])
+            else:
+                promotion_match = import_format.match(mgl[-3:])
+        else:
+            promotion_match = import_format.match(mgl)
+        if promotion_match is None:
+            self.append_token_and_set_error(match)
+            self._bishop_or_bpawn = None
+            return
+        super().append_pawn_promote_move(promotion_match)
+        self._bishop_or_bpawn = None
 
     def ignore_reserved(self, match):
         """Ignore reserved sequence of tokens.
@@ -3624,75 +3681,88 @@ class GameTextPGN(Game):
         does not cause noting detection of the sequence.
 
         """
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_comment_to_eol(self, match):
         super().append_comment_to_eol(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_token(self, match):
         super().append_token(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_token_and_set_error(self, match):
         super().append_token_and_set_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_token_after_error(self, match):
         super().append_token_after_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_token_after_error_without_separator(self, match):
         super().append_token_after_error_without_separator(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_comment_after_error(self, match):
         super().append_comment_after_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_bad_tag_and_set_error(self, match):
         super().append_bad_tag_and_set_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_bad_tag_after_error(self, match):
         super().append_bad_tag_after_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_comment_to_eol_after_error(self, match):
         super().append_comment_to_eol_after_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_end_rav_after_error(self, match):
         super().append_end_rav_after_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_escape_after_error(self, match):
         super().append_escape_after_error(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_start_tag(self, match):
         super().append_start_tag(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_castles(self, match):
         super().append_castles(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_start_rav(self, match):
-        super().append_start_rav(match)
-        self._possible_bishop = None
+
+        # '(' and ')' may not be spotted in text mode, leading to a later
+        # exception on a genuine PGN '('.
+        # The '(self._ravstack[-1][2][1] != self._active_color' comparison in
+        # super.append_start_rav(match) will raise a TypeError exception if
+        # this situation occurs.
+        # What is found is certainly nonsense, but pgn_read does not crash.
+        try:
+            super().append_start_rav(match)
+        except TypeError:
+            if self._ravstack[-1][2] is not None:
+                raise
+            self.append_token_and_set_error(match)
+
+        self._bishop_or_bpawn = None
 
     def append_end_rav(self, match):
         super().append_end_rav(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_game_termination(self, match):
         super().append_game_termination(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
     def append_glyph_for_traditional_annotation(self, match):
         super().append_glyph_for_traditional_annotation(match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
 
 class GameIgnoreCasePGN(GameTextPGN):
@@ -3710,16 +3780,91 @@ class GameIgnoreCasePGN(GameTextPGN):
     
     """
 
-    def append_other_or_disambiguation_pgn(self, match):
-        """Delegate lower case match to superclass.
+    # Defaults for GameIgnoreCasePGN instance state.
+    _promotion_disambiguation_detected = False
 
-        A valid disambiguation sequence will look like a pawn move.
+    # Introduced so self.append_token_after_error() can process possible
+    # bishop moves detected by self.append_pawn_move().
+    def undo_pgn_error_notification(self):
+        """Do nothing.  Subclasses should override to fit requirements.
+
+        This method should be overridden if self.pgn_error_notification() is
+        overridden and should undo whatever was done.
 
         """
+        pass
+
+    def _undo_append_token_and_set_error(self):
+        self._state = None
+        self._state_stack[-1] = self._state
+        self._error_list.pop()
+        self.undo_pgn_error_notification()
+        self._text.pop()
+        try:
+            self._position_deltas.pop()
+        except IndexError:
+            pass
+
+    def append_token_after_error(self, match):
+        if self._bishop_or_bpawn:
+            if self._append_recovered_bishop_or_bpawn_move(match):
+                if self._full_disambiguation_detected:
+                    del self._full_disambiguation_detected
+                self._bishop_or_bpawn = None
+                return
+        if self._full_disambiguation_detected:
+            del self._full_disambiguation_detected
+            mgl = match.group().lower()
+            if text_format.match(LAN_MOVE_SEPARATOR.join((
+                self._text[-1], mgl)).strip()):
+                if PGN_PROMOTION not in mgl:
+                    pgn_match = import_format.match(
+                        self._text[-1].strip()+mgl)
+                    if pgn_match and pgn_match.lastindex == IFG_PAWN_TO_RANK:
+                        self._undo_append_token_and_set_error()
+                        super(GameTextPGN, self).append_pawn_move(pgn_match)
+                        return
+                else:
+                    mgls = mgl.split(PGN_PROMOTION, 1)
+                    pgn_match = import_format.match(PGN_PROMOTION.join((
+                        mgls[0], mgls[1].upper())))
+                    if (pgn_match and
+                        pgn_match.lastindex == IFG_PAWN_PROMOTE_PIECE):
+                        self._undo_append_token_and_set_error()
+                        super(GameTextPGN, self
+                              ).append_pawn_promote_move(pgn_match)
+                        return
+        super(GameTextPGN, self).append_token_after_error(match)
+
+    def append_other_or_disambiguation_pgn(self, match):
+        """Delegate non-promotion indicator lower case match to superclass.
+
+        A '=[QRBNqrbn]' at start of match when already processed by peek-ahead
+        is ignored.
+
+        A match that is not also a match when converted to lower case is an
+        error, even if the superclass would accept it, except when it means
+        a bishop capture on ranks 1 or 8 with bishop symbol in lower case.
+
+        Otherwise delegate to superclass.
+
+        """
+        if self._promotion_disambiguation_detected:
+            del self._promotion_disambiguation_detected
+            if disambiguate_promotion_format.match(match.group()):
+                return
         pgn_match = text_format.match(match.group().lower())
         if pgn_match is None:
             self.append_token_and_set_error(match)
             return
+        mgt = match.group()
+        mgt = mgt[0] + mgt[1:].lower()
+        if (pgn_match.lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE and
+            mgt.startswith('bx')):
+            bishop = import_format.match(mgt[0].upper()+mgt[1:])
+            if bishop and bishop.lastindex == IFG_PIECE_DESTINATION:
+                super(GameTextPGN, self).append_piece_move(bishop)
+                return
         super().append_other_or_disambiguation_pgn(pgn_match)
 
     def append_castles(self, match):
@@ -3750,16 +3895,121 @@ class GameIgnoreCasePGN(GameTextPGN):
         appropriate superclass method.
 
         """
-        pm = match.group().lower()
-        if self.is_move_interpreted_as_piece_move(match):
-            me = match.end()
-            piece_match = text_format.match(
-                pm[0].upper() + pm[1:] + match.string[me:me+10])
+        group = match.group
+        pm = group().lower()
+        piece_match = text_format.match(
+            pm[0].upper() + pm[1:] + match.string[match.end():match.end()+10])
+        if (pm[0] in 'kqrn' or
+            group(IFG_PIECE_DESTINATION)[0].lower() in 'defgh' or
+            (PGN_CAPTURE_MOVE in pm and
+             group(IFG_PIECE_DESTINATION)[0].lower() == 'b') or
+            (PGN_CAPTURE_MOVE not in pm and
+             group(IFG_PIECE_DESTINATION)[0].lower() in 'ac')):
             if piece_match.group(IFG_PIECE_MOVE) is None:
                 self.append_token_and_set_error(match)
                 return
             super(GameTextPGN, self).append_piece_move(piece_match)
-            self._possible_bishop = None
+            self._bishop_or_bpawn = None
+            return
+        pawn_match = text_format.match(pm)
+        if pawn_match and pawn_match.lastindex != IFG_PAWN_TO_RANK:
+            pawn_match = None
+        if group(IFG_PIECE_DESTINATION)[1] in '18':
+            peek_start = match.span(match.lastindex)[-1]
+            if peek_start == len(match.string):
+                pawn_promotion_match = None
+            elif match.string[peek_start] != PGN_PROMOTION:
+                pawn_promotion_match = None
+            else:
+                pawn_promotion_match = text_promotion_format.match(
+                    pm + match.string[peek_start:peek_start+6].lower())
+                if pawn_promotion_match:
+                    pawn_promotion_match = text_format.match(
+                        ''.join((pawn_promotion_match.group(TP_MOVE),
+                                 pawn_promotion_match.group(
+                                     TP_PROMOTE_TO_PIECE).upper(),
+                                 )))
+                    if (pawn_promotion_match and
+                        (pawn_promotion_match.lastindex !=
+                         IFG_PAWN_PROMOTE_PIECE)):
+                        pawn_promotion_match = None
+        else:
+            pawn_promotion_match = None
+        if self._movetext_offset is None:
+            if not self.set_initial_position():
+                self.append_token_and_set_error(match)
+                return
+            self._movetext_offset = len(self._text)
+        fen = generate_fen_for_position(
+            [p for p in self._piece_placement_data.values()],
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number)
+        setup = import_format.match('[SetUp"1"]')
+        fen = import_format.match(fen.join(('[FEN"', '"]')))
+        bishop_move = GameTextPGN()
+        bishop_move.append_start_tag(setup)
+        bishop_move.append_start_tag(fen)
+        bishop_move.append_piece_move(piece_match)
+        if pawn_match:
+            pawn_move = GameTextPGN()
+            pawn_move.append_start_tag(setup)
+            pawn_move.append_start_tag(fen)
+            pawn_move.append_pawn_move(pawn_match)
+        if pawn_promotion_match:
+            pawn_promotion_move = GameTextPGN()
+            pawn_promotion_move.append_start_tag(setup)
+            pawn_promotion_move.append_start_tag(fen)
+            pawn_promotion_move.append_pawn_promote_move(pawn_promotion_match)
+        if bishop_move.state is None:
+            if not (pawn_match or pawn_promotion_match):
+                super(GameTextPGN, self).append_piece_move(piece_match)
+                self._bishop_or_bpawn = None
+                return
+            elif match[0].isupper():
+                super(GameTextPGN, self).append_piece_move(piece_match)
+                self._bishop_or_bpawn = None
+                return
+            else:
+
+                # All tests passed with this commented code.
+                # However I am not convinced it is safe to collapse the
+                # conditionals under 'if bishop_move.state is None:' yet,
+                # nor that the original code below is sound in the new
+                # more limited scope.
+                #super(GameTextPGN, self).append_piece_move(piece_match)
+                #self._bishop_or_bpawn = None
+                #return
+
+                pass
+        else:
+            if (pawn_match and
+                pawn_match.lastindex == IFG_PAWN_TO_RANK):
+                super(GameTextPGN, self).append_pawn_move(pawn_match)
+                self._bishop_or_bpawn = None
+            elif (pawn_promotion_match and
+                pawn_promotion_match.lastindex == IFG_PAWN_PROMOTE_PIECE):
+                super(GameTextPGN, self
+                      ).append_pawn_promote_move(pawn_promotion_match)
+                self._bishop_or_bpawn = None
+            else:
+                self.append_token_and_set_error(match)
+            return
+
+        # Following code is mostly not used at version 2.1 compared with
+        # previous version.  One route above falls through to here but it
+        # seems 'self.is_move_interpreted_as_piece_move(match)' always
+        # evalutes True.
+        # Implication might be that move is always a bishop move, never a
+        # pawn move, if bishop_move.state is None in the code above.
+        if self.is_move_interpreted_as_piece_move(match):
+            if piece_match.group(IFG_PIECE_MOVE) is None:
+                self.append_token_and_set_error(match)
+                return
+            super(GameTextPGN, self).append_piece_move(piece_match)
+            self._bishop_or_bpawn = None
             return
         if match.group(IFG_PIECE_DESTINATION)[1] in '18':
             peek_start = match.span(match.lastindex)[-1]
@@ -3782,14 +4032,15 @@ class GameIgnoreCasePGN(GameTextPGN):
                     return
                 super(GameTextPGN, self
                       ).append_pawn_promote_move(promotion_match)
-                self._possible_bishop = None
+                self._promotion_disambiguation_detected = True
+                self._bishop_or_bpawn = None
             return
         piece_match = text_format.match(pm)
         if piece_match.group(IFG_PAWN_FROM_FILE) is None:
             self.append_token_and_set_error(match)
             return
         super(GameTextPGN, self).append_pawn_move(piece_match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
 
 
     def is_move_interpreted_as_piece_move(self, match):
@@ -3836,41 +4087,340 @@ class GameIgnoreCasePGN(GameTextPGN):
 
     def append_pawn_move(self, match):
         """Delegate lower case match to superclass."""
-        if self._possible_bishop:
+
+        # self._state is None and self._bishop_or_bpawn will have been set
+        # by self.append_other_or_disambiguation_pgn().
+        assert self._state is None
+        if self._bishop_or_bpawn:
             bishop = text_format.match(
-                self._possible_bishop.group().upper()+match.group().lower())
+                self._bishop_or_bpawn.group().upper()+match.group().lower())
             if bishop:
                 super(GameTextPGN, self).append_piece_move(bishop)
-                self._possible_bishop = None
+                self._bishop_or_bpawn = None
                 return
             self.append_token_and_set_error()
             return
-        me = match.end()
-        pgn_match = text_format.match(
-            match.group().lower() + match.string[me:me+10])
+
+        mgl = match.group().lower()
+
+        # So the test on self._piece_placement_data gives a helpful answer.
+        # Cannot wait till it's done in 'super().append_pawn_move(pgn_match)'.
+        if self._movetext_offset is None:
+            if not self.set_initial_position():
+                self.append_token_and_set_error(match)
+                self._bishop_or_bpawn = None
+                return
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
+
+        if PGN_CAPTURE_MOVE in mgl:
+            if mgl.startswith(FEN_BLACK_BISHOP):
+                self._append_bishop_or_bpawn_capture(match)
+                return
+            pgn_match = text_format.match(mgl[0]+mgl[-3:])
+        elif LAN_MOVE_SEPARATOR in mgl:
+            if mgl.startswith(FEN_BLACK_BISHOP):
+                self._append_bishop_or_bpawn_move(match)
+                return
+            for sr, dr, es in ('243', '756'):
+                if mgl[1] == sr and mgl[4] == dr:
+                    if mgl[0] != mgl[3]:
+                        self.append_token_and_set_error(match)
+                        self._bishop_or_bpawn = None
+                        return
+                    if mgl[0] + es in self._piece_placement_data:
+                        self.append_token_and_set_error(match)
+                        self._bishop_or_bpawn = None
+                        return
+            pgn_match = text_format.match(mgl[-2:])
+        elif mgl not in self._piece_placement_data:
+            pgn_match = text_format.match(mgl)
+        elif self._full_disambiguation_detected:
+            del self._full_disambiguation_detected
+            self._bishop_or_bpawn = None
+            return
+        else:
+            self._long_algebraic_notation_pawn_move(text_format.match(mgl))
+            if self._state is not None:
+                piece = self._piece_placement_data[mgl]
+                if self._active_color == piece.color:
+                    if self._active_color == FEN_WHITE_ACTIVE:
+                        if piece.name == FEN_WHITE_PAWN:
+                            self._full_disambiguation_detected = True
+                    elif self._active_color == FEN_BLACK_ACTIVE:
+                        if piece.name == FEN_BLACK_PAWN:
+                            self._full_disambiguation_detected = True
+                self._bishop_or_bpawn = possible_bishop_or_bpawn.match(
+                    match.group())
+                if self._full_disambiguation_detected and self._bishop_or_bpawn:
+                    del self._full_disambiguation_detected
+            else:
+                self._bishop_or_bpawn = None
+            return
         if pgn_match is None:
             self.append_token_and_set_error(match)
+            self._bishop_or_bpawn = None
             return
         super(GameTextPGN, self).append_pawn_move(pgn_match)
-        self._possible_bishop = None
+        if self._state is None:
+            self._bishop_or_bpawn = None
+            return
+
+        # self._state is not None so self.append_token_after_error() will
+        # process next token.
+        assert self._state is not None
+        self._bishop_or_bpawn = possible_bishop_or_bpawn.match(match.group())
 
     def append_pawn_promote_move(self, match):
         """Delegate lower case move with upper case promotion to superclass."""
-        me = match.end()
-        promotion_match = text_promotion_format.match(
-            match.group().lower() + match.string[me:me+10])
+        mgl = match.group().lower()
+        if mgl.startswith(FEN_BLACK_BISHOP):
+
+            # So the test on self._piece_placement_data gives a helpful answer.
+            # Cannot wait for 'super().append_pawn_move(pgn_match)'.
+            if self._movetext_offset is None:
+                if not self.set_initial_position():
+                    self.append_token_and_set_error(match)
+                    self._bishop_or_bpawn = None
+                    return
+                self._ravstack.append([0])
+                self._movetext_offset = len(self._text)
+
+        if PGN_CAPTURE_MOVE in mgl:
+            if PGN_PROMOTION in mgl:
+                promotion_match = text_promotion_format.match(mgl[0]+mgl[-5:])
+            else:
+                promotion_match = text_promotion_format.match(mgl[0]+mgl[-4:])
+        elif LAN_MOVE_SEPARATOR in mgl:
+            if PGN_PROMOTION in mgl:
+                promotion_match = text_promotion_format.match(mgl[-4:])
+            else:
+                promotion_match = text_promotion_format.match(mgl[-3:])
+        else:
+            promotion_match = text_promotion_format.match(mgl)
         if promotion_match is None:
             self.append_token_and_set_error(match)
+            self._bishop_or_bpawn = None
             return
-        promotion_match = text_format.match(
-            ''.join((promotion_match.group(TP_MOVE),
-                     promotion_match.group(TP_PROMOTE_TO_PIECE).upper(),
-                     )))
+        pmg = promotion_match.group()
+        promotion_match = import_format.match(pmg[:-1]+pmg[-1].upper())
         if promotion_match is None:
             self.append_token_and_set_error(match)
+            self._bishop_or_bpawn = None
             return
         super(GameTextPGN, self).append_pawn_promote_move(promotion_match)
-        self._possible_bishop = None
+        self._bishop_or_bpawn = None
+
+    def _append_recovered_bishop_or_bpawn_move(self, match):
+        """Return True if match is resolved to a bishop or b-pawn move."""
+        mgt = match.group().lower()
+        promotion_match = text_format.match(
+            LAN_MOVE_SEPARATOR.join((self._bishop_or_bpawn.group().lower(),
+                                     mgt[:-1]+mgt[-1].upper())))
+        promotion_lastindex = (
+            promotion_match and
+            promotion_match.lastindex  == IFG_PAWN_PROMOTE_PIECE)
+        if not (mgt.startswith(LAN_MOVE_SEPARATOR) or
+                mgt.startswith(PGN_CAPTURE_MOVE)):
+            mgt = LAN_MOVE_SEPARATOR + mgt
+        bishop_match = text_format.match(''.join((
+            self._bishop_or_bpawn.group().upper(), mgt)))
+        pawn_match = text_format.match(''.join((
+            self._bishop_or_bpawn.group().lower(), mgt)))
+        bishop_lastindex = (
+            bishop_match and bishop_match.lastindex  == IFG_PIECE_DESTINATION)
+        pawn_lastindex = (
+            pawn_match and
+            (pawn_match.lastindex  == IFG_PAWN_TO_RANK or
+             pawn_match.lastindex  == IFG_PAWN_PROMOTE_PIECE))
+
+        # Try the available matches.
+        if promotion_lastindex:
+            self._undo_append_token_and_set_error()
+            super().append_pawn_promote_move(promotion_match)
+            self._bishop_or_bpawn = None
+        elif bishop_lastindex and pawn_lastindex:
+            fen = generate_fen_for_position(
+                [p for p in self._piece_placement_data.values()],
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number)
+            setup = import_format.match('[SetUp"1"]')
+            fen = import_format.match(fen.join(('[FEN"', '"]')))
+            bishop_move = GameTextPGN()
+            bishop_move.append_start_tag(setup)
+            bishop_move.append_start_tag(fen)
+            bishop_move.append_piece_move(bishop_match)
+            pawn_move = GameTextPGN()
+            pawn_move.append_start_tag(setup)
+            pawn_move.append_start_tag(fen)
+            pawn_move.append_pawn_move(pawn_match)
+            if bishop_move._state is None and pawn_move._state is None:
+                if match.group()[0].isupper():
+                    self._undo_append_token_and_set_error()
+                    super().append_piece_move(bishop_match)
+                else:
+                    self._undo_append_token_and_set_error()
+                    self._append_pawn_move(pawn_match)
+            elif bishop_move._state is None:
+                self._undo_append_token_and_set_error()
+                super().append_piece_move(bishop_match)
+            elif pawn_move._state is None:
+                self._undo_append_token_and_set_error()
+                self._append_pawn_move(pawn_match)
+
+            # This looks equivalent to doing nothing, but if removed leads to
+            # an exception in _append_pawn_move at 'if mgl[0] != mgl[3]:'.
+            # Without the adjustment to self._text[-1] the text from match
+            # appears in two adjacent self._text elements.
+            else:
+                error_text = self._text[-1]
+                self._undo_append_token_and_set_error()
+                self.append_token_and_set_error(match)
+                self._text[-1] = error_text
+
+        elif pawn_lastindex:
+            self._undo_append_token_and_set_error()
+            self._append_pawn_move(pawn_match)
+        elif bishop_lastindex:
+            self._undo_append_token_and_set_error()
+            super().append_piece_move(bishop_match)
+        else:
+            self.append_token_and_set_error(match)
+        return bool(self._state is None)
+
+    def _append_pawn_move(self, match):
+        mgl = match.group()
+        try:
+            different_file = mgl[0] != mgl[3]
+        except IndexError:
+            self.append_token_and_set_error(match)
+            return
+        if different_file:
+            self.append_token_and_set_error(match)
+            return
+        for sr, dr, es in ('243', '756'):
+            if mgl[1] == sr and mgl[4] == dr:
+                if mgl[0] + es in self._piece_placement_data:
+                    self.append_token_and_set_error(match)
+                    return
+        pawn_match = import_format.match(mgl[-2:])
+        if pawn_match is None:
+            self.append_token_and_set_error(match)
+            return
+        super(GameTextPGN, self).append_pawn_move(pawn_match)
+
+    # B[1-8][xX] and b[1-8xX] are intended targets.
+    # Others seem covered already.
+    def _append_bishop_or_bpawn_capture(self, match):
+        fen = generate_fen_for_position(
+            [p for p in self._piece_placement_data.values()],
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number)
+        mgt = match.group().lower()
+        bishop_match = text_format.match(''.join((
+            mgt[0].upper(), mgt[1:])))
+        if PGN_PROMOTION in mgt:
+            pawn_match = text_format.match(''.join((
+                mgt[0].lower(), mgt[1:-1], mgt[-1].upper())))
+        else:
+            pawn_match = text_format.match(''.join((
+                mgt[0].lower(), mgt[1:])))
+        bishop_lastindex = (
+            bishop_match and bishop_match.lastindex  == IFG_PIECE_DESTINATION)
+        pawn_lastindex = (
+            pawn_match and
+            (pawn_match.lastindex  == IFG_PAWN_TO_RANK or
+             pawn_match.lastindex  == IFG_PAWN_PROMOTE_PIECE))
+        setup = import_format.match('[SetUp"1"]')
+        fen = import_format.match(fen.join(('[FEN"', '"]')))
+        bishop_move = GameTextPGN()
+        bishop_move.append_start_tag(setup)
+        bishop_move.append_start_tag(fen)
+        bishop_move.append_piece_move(bishop_match)
+        pawn_move = GameTextPGN()
+        pawn_move.append_start_tag(setup)
+        pawn_move.append_start_tag(fen)
+        if PGN_PROMOTION in mgt:
+            pawn_move.append_pawn_promote_move(pawn_match)
+        else:
+            pawn_move.append_pawn_move(pawn_match)
+        if bishop_move._state is None and pawn_move._state is None:
+            if match.group()[0].isupper():
+                super().append_piece_move(bishop_match)
+            else:
+                if PGN_PROMOTION in mgt:
+                    super().append_pawn_promote_move(pawn_match)
+                else:
+                    super().append_pawn_move(pawn_match)
+        elif bishop_move._state is None:
+            super().append_piece_move(bishop_match)
+        elif pawn_move._state is None:
+            if PGN_PROMOTION in mgt:
+                super().append_pawn_promote_move(pawn_match)
+            else:
+                super().append_pawn_move(pawn_match)
+        else:
+            self.append_token_and_set_error(match)
+
+    def _append_bishop_or_bpawn_move(self, match):
+        fen = generate_fen_for_position(
+            [p for p in self._piece_placement_data.values()],
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number)
+        mgt = match.group().lower()
+        bishop_match = text_format.match(''.join((
+            mgt[0].upper(), mgt[1:].replace(LAN_MOVE_SEPARATOR, ''))))
+        if PGN_PROMOTION in mgt:
+            pawn_match = text_format.match(''.join((
+                mgt[0].lower(), mgt[1:-1], mgt[-1].upper())))
+        else:
+            pawn_match = text_format.match(''.join((
+                mgt[0].lower(), mgt[1:])))
+        bishop_lastindex = (
+            bishop_match and bishop_match.lastindex  == IFG_PIECE_DESTINATION)
+        pawn_lastindex = (
+            pawn_match and
+            (pawn_match.lastindex  == IFG_PAWN_TO_RANK or
+             pawn_match.lastindex  == IFG_PAWN_PROMOTE_PIECE))
+        setup = import_format.match('[SetUp"1"]')
+        fen = import_format.match(fen.join(('[FEN"', '"]')))
+        bishop_move = GameTextPGN()
+        bishop_move.append_start_tag(setup)
+        bishop_move.append_start_tag(fen)
+        bishop_move.append_piece_move(bishop_match)
+        pawn_move = GameTextPGN()
+        pawn_move.append_start_tag(setup)
+        pawn_move.append_start_tag(fen)
+        if PGN_PROMOTION in mgt:
+            pawn_move.append_pawn_promote_move(pawn_match)
+        else:
+            pawn_move.append_pawn_move(pawn_match)
+        if bishop_move._state is None and pawn_move._state is None:
+            if match.group()[0].isupper():
+                super().append_piece_move(bishop_match)
+            else:
+                if PGN_PROMOTION in mgt:
+                    super().append_pawn_promote_move(pawn_match)
+                else:
+                    super().append_pawn_move(pawn_match)
+        elif bishop_move._state is None:
+            super().append_piece_move(bishop_match)
+        elif pawn_move._state is None:
+            if PGN_PROMOTION in mgt:
+                super().append_pawn_promote_move(pawn_match)
+            else:
+                super().append_pawn_move(pawn_match)
+        else:
+            self.append_token_and_set_error(match)
 
 
 class GameIndicateCheck(Game):

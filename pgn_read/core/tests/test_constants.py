@@ -73,6 +73,15 @@ class Constants(unittest.TestCase):
            r''.join(
                (r'(?#Disambiguation Text)((?:-|x[QRBN]?)?[a-h][1-8]',
                 )))
+        ae(constants.IGNORE_CASE_DISAMBIGUATION,
+           r''.join(
+               (r'(?#Disambiguation Text)',
+                r'((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8](?:=[QRBNqrbn])?)',
+                r'|',
+                r'(?:b[xX][QRBNqrbn]?[a-hA-H][18])',
+                r'|',
+                r'(?#Promotion)=[QRBNqrbn]',
+                )))
         ae(constants.ANYTHING_ELSE,
            r''.join(
                (r'(?#Anything else)\S+[ \t\r\f\v]*)',
@@ -140,9 +149,10 @@ class Constants(unittest.TestCase):
                 r'(?#End Tag)(\])',
                 r'|',
                 r'(?:(?#Moves)',
-                r'(?#Piece)([KQRBN])([a-h1-8]?)(x?)([a-h][1-8])',
+                r'(?#Piece)([KQRBN])([a-h1-8]?)([-x]?)([a-h][1-8])',
                 r'|',
-                r'(?#Pawn)(?:([a-h])(?:x([a-h]))?(?:([2-7])|([18])',
+                r'(?#Pawn)(?:([a-h])(?:(?:[2-7][-x]|x)([a-h]))?',
+                r'(?:([2-7])|([18])',
                 r'(?:=?([QRBN]))))',
                 r'|',
                 r'(?#Castle)(O-O-O|O-O|0-0-0|0-0)',
@@ -198,10 +208,11 @@ class Constants(unittest.TestCase):
                 r'(?#Piece)([KQRNkqrn]|B(?![1-8])|b(?![1-8xX]))',
                 r'([a-hA-H1-8]?)([xX]?)([a-hA-H][1-8])',
                 r'|',
-                r'(?#Pawn)(?:([a-hA-H])(?:[xX]([a-hA-H]))?(?:([2-7])|([18])',
+                r'(?#Pawn)(?:([a-hA-H])(?:(?:[2-7][-xX]|[xX])([a-hA-H]))?',
+                r'(?:([2-7])|([18])',
                 r'(?:=([QRBNqrbn]))))',
                 r'|',
-                r'(?#Castle)([Oo]-[Oo]-[Oo]|[Oo]-[Oo]|0-0-0|0-0)',
+                r'(?#Castle)([Oo0]-[Oo0]-[Oo0]|[Oo0]-[Oo0])',
                 r'(?#sevoM))',
                 r'|',
                 r'(?#Game termination)(1-0|1/2-1/2|0-1|\*)',
@@ -239,7 +250,12 @@ class Constants(unittest.TestCase):
                 r'|',
                 r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 r'|',
-                r'(?#Disambiguation Text)((?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8]',
+                r'(?#Disambiguation Text)',
+                r'((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8](?:=[QRBNqrbn])?)',
+                r'|',
+                r'(?:b[xX][QRBNqrbn]?[a-hA-H][18])',
+                r'|',
+                r'(?#Promotion)=[QRBNqrbn]',
                 r'|',
                 r'(?#Anything else)\S+[ \t\r\f\v]*)',
                 )))
@@ -276,10 +292,12 @@ class Constants(unittest.TestCase):
         ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 31)
         ae(constants.DISAMBIGUATE_TEXT, r'\A(x?)([a-h][1-8])')
         ae(constants.DISAMBIGUATE_PGN, r'\Ax?[a-h][1-8]')
+        ae(constants.DISAMBIGUATE_PROMOTION, r'\A=[QRBNqrbn]')
         ae(constants.DG_CAPTURE, 1)
         ae(constants.DG_DESTINATION, 2)
         ae(constants.LAN_FORMAT,
            r'(?#Lower case)\A([-x]?)([a-h][1-8])(?:=(qrbn))?')
+        ae(constants.LAN_MOVE_SEPARATOR, '-')
         ae(constants.LAN_CAPTURE_OR_MOVE, 1)
         ae(constants.LAN_DESTINATION, 2)
         ae(constants.LAN_PROMOTE_PIECE, 3)
@@ -322,6 +340,7 @@ class Constants(unittest.TestCase):
         ae(constants.TAG_SETUP, 'SetUp')
         ae(constants.SETUP_VALUE_FEN_ABSENT, '0')
         ae(constants.SETUP_VALUE_FEN_PRESENT, '1')
+        ae(constants.PGN_CAPTURE_MOVE, 'x')
         ae(constants.PGN_PAWN, '')
         ae(constants.PGN_KING, 'K')
         ae(constants.PGN_QUEEN, 'Q')
@@ -405,6 +424,18 @@ class Constants(unittest.TestCase):
 
     def test_06_ignore_case_format_re(self):
         self.assertEqual(bool(re.compile(constants.IGNORE_CASE_FORMAT)), True)
+
+    def test_07_disambiguate_promotion_re(self):
+        self.assertEqual(bool(re.compile(constants.DISAMBIGUATE_PROMOTION)),
+                         True)
+
+    def test_08_text_promotion_re(self):
+        self.assertEqual(bool(re.compile(constants.TEXT_PROMOTION)), True)
+
+    def test_09_pawn_move_token_possible_bishop_re(self):
+        self.assertEqual(
+            bool(re.compile(constants.PAWN_MOVE_TOKEN_POSSIBLE_BISHOP)),
+            True)
 
 
 class RookMoves(unittest.TestCase):
@@ -1549,6 +1580,165 @@ class FENSourceSquares(unittest.TestCase):
         ai(cfss[constants.FEN_BLACK_PAWN], constants.BLACK_PAWN_CAPTURES)
 
 
+class CountConstants(unittest.TestCase):
+
+    def test_01_count_constants(self):
+        self.assertEqual(
+            sorted([c for c in dir(constants) if not c.startswith('_')]),
+            ['ANYTHING_ELSE',
+             'BISHOP_MOVES',
+             'BLACK_PAWN_CAPTURES',
+             'BLACK_PAWN_MOVES',
+             'CASTLING_MOVE_RIGHTS',
+             'CASTLING_PIECE_FOR_SQUARE',
+             'CASTLING_RIGHTS',
+             'DEFAULT_SORT_TAG_RESULT_VALUE',
+             'DEFAULT_SORT_TAG_VALUE',
+             'DEFAULT_SUPPLEMENTAL_TAG_VALUE',
+             'DEFAULT_TAG_DATE_VALUE',
+             'DEFAULT_TAG_RESULT_VALUE',
+             'DEFAULT_TAG_VALUE',
+             'DG_CAPTURE',
+             'DG_DESTINATION',
+             'DISAMBIGUATE_PGN',
+             'DISAMBIGUATE_PROMOTION',
+             'DISAMBIGUATE_TEXT',
+             'EN_PASSANT_TARGET_SQUARES',
+             'FEN_ACTIVE_COLOR_FIELD_INDEX',
+             'FEN_BLACK_ACTIVE',
+             'FEN_BLACK_BISHOP',
+             'FEN_BLACK_KING',
+             'FEN_BLACK_KNIGHT',
+             'FEN_BLACK_PAWN',
+             'FEN_BLACK_PIECES',
+             'FEN_BLACK_QUEEN',
+             'FEN_BLACK_ROOK',
+             'FEN_CASTLING_AVAILABILITY_FIELD_INDEX',
+             'FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX',
+             'FEN_FIELD_COUNT',
+             'FEN_FIELD_DELIM',
+             'FEN_FULLMOVE_NUMBER_FIELD_INDEX',
+             'FEN_HALFMOVE_CLOCK_FIELD_INDEX',
+             'FEN_INITIAL_CASTLING',
+             'FEN_NULL',
+             'FEN_PAWNS',
+             'FEN_PIECE_NAMES',
+             'FEN_PIECE_PLACEMENT_FIELD_INDEX',
+             'FEN_RANK_DELIM',
+             'FEN_SOURCE_SQUARES',
+             'FEN_TO_PGN',
+             'FEN_WHITE_ACTIVE',
+             'FEN_WHITE_BISHOP',
+             'FEN_WHITE_KING',
+             'FEN_WHITE_KNIGHT',
+             'FEN_WHITE_PAWN',
+             'FEN_WHITE_PIECES',
+             'FEN_WHITE_QUEEN',
+             'FEN_WHITE_ROOK',
+             'FILE_ATTACKS',
+             'FILE_NAMES',
+             'IFG_BAD_COMMENT',
+             'IFG_BAD_RESERVED',
+             'IFG_BAD_TAG',
+             'IFG_CASTLES',
+             'IFG_CHECK_INDICATOR',
+             'IFG_COMMENT',
+             'IFG_COMMENT_TO_EOL',
+             'IFG_DOTS',
+             'IFG_END_OF_FILE_MARKER',
+             'IFG_END_RAV',
+             'IFG_END_TAG',
+             'IFG_ESCAPE',
+             'IFG_GAME_TERMINATION',
+             'IFG_MOVE_NUMBER',
+             'IFG_NUMERIC_ANNOTATION_GLYPH',
+             'IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE',
+             'IFG_PASS',
+             'IFG_PAWN_CAPTURE_TO_FILE',
+             'IFG_PAWN_FROM_FILE',
+             'IFG_PAWN_PROMOTE_PIECE',
+             'IFG_PAWN_PROMOTE_TO_RANK',
+             'IFG_PAWN_TO_RANK',
+             'IFG_PIECE_CAPTURE',
+             'IFG_PIECE_DESTINATION',
+             'IFG_PIECE_MOVE',
+             'IFG_PIECE_MOVE_FROM_FILE_OR_RANK',
+             'IFG_RESERVED',
+             'IFG_START_RAV',
+             'IFG_TAG_NAME',
+             'IFG_TAG_VALUE',
+             'IFG_TRADITIONAL_ANNOTATION',
+             'IGNORE_CASE_DISAMBIGUATION',
+             'IGNORE_CASE_FORMAT',
+             'IMPORT_FORMAT',
+             'KING_MOVES',
+             'KNIGHT_MOVES',
+             'LAN_CAPTURE_OR_MOVE',
+             'LAN_DESTINATION',
+             'LAN_FORMAT',
+             'LAN_MOVE_SEPARATOR',
+             'LAN_PROMOTE_PIECE',
+             'LRD_DIAGONAL_ATTACKS',
+             'OTHER_SIDE',
+             'PAWN_MOVE_TOKEN_POSSIBLE_BISHOP',
+             'PGN_BISHOP',
+             'PGN_CAPTURE_MOVE',
+             'PGN_DISAMBIGUATION',
+             'PGN_DOT',
+             'PGN_FORMAT',
+             'PGN_KING',
+             'PGN_KNIGHT',
+             'PGN_LINE_SEPARATOR',
+             'PGN_MAXIMUM_LINE_LENGTH',
+             'PGN_NAMED_PIECES',
+             'PGN_O_O',
+             'PGN_O_O_O',
+             'PGN_PAWN',
+             'PGN_PROMOTION',
+             'PGN_QUEEN',
+             'PGN_ROOK',
+             'PGN_TOKEN_SEPARATOR',
+             'PIECE_TO_KING',
+             'POINT_TO_POINT',
+             'PROMOTED_PIECE_NAME',
+             'QUEEN_MOVES',
+             'RANK_ATTACKS',
+             'RANK_NAMES',
+             'RLD_DIAGONAL_ATTACKS',
+             'ROOK_MOVES',
+             'SETUP_VALUE_FEN_ABSENT',
+             'SETUP_VALUE_FEN_PRESENT',
+             'SEVEN_TAG_ROSTER',
+             'SEVEN_TAG_ROSTER_DEFAULTS',
+             'SOURCE_SQUARES',
+             'SUFFIX_ANNOTATION_TO_NAG',
+             'SUPPLEMENTAL_TAG_ROSTER',
+             'TAG_BLACK',
+             'TAG_BLACKELO',
+             'TAG_BLACKNA',
+             'TAG_BLACKTITLE',
+             'TAG_DATE',
+             'TAG_EVENT',
+             'TAG_FEN',
+             'TAG_RESULT',
+             'TAG_ROUND',
+             'TAG_SETUP',
+             'TAG_SITE',
+             'TAG_WHITE',
+             'TAG_WHITEELO',
+             'TAG_WHITENA',
+             'TAG_WHITETITLE',
+             'TEXT_DISAMBIGUATION',
+             'TEXT_FORMAT',
+             'TEXT_PROMOTION',
+             'TP_MOVE',
+             'TP_PROMOTE_TO_PIECE',
+             'UNTERMINATED',
+             'WHITE_PAWN_CAPTURES',
+             'WHITE_PAWN_MOVES',
+             ])
+
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner
     loader = unittest.defaultTestLoader.loadTestsFromTestCase
@@ -1570,3 +1760,4 @@ if __name__ == '__main__':
     runner().run(loader(RightLeftDownDiagonalAttacks))
     runner().run(loader(SourceSquares))
     runner().run(loader(FENSourceSquares))
+    runner().run(loader(CountConstants))

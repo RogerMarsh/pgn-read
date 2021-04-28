@@ -1373,9 +1373,9 @@ class _TextFormatTests:
                                        [6],
                                        [[6]],
                                        [[' (']],
-                                       [68])
+                                       [58])
         self.do_game_text_tests(
-            games[0], 68, 6, 6,
+            games[0], 58, 6, 6,
             ['[Event"EM/CL/Q19-2"]', '<br>',
              '[White"Silva, ABC (BRA)"]', '<br>',
              '[Black"Player, Riccardo (ITA)"]', '<br>',
@@ -1387,9 +1387,9 @@ class _TextFormatTests:
                                        [3],
                                        [[3]],
                                        [[' (']],
-                                       [65])
+                                       [55])
         self.do_game_text_tests(
-            games[0], 65, 3, 3,
+            games[0], 55, 3, 3,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1401,17 +1401,17 @@ class _TextFormatTests:
         games = self.do_standard_tests('Little_03.pgn', None,
                                        [7],
                                        [[7]],
-                                       [[' Ng1']],
-                                       [48])
+                                       [[' B1d3']],
+                                       [46])
         self.do_game_text_tests(
-            games[0], 48, 7, 7,
+            games[0], 46, 7, 7,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
              '[Result"1/2 - Â"]', '<br>',
              'd4',
              '; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n',
-             ' Ng1', ' -f3',
+             ' B1d3', ';d7-d5 6.cd5, ed 7.Ng1-f3; Tf8-e8.0-0 ; Nb8-d7 <br>\n',
              ])
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
@@ -1419,15 +1419,15 @@ class _TextFormatTests:
         games = self.do_standard_tests('Little_04.pgn', None,
                                        [12, 3],
                                        [[12], []],
-                                       [[' Ng1'], []],
-                                       [143, 3])
+                                       [[' B1d3'], []],
+                                       [144, 3])
         self.do_game_text_tests(
-            games[0], 143, 12, 12,
+            games[0], 144, 12, 12,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
              '[Result"1/2 - Â"]', '<br>',
-             'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', ' Ng1', ' -f3',
+             'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', ' B1d3', ' d7-d5',
              ])
         self.assertEqual(games[1]._text, ['</p>', '<p>', '</p>'])
 
@@ -1437,9 +1437,9 @@ class _TextFormatTests:
                                        [20, 3],
                                        [[20], []],
                                        [[' Bb4'], []],
-                                       [141, 3])
+                                       [134, 3])
         self.do_game_text_tests(
-            games[0], 141, 20, 20,
+            games[0], 134, 20, 20,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1455,9 +1455,9 @@ class _TextFormatTests:
                                        [22, 3],
                                        [[22], []],
                                        [[' Bb4'], []],
-                                       [143, 3])
+                                       [136, 3])
         self.do_game_text_tests(
-            games[0], 143, 22, 22,
+            games[0], 136, 22, 22,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1474,9 +1474,9 @@ class _TextFormatTests:
                                        [24, 3],
                                        [[24], []],
                                        [[' Bb4'], []],
-                                       [145, 3])
+                                       [138, 3])
         self.do_game_text_tests(
-            games[0], 145, 24, 24,
+            games[0], 138, 24, 24,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1493,9 +1493,9 @@ class _TextFormatTests:
                                        [24, 3],
                                        [[24], []],
                                        [[' Bb4'], []],
-                                       [145, 3])
+                                       [138, 3])
         self.do_game_text_tests(
-            games[0], 145, 24, 24,
+            games[0], 138, 24, 24,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1512,9 +1512,9 @@ class _TextFormatTests:
                                        [24, 3],
                                        [[24], []],
                                        [[' Bb4'], []],
-                                       [145, 3])
+                                       [138, 3])
         self.do_game_text_tests(
-            games[0], 145, 24, 24,
+            games[0], 138, 24, 24,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1530,17 +1530,17 @@ class _TextFormatTests:
         games = self.do_standard_tests('Little_10.pgn', None,
                                        [26, 3],
                                        [[26], []],
-                                       [[' a2'], []],
-                                       [138, 3])
+                                       [[' a4'], []],
+                                       [132, 3])
         self.do_game_text_tests(
-            games[0], 138, 26, 26,
+            games[0], 132, 26, 26,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
              '[Result"1/2 - Â"]', '<br>',
              'd4', 'Nf6', 'c4', 'e6', 'Nc3', 'Bb4', 'e3', 'O-O', '<br>',
              'Bd3', 'd5', 'cxd5', 'exd5', 'Nf3', 'Re8', 'O-O', 'Nbd7',
-             '<br>', 'Qb3', 'Bxc3', 'bxc3', ' a2', ' -a4',
+             '<br>', 'Qb3', 'Bxc3', 'bxc3', ' a4', ' a7-a5',
              ])
         self.assertEqual(games[1]._text, ['</p>', '<p>', '</p>'])
 
@@ -1550,9 +1550,9 @@ class _TextFormatTests:
                                        [43, 3],
                                        [[43], []],
                                        [[' Rf1'], []],
-                                       [111, 3])
+                                       [108, 3])
         self.do_game_text_tests(
-            games[0], 111, 43, 43,
+            games[0], 108, 43, 43,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1572,9 +1572,9 @@ class _TextFormatTests:
                                        [60, 3],
                                        [[60], []],
                                        [[' Re8'], []],
-                                       [86, 3])
+                                       [85, 3])
         self.do_game_text_tests(
-            games[0], 86, 60, 60,
+            games[0], 85, 60, 60,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1596,9 +1596,9 @@ class _TextFormatTests:
                                        [60, 3],
                                        [[60], []],
                                        [[' Re8'], []],
-                                       [86, 3])
+                                       [85, 3])
         self.do_game_text_tests(
-            games[0], 86, 60, 60,
+            games[0], 85, 60, 60,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1620,9 +1620,9 @@ class _TextFormatTests:
                                        [60, 3],
                                        [[60], []],
                                        [[' Re8'], []],
-                                       [86, 3])
+                                       [85, 3])
         self.do_game_text_tests(
-            games[0], 86, 60, 60,
+            games[0], 85, 60, 60,
             ['[Event"EM/CL/Q19-2"]',
              '[White"Silva, ABC (BRA)"]',
              '[Black"Player, Riccardo (ITA)"]',
@@ -1800,22 +1800,22 @@ class _IgnoreCaseTextPGN:
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_034_little_01(self):
-        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 61)
+        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 59)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_035_little_02(self):
-        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 58)
+        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 56)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_036_little_03(self):
         games = self.do_standard_tests(
-            'Little_03.pgn', None, [8], [[8]], [[' Qd1']], [44])
+            'Little_03.pgn', None, [8], [[8]], [[' Qd1']], [43])
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_037_little_04(self):
         games = self.do_standard_tests(
             'Little_04.pgn', None,
-            (17, 3), ([17], []), ([' Bb4'], []), [138, 3])
+            (17, 3), ([17], []), ([' Bb4'], []), [131, 3])
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_048_little_15(self):
@@ -1865,6 +1865,13 @@ class _IgnoreCaseTextPGN:
             ])
         ae(games[1]._text, ['</p>', '<p>', '</p>'])
 
+    def test_055_crafty06_03(self):
+        self.do_standard_tests('crafty06_03.pgn', None,
+            (None, None, 359, 46),
+            ([], [], [351, 359], [46]),
+            (['('], [], [' (', ' d4'], []),
+            (187, 1, 657, 106))
+
 
 class IgnoreCaseTextPGN(_IgnoreCaseTextPGN, TextPGN):
 
@@ -1907,27 +1914,27 @@ class _IgnoreCasePGNLower:
 
     def test_002_4ncl_96_97_01_pgn(self):
         self.do_standard_tests(
-            '4ncl_96-97_01.pgn', None, 39, [39], [' bxd5'], 180)
+            '4ncl_96-97_01.pgn', None, None, [], [], 108)
 
     def test_003_4ncl_96_97_02_pgn(self):
         self.do_standard_tests(
-            '4ncl_96-97_02.pgn', None, 30, [30], [' bxc4'], 204)
+            '4ncl_96-97_02.pgn', None, None, [], [], 113)
 
     def test_004_4ncl_96_97_03_pgn(self):
         self.do_standard_tests('4ncl_96-97_03.pgn', None,
-                               49, [49], [' bxd5'], 281)
+                               None, [], [], 155)
 
     def test_005_4ncl_96_97_04_pgn(self):
         self.do_standard_tests('4ncl_96-97_04.pgn', None,
-                               66, [66], [' bxb4'], 153)
+                               None, [], [], 109)
 
     def test_006_4ncl_96_97_05_pgn(self):
         self.do_standard_tests(
-            '4ncl_96-97_05.pgn', None, 43, [43], [' Nxf8'], 210)
+            '4ncl_96-97_05.pgn', None, 52, [52], [' Be4'], 203)
 
     def test_007_4ncl_96_97_06_pgn(self):
         self.do_standard_tests('4ncl_96-97_06.pgn', None,
-                               99, [45, 82, 99], [' bxe7'], 114)
+                               None, [], [], 89)
 
     def test_008_FIDE_longest_possible_game_pgn(self):
         self.do_standard_tests('FIDE_longest_possible_game.pgn',
@@ -1935,45 +1942,45 @@ class _IgnoreCasePGNLower:
 
     def test_009_break_pgn_0_8_1_a_pgn(self):
         self.do_standard_tests(
-            'break_pgn_0_8_1_a.pgn', None, 47, [47], [' Rxc1'], 109)
+            'break_pgn_0_8_1_a.pgn', None, None, [], [], 81)
 
     def test_010_break_pgn_0_8_1_b_pgn(self):
         self.do_standard_tests(
-            'break_pgn_0_8_1_b.pgn', None, 94, [94], [' bxc4'], 278)
+            'break_pgn_0_8_1_b.pgn', None, None, [], [], 189)
 
     def test_011_break_pgn_0_8_1_c_pgn(self):
         self.do_standard_tests('break_pgn_0_8_1_c.pgn', None,
-                               39, [39], [' bxd6'], 193)
+                               None, [], [' bxd6'], 118)
 
     def test_012_twic92n_01_pgn(self):
-        self.do_standard_tests('twic92n_01.pgn', None, 23, [23], [' bxc6'], 208)
+        self.do_standard_tests('twic92n_01.pgn', None, None, [], [], 111)
 
     def test_013_twic92n_02_pgn(self):
-        self.do_standard_tests('twic92n_02.pgn', None, 42, [42], [' bxc4'], 216)
+        self.do_standard_tests('twic92n_02.pgn', None, None, [], [], 126)
 
     def test_014_twic92n_03_pgn(self):
-        self.do_standard_tests('twic92n_03.pgn', None, 39, [39], [' bxe6'], 152)
+        self.do_standard_tests('twic92n_03.pgn', None, None, [], [], 96)
 
     def test_015_twic92n_04_pgn(self):
-        self.do_standard_tests('twic92n_04.pgn', None, 44, [44], [' bxc3'], 196)
+        self.do_standard_tests('twic92n_04.pgn', None, None, [], [], 120)
 
     def test_016_twic92n_05_pgn(self):
-        self.do_standard_tests('twic92n_05.pgn', None, 46, [46], [' bxe7'], 180)
+        self.do_standard_tests('twic92n_05.pgn', None, None, [], [], 113)
 
     def test_017_twic92n_06_pgn(self):
-        self.do_standard_tests('twic92n_06.pgn', None, 79, [79], [' Nxf8'], 127)
+        self.do_standard_tests('twic92n_06.pgn', None, None, [], [], 103)
 
     def test_018_twic92n_07_pgn(self):
-        self.do_standard_tests('twic92n_07.pgn', None,
-                               37, [37], [' bxd6'], 251)
+        self.do_standard_tests('twic92n_07.pgn', None, None, [], [], 141)
 
     def test_019_twic92n_08_pgn(self):
-        self.do_standard_tests('twic92n_08.pgn', None, 40, [40], [' bxd2'], 215)
+        self.do_standard_tests('twic92n_08.pgn', None, None, [], [], 122)
 
     def test_020_twic92n_09_pgn(self):
-        self.do_standard_tests('twic92n_09.pgn', None, 26, [26], [' bxc6'], 204)
+        self.do_standard_tests('twic92n_09.pgn', None, None, [], [], 115)
 
     # Correct because the FEN tag has been converted to lower-case.
+    # The initial position in the FEN tag is not setup.
     def test_021_twic95n_10_pgn(self):
         self.do_standard_tests('twic95n_10.pgn', None,
                                19, [19], [' O-O-O'], 82)
@@ -1981,120 +1988,122 @@ class _IgnoreCasePGNLower:
     def test_022_twic9nn_error_pgn(self):
         self.do_standard_tests(
             'twic9nn_error.pgn', None,
-            (None, None, None, None, None, None, 14, None, None, 81),
-            ([], [], [], [], [], [], [14], [], [], [81]),
-            ([], [], [], [], [], [], [' ('], [], [], [' bxc5'],),
-            (13, 1, 13, 1, 14, 1, 18, 16, 18, 238,))
+            (None, None, None, None, None, None, 14, None, None, None),
+            ([], [], [], [], [], [], [14], [], [], []),
+            ([], [], [], [], [], [], [' ('], [], [], [],),
+            (13, 1, 13, 1, 14, 1, 18, 16, 18, 154,))
 
+    # '12. Bxc3' in lower case is taken to be a pawn capture because both a
+    # pawn and a bishop can capture on c3, which does not cause a problem in
+    # terms of legal moves, until '35. b4'.
+    # The problem is not reported against 'b4' because it might be the start
+    # of a bishop move.  The next token, 'h6', refutes this possibility and
+    # 'g4' is the token after 'h6'.
     def test_023_4ncl_97_98_07_pgn(self):
         self.do_standard_tests(
-            '4ncl_97-98_07.pgn', None, 33, [33], [' bxc3'], 199)
+            '4ncl_97-98_07.pgn', None, 82, [82], [' g4'], 143)
 
     def test_024_all_4ncl_1996_2010_08(self):
         self.do_standard_tests('all_4ncl_1996_2010_08.pgn', None,
-                               143, [43, 143], [' bxe5'], 566)
+                               None, [], [], 322)
 
     def test_025_all_4ncl_1996_2010_09(self):
         self.do_standard_tests('all_4ncl_1996_2010_09.pgn', None,
-                               35, [35], [' bxe5'], 140)
+                               None, [], [], 87)
 
     def test_026_all_4ncl_1996_2010_10(self):
         self.do_standard_tests('all_4ncl_1996_2010_10.pgn', None,
-                               172, [59, 99, 172], [' bxf6'], 222)
+                               None, [], [], 157)
 
     def test_027_calgames_01(self):
-        self.do_standard_tests('calgames_01.pgn', None,
-                               25, [25], [' bxf4'], 88)
+        self.do_standard_tests('calgames_01.pgn', None, None, [], [], 56)
 
     def test_028_calgames_02(self):
         self.do_standard_tests('calgames_02.pgn', None,
-                               87, [40, 87], [' bxc6'], 488)
+                               None, [], [], 262)
 
     def test_029_calgames_03(self):
-        self.do_standard_tests('calgames_03.pgn', None,
-                               111, [54, 98, 111], [' bxf6', ' bxc5'], 525)
+        self.do_standard_tests('calgames_03.pgn', None, None, [], [], 307)
 
     def test_030_calgames_04(self):
         self.do_standard_tests('calgames_04.pgn', None,
-                               61, [61], [' bxg4'], 139)
+                               None, [], [], 97)
 
     def test_031_calgames_05(self):
         self.do_standard_tests('calgames_05.pgn', None,
-                               254, [48, 119, 212, 247, 254], [' bxc5'], 687)
+                               None, [], [], 411)
 
     # calgames_06.pgn has an error in the Event Tag but rest of game is fine.
     def test_032_calgames_06(self):
-        self.do_standard_tests('calgames_06.pgn', None,
-                               20, [20], [' bxb2'], 129)
+        self.do_standard_tests('calgames_06.pgn', None, None, [], [], 75)
 
     # calgames_07.pgn is calgames_06.pgn with the Event Tag corrected.
     def test_033_calgames_07(self):
-        self.do_standard_tests('calgames_07.pgn', None,
-                               20, [20], [' bxb2'], 129)
+        self.do_standard_tests('calgames_07.pgn', None, None, [], [], 75)
 
     def test_034_little_01(self):
-        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 61)
+        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 59)
 
     def test_035_little_02(self):
-        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 58)
+        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 56)
 
     def test_036_little_03(self):
-        self.do_standard_tests('Little_03.pgn', None, 8, [8], [' Qd1'], 44)
+        self.do_standard_tests('Little_03.pgn', None, 8, [8], [' Qd1'], 43)
 
     def test_037_little_04(self):
         self.do_standard_tests(
             'Little_04.pgn', None,
-            (17, 3), ([17], []), ([' Bb4'], []), [138, 3])
+            (17, 3), ([17], []), ([' bb4'], []), [131, 3])
 
     def test_038_little_05(self):
         self.do_standard_tests(
             'Little_05.pgn', None,
-            (20, 3), ([20], []), ([' Bb4'], []), [141, 3])
+            (20, 3), ([20], []), ([' bb4'], []), [134, 3])
 
     def test_039_little_06(self):
         self.do_standard_tests(
             'Little_06.pgn', None,
-            (22, 3), ([22], []), ([' Bb4'], []), [143, 3])
+            (22, 3), ([22], []), ([' bb4'], []), [136, 3])
 
     def test_040_little_07(self):
         self.do_standard_tests(
             'Little_07.pgn', None,
-            (24, 3), ([24],[]), ([' Bb4'], []), [145, 3])
+            (24, 3), ([24],[]), ([' bb4'], []), [138, 3])
 
     def test_041_little_08(self):
         self.do_standard_tests(
             'Little_08.pgn', None,
-            (24, 3), ([24],[]), ([' Bb4'], []), [145, 3])
+            (24, 3), ([24],[]), ([' bb4'], []), [138, 3])
 
     def test_042_little_09(self):
         self.do_standard_tests(
             'Little_09.pgn', None,
-            (24, 3), ([24],[]), ([' Bb4'], []), [145, 3])
+            (24, 3), ([24],[]), ([' bb4'], []), [138, 3])
 
     def test_043_little_10(self):
         self.do_standard_tests(
             'Little_10.pgn', None,
-            (26, 3), ([26],[]), ([' a2'], []), [138, 3])
+            (26, 3), ([26],[]), ([' a4'], []), [132, 3])
 
     def test_044_little_11(self):
         self.do_standard_tests(
             'Little_11.pgn', None,
-            (43, 3), ([43],[]), ([' Rf1'], []), [111, 3])
+            (43, 3), ([43],[]), ([' Rf1'], []), [108, 3])
 
     def test_045_little_12(self):
         self.do_standard_tests(
             'Little_12.pgn', None,
-            (60, 3), ([60],[]), ([' Re8'], []), [86, 3])
+            (60, 3), ([60],[]), ([' Re8'], []), [85, 3])
 
     def test_046_little_13(self):
         self.do_standard_tests(
             'Little_13.pgn', None,
-            (60, 3), ([60],[]), ([' Re8'], []), [86, 3])
+            (60, 3), ([60],[]), ([' Re8'], []), [85, 3])
 
     def test_047_little_14(self):
         self.do_standard_tests(
             'Little_14.pgn', None,
-            (60, 3), ([60],[]), ([' Re8'], []), [86, 3])
+            (60, 3), ([60],[]), ([' Re8'], []), [85, 3])
 
     def test_048_little_15(self):
         self.do_standard_tests('Little_15.pgn', None,
@@ -2105,18 +2114,19 @@ class _IgnoreCasePGNLower:
 
     def test_049_calgames_08(self):
         self.do_standard_tests(
-            'calgames_08.pgn', None, 52, [52], [' bxc4'], 152)
+            'calgames_08.pgn', None, None, [82], [' --'], 114)
 
     def test_050_calgames_09(self):
         self.do_standard_tests(
-            'calgames_09.pgn', None, 19, [19], [' bxa3'], 770)
+            'calgames_09.pgn', None, None,
+            [417], [' --'], 427)
 
     def test_051_crafty06_01(self):
         games = self.do_standard_tests('crafty06_01.pgn', None,
-                                       (23, 2, 42),
-                                       ([23], [2], [42]),
-                                       ([' bxb5'], [' ('], [' bxg3']),
-                                       (265, 17, 189))
+                                       (None, 2, None),
+                                       ([], [2], []),
+                                       ([], [' ('], []),
+                                       (143, 17, 114))
         ae = self.assertEqual
         ae(len(games), 3)
         ae(games[0]._strict_pgn, None)
@@ -2124,7 +2134,7 @@ class _IgnoreCasePGNLower:
         ae(gt[0], '[event"icc 5 3"]')
         ae(gt[2], '[date"2006.06.13"]')
         ae(gt[4], '[white"crafty"]')
-        ae(gt[-1], ' 1/2-1/2')
+        ae(gt[-1], '1/2-1/2')
         ae(games[1]._strict_pgn, None)
         gt = games[1]._text
         ae(gt[0], '<crafty@localhost>')
@@ -2136,7 +2146,7 @@ class _IgnoreCasePGNLower:
         ae(gt[0], '[event"icc 5 3"]')
         ae(gt[2], '[date"2006.06.13"]')
         ae(gt[5], '[black"crafty"]')
-        ae(gt[-1], ' 1-0')
+        ae(gt[-1], '1-0')
 
     def test_052_little_16(self):
         self.do_standard_tests('Little_16.pgn', None,
@@ -2146,7 +2156,7 @@ class _IgnoreCasePGNLower:
                                (72, 3))
 
     def test_053_twic92n_11_pgn(self):
-        self.do_standard_tests('twic92n_11.pgn', None, 29, [29], [], 140)
+        self.do_standard_tests('twic92n_11.pgn', None, None, [], [], 82)
 
     def test_054_crafty06_02(self):
         self.do_standard_tests(
@@ -2159,21 +2169,21 @@ class _IgnoreCasePGNLower:
     def test_055_crafty06_03(self):
         self.do_standard_tests(
             'crafty06_03.pgn', None,
-            (None, None, 216, 46),
-            ([], [], [216], [46]),
-            (['('], [], [], []),
-            (187, 1, 1136, 106))
+            (None, None, 359, 46),
+            ([], [], [351, 359], [46]),
+            (['('], [], [' (', ' d4'], []),
+            (187, 1, 657, 106))
 
     # calgames_10.pgn added when castling options missing in a samples report.
     # The sequence '4. bxc6' is interpreted as a pawn capture.
     def test_056_calgames_10(self):
         self.do_standard_tests('calgames_10.pgn', None,
-                               18, [18], [' bxc6'], 163)
+                               None, [], [], 92)
 
     # The sequence '6... bb4 7. bd2' is seen as bishop moves.
     def test_057_calgames_11(self):
         self.do_standard_tests(
-            'calgames_11.pgn', None, None, [57, 102, 129, 190, 227], [], 296)
+            'calgames_11.pgn', None, None, [112, 198], [], 266)
 
     # Compare with test_052_little_16 which has '5.B1d3d7-d5' while this has
     # '5.Bd3d7-d5'.
@@ -2245,7 +2255,7 @@ class _IgnoreCasePGNUpper:
     def test_008_FIDE_longest_possible_game_pgn(self):
         self.do_standard_tests(
             'FIDE_longest_possible_game.pgn', None,
-            2003, [2003], [' Bxa4'], 21616)
+            None, [], [], 11798)
 
     # Correct: earlier black played 'dxc4' from movetext 'DXC4 BXC4' when white
     # had a pawn on 'b3' and a bishop on 'd3'.  'BXC4' is interpreted as 'Bxc4'
@@ -2263,17 +2273,20 @@ class _IgnoreCasePGNUpper:
         self.do_standard_tests('twic92n_03.pgn', None,
                                73, [73], [' c3'], 118)
 
+    # Should be seen as 'bxc4' because no white bishop can go to c4 at time.
     def test_015_twic92n_04_pgn(self):
         self.do_standard_tests('twic92n_04.pgn', None,
-                               70, [70], [' Bxc4'], 169)
+                               None, [], [], 120)
 
+    # Should be seen as 'bxc6' because no black bishop can go to c6 at time.
     def test_016_twic92n_05_pgn(self):
         self.do_standard_tests('twic92n_05.pgn', None,
-                               41, [41], [' Bxc6'], 186)
+                               None, [], [], 113)
 
+    # Should be seen as 'bxc3' because no white bishop can go to c3 at time.
     def test_019_twic92n_08_pgn(self):
         self.do_standard_tests('twic92n_08.pgn', None,
-                               27, [27], [' Bxc3'], 228)
+                               None, [], [], 122)
 
     # Correct because the FEN tag has been converted to upper-case.
     def test_021_twic95n_10_pgn(self):
@@ -2286,37 +2299,39 @@ class _IgnoreCasePGNUpper:
     def test_022_twic9nn_error_pgn(self):
         games = self.do_standard_tests(
             'twic9nn_error.pgn', None,
-            (None, None, None, None, None, None, 14, None, None, 80),
-            ([], [], [], [], [], [], [14], [], [], [80]),
-            ([], ['*'], [], ['*'], [], [], [' ('], [], [], [' Bxc5'],),
-            (13, 1, 13, 1, 14, 1, 18, 16, 18, 238,))
+            (None, None, None, None, None, None, 14, None, None, None),
+            ([], [], [], [], [], [], [14], [], [], []),
+            ([], ['*'], [], ['*'], [], [], [' ('], [], [], [],),
+            (13, 1, 13, 1, 14, 1, 18, 16, 18, 154,))
 
     def test_024_all_4ncl_1996_2010_08(self):
         self.do_standard_tests(
-            'all_4ncl_1996_2010_08.pgn', None, None, [69], [' Bxc6'], 330)
+            'all_4ncl_1996_2010_08.pgn', None, None, [], [], 322)
 
     def test_026_all_4ncl_1996_2010_10(self):
         self.do_standard_tests(
             'all_4ncl_1996_2010_10.pgn', None,
-            None, [58, 102], [' Bxc2', ' Bxc2'], 198)
+            None, [], [], 157)
 
     def test_028_calgames_02(self):
         self.do_standard_tests(
-            'calgames_02.pgn', None, None, [39], [' Bxc6'], 286)
+            'calgames_02.pgn', None, None, [], [], 262)
 
     def test_029_calgames_03(self):
         self.do_standard_tests(
-            'calgames_03.pgn', None, None, [140], [' Bxc2'], 320)
+            'calgames_03.pgn', None, None, [], [], 307)
 
     def test_030_calgames_04(self):
         self.do_standard_tests('calgames_04.pgn', None, None, [], [], 97)
  
+    # Both should be seen as 'bxc6' because no black bishop can go to c6 at
+    # time.
     def test_031_calgames_05(self):
         self.do_standard_tests(
             'calgames_05.pgn', None,
-            157, [117, 157],
-            [' Bxc6', ' Bxc6'],
-            673)
+            None, [],
+            [],
+            411)
 
     # calgames_06.pgn has an error in the Event Tag but rest of game is fine.
     # Test changed after addition of "Bad tag" to PGN regular expression.
@@ -2334,65 +2349,68 @@ class _IgnoreCasePGNUpper:
         self.do_standard_tests('calgames_07.pgn', None, None, [], [], 75)
 
     def test_034_little_01(self):
-        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 61)
+        self.do_standard_tests('Little_01.pgn', None, 6, [6], [' ('], 59)
 
     def test_035_little_02(self):
-        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 58)
+        self.do_standard_tests('Little_02.pgn', None, 3, [3], [' ('], 56)
 
     def test_036_little_03(self):
-        self.do_standard_tests('Little_03.pgn', None, 8, [8], [' Qd1'], 44)
+        self.do_standard_tests('Little_03.pgn', None, 8, [8], [' Qd1'], 43)
 
     def test_037_little_04(self):
         self.do_standard_tests(
-            'Little_04.pgn', None, (17, 3), ([17], []), ([' Bb4'], []), [138, 3])
+            'Little_04.pgn', None, (17, 3), ([17], []), ([' BB4'], []), [131, 3])
 
     def test_038_little_05(self):
         self.do_standard_tests(
-            'Little_05.pgn', None, (20, 3), ([20], []), ([' Bb4'], []), [141, 3])
+            'Little_05.pgn', None, (20, 3), ([20], []), ([' BB4'], []), [134, 3])
 
     def test_039_little_06(self):
         self.do_standard_tests(
-            'Little_06.pgn', None, (22, 3), ([22], []), ([' Bb4'], []), [143, 3])
+            'Little_06.pgn', None, (22, 3), ([22], []), ([' BB4'], []), [136, 3])
 
     def test_040_little_07(self):
         self.do_standard_tests(
-            'Little_07.pgn', None, (24, 3), ([24],[]), ([' Bb4'], []), [145, 3])
+            'Little_07.pgn', None, (24, 3), ([24],[]), ([' BB4'], []), [138, 3])
 
     def test_041_little_08(self):
         self.do_standard_tests(
-            'Little_08.pgn', None, (24, 3), ([24],[]), ([' Bb4'], []), [145, 3])
+            'Little_08.pgn', None, (24, 3), ([24],[]), ([' BB4'], []), [138, 3])
 
     def test_042_little_09(self):
         self.do_standard_tests(
-            'Little_09.pgn', None, (24, 3), ([24],[]), ([' Bb4'], []), [145, 3])
+            'Little_09.pgn', None, (24, 3), ([24],[]), ([' BB4'], []), [138, 3])
 
     def test_043_little_10(self):
         self.do_standard_tests(
-            'Little_10.pgn', None, (26, 3), ([26],[]), ([' a2'], []), [138, 3])
+            'Little_10.pgn', None, (26, 3), ([26],[]), ([' a4'], []), [132, 3])
 
     def test_044_little_11(self):
         self.do_standard_tests(
-            'Little_11.pgn', None, (43, 3), ([43],[]), ([' Rf1'], []), [111, 3])
+            'Little_11.pgn', None, (43, 3), ([43],[]), ([' Rf1'], []), [108, 3])
 
     def test_045_little_12(self):
         self.do_standard_tests(
-            'Little_12.pgn', None, (60, 3), ([60],[]), ([' Re8'], []), [86, 3])
+            'Little_12.pgn', None, (60, 3), ([60],[]), ([' Re8'], []), [85, 3])
 
     def test_046_little_13(self):
         self.do_standard_tests(
-            'Little_13.pgn', None, (60, 3), ([60],[]), ([' Re8'], []), [86, 3])
+            'Little_13.pgn', None, (60, 3), ([60],[]), ([' Re8'], []), [85, 3])
 
     def test_047_little_14(self):
         self.do_standard_tests(
-            'Little_14.pgn', None, (60, 3), ([60],[]), ([' Re8'], []), [86, 3])
+            'Little_14.pgn', None, (60, 3), ([60],[]), ([' Re8'], []), [85, 3])
 
     def test_048_little_15(self):
         self.do_standard_tests(
             'Little_15.pgn', None, (None, 3), ([],[]), ([' Re8'], []), [70, 3])
 
+    # Correct because 40. bxc6 is seen as a bishop capture, by the bishop
+    # on f3, in upper case.
     def test_050_calgames_09(self):
         self.do_standard_tests(
-            'calgames_09.pgn', None, 18, [18], [' Bxa3'], 772)
+            'calgames_09.pgn', None, 424,
+            [413, 417, 424], [' c7', ' --', ' c7'], 427)
 
     def test_051_crafty06_01(self):
         games = self.do_standard_tests('crafty06_01.pgn', None,
@@ -2405,9 +2423,17 @@ class _IgnoreCasePGNUpper:
         self.do_standard_tests(
             'Little_16.pgn', None, (None, 3), ([], []), ([' d3'], []), (72, 3))
 
+    # Should be seen as 'bxc3' because no white bishop can go to c3 at time.
     def test_053_twic92n_11_pgn(self):
         self.do_standard_tests('twic92n_11.pgn', None,
-                               36, [36], [' Bxc3'], 135)
+                               None, [], [], 82)
+
+    def test_055_crafty06_03(self):
+        self.do_standard_tests('crafty06_03.pgn', None,
+            (None, None, 359, 46),
+            ([], [], [351, 359], [46]),
+            (['('], [], [' (', ' d4'], []),
+            (187, 1, 657, 106))
 
     def test_058_little_17(self):
         self.do_standard_tests(

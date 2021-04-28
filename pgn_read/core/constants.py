@@ -53,6 +53,13 @@ TEXT_DISAMBIGUATION = r''.join(
     (r'(?#Disambiguation Text)',
      r'((?:-|x[QRBN]?)?[a-h][1-8]',
      ))
+IGNORE_CASE_DISAMBIGUATION = r''.join(
+    (r'(?#Disambiguation Text)',
+     r'((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8](?:=[QRBNqrbn])?)|',
+     r'(?:b[xX][QRBNqrbn]?[a-hA-H][18])|',
+     r'(?#Promotion)',
+     r'=[QRBNqrbn]',
+     ))
 ANYTHING_ELSE = r'(?#Anything else)\S+[ \t\r\f\v]*)'
 IMPORT_FORMAT = r'|'.join((
     PGN_FORMAT,
@@ -64,7 +71,9 @@ TEXT_FORMAT = r'|'.join((
     ANYTHING_ELSE)).replace(
         r'O-O-O|O-O', r'O-O-O|O-O|0-0-0|0-0').replace(
             r'(?:=([QRBN])', r'(?:=?([QRBN])').replace(
-                r'8QRBNO', r'8QRBNO0')
+                r'8QRBNO', r'8QRBNO0').replace(
+                    r'?:x', r'?:(?:[2-7][-x]|x)').replace(
+                        r'x?', r'[-x]?')
 
 # Assume 'B' means bishop unless followed by '[1-8]', and 'b' means bishop
 # unless followed by '[1-8xX]'.  There are positions where both a bishop and
@@ -76,19 +85,20 @@ TEXT_FORMAT = r'|'.join((
 # The FIDE notation for pawn promotion is not supported when ignoring case
 # because the sequence 'bxc8q' is ambiguous, in upper or lower case, until
 # after the position has been examined.
-IGNORE_CASE_FORMAT = TEXT_FORMAT.replace(
-    r'QRBNO', r'QRBNOqrbno').replace(
-        r'[KQRBN]', r'[KQRNkqrn]|B(?![1-8])|b(?![1-8xX])').replace(
-            r'(?:=?([QRBN])', r'(?:=([QRBN])').replace(
-                r'[a-h][1-8]', r'[a-hA-H][1-8]').replace(
-                    r'[a-h1-8]', r'[a-hA-H1-8]').replace(
-                        r'[a-h]', r'[a-hA-H]').replace(
-                            r'(x?)', r'([xX]?)').replace(
-                                r'?:x', r'?:[xX]').replace(
-                                    r'O-O-O|O-O',
-                                    r'[Oo]-[Oo]-[Oo]|[Oo]-[Oo]').replace(
-                                        r'[QRBN]', r'[QRBNqrbn]').replace(
-                                            r'-|x', r'-|[xX]')
+IGNORE_CASE_FORMAT = r'|'.join((
+    PGN_FORMAT,
+    IGNORE_CASE_DISAMBIGUATION,
+    ANYTHING_ELSE)).replace(
+        r'QRBNO', r'QRBNOqrbno0').replace(
+            r'[KQRBN]', r'[KQRNkqrn]|B(?![1-8])|b(?![1-8xX])').replace(
+                r'O-O-O|O-O',
+                r'[Oo0]-[Oo0]-[Oo0]|[Oo0]-[Oo0]').replace(
+                    r'[a-h][1-8]', r'[a-hA-H][1-8]').replace(
+                        r'[a-h1-8]', r'[a-hA-H1-8]').replace(
+                            r'[a-h]', r'[a-hA-H]').replace(
+                                r'(x?)', r'([xX]?)').replace(
+                                    r'?:x', r'?:(?:[2-7][-xX]|[xX])').replace(
+                                        r'[QRBN]', r'[QRBNqrbn]')
 
 # Indicies of captured groups in PGN input format for match.group.
 IFG_TAG_NAME = 1
@@ -129,6 +139,11 @@ IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 31
 DISAMBIGUATE_TEXT = r'\A(x?)([a-h][1-8])'
 DISAMBIGUATE_PGN = r'\Ax?[a-h][1-8]'
 
+# The game.GameIgnoreCasePGN class may need to ignore '=Q', and similar, if,
+# for example, it were processed by peek ahead to decide between a pawn and
+# bishop move for 'bxc8'.
+DISAMBIGUATE_PROMOTION = r'\A=[QRBNqrbn]'
+
 # Indicies of captured groups for fully disambiguated piece move.
 DG_CAPTURE = 1
 DG_DESTINATION = 2
@@ -137,6 +152,7 @@ DG_DESTINATION = 2
 # format (LAN).  The first part, such as 'Qe2', will have been found by the
 # IMPORT_FORMAT rules.  LAN_FORMAT is similar to DISAMBIGUATE_TEXT.
 LAN_FORMAT = r'(?#Lower case)\A([-x]?)([a-h][1-8])(?:=(qrbn))?'
+LAN_MOVE_SEPARATOR = '-'
 
 # Indicies of captured groups for long algebraic notation move.
 LAN_CAPTURE_OR_MOVE = 1
