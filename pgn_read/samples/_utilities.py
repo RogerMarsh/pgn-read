@@ -16,6 +16,7 @@ from ..core.game import generate_fen_for_position
 
 
 def read_pgn(filename, game_class=None, size=10000000):
+    """Return ok and error counts, and PGN text in error."""
     game_ok_count = 0
     game_not_ok_count = 0
     game_ok_token_count = 0
@@ -105,6 +106,7 @@ class Main:
         self.text.insert(tkinter.END, text)
                 
     def report_action(self, msg):
+        """Show dialogue to report an action."""
         self.insert_text('\n')
         self.insert_text(' '.join(msg))
         tkinter.messagebox.showinfo(
@@ -112,6 +114,7 @@ class Main:
             message='\n'.join(msg))
                 
     def report_error(self, msg):
+        """Show dialogue to report an error."""
         self.insert_text('\n')
         self.insert_text(' '.join(msg))
         tkinter.messagebox.showerror(
@@ -195,6 +198,7 @@ class Main:
         self.pgn_file.set('')
 
     def report_summary(self, start, end, t, goc, gnoc, gotc, gnotc):
+        """Add report summary to application report widget."""
         self.insert_text('\n')
         self.insert_text(' '.join((t, 'time to process file')))
         if end - start < 10:
@@ -248,6 +252,7 @@ class Main:
 
 
 def main(game_class=None, size=10000000, samples_title=''):
+    """Run sample application."""
     Main(game_class=game_class,
          size=size,
          samples_title=samples_title).root.mainloop()

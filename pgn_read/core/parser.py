@@ -14,11 +14,10 @@ argument and adds it to the instance of game.Game class, or susubclass, in the
 game argument.
 
 """
-import os
 import re
 
 from .game import (
-    Game, GameStrictPGN, GameTextPGN, GameIgnoreCasePGN,
+    Game, GameTextPGN, GameIgnoreCasePGN,
     import_format, text_format,
     )
 
@@ -56,7 +55,7 @@ ignore_case_format = re.compile(IGNORE_CASE_FORMAT)
 
 
 class PGNError(Exception):
-    pass
+    """Exception raised for situations where PGN parsing cannot continue."""
 
 
 class PGN:
@@ -74,7 +73,7 @@ class PGN:
     'e4*'
     '[TagName"Tag Value"]e4*'
     '[TagName"Tag Value"]e4e5Nf3Nc6Bb5*'
-    
+
     The last of the examples would be '[TagName"Tag Value"]e4 e5 Nf3 Nc6 Bb5*'
     in text valid according to the PGN Import Format specification: the spaces
     inserted between the moves.
@@ -87,7 +86,9 @@ class PGN:
     decides which, if any, interpretation is valid.
 
     """
+
     def __init__(self, game_class=Game):
+        """Initialise switches to call game_class methods."""
         super().__init__()
         if issubclass(game_class, GameIgnoreCasePGN):
             self._rules = ignore_case_format
@@ -184,7 +185,7 @@ class PGN:
                     break
         finally:
             source.close()
-    
+
     def read_games(self, source, size=10000000):
         """Extract games from file-like source or string.
 
@@ -279,7 +280,10 @@ class PGN:
 
 
 def add_token_to_game(text, game, pos=0):
-    """Apply first match in text after pos to game and return match end point.
+    """Apply first match in text after pos to game and return match.end().
+
+    Return None if no match found.
+
     """
     if isinstance(game, GameIgnoreCasePGN):
         match = ignore_case_format.search(text, pos)
@@ -311,7 +315,7 @@ def add_token_to_game(text, game, pos=0):
         elif lastindex == IFG_DOTS:
             game.append_token_after_error_without_separator(match)
         elif lastindex == IFG_CHECK_INDICATOR:
-            game.append_token_after_error_without_separator(match),
+            game.append_token_after_error_without_separator(match)
         else:
             game.append_token_after_error(match)
         return match.end()
@@ -352,15 +356,15 @@ def add_token_to_game(text, game, pos=0):
     elif lastindex == IFG_PASS:
         game.append_pass_and_set_error(match)
     elif lastindex == IFG_CHECK_INDICATOR:
-        game.ignore_check_indicator(match),
+        game.ignore_check_indicator(match)
     elif lastindex == IFG_TRADITIONAL_ANNOTATION:
-        game.append_glyph_for_traditional_annotation(match),
+        game.append_glyph_for_traditional_annotation(match)
     elif lastindex == IFG_BAD_COMMENT:
-        game.append_token_and_set_error(match),
+        game.append_token_and_set_error(match)
     elif lastindex == IFG_BAD_RESERVED:
-        game.append_token_and_set_error(match),
+        game.append_token_and_set_error(match)
     elif lastindex == IFG_BAD_TAG:
-        game.append_bad_tag_and_set_error(match),
+        game.append_bad_tag_and_set_error(match)
     elif lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE:
         game.append_other_or_disambiguation_pgn(match)
     elif lastindex == IFG_END_OF_FILE_MARKER:

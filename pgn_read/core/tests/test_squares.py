@@ -26,13 +26,13 @@ class _Square(unittest.TestCase):
             ValueError,
             "substring not found",
             squares._Square,
-            (*'k3'),
+            *'k3',
             )
         self.assertRaisesRegex(
             ValueError,
             "substring not found",
             squares._Square,
-            (*'a0'),
+            *'a0',
             )
 
     def test_03___init__(self):

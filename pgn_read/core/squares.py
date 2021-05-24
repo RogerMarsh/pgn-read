@@ -2,8 +2,10 @@
 # Copyright 2020 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
-"""The squares on a chessboard: defining for each square it's name, file, rank,
-diagonals, and castling rights lost when activity occurs on a square.
+"""The squares on a chessboard.
+
+Define for each square it's name, file, rank, diagonals, and castling rights
+lost when activity occurs on a square.
 
 This module provides an instance of the class Squares.
 
@@ -37,6 +39,7 @@ class _Square:
     Instances of this class should be accessed via the Squares class.
 
     """
+
     castling_rights_lost = ''
 
     def __init__(self, file, rank):
@@ -70,12 +73,13 @@ class Squares:
     """The squares on a chessboard."""
 
     def __init__(self):
+        """Define the squares on a chessboard."""
         self.squares = {}
         squares = self.squares
-        ranks = constants.RANK_NAMES
-        for f in constants.FILE_NAMES:
-            for r in ranks:
-                squares[f+r] = _Square(f, r)
+        rank_names = constants.RANK_NAMES
+        for file in constants.FILE_NAMES:
+            for rank in rank_names:
+                squares[file+rank] = _Square(file, rank)
 
 
 Squares = Squares()

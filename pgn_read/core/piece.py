@@ -2,11 +2,8 @@
 # Copyright 2020 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
-"""Portable Game Notation (PGN) position and game navigation pieces.
-
-"""
+"""Portable Game Notation (PGN) position and game navigation pieces."""
 from .constants import (
-    FEN_TO_PGN,
     FEN_PAWNS,
     FEN_WHITE_PAWN,
     PGN_PAWN,
@@ -39,15 +36,22 @@ class Piece:
         else:
             self.color = FEN_BLACK_ACTIVE
 
-    def set_square(self, a):
+    def set_square(self, name):
         """Put the piece on a square.
 
         Provided for moving pieces during a game.
 
         """
-        self.square = Squares.squares[a]
+        self.square = Squares.squares[name]
 
     def promoted_pawn(self, name, *a):
+        """Return a new Piece instance for a promoted pawn.
+
+        The Piece instance has the name after promotion but retains the
+        identity, unique within a game, assigned to the pawn when the
+        containing game was created.
+
+        """
         assert (name not in FEN_PAWNS and
                 name != FEN_WHITE_KING and
                 name != FEN_BLACK_KING and
@@ -67,15 +71,14 @@ class Piece:
         <name> is upper case piece name for white pawn or piece name otherwise.
 
         It is a plausible component of database keys for positions.
-        
+
         """
-        p = self.name
-        if p not in FEN_PAWNS:
-            return self.square.file.join((p, self.square.rank))
-        elif p == FEN_WHITE_PAWN:
+        name = self.name
+        if name not in FEN_PAWNS:
+            return self.square.file.join((name, self.square.rank))
+        if name == FEN_WHITE_PAWN:
             return self.square.file.upper().join((PGN_PAWN, self.square.rank))
-        else:
-            return self.square.file.join((PGN_PAWN, self.square.rank))
+        return self.square.file.join((PGN_PAWN, self.square.rank))
 
     def __str__(self):
         """Return concatenation of piece name and square name."""

@@ -404,11 +404,11 @@ BISHOP_MOVES = {}
 for f in FILE_NAMES:
     for r in RANK_NAMES:
         sq = f + r
-        for eltr, ltr in enumerate(left_to_right):
-            if sq in ltr:
-                for ertl, rtl in enumerate(right_to_left):
-                    if sq in rtl:
-                        BISHOP_MOVES[sq] = ltr.union(rtl)
+        for x in left_to_right:
+            if sq in x:
+                for y in right_to_left:
+                    if sq in y:
+                        BISHOP_MOVES[sq] = x.union(y)
                         BISHOP_MOVES[sq].remove(sq)
                         break
                 break
@@ -447,7 +447,7 @@ for sqs in files.values():
     EN_PASSANT_TARGET_SQUARES[FEN_BLACK_ACTIVE][sqs[3], sqs[1]] = sqs[2]
 BLACK_PAWN_MOVES = {}
 for sqs in files.values():
-    sqs = [i for i in reversed(sqs)]
+    sqs = list(reversed(sqs))
     for e, sq in enumerate(sqs[2:]):
         BLACK_PAWN_MOVES[sq] = {sqs[e+1]}
     BLACK_PAWN_MOVES[sqs[3]].add(sqs[1])
@@ -484,7 +484,7 @@ for ef, f in enumerate(FILE_NAMES):
         EN_PASSANT_TARGET_SQUARES[
             PGN_CAPTURE_MOVE.join((f, files[FILE_NAMES[ef-1]][-6]))
             ] = files[FILE_NAMES[ef-1]][-5]
-QUEEN_MOVES = {k: set() for k in ROOK_MOVES.keys()}
+QUEEN_MOVES = {k: set() for k in ROOK_MOVES}
 for k, v in QUEEN_MOVES.items():
     v.update(ROOK_MOVES[k])
     v.update(BISHOP_MOVES[k])
@@ -555,5 +555,6 @@ FEN_SOURCE_SQUARES = {
     FEN_BLACK_PAWN: BLACK_PAWN_CAPTURES,
     }
 
-del e, ef, eltr, er, ertl, es, f, files, h, k, left_to_right, ltr, r, ranks
-del right_to_left, rtl, sq, sq1, sq2, sqs, v, x, y, line
+# Get rid of all names used as scaffolding when creating constants.
+del e, ef, er, es, f, files, h, k, left_to_right, r, ranks
+del right_to_left, sq, sq1, sq2, sqs, v, x, y, line

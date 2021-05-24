@@ -27,7 +27,7 @@ class Piece(unittest.TestCase):
             TypeError,
             "".join((
                 "set_square\(\) missing 1 required positional argument: ",
-                "'a'",
+                "'name'",
                 )),
             piece.Piece,
             *('x',),
