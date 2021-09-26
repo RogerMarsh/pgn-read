@@ -12,7 +12,6 @@ from .. import game
 
 
 class Game(unittest.TestCase):
-
     def setUp(self):
         self.text = '[A"a"]e4e5(e6){comment}<reserved>$5Nf33...Nf6*'
 
@@ -28,8 +27,21 @@ class Game(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', '{comment}', '<reserved>',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                "{comment}",
+                "<reserved>",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
     def test_02(self):
@@ -41,8 +53,21 @@ class Game(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', '{comment}', '<reserved>',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                "{comment}",
+                "<reserved>",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
     def test_03(self):
@@ -54,8 +79,21 @@ class Game(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', '{comment}', '<reserved>',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                "{comment}",
+                "<reserved>",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
     def test_04(self):
@@ -67,13 +105,25 @@ class Game(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', '{comment}', '<reserved>',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                "{comment}",
+                "<reserved>",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
 
 class GameNewline(unittest.TestCase):
-
     def setUp(self):
         self.text = '[A"a"]e4\ne5(e6);EOL comment\n%Escaped\n$5Nf33...Nf6*'
 
@@ -89,8 +139,20 @@ class GameNewline(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', ';EOL comment\n',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                ";EOL comment\n",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
     def test_02(self):
@@ -102,8 +164,20 @@ class GameNewline(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', ';EOL comment\n',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                ";EOL comment\n",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
     def test_03(self):
@@ -115,8 +189,20 @@ class GameNewline(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', ';EOL comment\n',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                ";EOL comment\n",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
     def test_04(self):
@@ -128,13 +214,24 @@ class GameNewline(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', ';EOL comment\n',
-             '$5', 'Nf3', 'Nf6', '*'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                ";EOL comment\n",
+                "$5",
+                "Nf3",
+                "Nf6",
+                "*",
+            ],
+        )
         self.assertEqual(g.state, None)
 
 
 class GameNonPGNText(unittest.TestCase):
-
     def setUp(self):
         self.text = '[A"a"]e4\ne5(e6) arbitrary non-PGN text $5Nf33...Nf6*'
 
@@ -150,8 +247,8 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')',
-             '$5', 'Nf3', 'Nf6', '*'])
+            ['[A"a"]', "e4", "e5", "(", "e6", ")", "$5", "Nf3", "Nf6", "*"],
+        )
         self.assertEqual(g.state, None)
 
     def test_02(self):
@@ -163,8 +260,8 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')',
-             '$5', 'Nf3', 'Nf6', '*'])
+            ['[A"a"]', "e4", "e5", "(", "e6", ")", "$5", "Nf3", "Nf6", "*"],
+        )
         self.assertEqual(g.state, None)
 
     def test_03(self):
@@ -176,8 +273,24 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', ' arbitrary ', ' non-PGN ',
-             ' text ', ' $5', ' Nf3', ' 3', '...', ' Nf6', ' *'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                " arbitrary ",
+                " non-PGN ",
+                " text ",
+                " $5",
+                " Nf3",
+                " 3",
+                "...",
+                " Nf6",
+                " *",
+            ],
+        )
         self.assertEqual(g.state, 6)
 
     def test_04(self):
@@ -189,12 +302,28 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(me, len(self.text))
         self.assertEqual(
             g._text,
-            ['[A"a"]', 'e4', 'e5', '(', 'e6', ')', ' arbitrary ', ' non-PGN ',
-             ' text ', ' $5', ' Nf3', ' 3', '...', ' Nf6', ' *'])
+            [
+                '[A"a"]',
+                "e4",
+                "e5",
+                "(",
+                "e6",
+                ")",
+                " arbitrary ",
+                " non-PGN ",
+                " text ",
+                " $5",
+                " Nf3",
+                " 3",
+                "...",
+                " Nf6",
+                " *",
+            ],
+        )
         self.assertEqual(g.state, 6)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner
     loader = unittest.defaultTestLoader.loadTestsFromTestCase
     runner().run(loader(Game))

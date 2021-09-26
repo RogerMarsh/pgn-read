@@ -8,7 +8,9 @@ from ._utilities import main
 from ..core.game import GameIgnoreCasePGN
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
-    main(game_class=GameIgnoreCasePGN,
-         samples_title='Sample Ignore Case PGN File Report')
+    main(
+        game_class=GameIgnoreCasePGN,
+        samples_title="Sample Ignore Case PGN File Report",
+    )

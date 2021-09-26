@@ -17,9 +17,12 @@ game argument.
 import re
 
 from .game import (
-    Game, GameTextPGN, GameIgnoreCasePGN,
-    import_format, text_format,
-    )
+    Game,
+    GameTextPGN,
+    GameIgnoreCasePGN,
+    import_format,
+    text_format,
+)
 
 from .constants import (
     IGNORE_CASE_FORMAT,
@@ -49,7 +52,7 @@ from .constants import (
     IFG_BAD_TAG,
     IFG_END_OF_FILE_MARKER,
     IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE,
-    )
+)
 
 ignore_case_format = re.compile(IGNORE_CASE_FORMAT)
 
@@ -136,7 +139,7 @@ class PGN:
             game_class.append_bad_tag_and_set_error,
             game_class.ignore_end_of_file_marker_prefix_to_tag,
             game_class.append_other_or_disambiguation_pgn,
-            )
+        )
         self.error_despatch_table = (
             None,
             game_class.append_token_after_error,
@@ -170,7 +173,7 @@ class PGN:
             game_class.append_bad_tag_after_error,
             game_class.append_token_after_error,
             game_class.append_token_after_error,
-            )
+        )
 
     @staticmethod
     def _read_pgn(source, length):
@@ -199,14 +202,14 @@ class PGN:
         despatch_table = self.despatch_table
         error_despatch_table = self.error_despatch_table
         game_class = self._game_class
-        residue = ''
+        residue = ""
         for pgntext in self._read_pgn(source, size):
 
             # The previous chunk of pgntext may have ended with an incomplete
             # game, with or without errors.
             if residue:
                 pgntext = residue + pgntext
-                residue = ''
+                residue = ""
             residue_start_on_error_at_pgntext_end = None
 
             game = game_class()
@@ -269,8 +272,7 @@ class PGN:
                     game.set_game_error()
                 residue = pgntext
             else:
-                residue = pgntext[
-                    residue_start_on_error_at_pgntext_end:]
+                residue = pgntext[residue_start_on_error_at_pgntext_end:]
 
         # The final game in the input has an error, or has no error but no game
         # termination marker either.

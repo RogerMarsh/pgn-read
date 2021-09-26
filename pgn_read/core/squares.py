@@ -40,14 +40,15 @@ class _Square:
 
     """
 
-    castling_rights_lost = ''
+    castling_rights_lost = ""
 
     def __init__(self, file, rank):
         self.name = file + rank
         self.file = file
         self.rank = rank
-        self.number = (constants.FILE_NAMES.index(file) +
-                       8 * constants.RANK_NAMES.index(rank))
+        self.number = constants.FILE_NAMES.index(
+            file
+        ) + 8 * constants.RANK_NAMES.index(rank)
         self.bit = 1 << self.number
         self.left_to_right_down_diagonal = ord(file) + ord(rank)
         self.right_to_left_down_diagonal = ord(file) - ord(rank)
@@ -59,14 +60,18 @@ class _Square:
 
     def __eq__(self, other):
         """Return True if squares occupy same line, False otherwise."""
-        return (
-            id(self) != id(other) and
-            (self.file == other.file or
-             self.rank == other.rank or
-             (self.left_to_right_down_diagonal ==
-              other.left_to_right_down_diagonal) or
-             (self.right_to_left_down_diagonal ==
-              other.right_to_left_down_diagonal)))
+        return id(self) != id(other) and (
+            self.file == other.file
+            or self.rank == other.rank
+            or (
+                self.left_to_right_down_diagonal
+                == other.left_to_right_down_diagonal
+            )
+            or (
+                self.right_to_left_down_diagonal
+                == other.right_to_left_down_diagonal
+            )
+        )
 
 
 class Squares:
@@ -79,7 +84,7 @@ class Squares:
         rank_names = constants.RANK_NAMES
         for file in constants.FILE_NAMES:
             for rank in rank_names:
-                squares[file+rank] = _Square(file, rank)
+                squares[file + rank] = _Square(file, rank)
 
 
 Squares = Squares()

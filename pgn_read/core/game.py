@@ -147,7 +147,7 @@ from .constants import (
     SUFFIX_ANNOTATION_TO_NAG,
     KING_MOVES,
     KNIGHT_MOVES,
-    )
+)
 from .piece import Piece
 from .squares import Squares
 
@@ -159,10 +159,12 @@ disambiguate_promotion_format = re.compile(DISAMBIGUATE_PROMOTION)
 lan_format = re.compile(LAN_FORMAT)
 text_promotion_format = re.compile(TEXT_PROMOTION)
 possible_bishop_or_bpawn = re.compile(PAWN_MOVE_TOKEN_POSSIBLE_BISHOP)
-white_black_tag_value_format = re.compile(r'\s*([^,.\s]+)')
-suffix_annotations = re.compile(r'(!!|!\?|!|\?\?|\?!|\?)$')
-SIDE_TO_MOVE_KING = {FEN_WHITE_ACTIVE: FEN_WHITE_KING,
-                     FEN_BLACK_ACTIVE: FEN_BLACK_KING}
+white_black_tag_value_format = re.compile(r"\s*([^,.\s]+)")
+suffix_annotations = re.compile(r"(!!|!\?|!|\?\?|\?!|\?)$")
+SIDE_TO_MOVE_KING = {
+    FEN_WHITE_ACTIVE: FEN_WHITE_KING,
+    FEN_BLACK_ACTIVE: FEN_BLACK_KING,
+}
 
 
 class GameError(Exception):
@@ -400,7 +402,7 @@ class Game:
         and the game state is adjusted to fit.
 
         """
-        self._text.append(match.group()+'\n')
+        self._text.append(match.group() + "\n")
         try:
             self.repeat_board_state(self._position_deltas[-1])
         except IndexError:
@@ -503,7 +505,7 @@ class Game:
             # Activate to stop at first error; beware this catches end of
             # buffer errors too, so be sure the error to be seen is in first
             # buffer.  The method raises an AssertionError.
-            #self.display_placement_and_board_and_fen_then_assert_false(match)
+            # self.display_placement_and_board_and_fen_then_assert_false(match)
         self._text.append(PGN_TOKEN_SEPARATOR + match.group())
 
         # len(self._position_deltas) will be 0 if end of buffer reached while
@@ -532,7 +534,8 @@ class Game:
     def append_comment_after_error(self, match):
         """Append comment token to game score after an error has been found."""
         self._text.append(
-            PGN_TOKEN_SEPARATOR + self.pgn_mark_comment_in_error(match.group()))
+            PGN_TOKEN_SEPARATOR + self.pgn_mark_comment_in_error(match.group())
+        )
 
     def append_bad_tag_and_set_error(self, match):
         r"""Append incomplete or badly formed tag to game score and set error.
@@ -547,16 +550,19 @@ class Game:
         the unknown result symbol '*'.
 
         """
-        if (self._strict_pgn or
-            self._state is not None or
-            self._movetext_offset is not None):
+        if (
+            self._strict_pgn
+            or self._state is not None
+            or self._movetext_offset is not None
+        ):
             if self._state is None:
                 self._state = len(self._text)
                 self._state_stack[-1] = self._state
                 self._error_list.append(self._state)
-            self._text.append(match.group().join(
-                ('{::Bad Tag::', '::Bad Tag::}')))
-            #self._text.append('*')
+            self._text.append(
+                match.group().join(("{::Bad Tag::", "::Bad Tag::}"))
+            )
+            # self._text.append('*')
             try:
                 self.repeat_board_state(self._position_deltas[-1])
             except IndexError:
@@ -565,15 +571,19 @@ class Game:
                 self.add_board_state_none(None)
             return
         bad_tag = match.group().split('"')
-        val = '"'.join(bad_tag[1:-1]
-                     ).replace('\"', '"').replace('\\\\', '\\').replace(
-                         '\\', '\\\\').replace('"', r'\"')
+        val = (
+            '"'.join(bad_tag[1:-1])
+            .replace('"', '"')
+            .replace("\\\\", "\\")
+            .replace("\\", "\\\\")
+            .replace('"', r"\"")
+        )
 
         # Copy from append_start_tag() to apply correctly formatted PGN tag,
         # which must not be duplicated.
         self.add_board_state_none(None)
-        tag_name = bad_tag[0].lstrip('[').strip()
-        self._text.append(''.join(('[', tag_name, '"', val, '"]')))
+        tag_name = bad_tag[0].lstrip("[").strip()
+        self._text.append("".join(("[", tag_name, '"', val, '"]')))
         if tag_name in self._tags:
             if self._state is None:
                 self._state = len(self._tags) - 1
@@ -606,7 +616,7 @@ class Game:
         token.
 
         """
-        self._text.append(match.group()+'\n')
+        self._text.append(match.group() + "\n")
 
     def append_start_rav_after_error(self, match):
         """Append start RAV token from game score after PGN error found."""
@@ -652,7 +662,7 @@ class Game:
         The '\n' is appended to the token.
 
         """
-        self._text.append(match.group()+'\n')
+        self._text.append(match.group() + "\n")
 
     def append_other_or_disambiguation_pgn(self, match):
         """Ignore token previously used for disambiguation, or set PGN error.
@@ -688,18 +698,18 @@ class Game:
         group = match.group
         tag_name = group(IFG_TAG_NAME)
         tag_value = group(IFG_TAG_VALUE)
-        self._text.append(''.join(('[', tag_name, '"', tag_value, '"]')))
+        self._text.append("".join(("[", tag_name, '"', tag_value, '"]')))
         self.add_board_state_none(None)
 
         # Iniitialized None and set True when first valid match is applied.
         # Parser detects when a tag is out-of-sequence and sets _game_ok False.
-        #if self._state is None:
+        # if self._state is None:
         #    self._state = 'True'
         #    self._state_stack[-1] = self._state
 
         # Tag names must not be duplicated.
         if tag_name in self._tags:
-            #if self._state == 'True':
+            # if self._state == 'True':
             if self._state is None:
                 self._state = len(self._tags) - 1
                 self._state_stack[-1] = self._state
@@ -731,8 +741,10 @@ class Game:
             self.append_token_and_set_error(match)
             return
         castling_move = match.group(IFG_CASTLES)
-        if CASTLING_MOVE_RIGHTS[self._active_color, castling_move
-                                ] not in self._castling_availability:
+        if (
+            CASTLING_MOVE_RIGHTS[self._active_color, castling_move]
+            not in self._castling_availability
+        ):
             self.append_token_and_set_error(match)
             return
         if castling_move == PGN_O_O:
@@ -765,7 +777,11 @@ class Game:
         # No need to test if king is in check after applying remove and place
         # instructions to board.
         ptp = POINT_TO_POINT[king_square, king_destination]
-        for square in king_square, king_destination, ptp[2][ptp[0]:ptp[1]][0]:
+        for square in (
+            king_square,
+            king_destination,
+            ptp[2][ptp[0] : ptp[1]][0],
+        ):
             if self.is_square_attacked_by_other_side(square):
                 self.append_token_and_set_error(match)
                 return
@@ -780,25 +796,32 @@ class Game:
         self.place_piece_on_square(place[1])
         self._text.append(match.group())
         self.modify_board_state(
-            ((remove,
-              self._active_color,
-              self._castling_availability,
-              self._en_passant_target_square,
-              self._halfmove_clock,
-              self._fullmove_number),
-             (place,
-              OTHER_SIDE[self._active_color],
-              self.get_castling_options_after_move_applied(remove),
-              FEN_NULL,
-              self._halfmove_clock + 1,
-              fullmove_number_for_next_halfmove),
-             ))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = self._position_deltas[-1][1][1:]
+            (
+                (
+                    remove,
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+                (
+                    place,
+                    OTHER_SIDE[self._active_color],
+                    self.get_castling_options_after_move_applied(remove),
+                    FEN_NULL,
+                    self._halfmove_clock + 1,
+                    fullmove_number_for_next_halfmove,
+                ),
+            )
+        )
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
 
     def append_piece_move(self, match):
@@ -843,16 +866,19 @@ class Game:
                 if not self.line_empty(piece.square.name, destination):
                     self.append_token_and_set_error(match)
                     return
-                remove = ((destination,
-                           piece_placement_data[destination]),
-                          (piece.square.name, piece))
+                remove = (
+                    (destination, piece_placement_data[destination]),
+                    (piece.square.name, piece),
+                )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_on_square(remove[1])
                 place = destination, piece
                 self.place_piece_on_square(place)
                 if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                          ][0].square.name):
+                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
+                        0
+                    ].square.name
+                ):
                     self.remove_piece_on_square(place)
                     self.place_piece_on_board(remove[0])
                     self.place_piece_on_square(remove[1])
@@ -873,25 +899,34 @@ class Game:
                     self._text.append(group())
 
                 self.modify_board_state(
-                    ((remove,
-                      self._active_color,
-                      self._castling_availability,
-                      self._en_passant_target_square,
-                      self._halfmove_clock,
-                      self._fullmove_number),
-                     ((place,),
-                      OTHER_SIDE[self._active_color],
-                      self.get_castling_options_after_move_applied(remove),
-                      FEN_NULL,
-                      0,
-                      fullmove_number_for_next_halfmove),
-                     ))
-                (self._active_color,
-                 self._castling_availability,
-                 self._en_passant_target_square,
-                 self._halfmove_clock,
-                 self._fullmove_number,
-                 ) = self._position_deltas[-1][1][1:]
+                    (
+                        (
+                            remove,
+                            self._active_color,
+                            self._castling_availability,
+                            self._en_passant_target_square,
+                            self._halfmove_clock,
+                            self._fullmove_number,
+                        ),
+                        (
+                            (place,),
+                            OTHER_SIDE[self._active_color],
+                            self.get_castling_options_after_move_applied(
+                                remove
+                            ),
+                            FEN_NULL,
+                            0,
+                            fullmove_number_for_next_halfmove,
+                        ),
+                    )
+                )
+                (
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ) = self._position_deltas[-1][1][1:]
                 self.append_check_indicator()
                 return
             from_file_or_rank = group(IFG_PIECE_MOVE_FROM_FILE_OR_RANK)
@@ -902,16 +937,19 @@ class Game:
             for piece in candidates:
                 if not self.line_empty(piece.square.name, destination):
                     continue
-                remove = ((destination,
-                           piece_placement_data[destination]),
-                          (piece.square.name, piece))
+                remove = (
+                    (destination, piece_placement_data[destination]),
+                    (piece.square.name, piece),
+                )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_on_square(remove[1])
                 place = destination, piece
                 self.place_piece_on_square(place)
                 if not self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                          ][0].square.name):
+                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
+                        0
+                    ].square.name
+                ):
                     if from_file_or_rank:
                         if from_file_or_rank in remove[-1][0]:
                             chosen_move = remove, place
@@ -938,7 +976,10 @@ class Game:
                     self._text.append(group()[:1] + group()[2:])
                 elif from_file_or_rank in RANK_NAMES:
                     pfile = chosen_move[0][1][0][0]
-                    if len([p for p in can_move if p.square.file == pfile]) < 2:
+                    if (
+                        len([p for p in can_move if p.square.file == pfile])
+                        < 2
+                    ):
                         self.append_token_and_set_error(match)
                         return
                     self._text.append(group())
@@ -952,25 +993,32 @@ class Game:
             self.remove_piece_on_square(remove[1])
             self.place_piece_on_square(place)
             self.modify_board_state(
-                ((remove,
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied(remove),
-                  FEN_NULL,
-                  0,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        remove,
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(remove),
+                        FEN_NULL,
+                        0,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
             return
 
@@ -993,8 +1041,7 @@ class Game:
             if not self._strict_pgn:
                 self._long_algebraic_notation_piece_move(match)
                 return
-            if FEN_TO_PGN[piece_placement_data[destination].name
-                          ] == PGN_ROOK:
+            if FEN_TO_PGN[piece_placement_data[destination].name] == PGN_ROOK:
                 self.append_token_and_set_error(match)
                 return
             self._disambiguate_piece_move(match)
@@ -1014,8 +1061,8 @@ class Game:
             place = destination, piece
             self.place_piece_on_square(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+            ):
                 self.remove_piece_on_square(place)
                 self.place_piece_on_square(remove)
                 self.append_token_and_set_error(match)
@@ -1035,25 +1082,34 @@ class Game:
                 self._text.append(group())
 
             self.modify_board_state(
-                (((remove,),
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied((remove,)),
-                  FEN_NULL,
-                  self._halfmove_clock + 1,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        (remove,),
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(
+                            (remove,)
+                        ),
+                        FEN_NULL,
+                        self._halfmove_clock + 1,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
             return
         from_file_or_rank = group(IFG_PIECE_MOVE_FROM_FILE_OR_RANK)
@@ -1069,8 +1125,8 @@ class Game:
             place = destination, piece
             self.place_piece_on_square(place)
             if not self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+            ):
                 if from_file_or_rank:
                     if from_file_or_rank in remove[0]:
                         chosen_move = remove, place
@@ -1109,25 +1165,32 @@ class Game:
         self.remove_piece_on_square(remove)
         self.place_piece_on_square(place)
         self.modify_board_state(
-            (((remove,),
-              self._active_color,
-              self._castling_availability,
-              self._en_passant_target_square,
-              self._halfmove_clock,
-              self._fullmove_number),
-             ((place,),
-              OTHER_SIDE[self._active_color],
-              self.get_castling_options_after_move_applied((remove,)),
-              FEN_NULL,
-              self._halfmove_clock + 1,
-              fullmove_number_for_next_halfmove),
-             ))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = self._position_deltas[-1][1][1:]
+            (
+                (
+                    (remove,),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+                (
+                    (place,),
+                    OTHER_SIDE[self._active_color],
+                    self.get_castling_options_after_move_applied((remove,)),
+                    FEN_NULL,
+                    self._halfmove_clock + 1,
+                    fullmove_number_for_next_halfmove,
+                ),
+            )
+        )
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
 
     def append_pawn_move(self, match):
@@ -1150,8 +1213,9 @@ class Game:
         # Pawn move and capture.
 
         if group(IFG_PAWN_CAPTURE_TO_FILE):
-            destination = (group(IFG_PAWN_CAPTURE_TO_FILE) +
-                           group(IFG_PAWN_TO_RANK))
+            destination = group(IFG_PAWN_CAPTURE_TO_FILE) + group(
+                IFG_PAWN_TO_RANK
+            )
             pawn_capture_from_file = group(IFG_PAWN_FROM_FILE)
             if self._active_color == FEN_WHITE_ACTIVE:
                 fullmove_number_for_next_halfmove = self._fullmove_number
@@ -1160,16 +1224,19 @@ class Game:
                 fullmove_number_for_next_halfmove = self._fullmove_number + 1
                 source_squares_index = FEN_BLACK_PAWN + PGN_CAPTURE_MOVE
             try:
-                source_squares = SOURCE_SQUARES[source_squares_index
-                                                ][destination]
+                source_squares = SOURCE_SQUARES[source_squares_index][
+                    destination
+                ]
             except KeyError:
                 self.append_token_and_set_error(match)
                 return
             for source in source_squares:
                 if source.startswith(pawn_capture_from_file):
                     try:
-                        if FEN_PAWNS.get(piece_placement_data[source].name
-                                         ) == self._active_color:
+                        if (
+                            FEN_PAWNS.get(piece_placement_data[source].name)
+                            == self._active_color
+                        ):
                             piece = piece_placement_data[source]
                             break
                     except KeyError:
@@ -1189,27 +1256,31 @@ class Game:
                 if capture_square not in piece_placement_data:
                     self.append_token_and_set_error(match)
                     return
-                if FEN_PAWNS.get(piece_placement_data[capture_square].name
-                                 ) == self._active_color:
+                if (
+                    FEN_PAWNS.get(piece_placement_data[capture_square].name)
+                    == self._active_color
+                ):
                     self.append_token_and_set_error(match)
                     return
-            elif piece_placement_data[source
-                                      ].color == piece_placement_data[
-                                          destination].color:
+            elif (
+                piece_placement_data[source].color
+                == piece_placement_data[destination].color
+            ):
                 self.append_token_and_set_error(match)
                 return
             else:
                 capture_square = destination
-            remove = ((capture_square,
-                       piece_placement_data[capture_square]),
-                      (piece.square.name, piece))
+            remove = (
+                (capture_square, piece_placement_data[capture_square]),
+                (piece.square.name, piece),
+            )
             self.remove_piece_from_board(remove[0])
             self.remove_piece_from_board(remove[1])
             place = destination, piece
             self.place_piece_on_board(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+            ):
                 self.remove_piece_from_board(place)
                 self.place_piece_on_board(remove[0])
                 self.place_piece_on_board(remove[1])
@@ -1217,25 +1288,32 @@ class Game:
                 return
             self._text.append(group())
             self.modify_board_state(
-                ((remove,
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied(remove),
-                  FEN_NULL,
-                  0,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        remove,
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(remove),
+                        FEN_NULL,
+                        0,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
             return
 
@@ -1284,40 +1362,46 @@ class Game:
             return
         remove = piece.square.name, piece
         self.remove_piece_on_square(remove)
-        new_en_passant_target_square = (
-            EN_PASSANT_TARGET_SQUARES[
-                OTHER_SIDE[self._active_color]].get(
-                    (destination, piece.square.name),
-                    FEN_NULL))
+        new_en_passant_target_square = EN_PASSANT_TARGET_SQUARES[
+            OTHER_SIDE[self._active_color]
+        ].get((destination, piece.square.name), FEN_NULL)
         place = destination, piece
         self.place_piece_on_square(place)
         if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name):
+            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+        ):
             self.remove_piece_on_square(place)
             self.place_piece_on_square(remove)
             self.append_token_and_set_error(match)
             return
         self._text.append(group())
         self.modify_board_state(
-            (((remove,),
-              self._active_color,
-              self._castling_availability,
-              self._en_passant_target_square,
-              self._halfmove_clock,
-              self._fullmove_number),
-             ((place,),
-              OTHER_SIDE[self._active_color],
-              self.get_castling_options_after_move_applied((remove,)),
-              new_en_passant_target_square,
-              0,
-              fullmove_number_for_next_halfmove),
-             ))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = self._position_deltas[-1][1][1:]
+            (
+                (
+                    (remove,),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+                (
+                    (place,),
+                    OTHER_SIDE[self._active_color],
+                    self.get_castling_options_after_move_applied((remove,)),
+                    new_en_passant_target_square,
+                    0,
+                    fullmove_number_for_next_halfmove,
+                ),
+            )
+        )
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
 
     def append_pawn_promote_move(self, match):
@@ -1341,8 +1425,9 @@ class Game:
         # Promotion move and capture.
 
         if group(IFG_PAWN_CAPTURE_TO_FILE):
-            destination = (group(IFG_PAWN_CAPTURE_TO_FILE) +
-                           group(IFG_PAWN_PROMOTE_TO_RANK))
+            destination = group(IFG_PAWN_CAPTURE_TO_FILE) + group(
+                IFG_PAWN_PROMOTE_TO_RANK
+            )
             pawn_capture_from_file = group(IFG_PAWN_FROM_FILE)
             if self._active_color == FEN_WHITE_ACTIVE:
                 fullmove_number_for_next_halfmove = self._fullmove_number
@@ -1351,16 +1436,19 @@ class Game:
                 fullmove_number_for_next_halfmove = self._fullmove_number + 1
                 source_squares_index = FEN_BLACK_PAWN + PGN_CAPTURE_MOVE
             try:
-                source_squares = SOURCE_SQUARES[source_squares_index
-                                                ][destination]
+                source_squares = SOURCE_SQUARES[source_squares_index][
+                    destination
+                ]
             except KeyError:
                 self.append_token_and_set_error(match)
                 return
             for source in source_squares:
                 if source.startswith(pawn_capture_from_file):
                     try:
-                        if FEN_PAWNS.get(piece_placement_data[source].name
-                                         ) == self._active_color:
+                        if (
+                            FEN_PAWNS.get(piece_placement_data[source].name)
+                            == self._active_color
+                        ):
                             piece = piece_placement_data[source]
                             break
                     except KeyError:
@@ -1380,31 +1468,39 @@ class Game:
                 if capture_square not in piece_placement_data:
                     self.append_token_and_set_error(match)
                     return
-                if FEN_PAWNS.get(piece_placement_data[capture_square].name
-                                 ) == self._active_color:
+                if (
+                    FEN_PAWNS.get(piece_placement_data[capture_square].name)
+                    == self._active_color
+                ):
                     self.append_token_and_set_error(match)
                     return
-            elif piece_placement_data[source
-                                      ].color == piece_placement_data[
-                                          destination].color:
+            elif (
+                piece_placement_data[source].color
+                == piece_placement_data[destination].color
+            ):
                 self.append_token_and_set_error(match)
                 return
             else:
                 capture_square = destination
-            remove = ((capture_square,
-                       piece_placement_data[capture_square]),
-                      (piece.square.name, piece))
+            remove = (
+                (capture_square, piece_placement_data[capture_square]),
+                (piece.square.name, piece),
+            )
             self.remove_piece_from_board(remove[0])
             self.remove_piece_from_board(remove[1])
             promoted_pawn = piece.promoted_pawn(
-                PROMOTED_PIECE_NAME[self._active_color
-                                    ][group(IFG_PAWN_PROMOTE_PIECE)],
-                destination)
+                PROMOTED_PIECE_NAME[self._active_color][
+                    group(IFG_PAWN_PROMOTE_PIECE)
+                ],
+                destination,
+            )
             place = destination, promoted_pawn
             self.place_piece_on_board(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
+                    0
+                ].square.name
+            ):
                 self.remove_piece_from_board(place)
                 self.place_piece_on_board(remove[0])
                 self.place_piece_on_board(remove[1])
@@ -1412,32 +1508,40 @@ class Game:
                 return
             self._text.append(group())
             self.modify_board_state(
-                ((remove,
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied(remove),
-                  FEN_NULL,
-                  0,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        remove,
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(remove),
+                        FEN_NULL,
+                        0,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
             return
 
         # Promotion move without capture.
 
-        destination = (group(IFG_PAWN_FROM_FILE) +
-                       group(IFG_PAWN_PROMOTE_TO_RANK))
+        destination = group(IFG_PAWN_FROM_FILE) + group(
+            IFG_PAWN_PROMOTE_TO_RANK
+        )
         if destination in piece_placement_data:
             self.append_token_and_set_error(match)
             return
@@ -1465,39 +1569,50 @@ class Game:
         self.remove_piece_from_board(remove)
         new_en_passant_target_square = FEN_NULL
         promoted_pawn = piece.promoted_pawn(
-            PROMOTED_PIECE_NAME[self._active_color
-                                ][group(IFG_PAWN_PROMOTE_PIECE)],
-            destination)
+            PROMOTED_PIECE_NAME[self._active_color][
+                group(IFG_PAWN_PROMOTE_PIECE)
+            ],
+            destination,
+        )
         place = destination, promoted_pawn
         self.place_piece_on_board(place)
         if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name
-                                                ]][0].square.name):
+            self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
+                0
+            ].square.name
+        ):
             self.remove_piece_from_board(place)
             self.place_piece_on_board(remove)
             self.append_token_and_set_error(match)
             return
         self._text.append(group())
         self.modify_board_state(
-            (((remove,),
-              self._active_color,
-              self._castling_availability,
-              self._en_passant_target_square,
-              self._halfmove_clock,
-              self._fullmove_number),
-             ((place,),
-              OTHER_SIDE[self._active_color],
-              self.get_castling_options_after_move_applied((remove,)),
-              new_en_passant_target_square,
-              0,
-              fullmove_number_for_next_halfmove),
-             ))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = self._position_deltas[-1][1][1:]
+            (
+                (
+                    (remove,),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+                (
+                    (place,),
+                    OTHER_SIDE[self._active_color],
+                    self.get_castling_options_after_move_applied((remove,)),
+                    new_en_passant_target_square,
+                    0,
+                    fullmove_number_for_next_halfmove,
+                ),
+            )
+        )
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
 
     def _continue_current_choice(self):
@@ -1516,13 +1631,17 @@ class Game:
             return False
         if rsac != ravstack[-2][3][1]:
             return False
-        if (self._active_color == FEN_WHITE_ACTIVE and
-            rsac == FEN_BLACK_ACTIVE and
-            int(rsfmc) + 1 == int(self._fullmove_number)):
+        if (
+            self._active_color == FEN_WHITE_ACTIVE
+            and rsac == FEN_BLACK_ACTIVE
+            and int(rsfmc) + 1 == int(self._fullmove_number)
+        ):
             return True
-        if (self._active_color == FEN_BLACK_ACTIVE and
-            rsac == FEN_WHITE_ACTIVE and
-            int(rsfmc) == int(self._fullmove_number)):
+        if (
+            self._active_color == FEN_BLACK_ACTIVE
+            and rsac == FEN_WHITE_ACTIVE
+            and int(rsfmc) == int(self._fullmove_number)
+        ):
             return True
         return False
 
@@ -1566,8 +1685,10 @@ class Game:
             del self._ravstack[-1][1:]
 
             self.set_position_to_play_first_rav_at_move()
-        elif (self._ravstack[-1][2][1] != self._active_color or
-              self._ravstack[-1][2][5] != self._fullmove_number):
+        elif (
+            self._ravstack[-1][2][1] != self._active_color
+            or self._ravstack[-1][2][5] != self._fullmove_number
+        ):
 
             # Clear out stuff left over from previous RAV at this level.
             del self._ravstack[-1][1:]
@@ -1575,7 +1696,8 @@ class Game:
             self.set_position_to_play_first_rav_at_move()
         else:
             self.reset_board_state(
-                ((self._ravstack[-1][1],) + self._ravstack[-1][-1][1:],))
+                ((self._ravstack[-1][1],) + self._ravstack[-1][-1][1:],)
+            )
 
             # This is most of set_position_to_play_right_nested_rav_at_move.
             rav_piece_placement_data = self._position_deltas[-1][0][0]
@@ -1588,20 +1710,23 @@ class Game:
                 piece_placement_data[square] = piece
                 piece.set_square(square)
                 if piece.name == FEN_WHITE_PAWN:
-                    pieces_on_board[piece.square.file + FEN_WHITE_PAWN
-                                    ].append(piece)
+                    pieces_on_board[piece.square.file + FEN_WHITE_PAWN].append(
+                        piece
+                    )
                 elif piece.name == FEN_BLACK_PAWN:
-                    pieces_on_board[piece.square.file + FEN_BLACK_PAWN
-                                    ].append(piece)
+                    pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
+                        piece
+                    )
                 else:
                     pieces_on_board[piece.name].append(piece)
 
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._ravstack[-1][-1][1:]
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._ravstack[-1][-1][1:]
         self._ravstack[-1][0] += 1
         self._ravstack.append([0])
         self._text.append(match.group())
@@ -1640,7 +1765,7 @@ class Game:
         # The formal syntax for PGN, section 18 in specification, allows '()'
         # as a recursive annotation variation.
         # The commented code bans this sequence.
-        #if (self._active_color == self._ravstack[-1][3][1] and
+        # if (self._active_color == self._ravstack[-1][3][1] and
         #    self._fullmove_number == self._ravstack[-1][3][5]):
         #    self.append_token_and_set_error(match)
         #    return None
@@ -1744,7 +1869,8 @@ class Game:
             fullmove_number_for_next_halfmove = self._fullmove_number + 1
         peek_start = match.span(match.lastindex)[-1]
         dtfm = disambiguate_text_format.match(
-            match.string[peek_start:peek_start+10])
+            match.string[peek_start : peek_start + 10]
+        )
         if not dtfm:
             self.append_token_and_set_error(match)
             return
@@ -1770,16 +1896,19 @@ class Game:
                 if not self.line_empty(cpiece.square.name, destination):
                     continue
                 cpfile, cprank = cpiece.square.name
-                remove = ((destination,
-                           piece_placement_data[destination]),
-                          (cpiece.square.name, cpiece))
+                remove = (
+                    (destination, piece_placement_data[destination]),
+                    (cpiece.square.name, cpiece),
+                )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_on_square(remove[1])
                 place = destination, cpiece
                 self.place_piece_on_square(place)
                 if not self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[cpiece.name]
-                                          ][0].square.name):
+                    self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
+                        0
+                    ].square.name
+                ):
                     if cpfile == sfile:
                         file_count += 1
                     if cprank == srank:
@@ -1790,16 +1919,17 @@ class Game:
             if file_count < 2 or rank_count < 2:
                 self.append_token_and_set_error(match)
                 return
-            remove = ((destination,
-                       piece_placement_data[destination]),
-                      (piece.square.name, piece))
+            remove = (
+                (destination, piece_placement_data[destination]),
+                (piece.square.name, piece),
+            )
             self.remove_piece_from_board(remove[0])
             self.remove_piece_on_square(remove[1])
             place = destination, piece, piece.name
             self.place_piece_on_square(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+            ):
                 self.remove_piece_on_square(place)
                 self.place_piece_on_board(remove[0])
                 self.place_piece_on_square(remove[1])
@@ -1807,25 +1937,32 @@ class Game:
                 return
             self._text.append(group() + dtfm.group())
             self.modify_board_state(
-                ((remove,
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied(remove),
-                  FEN_NULL,
-                  0,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        remove,
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(remove),
+                        FEN_NULL,
+                        0,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self._full_disambiguation_detected = True
             self.append_check_indicator()
             return
@@ -1847,8 +1984,10 @@ class Game:
             place = destination, cpiece
             self.place_piece_on_square(place)
             if not self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[cpiece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
+                    0
+                ].square.name
+            ):
                 if cpfile == sfile:
                     file_count += 1
                 if cprank == srank:
@@ -1863,38 +2002,46 @@ class Game:
         place = destination, piece
         self.place_piece_on_square(place)
         if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name):
+            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+        ):
             self.remove_piece_on_square(place)
             self.place_piece_on_square(remove)
             self.append_token_and_set_error(match)
             return
         self._text.append(group() + dtfm.group())
         self.modify_board_state(
-            (((remove,),
-              self._active_color,
-              self._castling_availability,
-              self._en_passant_target_square,
-              self._halfmove_clock,
-              self._fullmove_number),
-             ((place,),
-              OTHER_SIDE[self._active_color],
-              self.get_castling_options_after_move_applied((remove,)),
-              FEN_NULL,
-              self._halfmove_clock + 1,
-              fullmove_number_for_next_halfmove),
-             ))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = self._position_deltas[-1][1][1:]
+            (
+                (
+                    (remove,),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+                (
+                    (place,),
+                    OTHER_SIDE[self._active_color],
+                    self.get_castling_options_after_move_applied((remove,)),
+                    FEN_NULL,
+                    self._halfmove_clock + 1,
+                    fullmove_number_for_next_halfmove,
+                ),
+            )
+        )
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
         self._full_disambiguation_detected = True
 
     def _long_algebraic_notation_destination(self, match):
         peek_start = match.span(match.lastindex)[-1]
-        pms = match.string[peek_start:peek_start+10]
+        pms = match.string[peek_start : peek_start + 10]
         lfm = lan_format.match(pms.lower())
         if lfm:
             if isinstance(self, (GameIgnoreCasePGN, GameTextPGN)):
@@ -1951,19 +2098,24 @@ class Game:
                 if len(candidates) > 1:
                     sfile, srank = piece.square.name
                     for cpiece in candidates:
-                        if not self.line_empty(cpiece.square.name, destination):
+                        if not self.line_empty(
+                            cpiece.square.name, destination
+                        ):
                             continue
                         cpfile, cprank = cpiece.square.name
-                        remove = ((destination,
-                                   piece_placement_data[destination]),
-                                  (cpiece.square.name, cpiece))
+                        remove = (
+                            (destination, piece_placement_data[destination]),
+                            (cpiece.square.name, cpiece),
+                        )
                         self.remove_piece_from_board(remove[0])
                         self.remove_piece_on_square(remove[1])
                         place = destination, cpiece
                         self.place_piece_on_square(place)
                         if not self.is_square_attacked_by_other_side(
-                            self._pieces_on_board[PIECE_TO_KING[cpiece.name]
-                                                  ][0].square.name):
+                            self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
+                                0
+                            ].square.name
+                        ):
                             if cpfile not in file_count:
                                 file_count[cpfile] = 1
                             else:
@@ -1978,16 +2130,19 @@ class Game:
                 if not self.line_empty(piece.square.name, destination):
                     self.append_token_and_set_error(match)
                     return
-                remove = ((destination,
-                           piece_placement_data[destination]),
-                          (piece.square.name, piece))
+                remove = (
+                    (destination, piece_placement_data[destination]),
+                    (piece.square.name, piece),
+                )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_on_square(remove[1])
                 place = destination, piece
                 self.place_piece_on_square(place)
                 if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                          ][0].square.name):
+                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
+                        0
+                    ].square.name
+                ):
                     self.remove_piece_on_square(place)
                     self.place_piece_on_board(remove[0])
                     self.place_piece_on_square(remove[1])
@@ -1995,47 +2150,73 @@ class Game:
                     return
                 if len(file_count) < 2 and len(rank_count) < 2:
                     self._text.append(
-                        PGN_CAPTURE_MOVE.join((group(IFG_PIECE_MOVE),
-                                               destination)))
+                        PGN_CAPTURE_MOVE.join(
+                            (group(IFG_PIECE_MOVE), destination)
+                        )
+                    )
                 elif file_count[sfile] == 1:
                     self._text.append(
-                        ''.join((group(IFG_PIECE_MOVE),
-                                 sfile,
-                                 PGN_CAPTURE_MOVE,
-                                 destination)))
+                        "".join(
+                            (
+                                group(IFG_PIECE_MOVE),
+                                sfile,
+                                PGN_CAPTURE_MOVE,
+                                destination,
+                            )
+                        )
+                    )
                 elif rank_count[srank] == 1:
                     self._text.append(
-                        ''.join((group(IFG_PIECE_MOVE),
-                                 srank,
-                                 PGN_CAPTURE_MOVE,
-                                 destination)))
+                        "".join(
+                            (
+                                group(IFG_PIECE_MOVE),
+                                srank,
+                                PGN_CAPTURE_MOVE,
+                                destination,
+                            )
+                        )
+                    )
                 else:
                     self._text.append(
-                        ''.join((group(IFG_PIECE_MOVE),
-                                 sfile,
-                                 srank,
-                                 PGN_CAPTURE_MOVE,
-                                 destination)))
+                        "".join(
+                            (
+                                group(IFG_PIECE_MOVE),
+                                sfile,
+                                srank,
+                                PGN_CAPTURE_MOVE,
+                                destination,
+                            )
+                        )
+                    )
                 self.modify_board_state(
-                    ((remove,
-                      self._active_color,
-                      self._castling_availability,
-                      self._en_passant_target_square,
-                      self._halfmove_clock,
-                      self._fullmove_number),
-                     ((place,),
-                      OTHER_SIDE[self._active_color],
-                      self.get_castling_options_after_move_applied(remove),
-                      FEN_NULL,
-                      0,
-                      fullmove_number_for_next_halfmove),
-                     ))
-                (self._active_color,
-                 self._castling_availability,
-                 self._en_passant_target_square,
-                 self._halfmove_clock,
-                 self._fullmove_number,
-                 ) = self._position_deltas[-1][1][1:]
+                    (
+                        (
+                            remove,
+                            self._active_color,
+                            self._castling_availability,
+                            self._en_passant_target_square,
+                            self._halfmove_clock,
+                            self._fullmove_number,
+                        ),
+                        (
+                            (place,),
+                            OTHER_SIDE[self._active_color],
+                            self.get_castling_options_after_move_applied(
+                                remove
+                            ),
+                            FEN_NULL,
+                            0,
+                            fullmove_number_for_next_halfmove,
+                        ),
+                    )
+                )
+                (
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ) = self._position_deltas[-1][1][1:]
                 self.append_check_indicator()
                 self._full_disambiguation_detected = True
                 return
@@ -2061,8 +2242,10 @@ class Game:
                     place = destination, cpiece
                     self.place_piece_on_square(place)
                     if not self.is_square_attacked_by_other_side(
-                        self._pieces_on_board[PIECE_TO_KING[cpiece.name]
-                                              ][0].square.name):
+                        self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
+                            0
+                        ].square.name
+                    ):
                         if cpfile not in file_count:
                             file_count[cpfile] = 1
                         else:
@@ -2081,8 +2264,8 @@ class Game:
             place = destination, piece
             self.place_piece_on_square(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+            ):
                 self.remove_piece_on_square(place)
                 self.place_piece_on_square(remove)
                 self.append_token_and_set_error(match)
@@ -2091,40 +2274,45 @@ class Game:
                 self._text.append(group(IFG_PIECE_MOVE) + destination)
             elif file_count[sfile] == 1:
                 self._text.append(
-                    ''.join((group(IFG_PIECE_MOVE),
-                             sfile,
-                             destination)))
+                    "".join((group(IFG_PIECE_MOVE), sfile, destination))
+                )
             elif rank_count[srank] == 1:
                 self._text.append(
-                    ''.join((group(IFG_PIECE_MOVE),
-                             srank,
-                             destination)))
+                    "".join((group(IFG_PIECE_MOVE), srank, destination))
+                )
             else:
                 self._text.append(
-                    ''.join((group(IFG_PIECE_MOVE),
-                             sfile,
-                             srank,
-                             destination)))
+                    "".join((group(IFG_PIECE_MOVE), sfile, srank, destination))
+                )
             self.modify_board_state(
-                (((remove,),
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied((remove,)),
-                  FEN_NULL,
-                  self._halfmove_clock + 1,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        (remove,),
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(
+                            (remove,)
+                        ),
+                        FEN_NULL,
+                        self._halfmove_clock + 1,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
             self._full_disambiguation_detected = True
             return
@@ -2162,22 +2350,29 @@ class Game:
                 return
         elif destination in piece_placement_data:
             try:
-                raise GameError(''.join(
-                    ("En-passant target square '",
-                     self._en_passant_target_square,
-                     "' is not consistent with position on board '",
-                     generate_fen_for_position(
-                         piece_placement_data.values(),
-                         self._active_color,
-                         self._castling_availability,
-                         self._en_passant_target_square,
-                         self._halfmove_clock,
-                         self._fullmove_number))))
+                raise GameError(
+                    "".join(
+                        (
+                            "En-passant target square '",
+                            self._en_passant_target_square,
+                            "' is not consistent with position on board '",
+                            generate_fen_for_position(
+                                piece_placement_data.values(),
+                                self._active_color,
+                                self._castling_availability,
+                                self._en_passant_target_square,
+                                self._halfmove_clock,
+                                self._fullmove_number,
+                            ),
+                        )
+                    )
+                )
             except:
                 raise GameError(
-                    'En-passant target square does not fit position')
+                    "En-passant target square does not fit position"
+                )
 
-        if destination[1] in '18':
+        if destination[1] in "18":
             if not promotion_piece:
                 self.append_token_and_set_error(match)
                 return
@@ -2185,31 +2380,40 @@ class Game:
 
             # Promotion move and capture.
             if capture == PGN_CAPTURE_MOVE:
-                if square_name not in SOURCE_SQUARES[
-                    source_squares_index + PGN_CAPTURE_MOVE][destination]:
+                if (
+                    square_name
+                    not in SOURCE_SQUARES[
+                        source_squares_index + PGN_CAPTURE_MOVE
+                    ][destination]
+                ):
                     self.append_token_and_set_error(match)
                     return
                 if destination not in piece_placement_data:
                     self.append_token_and_set_error(match)
                     return
-                if piece_placement_data[square_name
-                                        ].color == piece_placement_data[
-                                            destination].color:
+                if (
+                    piece_placement_data[square_name].color
+                    == piece_placement_data[destination].color
+                ):
                     self.append_token_and_set_error(match)
                     return
-                remove = ((destination,
-                           piece_placement_data[destination]),
-                          (piece.square.name, piece))
+                remove = (
+                    (destination, piece_placement_data[destination]),
+                    (piece.square.name, piece),
+                )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_from_board(remove[1])
                 promoted_pawn = piece.promoted_pawn(
                     PROMOTED_PIECE_NAME[self._active_color][promotion_piece],
-                    destination)
+                    destination,
+                )
                 place = destination, promoted_pawn
                 self.place_piece_on_board(place)
                 if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]
-                                          ][0].square.name):
+                    self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
+                        0
+                    ].square.name
+                ):
                     self.remove_piece_from_board(place)
                     self.place_piece_on_board(remove[0])
                     self.place_piece_on_board(remove[1])
@@ -2217,31 +2421,42 @@ class Game:
                     return
                 self._text.append(group())
                 self.modify_board_state(
-                    ((remove,
-                      self._active_color,
-                      self._castling_availability,
-                      self._en_passant_target_square,
-                      self._halfmove_clock,
-                      self._fullmove_number),
-                     ((place,),
-                      OTHER_SIDE[self._active_color],
-                      self.get_castling_options_after_move_applied(remove),
-                      FEN_NULL,
-                      0,
-                      fullmove_number_for_next_halfmove),
-                     ))
-                (self._active_color,
-                 self._castling_availability,
-                 self._en_passant_target_square,
-                 self._halfmove_clock,
-                 self._fullmove_number,
-                 ) = self._position_deltas[-1][1][1:]
+                    (
+                        (
+                            remove,
+                            self._active_color,
+                            self._castling_availability,
+                            self._en_passant_target_square,
+                            self._halfmove_clock,
+                            self._fullmove_number,
+                        ),
+                        (
+                            (place,),
+                            OTHER_SIDE[self._active_color],
+                            self.get_castling_options_after_move_applied(
+                                remove
+                            ),
+                            FEN_NULL,
+                            0,
+                            fullmove_number_for_next_halfmove,
+                        ),
+                    )
+                )
+                (
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ) = self._position_deltas[-1][1][1:]
                 self.append_check_indicator()
                 return
 
             # Promotion move without capture.
-            if square_name not in SOURCE_SQUARES[source_squares_index
-                                                 ][destination]:
+            if (
+                square_name
+                not in SOURCE_SQUARES[source_squares_index][destination]
+            ):
                 self.append_token_and_set_error(match)
                 return
             piece = piece_placement_data[square_name]
@@ -2249,37 +2464,49 @@ class Game:
             self.remove_piece_from_board(remove)
             promoted_pawn = piece.promoted_pawn(
                 PROMOTED_PIECE_NAME[self._active_color][promotion_piece],
-                destination)
+                destination,
+            )
             place = destination, promoted_pawn
             self.place_piece_on_board(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
+                    0
+                ].square.name
+            ):
                 self.remove_piece_from_board(place)
                 self.place_piece_on_board(remove)
                 self.append_token_and_set_error(match)
                 return
             self._text.append(group())
             self.modify_board_state(
-                (((remove,),
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied((remove,)),
-                  FEN_NULL,
-                  0,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        (remove,),
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(
+                            (remove,)
+                        ),
+                        FEN_NULL,
+                        0,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
 
             self.append_token_and_set_error(match)
@@ -2290,8 +2517,12 @@ class Game:
             self.append_token_and_set_error(match)
             return
         if capture == PGN_CAPTURE_MOVE:
-            if square_name not in SOURCE_SQUARES[
-                source_squares_index + PGN_CAPTURE_MOVE][destination]:
+            if (
+                square_name
+                not in SOURCE_SQUARES[source_squares_index + PGN_CAPTURE_MOVE][
+                    destination
+                ]
+            ):
                 self.append_token_and_set_error(match)
                 return
             piece = piece_placement_data[square_name]
@@ -2303,67 +2534,86 @@ class Game:
                 return
             if destination not in piece_placement_data:
                 capture_square = EN_PASSANT_TARGET_SQUARES.get(
-                    PGN_CAPTURE_MOVE.join((group(IFG_PAWN_FROM_FILE),
-                                           destination)))
+                    PGN_CAPTURE_MOVE.join(
+                        (group(IFG_PAWN_FROM_FILE), destination)
+                    )
+                )
                 if not capture_square:
                     self.append_token_and_set_error(match)
                     return
                 if capture_square not in piece_placement_data:
                     self.append_token_and_set_error(match)
                     return
-                if FEN_PAWNS.get(piece_placement_data[capture_square].name
-                                 ) == self._active_color:
+                if (
+                    FEN_PAWNS.get(piece_placement_data[capture_square].name)
+                    == self._active_color
+                ):
                     self.append_token_and_set_error(match)
                     return
-            elif piece_placement_data[square_name
-                                      ].color == piece_placement_data[
-                                          destination].color:
+            elif (
+                piece_placement_data[square_name].color
+                == piece_placement_data[destination].color
+            ):
                 self.append_token_and_set_error(match)
                 return
             else:
                 capture_square = destination
-            remove = ((capture_square,
-                       piece_placement_data[capture_square]),
-                      (piece.square.name, piece))
+            remove = (
+                (capture_square, piece_placement_data[capture_square]),
+                (piece.square.name, piece),
+            )
             self.remove_piece_from_board(remove[0])
             self.remove_piece_from_board(remove[1])
             place = destination, piece
             self.place_piece_on_board(place)
             if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]
-                                      ][0].square.name):
+                self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+            ):
                 self.remove_piece_from_board(place)
                 self.place_piece_on_board(remove[0])
                 self.place_piece_on_board(remove[1])
                 self.append_token_and_set_error(match)
                 return
-            self._text.append(PGN_CAPTURE_MOVE.join((group(IFG_PAWN_FROM_FILE),
-                                                     capture_square)))
+            self._text.append(
+                PGN_CAPTURE_MOVE.join(
+                    (group(IFG_PAWN_FROM_FILE), capture_square)
+                )
+            )
             self.modify_board_state(
-                ((remove,
-                  self._active_color,
-                  self._castling_availability,
-                  self._en_passant_target_square,
-                  self._halfmove_clock,
-                  self._fullmove_number),
-                 ((place,),
-                  OTHER_SIDE[self._active_color],
-                  self.get_castling_options_after_move_applied(remove),
-                  FEN_NULL,
-                  0,
-                  fullmove_number_for_next_halfmove),
-                 ))
-            (self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ) = self._position_deltas[-1][1][1:]
+                (
+                    (
+                        remove,
+                        self._active_color,
+                        self._castling_availability,
+                        self._en_passant_target_square,
+                        self._halfmove_clock,
+                        self._fullmove_number,
+                    ),
+                    (
+                        (place,),
+                        OTHER_SIDE[self._active_color],
+                        self.get_castling_options_after_move_applied(remove),
+                        FEN_NULL,
+                        0,
+                        fullmove_number_for_next_halfmove,
+                    ),
+                )
+            )
+            (
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            ) = self._position_deltas[-1][1][1:]
             self.append_check_indicator()
             return
 
         # Pawn move without capturing or promoting.
-        if square_name not in SOURCE_SQUARES[source_squares_index][destination]:
+        if (
+            square_name
+            not in SOURCE_SQUARES[source_squares_index][destination]
+        ):
             self.append_token_and_set_error(match)
             return
         piece = piece_placement_data[square_name]
@@ -2375,40 +2625,46 @@ class Game:
             return
         remove = piece.square.name, piece
         self.remove_piece_on_square(remove)
-        new_en_passant_target_square = (
-            EN_PASSANT_TARGET_SQUARES[
-                OTHER_SIDE[self._active_color]].get(
-                    (destination, piece.square.name),
-                    FEN_NULL))
+        new_en_passant_target_square = EN_PASSANT_TARGET_SQUARES[
+            OTHER_SIDE[self._active_color]
+        ].get((destination, piece.square.name), FEN_NULL)
         place = destination, piece
         self.place_piece_on_square(place)
         if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name):
+            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name
+        ):
             self.remove_piece_on_square(place)
             self.place_piece_on_square(remove)
             self.append_token_and_set_error(match)
             return
         self._text.append(destination)
         self.modify_board_state(
-            (((remove,),
-              self._active_color,
-              self._castling_availability,
-              self._en_passant_target_square,
-              self._halfmove_clock,
-              self._fullmove_number),
-             ((place,),
-              OTHER_SIDE[self._active_color],
-              self.get_castling_options_after_move_applied((remove,)),
-              new_en_passant_target_square,
-              0,
-              fullmove_number_for_next_halfmove),
-             ))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = self._position_deltas[-1][1][1:]
+            (
+                (
+                    (remove,),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+                (
+                    (place,),
+                    OTHER_SIDE[self._active_color],
+                    self.get_castling_options_after_move_applied((remove,)),
+                    new_en_passant_target_square,
+                    0,
+                    fullmove_number_for_next_halfmove,
+                ),
+            )
+        )
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = self._position_deltas[-1][1][1:]
         self.append_check_indicator()
         self._full_disambiguation_detected = True
 
@@ -2422,12 +2678,15 @@ class Game:
         # If only the SetUp tag is present it's value must be '0'.
         tag_fen = self._tags.get(TAG_FEN)
         tag_setup = self._tags.get(TAG_SETUP, SETUP_VALUE_FEN_ABSENT)
-        if ((tag_fen is not None and tag_setup != SETUP_VALUE_FEN_PRESENT) or
-            (tag_fen is None and tag_setup != SETUP_VALUE_FEN_ABSENT)):
+        if (tag_fen is not None and tag_setup != SETUP_VALUE_FEN_PRESENT) or (
+            tag_fen is None and tag_setup != SETUP_VALUE_FEN_ABSENT
+        ):
             if self._state is None:
                 for token_number, mvt in enumerate(self._text):
-                    if (mvt[IFG_TAG_NAME] == TAG_FEN or
-                        mvt[IFG_TAG_NAME] == TAG_SETUP):
+                    if (
+                        mvt[IFG_TAG_NAME] == TAG_FEN
+                        or mvt[IFG_TAG_NAME] == TAG_SETUP
+                    ):
                         self._state = token_number
                         self._state_stack[-1] = self._state
                         break
@@ -2439,17 +2698,18 @@ class Game:
         pieces_on_board = self._pieces_on_board
         board = []
         piece_placement_data = self._piece_placement_data
-        for piece in (FEN_WHITE_KING,
-                      FEN_WHITE_QUEEN,
-                      FEN_WHITE_ROOK,
-                      FEN_WHITE_BISHOP,
-                      FEN_WHITE_KNIGHT,
-                      FEN_BLACK_KING,
-                      FEN_BLACK_QUEEN,
-                      FEN_BLACK_ROOK,
-                      FEN_BLACK_BISHOP,
-                      FEN_BLACK_KNIGHT,
-                      ):
+        for piece in (
+            FEN_WHITE_KING,
+            FEN_WHITE_QUEEN,
+            FEN_WHITE_ROOK,
+            FEN_WHITE_BISHOP,
+            FEN_WHITE_KNIGHT,
+            FEN_BLACK_KING,
+            FEN_BLACK_QUEEN,
+            FEN_BLACK_ROOK,
+            FEN_BLACK_BISHOP,
+            FEN_BLACK_KNIGHT,
+        ):
             pieces_on_board[piece] = []
         for file in FILE_NAMES:
             for piece in FEN_WHITE_PAWN, FEN_BLACK_PAWN:
@@ -2485,14 +2745,16 @@ class Game:
                 piece_placement_data[piece.square.name] = piece
                 board.append(piece)
                 if fen_char == FEN_WHITE_PAWN:
-                    pieces_on_board[piece.square.file + FEN_WHITE_PAWN
-                                    ].append(piece)
-                    if piece.square.rank in '18':
+                    pieces_on_board[piece.square.file + FEN_WHITE_PAWN].append(
+                        piece
+                    )
+                    if piece.square.rank in "18":
                         return False
                 elif fen_char == FEN_BLACK_PAWN:
-                    pieces_on_board[piece.square.file + FEN_BLACK_PAWN
-                                    ].append(piece)
-                    if piece.square.rank in '18':
+                    pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
+                        piece
+                    )
+                    if piece.square.rank in "18":
                         return False
                 else:
                     pieces_on_board[fen_char].append(piece)
@@ -2501,8 +2763,9 @@ class Game:
                 return False
             castling_availability = tff[FEN_CASTLING_AVAILABILITY_FIELD_INDEX]
             if castling_availability != FEN_NULL:
-                if (set(FEN_INITIAL_CASTLING).union(tff[2]) !=
-                    set(FEN_INITIAL_CASTLING)):
+                if set(FEN_INITIAL_CASTLING).union(tff[2]) != set(
+                    FEN_INITIAL_CASTLING
+                ):
                     self._state = len(self._text)
                     self._state_stack[-1] = self._state
                     return False
@@ -2516,13 +2779,16 @@ class Game:
                     for option in castling_option:
                         if option not in castling_availability:
                             continue
-                        if piece_placement_data[
-                            square].name != CASTLING_PIECE_FOR_SQUARE[square]:
+                        if (
+                            piece_placement_data[square].name
+                            != CASTLING_PIECE_FOR_SQUARE[square]
+                        ):
                             self._state = len(self._text)
                             self._state_stack[-1] = self._state
                             return False
             en_passant_target_square = tff[
-                FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX]
+                FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX
+            ]
             if en_passant_target_square != FEN_NULL:
                 if en_passant_target_square not in Squares.squares:
                     return False
@@ -2532,16 +2798,19 @@ class Game:
                     target_pawn = FEN_WHITE_PAWN
                 if en_passant_target_square in piece_placement_data:
                     return False
-                for k, target_square in EN_PASSANT_TARGET_SQUARES[active_color
-                                                                  ].items():
+                for k, target_square in EN_PASSANT_TARGET_SQUARES[
+                    active_color
+                ].items():
                     if target_square == en_passant_target_square:
                         occupied_square, source_square = k
                         if source_square in piece_placement_data:
                             return False
                         if occupied_square not in piece_placement_data:
                             return False
-                        if piece_placement_data[occupied_square
-                                                ].name != target_pawn:
+                        if (
+                            piece_placement_data[occupied_square].name
+                            != target_pawn
+                        ):
                             return False
                         break
                 else:
@@ -2587,22 +2856,36 @@ class Game:
                 return False
             if white_pawn_count > 8 or black_pawn_count > 8:
                 return False
-            if (white_queen_count + white_rook_count + white_bishop_count +
-                white_knight_count) > 7 + 8 - white_pawn_count:
+            if (
+                white_queen_count
+                + white_rook_count
+                + white_bishop_count
+                + white_knight_count
+            ) > 7 + 8 - white_pawn_count:
                 return False
-            if (black_queen_count + black_rook_count + black_bishop_count +
-                black_knight_count) > 7 + 8 - black_pawn_count:
+            if (
+                black_queen_count
+                + black_rook_count
+                + black_bishop_count
+                + black_knight_count
+            ) > 7 + 8 - black_pawn_count:
                 return False
             if white_queen_count + white_pawn_count > 9:
                 return False
             if black_queen_count + black_pawn_count > 9:
                 return False
             for count in (
-                white_rook_count, white_bishop_count, white_knight_count):
+                white_rook_count,
+                white_bishop_count,
+                white_knight_count,
+            ):
                 if count + white_pawn_count > 10:
                     return False
             for count in (
-                black_rook_count, black_bishop_count, black_knight_count):
+                black_rook_count,
+                black_bishop_count,
+                black_knight_count,
+            ):
                 if count + black_pawn_count > 10:
                     return False
             halfmove_clock = tff[FEN_HALFMOVE_CLOCK_FIELD_INDEX]
@@ -2622,7 +2905,9 @@ class Game:
             for piece in board:
                 if piece.name == king:
                     self._active_color = OTHER_SIDE[active_color]
-                    if self.is_square_attacked_by_other_side(piece.square.name):
+                    if self.is_square_attacked_by_other_side(
+                        piece.square.name
+                    ):
                         self._active_color = active_color
                         return False
                     break
@@ -2634,48 +2919,52 @@ class Game:
             self._halfmove_clock = int(halfmove_clock)
             self._fullmove_number = int(fullmove_number)
         else:
-            board.extend([
-                Piece(FEN_BLACK_ROOK, FILE_NAMES[0] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_KNIGHT, FILE_NAMES[1] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_BISHOP, FILE_NAMES[2] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_QUEEN, FILE_NAMES[3] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_KING, FILE_NAMES[4] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_BISHOP, FILE_NAMES[5] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_KNIGHT, FILE_NAMES[6] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_ROOK, FILE_NAMES[7] + RANK_NAMES[0]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[0] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[1] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[2] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[3] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[4] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[5] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[6] + RANK_NAMES[1]),
-                Piece(FEN_BLACK_PAWN, FILE_NAMES[7] + RANK_NAMES[1]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[0] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[1] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[2] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[3] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[4] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[5] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[6] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_PAWN, FILE_NAMES[7] + RANK_NAMES[6]),
-                Piece(FEN_WHITE_ROOK, FILE_NAMES[0] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_KNIGHT, FILE_NAMES[1] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_BISHOP, FILE_NAMES[2] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_QUEEN, FILE_NAMES[3] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_KING, FILE_NAMES[4] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_BISHOP, FILE_NAMES[5] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_KNIGHT, FILE_NAMES[6] + RANK_NAMES[7]),
-                Piece(FEN_WHITE_ROOK, FILE_NAMES[7] + RANK_NAMES[7]),
-                ])
+            board.extend(
+                [
+                    Piece(FEN_BLACK_ROOK, FILE_NAMES[0] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_KNIGHT, FILE_NAMES[1] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_BISHOP, FILE_NAMES[2] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_QUEEN, FILE_NAMES[3] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_KING, FILE_NAMES[4] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_BISHOP, FILE_NAMES[5] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_KNIGHT, FILE_NAMES[6] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_ROOK, FILE_NAMES[7] + RANK_NAMES[0]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[0] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[1] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[2] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[3] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[4] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[5] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[6] + RANK_NAMES[1]),
+                    Piece(FEN_BLACK_PAWN, FILE_NAMES[7] + RANK_NAMES[1]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[0] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[1] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[2] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[3] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[4] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[5] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[6] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_PAWN, FILE_NAMES[7] + RANK_NAMES[6]),
+                    Piece(FEN_WHITE_ROOK, FILE_NAMES[0] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_KNIGHT, FILE_NAMES[1] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_BISHOP, FILE_NAMES[2] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_QUEEN, FILE_NAMES[3] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_KING, FILE_NAMES[4] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_BISHOP, FILE_NAMES[5] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_KNIGHT, FILE_NAMES[6] + RANK_NAMES[7]),
+                    Piece(FEN_WHITE_ROOK, FILE_NAMES[7] + RANK_NAMES[7]),
+                ]
+            )
             for piece in board:
                 piece_placement_data[piece.square.name] = piece
                 if piece.name == FEN_WHITE_PAWN:
-                    pieces_on_board[piece.square.file + FEN_WHITE_PAWN
-                                    ].append(piece)
+                    pieces_on_board[piece.square.file + FEN_WHITE_PAWN].append(
+                        piece
+                    )
                 elif piece.name == FEN_BLACK_PAWN:
-                    pieces_on_board[piece.square.file + FEN_BLACK_PAWN
-                                    ].append(piece)
+                    pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
+                        piece
+                    )
                 else:
                     pieces_on_board[piece.name].append(piece)
             self._active_color = FEN_WHITE_ACTIVE
@@ -2684,14 +2973,18 @@ class Game:
             self._halfmove_clock = 0
             self._fullmove_number = 1
         self.set_initial_board_state(
-            (tuple((p, p.square.name)
-                   for p in self._piece_placement_data.values()),
-             self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ))
+            (
+                tuple(
+                    (p, p.square.name)
+                    for p in self._piece_placement_data.values()
+                ),
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            )
+        )
         return True
 
     def remove_piece_on_square(self, sn_p_n):
@@ -2731,8 +3024,11 @@ class Game:
                 self._pieces_on_board[pobkey].pop(piece_occurrence)
                 break
         else:
-            raise GameError(''.join(
-                (str(piece), ' not in _pieces_on_board at square ', square)))
+            raise GameError(
+                "".join(
+                    (str(piece), " not in _pieces_on_board at square ", square)
+                )
+            )
         del piece_placement_data[square]
 
     def place_piece_on_square(self, sn_p_n):
@@ -2806,7 +3102,7 @@ class Game:
             # Pawns must be removed from board and placed on board because they
             # change name when capturing: the file is prefix to pawn name.
             # This name is the key into self._pieces_on_board.
-            if place[0][-1][1].name in 'Pp':
+            if place[0][-1][1].name in "Pp":
                 self.remove_piece_from_board(remove[0][0])
                 self.place_piece_on_board(place[0][0])
                 self.place_piece_on_board(place[0][1])
@@ -2816,17 +3112,23 @@ class Game:
                 self.place_piece_on_square(place[0][1])
 
         self._ravstack[-1].extend(
-            (tuple((p, p.square.name)
-                  for p in self._piece_placement_data.values()),
-             remove,
-             place))
+            (
+                tuple(
+                    (p, p.square.name)
+                    for p in self._piece_placement_data.values()
+                ),
+                remove,
+                place,
+            )
+        )
         self.reset_board_state(((self._ravstack[-1][1],) + place[1:],))
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = place[1:]
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = place[1:]
 
     def set_position_to_play_right_nested_rav_at_move(self):
         """Set position to play first move of right-nested RAV.
@@ -2848,11 +3150,13 @@ class Game:
             piece_placement_data[square] = piece
             piece.set_square(square)
             if piece.name == FEN_WHITE_PAWN:
-                pieces_on_board[piece.square.file + FEN_WHITE_PAWN
-                                ].append(piece)
+                pieces_on_board[piece.square.file + FEN_WHITE_PAWN].append(
+                    piece
+                )
             elif piece.name == FEN_BLACK_PAWN:
-                pieces_on_board[piece.square.file + FEN_BLACK_PAWN
-                                ].append(piece)
+                pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
+                    piece
+                )
             else:
                 pieces_on_board[piece.name].append(piece)
         self.repeat_board_state(self._position_deltas[-1])
@@ -2870,11 +3174,13 @@ class Game:
             piece_placement_data[square] = piece
             piece.set_square(square)
             if piece.name == FEN_WHITE_PAWN:
-                pieces_on_board[piece.square.file + FEN_WHITE_PAWN
-                                ].append(piece)
+                pieces_on_board[piece.square.file + FEN_WHITE_PAWN].append(
+                    piece
+                )
             elif piece.name == FEN_BLACK_PAWN:
-                pieces_on_board[piece.square.file + FEN_BLACK_PAWN
-                                ].append(piece)
+                pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
+                    piece
+                )
             else:
                 pieces_on_board[piece.name].append(piece)
         if len(place[0]) == len(remove[0]):
@@ -2899,28 +3205,35 @@ class Game:
             # Pawns must be removed from board and placed on board because they
             # change name when capturing: the file is prefix to pawn name.
             # This name is the key into self._pieces_on_board.
-            if remove[0][-1][1].name in 'Pp':
+            if remove[0][-1][1].name in "Pp":
                 self.remove_piece_from_board(remove[0][1])
                 self.place_piece_on_board(place[0][0])
             else:
                 self.remove_piece_on_square(remove[0][1])
                 self.place_piece_on_square(place[0][0])
 
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = place[1:]
-        self.set_board_state((
-            (tuple((p, p.square.name)
-                   for p in self._piece_placement_data.values()),
-             self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ),))
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = place[1:]
+        self.set_board_state(
+            (
+                (
+                    tuple(
+                        (p, p.square.name)
+                        for p in self._piece_placement_data.values()
+                    ),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+            )
+        )
 
     def set_position_to_play_prior_right_nested_rav_at_move(self):
         """Set position for end_of_rav token of right-nested RAV."""
@@ -2934,28 +3247,37 @@ class Game:
             piece_placement_data[square] = piece
             piece.set_square(square)
             if piece.name == FEN_WHITE_PAWN:
-                pieces_on_board[piece.square.file + FEN_WHITE_PAWN
-                                ].append(piece)
+                pieces_on_board[piece.square.file + FEN_WHITE_PAWN].append(
+                    piece
+                )
             elif piece.name == FEN_BLACK_PAWN:
-                pieces_on_board[piece.square.file + FEN_BLACK_PAWN
-                                ].append(piece)
+                pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
+                    piece
+                )
             else:
                 pieces_on_board[piece.name].append(piece)
-        (self._active_color,
-         self._castling_availability,
-         self._en_passant_target_square,
-         self._halfmove_clock,
-         self._fullmove_number,
-         ) = rav_piece_placement_data[1:]
-        self.set_board_state((
-            (tuple((p, p.square.name)
-                   for p in self._piece_placement_data.values()),
-             self._active_color,
-             self._castling_availability,
-             self._en_passant_target_square,
-             self._halfmove_clock,
-             self._fullmove_number,
-             ),))
+        (
+            self._active_color,
+            self._castling_availability,
+            self._en_passant_target_square,
+            self._halfmove_clock,
+            self._fullmove_number,
+        ) = rav_piece_placement_data[1:]
+        self.set_board_state(
+            (
+                (
+                    tuple(
+                        (p, p.square.name)
+                        for p in self._piece_placement_data.values()
+                    ),
+                    self._active_color,
+                    self._castling_availability,
+                    self._en_passant_target_square,
+                    self._halfmove_clock,
+                    self._fullmove_number,
+                ),
+            )
+        )
 
     def line_empty(self, square1, square2):
         """Return True if the squares between square1 and square2 are empty."""
@@ -2963,7 +3285,7 @@ class Game:
         ptp = POINT_TO_POINT.get((square1, square2))
         if ptp is None:
             return True
-        for sqr in ptp[2][ptp[0]: ptp[1]]:
+        for sqr in ptp[2][ptp[0] : ptp[1]]:
             if sqr in piece_placement_data:
                 return False
         return True
@@ -2979,12 +3301,16 @@ class Game:
         """
         if self._castling_availability == FEN_NULL:
             return FEN_NULL
-        castling_rights_lost = ''.join(
-            Squares.squares[r[0]].castling_rights_lost for r in remove)
+        castling_rights_lost = "".join(
+            Squares.squares[r[0]].castling_rights_lost for r in remove
+        )
         if not castling_rights_lost:
             return self._castling_availability
-        adjusted_castling_availability = ''.join(sorted(
-            set(self._castling_availability) - set(castling_rights_lost)))
+        adjusted_castling_availability = "".join(
+            sorted(
+                set(self._castling_availability) - set(castling_rights_lost)
+            )
+        )
         if not adjusted_castling_availability:
             return FEN_NULL
         return adjusted_castling_availability
@@ -2998,7 +3324,7 @@ class Game:
         active_color = self._active_color
 
         point, line = FILE_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -3006,12 +3332,12 @@ class Game:
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 return True
 
         point, line = RANK_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -3019,12 +3345,12 @@ class Game:
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 return True
 
         point, line = LRD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -3032,12 +3358,12 @@ class Game:
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 return True
 
         point, line = RLD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -3045,7 +3371,7 @@ class Game:
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 return True
 
@@ -3087,14 +3413,14 @@ class Game:
         white = tags.get(TAG_WHITE, DEFAULT_SORT_TAG_VALUE)
         black = tags.get(TAG_BLACK, DEFAULT_SORT_TAG_VALUE)
         return (
-            tags.get(TAG_DATE, DEFAULT_TAG_DATE_VALUE).replace('?', '0'),
+            tags.get(TAG_DATE, DEFAULT_TAG_DATE_VALUE).replace("?", "0"),
             event if event != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
             site if site != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
-            tags.get(TAG_ROUND, DEFAULT_TAG_VALUE).replace('?', ' '),
+            tags.get(TAG_ROUND, DEFAULT_TAG_VALUE).replace("?", " "),
             white if white != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
             black if black != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
             tags.get(TAG_RESULT, DEFAULT_SORT_TAG_RESULT_VALUE),
-            )
+        )
 
     def movetext_collation_value(self):
         """Return movetext converted to sort in collation order.
@@ -3114,7 +3440,7 @@ class Game:
             move_number = 1
             inactive_color = FEN_BLACK_ACTIVE
         if self._movetext_offset:
-            movetext = self._text[self._movetext_offset:]
+            movetext = self._text[self._movetext_offset :]
         else:
             movetext = self._text[:]
         return move_number, inactive_color, movetext
@@ -3195,26 +3521,32 @@ class Game:
             return False
         return False
 
-    def get_tags(self, name_value_separator=' '):
+    def get_tags(self, name_value_separator=" "):
         """Return list of PGN tags in an undefined order.
 
         The default name_value_separator gives PGN tags in export format.
 
         """
-        return [''.join(('[', k, name_value_separator, '"', v, '"]'))
-                for k, v in self._tags.items()]
+        return [
+            "".join(("[", k, name_value_separator, '"', v, '"]'))
+            for k, v in self._tags.items()
+        ]
 
     def get_tags_in_text_order(self):
         """Return list of tags in their order in game text in export format."""
         if self._movetext_offset is None:
             return []
-        return self._text[:self._movetext_offset]
+        return self._text[: self._movetext_offset]
 
     def get_non_seven_tag_roster_tags(self):
         """Return string of sorted tags not in Seven Tag Roster."""
-        return '\n'.join([''.join(('[', k, ' "', v, '"]'))
-                          for k, v in sorted(self._tags.items())
-                          if k not in SEVEN_TAG_ROSTER])
+        return "\n".join(
+            [
+                "".join(("[", k, ' "', v, '"]'))
+                for k, v in sorted(self._tags.items())
+                if k not in SEVEN_TAG_ROSTER
+            ]
+        )
 
     def get_seven_tag_roster_tags(self):
         """Return Seven Tag Roster string in order given in PGN specification.
@@ -3240,13 +3572,15 @@ class Game:
                 if len(val) == 1:
                     value = val[0]
                 else:
-                    value = [val.pop(0) + ',']
-                    value.extend([(n + '.' if len(n) == 1 else n) for n in val])
-                    value = ' '.join(value)
+                    value = [val.pop(0) + ","]
+                    value.extend(
+                        [(n + "." if len(n) == 1 else n) for n in val]
+                    )
+                    value = " ".join(value)
             else:
                 value = tags[tag]
-            str_tags.append(''.join(('[', tag, ' "', value, '"]')))
-        return '\n'.join(str_tags)
+            str_tags.append("".join(("[", tag, ' "', value, '"]')))
+        return "\n".join(str_tags)
 
     def _set_movetext_indicators(self):
         if TAG_FEN in self._tags:
@@ -3274,13 +3608,13 @@ class Game:
             movetext.append(PGN_LINE_SEPARATOR)
             movetext.append(token)
             return len(token)
-        #if token == ')':
+        # if token == ')':
         #    movetext.append(token)
         #    return len(token) + length
-        #if movetext[-1] == '(':
+        # if movetext[-1] == '(':
         #    movetext.append(token)
         #    return len(token) + length
-        #else:
+        # else:
         movetext.append(PGN_TOKEN_SEPARATOR)
         movetext.append(token)
         return len(token) + length + 1
@@ -3295,7 +3629,7 @@ class Game:
         """
         if self._movetext_offset is None:
             return []
-        return self._text[self._movetext_offset:]
+        return self._text[self._movetext_offset :]
 
     def get_all_movetext_in_pgn_export_format(self):
         """Return all movetext in pgn export format.
@@ -3306,7 +3640,7 @@ class Game:
 
         """
         fullmove_number, active_color = self._set_movetext_indicators()
-        movetext = ['\n']
+        movetext = ["\n"]
         if self._movetext_offset is None:
             return movetext
         length = 0
@@ -3314,14 +3648,14 @@ class Game:
         fnas = [[fullmove_number, active_color]]
         _attm = self._add_token_to_movetext
         termination = self._tags.get(TAG_RESULT, DEFAULT_TAG_RESULT_VALUE)
-        for mvt in self._text[self._movetext_offset:]:
-            if mvt.startswith('{'):
+        for mvt in self._text[self._movetext_offset :]:
+            if mvt.startswith("{"):
                 for word in mvt.split():
                     length = _attm(word, movetext, length)
                 insert_fullmove_number = True
-            elif mvt.startswith('$'):
+            elif mvt.startswith("$"):
                 length = _attm(mvt, movetext, length)
-            elif mvt.startswith(';'):
+            elif mvt.startswith(";"):
                 if len(mvt) + length >= PGN_MAXIMUM_LINE_LENGTH:
                     movetext.append(PGN_LINE_SEPARATOR)
                 else:
@@ -3329,7 +3663,7 @@ class Game:
                 movetext.append(mvt)
                 length = 0
                 insert_fullmove_number = True
-            elif mvt == '(':
+            elif mvt == "(":
                 length = _attm(mvt, movetext, length)
                 fnas[-1] = [fullmove_number, active_color]
                 active_color = OTHER_SIDE[active_color]
@@ -3337,7 +3671,7 @@ class Game:
                     fullmove_number -= 1
                 fnas.append([fullmove_number, active_color])
                 insert_fullmove_number = True
-            elif mvt == ')':
+            elif mvt == ")":
                 length = _attm(mvt, movetext, length)
                 del fnas[-1]
                 fullmove_number, active_color = fnas[-1]
@@ -3345,38 +3679,40 @@ class Game:
             elif mvt == termination:
                 length = _attm(mvt, movetext, length)
             elif active_color == FEN_WHITE_ACTIVE:
-                length = _attm(str(fullmove_number) + PGN_DOT,
-                               movetext,
-                               length)
+                length = _attm(
+                    str(fullmove_number) + PGN_DOT, movetext, length
+                )
                 srchm = suffix_annotations.search(mvt)
                 if srchm:
-                    mvt = mvt[:srchm.start()]
+                    mvt = mvt[: srchm.start()]
                 length = _attm(mvt, movetext, length)
                 if srchm:
                     length = _attm(
                         SUFFIX_ANNOTATION_TO_NAG[srchm.group()],
                         movetext,
-                        length)
+                        length,
+                    )
                 active_color = OTHER_SIDE[active_color]
                 insert_fullmove_number = False
             else:
                 if insert_fullmove_number:
-                    length = _attm(str(fullmove_number) + PGN_DOT * 3,
-                                   movetext,
-                                   length)
+                    length = _attm(
+                        str(fullmove_number) + PGN_DOT * 3, movetext, length
+                    )
                     insert_fullmove_number = False
                 srchm = suffix_annotations.search(mvt)
                 if srchm:
-                    mvt = mvt[:srchm.start()]
+                    mvt = mvt[: srchm.start()]
                 length = _attm(mvt, movetext, length)
                 if srchm:
                     length = _attm(
                         SUFFIX_ANNOTATION_TO_NAG[srchm.group()],
                         movetext,
-                        length)
+                        length,
+                    )
                 active_color = OTHER_SIDE[active_color]
                 fullmove_number += 1
-        return ''.join(movetext)
+        return "".join(movetext)
 
     def get_archive_movetext(self):
         """Return Reduced Export format PGN movetext.
@@ -3387,7 +3723,7 @@ class Game:
 
         """
         fullmove_number, active_color = self._set_movetext_indicators()
-        movetext = ['\n']
+        movetext = ["\n"]
         if self._movetext_offset is None:
             return movetext
         length = 0
@@ -3395,52 +3731,56 @@ class Game:
         rav_depth = 0
         _attm = self._add_token_to_movetext
         termination = self._tags.get(TAG_RESULT, DEFAULT_TAG_RESULT_VALUE)
-        for mvt in self._text[self._movetext_offset:]:
-            if (mvt.startswith('{') or
-                mvt.startswith('$') or
-                mvt.startswith(';')):
+        for mvt in self._text[self._movetext_offset :]:
+            if (
+                mvt.startswith("{")
+                or mvt.startswith("$")
+                or mvt.startswith(";")
+            ):
                 pass
-            elif mvt == '(':
+            elif mvt == "(":
                 rav_depth += 1
-            elif mvt == ')':
+            elif mvt == ")":
                 rav_depth -= 1
             elif rav_depth:
                 pass
             elif mvt == termination:
                 length = _attm(mvt, movetext, length)
             elif active_color == FEN_WHITE_ACTIVE:
-                length = _attm(str(fullmove_number) + PGN_DOT,
-                               movetext,
-                               length)
+                length = _attm(
+                    str(fullmove_number) + PGN_DOT, movetext, length
+                )
                 srchm = suffix_annotations.search(mvt)
                 if srchm:
-                    mvt = mvt[:srchm.start()]
+                    mvt = mvt[: srchm.start()]
                 length = _attm(mvt, movetext, length)
                 if srchm:
                     length = _attm(
                         SUFFIX_ANNOTATION_TO_NAG[srchm.group()],
                         movetext,
-                        length)
+                        length,
+                    )
                 active_color = OTHER_SIDE[active_color]
                 insert_fullmove_number = False
             else:
                 if insert_fullmove_number:
-                    length = _attm(str(fullmove_number) + PGN_DOT * 3,
-                                   movetext,
-                                   length)
+                    length = _attm(
+                        str(fullmove_number) + PGN_DOT * 3, movetext, length
+                    )
                     insert_fullmove_number = False
                 srchm = suffix_annotations.search(mvt)
                 if srchm:
-                    mvt = mvt[:srchm.start()]
+                    mvt = mvt[: srchm.start()]
                 length = _attm(mvt, movetext, length)
                 if srchm:
                     length = _attm(
                         SUFFIX_ANNOTATION_TO_NAG[srchm.group()],
                         movetext,
-                        length)
+                        length,
+                    )
                 active_color = OTHER_SIDE[active_color]
                 fullmove_number += 1
-        return ''.join(movetext)
+        return "".join(movetext)
 
     def get_movetext_without_comments_in_pgn_export_format(self):
         """Return movetext without comments in pgn export format.
@@ -3451,7 +3791,7 @@ class Game:
 
         """
         fullmove_number, active_color = self._set_movetext_indicators()
-        movetext = ['\n']
+        movetext = ["\n"]
         if self._movetext_offset is None:
             return movetext
         length = 0
@@ -3459,12 +3799,14 @@ class Game:
         fnas = [[fullmove_number, active_color]]
         _attm = self._add_token_to_movetext
         termination = self._tags.get(TAG_RESULT, DEFAULT_TAG_RESULT_VALUE)
-        for mvt in self._text[self._movetext_offset:]:
-            if (mvt.startswith('{') or
-                mvt.startswith('$') or
-                mvt.startswith(';')):
+        for mvt in self._text[self._movetext_offset :]:
+            if (
+                mvt.startswith("{")
+                or mvt.startswith("$")
+                or mvt.startswith(";")
+            ):
                 pass
-            elif mvt == '(':
+            elif mvt == "(":
                 length = _attm(mvt, movetext, length)
                 fnas[-1] = [fullmove_number, active_color]
                 active_color = OTHER_SIDE[active_color]
@@ -3472,7 +3814,7 @@ class Game:
                     fullmove_number -= 1
                 fnas.append([fullmove_number, active_color])
                 insert_fullmove_number = True
-            elif mvt == ')':
+            elif mvt == ")":
                 length = _attm(mvt, movetext, length)
                 del fnas[-1]
                 fullmove_number, active_color = fnas[-1]
@@ -3480,38 +3822,40 @@ class Game:
             elif mvt == termination:
                 length = _attm(mvt, movetext, length)
             elif active_color == FEN_WHITE_ACTIVE:
-                length = _attm(str(fullmove_number) + PGN_DOT,
-                               movetext,
-                               length)
+                length = _attm(
+                    str(fullmove_number) + PGN_DOT, movetext, length
+                )
                 srchm = suffix_annotations.search(mvt)
                 if srchm:
-                    mvt = mvt[:srchm.start()]
+                    mvt = mvt[: srchm.start()]
                 length = _attm(mvt, movetext, length)
                 if srchm:
                     length = _attm(
                         SUFFIX_ANNOTATION_TO_NAG[srchm.group()],
                         movetext,
-                        length)
+                        length,
+                    )
                 active_color = OTHER_SIDE[active_color]
                 insert_fullmove_number = False
             else:
                 if insert_fullmove_number:
-                    length = _attm(str(fullmove_number) + PGN_DOT * 3,
-                                   movetext,
-                                   length)
+                    length = _attm(
+                        str(fullmove_number) + PGN_DOT * 3, movetext, length
+                    )
                     insert_fullmove_number = False
                 srchm = suffix_annotations.search(mvt)
                 if srchm:
-                    mvt = mvt[:srchm.start()]
+                    mvt = mvt[: srchm.start()]
                 length = _attm(mvt, movetext, length)
                 if srchm:
                     length = _attm(
                         SUFFIX_ANNOTATION_TO_NAG[srchm.group()],
                         movetext,
-                        length)
+                        length,
+                    )
                 active_color = OTHER_SIDE[active_color]
                 fullmove_number += 1
-        return ''.join(movetext)
+        return "".join(movetext)
 
     def get_export_pgn_elements(self):
         """Return Export format PGN version of game.
@@ -3524,9 +3868,11 @@ class Game:
         indicators are not included in the text otherwise.
 
         """
-        return (self.get_seven_tag_roster_tags(),
-                self.get_all_movetext_in_pgn_export_format(),
-                self.get_non_seven_tag_roster_tags())
+        return (
+            self.get_seven_tag_roster_tags(),
+            self.get_all_movetext_in_pgn_export_format(),
+            self.get_non_seven_tag_roster_tags(),
+        )
 
     def get_archive_pgn_elements(self):
         """Return Archive format PGN version of game. (Reduced Export Format).
@@ -3552,13 +3898,15 @@ class Game:
         indicators are not included in the text otherwise.
 
         """
-        return (self.get_seven_tag_roster_tags(),
-                self.get_movetext_without_comments_in_pgn_export_format(),
-                self.get_non_seven_tag_roster_tags())
+        return (
+            self.get_seven_tag_roster_tags(),
+            self.get_movetext_without_comments_in_pgn_export_format(),
+            self.get_non_seven_tag_roster_tags(),
+        )
 
     def get_text_of_game(self):
         """Return current text version of game."""
-        return ''.join(self._text)
+        return "".join(self._text)
 
     def append_check_indicator(self):
         """Do nothing.
@@ -3637,7 +3985,8 @@ class GameTextPGN(Game):
                 self._bishop_or_bpawn = None
                 return
             pgn_match = import_format.match(
-                ''.join((match.group().split(LAN_MOVE_SEPARATOR))))
+                "".join((match.group().split(LAN_MOVE_SEPARATOR)))
+            )
             if not pgn_match:
                 self.append_token_and_set_error(match)
                 self._bishop_or_bpawn = None
@@ -3664,7 +4013,8 @@ class GameTextPGN(Game):
         """
         if self._bishop_or_bpawn:
             bishop = text_format.match(
-                self._bishop_or_bpawn.group()+match.group())
+                self._bishop_or_bpawn.group() + match.group()
+            )
             if bishop:
                 super().append_piece_move(bishop)
                 self._bishop_or_bpawn = None
@@ -3684,9 +4034,9 @@ class GameTextPGN(Game):
             self._movetext_offset = len(self._text)
 
         if PGN_CAPTURE_MOVE in mgl:
-            pgn_match = text_format.match(mgl[0]+mgl[-3:])
+            pgn_match = text_format.match(mgl[0] + mgl[-3:])
         elif LAN_MOVE_SEPARATOR in mgl:
-            for source_rank, destination_rank, ep_rank in ('243', '756'):
+            for source_rank, destination_rank, ep_rank in ("243", "756"):
                 if mgl[1] == source_rank and mgl[4] == destination_rank:
                     if mgl[0] != mgl[3]:
                         self.append_token_and_set_error(match)
@@ -3720,9 +4070,9 @@ class GameTextPGN(Game):
         mgl = match.group()
         if PGN_CAPTURE_MOVE in mgl:
             if PGN_PROMOTION in mgl:
-                promotion_match = import_format.match(mgl[0]+mgl[-5:])
+                promotion_match = import_format.match(mgl[0] + mgl[-5:])
             else:
-                promotion_match = import_format.match(mgl[0]+mgl[-4:])
+                promotion_match = import_format.match(mgl[0] + mgl[-4:])
         elif LAN_MOVE_SEPARATOR in mgl:
             if PGN_PROMOTION in mgl:
                 promotion_match = import_format.match(mgl[-4:])
@@ -3913,24 +4263,30 @@ class GameIgnoreCasePGN(GameTextPGN):
         if self._full_disambiguation_detected:
             del self._full_disambiguation_detected
             mgl = match.group().lower()
-            if text_format.match(LAN_MOVE_SEPARATOR.join((
-                self._text[-1], mgl)).strip()):
+            if text_format.match(
+                LAN_MOVE_SEPARATOR.join((self._text[-1], mgl)).strip()
+            ):
                 if PGN_PROMOTION not in mgl:
                     pgn_match = import_format.match(
-                        self._text[-1].strip()+mgl)
+                        self._text[-1].strip() + mgl
+                    )
                     if pgn_match and pgn_match.lastindex == IFG_PAWN_TO_RANK:
                         self._undo_append_token_and_set_error()
                         super(GameTextPGN, self).append_pawn_move(pgn_match)
                         return
                 else:
                     mgls = mgl.split(PGN_PROMOTION, 1)
-                    pgn_match = import_format.match(PGN_PROMOTION.join((
-                        mgls[0], mgls[1].upper())))
-                    if (pgn_match and
-                        pgn_match.lastindex == IFG_PAWN_PROMOTE_PIECE):
+                    pgn_match = import_format.match(
+                        PGN_PROMOTION.join((mgls[0], mgls[1].upper()))
+                    )
+                    if (
+                        pgn_match
+                        and pgn_match.lastindex == IFG_PAWN_PROMOTE_PIECE
+                    ):
                         self._undo_append_token_and_set_error()
-                        super(GameTextPGN, self
-                              ).append_pawn_promote_move(pgn_match)
+                        super(GameTextPGN, self).append_pawn_promote_move(
+                            pgn_match
+                        )
                         return
         super(GameTextPGN, self).append_token_after_error(match)
 
@@ -3957,9 +4313,11 @@ class GameIgnoreCasePGN(GameTextPGN):
             return
         mgt = match.group()
         mgt = mgt[0] + mgt[1:].lower()
-        if (pgn_match.lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE and
-            mgt.startswith('bx')):
-            bishop = import_format.match(mgt[0].upper()+mgt[1:])
+        if (
+            pgn_match.lastindex == IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE
+            and mgt.startswith("bx")
+        ):
+            bishop = import_format.match(mgt[0].upper() + mgt[1:])
             if bishop and bishop.lastindex == IFG_PIECE_DESTINATION:
                 super(GameTextPGN, self).append_piece_move(bishop)
                 return
@@ -3993,13 +4351,22 @@ class GameIgnoreCasePGN(GameTextPGN):
         group = match.group
         pml = group().lower()
         piece_match = text_format.match(
-            pml[0].upper() + pml[1:] + match.string[match.end():match.end()+10])
-        if (pml[0] in 'kqrn' or
-            group(IFG_PIECE_DESTINATION)[0].lower() in 'defgh' or
-            (PGN_CAPTURE_MOVE in pml and
-             group(IFG_PIECE_DESTINATION)[0].lower() == 'b') or
-            (PGN_CAPTURE_MOVE not in pml and
-             group(IFG_PIECE_DESTINATION)[0].lower() in 'ac')):
+            pml[0].upper()
+            + pml[1:]
+            + match.string[match.end() : match.end() + 10]
+        )
+        if (
+            pml[0] in "kqrn"
+            or group(IFG_PIECE_DESTINATION)[0].lower() in "defgh"
+            or (
+                PGN_CAPTURE_MOVE in pml
+                and group(IFG_PIECE_DESTINATION)[0].lower() == "b"
+            )
+            or (
+                PGN_CAPTURE_MOVE not in pml
+                and group(IFG_PIECE_DESTINATION)[0].lower() in "ac"
+            )
+        ):
             if piece_match.group(IFG_PIECE_MOVE) is None:
                 self.append_token_and_set_error(match)
                 return
@@ -4009,7 +4376,7 @@ class GameIgnoreCasePGN(GameTextPGN):
         pawn_match = text_format.match(pml)
         if pawn_match and pawn_match.lastindex != IFG_PAWN_TO_RANK:
             pawn_match = None
-        if group(IFG_PIECE_DESTINATION)[1] in '18':
+        if group(IFG_PIECE_DESTINATION)[1] in "18":
             peek_start = match.span(match.lastindex)[-1]
             if peek_start == len(match.string):
                 pawn_promotion_match = None
@@ -4017,16 +4384,23 @@ class GameIgnoreCasePGN(GameTextPGN):
                 pawn_promotion_match = None
             else:
                 pawn_promotion_match = text_promotion_format.match(
-                    pml + match.string[peek_start:peek_start+6].lower())
+                    pml + match.string[peek_start : peek_start + 6].lower()
+                )
                 if pawn_promotion_match:
                     pawn_promotion_match = text_format.match(
-                        ''.join((pawn_promotion_match.group(TP_MOVE),
-                                 pawn_promotion_match.group(
-                                     TP_PROMOTE_TO_PIECE).upper(),
-                                 )))
-                    if (pawn_promotion_match and
-                        (pawn_promotion_match.lastindex !=
-                         IFG_PAWN_PROMOTE_PIECE)):
+                        "".join(
+                            (
+                                pawn_promotion_match.group(TP_MOVE),
+                                pawn_promotion_match.group(
+                                    TP_PROMOTE_TO_PIECE
+                                ).upper(),
+                            )
+                        )
+                    )
+                    if pawn_promotion_match and (
+                        pawn_promotion_match.lastindex
+                        != IFG_PAWN_PROMOTE_PIECE
+                    ):
                         pawn_promotion_match = None
         else:
             pawn_promotion_match = None
@@ -4041,7 +4415,8 @@ class GameIgnoreCasePGN(GameTextPGN):
             self._castling_availability,
             self._en_passant_target_square,
             self._halfmove_clock,
-            self._fullmove_number)
+            self._fullmove_number,
+        )
         setup = import_format.match('[SetUp"1"]')
         fen = import_format.match(fen.join(('[FEN"', '"]')))
         bishop_move = GameTextPGN()
@@ -4067,27 +4442,29 @@ class GameIgnoreCasePGN(GameTextPGN):
                 super(GameTextPGN, self).append_piece_move(piece_match)
                 self._bishop_or_bpawn = None
                 return
-            #else:
+            # else:
 
-                # All tests passed with this commented code.
-                # However I am not convinced it is safe to collapse the
-                # conditionals under 'if bishop_move.state is None:' yet,
-                # nor that the original code below is sound in the new
-                # more limited scope.
-                #super(GameTextPGN, self).append_piece_move(piece_match)
-                #self._bishop_or_bpawn = None
-                #return
+            # All tests passed with this commented code.
+            # However I am not convinced it is safe to collapse the
+            # conditionals under 'if bishop_move.state is None:' yet,
+            # nor that the original code below is sound in the new
+            # more limited scope.
+            # super(GameTextPGN, self).append_piece_move(piece_match)
+            # self._bishop_or_bpawn = None
+            # return
 
-                #pass
+            # pass
         else:
-            if (pawn_match and
-                pawn_match.lastindex == IFG_PAWN_TO_RANK):
+            if pawn_match and pawn_match.lastindex == IFG_PAWN_TO_RANK:
                 super(GameTextPGN, self).append_pawn_move(pawn_match)
                 self._bishop_or_bpawn = None
-            elif (pawn_promotion_match and
-                pawn_promotion_match.lastindex == IFG_PAWN_PROMOTE_PIECE):
-                super(GameTextPGN, self
-                      ).append_pawn_promote_move(pawn_promotion_match)
+            elif (
+                pawn_promotion_match
+                and pawn_promotion_match.lastindex == IFG_PAWN_PROMOTE_PIECE
+            ):
+                super(GameTextPGN, self).append_pawn_promote_move(
+                    pawn_promotion_match
+                )
                 self._bishop_or_bpawn = None
             else:
                 self.append_token_and_set_error(match)
@@ -4106,7 +4483,7 @@ class GameIgnoreCasePGN(GameTextPGN):
             super(GameTextPGN, self).append_piece_move(piece_match)
             self._bishop_or_bpawn = None
             return
-        if match.group(IFG_PIECE_DESTINATION)[1] in '18':
+        if match.group(IFG_PIECE_DESTINATION)[1] in "18":
             peek_start = match.span(match.lastindex)[-1]
             if peek_start == len(match.string):
                 self.append_token_and_set_error(match)
@@ -4114,19 +4491,25 @@ class GameIgnoreCasePGN(GameTextPGN):
                 self.append_token_and_set_error(match)
             else:
                 promotion_match = text_promotion_format.match(
-                    pml + match.string[peek_start:peek_start+6].lower())
+                    pml + match.string[peek_start : peek_start + 6].lower()
+                )
                 if promotion_match is None:
                     self.append_token_and_set_error(match)
                     return
                 promotion_match = text_format.match(
-                    ''.join((promotion_match.group(TP_MOVE),
-                             promotion_match.group(TP_PROMOTE_TO_PIECE).upper(),
-                             )))
+                    "".join(
+                        (
+                            promotion_match.group(TP_MOVE),
+                            promotion_match.group(TP_PROMOTE_TO_PIECE).upper(),
+                        )
+                    )
+                )
                 if promotion_match is None:
                     self.append_token_and_set_error(match)
                     return
-                super(GameTextPGN, self
-                      ).append_pawn_promote_move(promotion_match)
+                super(GameTextPGN, self).append_pawn_promote_move(
+                    promotion_match
+                )
                 self._promotion_disambiguation_detected = True
                 self._bishop_or_bpawn = None
             return
@@ -4136,7 +4519,6 @@ class GameIgnoreCasePGN(GameTextPGN):
             return
         super(GameTextPGN, self).append_pawn_move(piece_match)
         self._bishop_or_bpawn = None
-
 
     def is_move_interpreted_as_piece_move(self, match):
         """Return True if move is not a pawn move, and None otherwise.
@@ -4155,7 +4537,7 @@ class GameIgnoreCasePGN(GameTextPGN):
         file = square[0]
         if file == piece:
             return True
-        if file not in FILE_NAMES[i-1:i+2]:
+        if file not in FILE_NAMES[i - 1 : i + 2]:
             return True
         if not group(IFG_PIECE_CAPTURE):
             return True
@@ -4182,8 +4564,10 @@ class GameIgnoreCasePGN(GameTextPGN):
         for pgn_np in PGN_NAMED_PIECES:
             if group(IFG_PIECE_MOVE) == pgn_np:
                 for pobsq in self._pieces_on_board[
-                    pgn_np.lower() if self._active_color == FEN_BLACK_ACTIVE
-                    else pgn_np]:
+                    pgn_np.lower()
+                    if self._active_color == FEN_BLACK_ACTIVE
+                    else pgn_np
+                ]:
                     if POINT_TO_POINT.get(pobsq.square.name, square):
                         return True
         return None
@@ -4195,7 +4579,8 @@ class GameIgnoreCasePGN(GameTextPGN):
         assert self._state is None
         if self._bishop_or_bpawn:
             bishop = text_format.match(
-                self._bishop_or_bpawn.group().upper()+match.group().lower())
+                self._bishop_or_bpawn.group().upper() + match.group().lower()
+            )
             if bishop:
                 super(GameTextPGN, self).append_piece_move(bishop)
                 self._bishop_or_bpawn = None
@@ -4219,12 +4604,12 @@ class GameIgnoreCasePGN(GameTextPGN):
             if mgl.startswith(FEN_BLACK_BISHOP):
                 self._append_bishop_or_bpawn_capture(match)
                 return
-            pgn_match = text_format.match(mgl[0]+mgl[-3:])
+            pgn_match = text_format.match(mgl[0] + mgl[-3:])
         elif LAN_MOVE_SEPARATOR in mgl:
             if mgl.startswith(FEN_BLACK_BISHOP):
                 self._append_bishop_or_bpawn_move(match)
                 return
-            for source_rank, destination_rank, ep_rank in ('243', '756'):
+            for source_rank, destination_rank, ep_rank in ("243", "756"):
                 if mgl[1] == source_rank and mgl[4] == destination_rank:
                     if mgl[0] != mgl[3]:
                         self.append_token_and_set_error(match)
@@ -4253,8 +4638,12 @@ class GameIgnoreCasePGN(GameTextPGN):
                         if piece.name == FEN_BLACK_PAWN:
                             self._full_disambiguation_detected = True
                 self._bishop_or_bpawn = possible_bishop_or_bpawn.match(
-                    match.group())
-                if self._full_disambiguation_detected and self._bishop_or_bpawn:
+                    match.group()
+                )
+                if (
+                    self._full_disambiguation_detected
+                    and self._bishop_or_bpawn
+                ):
                     del self._full_disambiguation_detected
             else:
                 self._bishop_or_bpawn = None
@@ -4290,9 +4679,13 @@ class GameIgnoreCasePGN(GameTextPGN):
 
         if PGN_CAPTURE_MOVE in mgl:
             if PGN_PROMOTION in mgl:
-                promotion_match = text_promotion_format.match(mgl[0]+mgl[-5:])
+                promotion_match = text_promotion_format.match(
+                    mgl[0] + mgl[-5:]
+                )
             else:
-                promotion_match = text_promotion_format.match(mgl[0]+mgl[-4:])
+                promotion_match = text_promotion_format.match(
+                    mgl[0] + mgl[-4:]
+                )
         elif LAN_MOVE_SEPARATOR in mgl:
             if PGN_PROMOTION in mgl:
                 promotion_match = text_promotion_format.match(mgl[-4:])
@@ -4305,7 +4698,7 @@ class GameIgnoreCasePGN(GameTextPGN):
             self._bishop_or_bpawn = None
             return
         pmg = promotion_match.group()
-        promotion_match = import_format.match(pmg[:-1]+pmg[-1].upper())
+        promotion_match = import_format.match(pmg[:-1] + pmg[-1].upper())
         if promotion_match is None:
             self.append_token_and_set_error(match)
             self._bishop_or_bpawn = None
@@ -4317,24 +4710,35 @@ class GameIgnoreCasePGN(GameTextPGN):
         """Return True if match is resolved to a bishop or b-pawn move."""
         mgt = match.group().lower()
         promotion_match = text_format.match(
-            LAN_MOVE_SEPARATOR.join((self._bishop_or_bpawn.group().lower(),
-                                     mgt[:-1]+mgt[-1].upper())))
+            LAN_MOVE_SEPARATOR.join(
+                (
+                    self._bishop_or_bpawn.group().lower(),
+                    mgt[:-1] + mgt[-1].upper(),
+                )
+            )
+        )
         promotion_lastindex = (
-            promotion_match and
-            promotion_match.lastindex  == IFG_PAWN_PROMOTE_PIECE)
-        if not (mgt.startswith(LAN_MOVE_SEPARATOR) or
-                mgt.startswith(PGN_CAPTURE_MOVE)):
+            promotion_match
+            and promotion_match.lastindex == IFG_PAWN_PROMOTE_PIECE
+        )
+        if not (
+            mgt.startswith(LAN_MOVE_SEPARATOR)
+            or mgt.startswith(PGN_CAPTURE_MOVE)
+        ):
             mgt = LAN_MOVE_SEPARATOR + mgt
-        bishop_match = text_format.match(''.join((
-            self._bishop_or_bpawn.group().upper(), mgt)))
-        pawn_match = text_format.match(''.join((
-            self._bishop_or_bpawn.group().lower(), mgt)))
+        bishop_match = text_format.match(
+            "".join((self._bishop_or_bpawn.group().upper(), mgt))
+        )
+        pawn_match = text_format.match(
+            "".join((self._bishop_or_bpawn.group().lower(), mgt))
+        )
         bishop_lastindex = (
-            bishop_match and bishop_match.lastindex  == IFG_PIECE_DESTINATION)
-        pawn_lastindex = (
-            pawn_match and
-            (pawn_match.lastindex  == IFG_PAWN_TO_RANK or
-             pawn_match.lastindex  == IFG_PAWN_PROMOTE_PIECE))
+            bishop_match and bishop_match.lastindex == IFG_PIECE_DESTINATION
+        )
+        pawn_lastindex = pawn_match and (
+            pawn_match.lastindex == IFG_PAWN_TO_RANK
+            or pawn_match.lastindex == IFG_PAWN_PROMOTE_PIECE
+        )
 
         # Try the available matches.
         if promotion_lastindex:
@@ -4348,7 +4752,8 @@ class GameIgnoreCasePGN(GameTextPGN):
                 self._castling_availability,
                 self._en_passant_target_square,
                 self._halfmove_clock,
-                self._fullmove_number)
+                self._fullmove_number,
+            )
             setup = import_format.match('[SetUp"1"]')
             fen = import_format.match(fen.join(('[FEN"', '"]')))
             bishop_move = GameTextPGN()
@@ -4403,7 +4808,7 @@ class GameIgnoreCasePGN(GameTextPGN):
         if different_file:
             self.append_token_and_set_error(match)
             return
-        for source_rank, destination_rank, ep_rank in ('243', '756'):
+        for source_rank, destination_rank, ep_rank in ("243", "756"):
             if mgl[1] == source_rank and mgl[4] == destination_rank:
                 if mgl[0] + ep_rank in self._piece_placement_data:
                     self.append_token_and_set_error(match)
@@ -4423,16 +4828,16 @@ class GameIgnoreCasePGN(GameTextPGN):
             self._castling_availability,
             self._en_passant_target_square,
             self._halfmove_clock,
-            self._fullmove_number)
+            self._fullmove_number,
+        )
         mgt = match.group().lower()
-        bishop_match = text_format.match(''.join((
-            mgt[0].upper(), mgt[1:])))
+        bishop_match = text_format.match("".join((mgt[0].upper(), mgt[1:])))
         if PGN_PROMOTION in mgt:
-            pawn_match = text_format.match(''.join((
-                mgt[0].lower(), mgt[1:-1], mgt[-1].upper())))
+            pawn_match = text_format.match(
+                "".join((mgt[0].lower(), mgt[1:-1], mgt[-1].upper()))
+            )
         else:
-            pawn_match = text_format.match(''.join((
-                mgt[0].lower(), mgt[1:])))
+            pawn_match = text_format.match("".join((mgt[0].lower(), mgt[1:])))
         setup = import_format.match('[SetUp"1"]')
         fen = import_format.match(fen.join(('[FEN"', '"]')))
         bishop_move = GameTextPGN()
@@ -4471,16 +4876,18 @@ class GameIgnoreCasePGN(GameTextPGN):
             self._castling_availability,
             self._en_passant_target_square,
             self._halfmove_clock,
-            self._fullmove_number)
+            self._fullmove_number,
+        )
         mgt = match.group().lower()
-        bishop_match = text_format.match(''.join((
-            mgt[0].upper(), mgt[1:].replace(LAN_MOVE_SEPARATOR, ''))))
+        bishop_match = text_format.match(
+            "".join((mgt[0].upper(), mgt[1:].replace(LAN_MOVE_SEPARATOR, "")))
+        )
         if PGN_PROMOTION in mgt:
-            pawn_match = text_format.match(''.join((
-                mgt[0].lower(), mgt[1:-1], mgt[-1].upper())))
+            pawn_match = text_format.match(
+                "".join((mgt[0].lower(), mgt[1:-1], mgt[-1].upper()))
+            )
         else:
-            pawn_match = text_format.match(''.join((
-                mgt[0].lower(), mgt[1:])))
+            pawn_match = text_format.match("".join((mgt[0].lower(), mgt[1:])))
         setup = import_format.match('[SetUp"1"]')
         fen = import_format.match(fen.join(('[FEN"', '"]')))
         bishop_move = GameTextPGN()
@@ -4539,9 +4946,11 @@ class GameIndicateCheck(Game):
 
         """
         if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[
-                SIDE_TO_MOVE_KING[self._active_color]][0].square.name):
-            self._text[-1] += '#' if self.is_position_checkmate() else '+'
+            self._pieces_on_board[SIDE_TO_MOVE_KING[self._active_color]][
+                0
+            ].square.name
+        ):
+            self._text[-1] += "#" if self.is_position_checkmate() else "+"
 
     def is_position_checkmate(self):
         """Return True if the side to move is checkmated."""
@@ -4560,18 +4969,23 @@ class GameIndicateCheck(Game):
             if sqr not in piece_placement_data:
                 if not self.is_square_attacked_by_other_side(sqr):
                     self._piece_placement_data[
-                        king_square] = piece_placement_data[king_square]
+                        king_square
+                    ] = piece_placement_data[king_square]
                     return False
-            elif PIECE_TO_KING[piece_placement_data[sqr].name
-                               ] != side_to_move_king:
+            elif (
+                PIECE_TO_KING[piece_placement_data[sqr].name]
+                != side_to_move_king
+            ):
                 if not self.is_square_attacked_by_other_side(sqr):
                     self._piece_placement_data[
-                        king_square] = piece_placement_data[king_square]
+                        king_square
+                    ] = piece_placement_data[king_square]
                     return False
 
         # Put king back.
-        self._piece_placement_data[
-            king_square] = piece_placement_data[king_square]
+        self._piece_placement_data[king_square] = piece_placement_data[
+            king_square
+        ]
 
         # Can side to move block the check?
         attack_lines = self.get_attacks_on_square_by_other_side(king_square)
@@ -4580,18 +4994,19 @@ class GameIndicateCheck(Game):
         if len(attack_lines) == 0:
             return False
         if self.legal_move_to_square_exists(
-            attack_lines[0], PGN_CAPTURE_MOVE, king_square):
+            attack_lines[0], PGN_CAPTURE_MOVE, king_square
+        ):
             return False
         ptp = POINT_TO_POINT.get((attack_lines[0], king_square))
         if ptp is not None:
-            for sqr in ptp[2][ptp[0]:ptp[1]]:
-                if self.legal_move_to_square_exists(sqr, '', king_square):
+            for sqr in ptp[2][ptp[0] : ptp[1]]:
+                if self.legal_move_to_square_exists(sqr, "", king_square):
                     return False
             return True
         ptp = KNIGHT_MOVES.get(attack_lines[0])
         if ptp is not None:
             for sqr in ptp:
-                if self.legal_move_to_square_exists(sqr, '', king_square):
+                if self.legal_move_to_square_exists(sqr, "", king_square):
                     return False
             return True
         return False
@@ -4611,7 +5026,7 @@ class GameIndicateCheck(Game):
         attacking_squares = []
 
         point, line = FILE_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -4619,7 +5034,7 @@ class GameIndicateCheck(Game):
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 attacking_squares.append(sqr)
                 if len(attacking_squares) > 1:
@@ -4627,7 +5042,7 @@ class GameIndicateCheck(Game):
                 break
 
         point, line = RANK_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -4635,7 +5050,7 @@ class GameIndicateCheck(Game):
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 attacking_squares.append(sqr)
                 if len(attacking_squares) > 1:
@@ -4643,7 +5058,7 @@ class GameIndicateCheck(Game):
                 break
 
         point, line = LRD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -4651,7 +5066,7 @@ class GameIndicateCheck(Game):
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 attacking_squares.append(sqr)
                 if len(attacking_squares) > 1:
@@ -4659,7 +5074,7 @@ class GameIndicateCheck(Game):
                 break
 
         point, line = RLD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point+1:]:
+        for square_list in reversed(line[:point]), line[point + 1 :]:
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -4667,7 +5082,7 @@ class GameIndicateCheck(Game):
                 if piece.color == active_color:
                     break
                 sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ''):
+                if sources is None or sqr not in sources.get(square, ""):
                     break
                 attacking_squares.append(sqr)
                 if len(attacking_squares) > 1:
@@ -4743,7 +5158,7 @@ class GameIndicateCheck(Game):
                         return True
                     continue
                 ptp = POINT_TO_POINT[from_square, square]
-                for line_sq in ptp[2][ptp[0]:ptp[1]]:
+                for line_sq in ptp[2][ptp[0] : ptp[1]]:
                     if line_sq in ppd:
                         break
                 else:
@@ -4758,8 +5173,9 @@ class GameIndicateCheck(Game):
                     if not check:
                         return True
         if capture and self._en_passant_target_square != FEN_NULL:
-            for k, value in EN_PASSANT_TARGET_SQUARES[self._active_color
-                                                      ].items():
+            for k, value in EN_PASSANT_TARGET_SQUARES[
+                self._active_color
+            ].items():
                 if value != self._en_passant_target_square:
                     continue
                 if k[0] != square:
@@ -4768,8 +5184,9 @@ class GameIndicateCheck(Game):
                     pawn = FEN_WHITE_PAWN
                 else:
                     pawn = FEN_BLACK_PAWN
-                for from_square in FEN_SOURCE_SQUARES[
-                    pawn][self._en_passant_target_square]:
+                for from_square in FEN_SOURCE_SQUARES[pawn][
+                    self._en_passant_target_square
+                ]:
                     piece = ppd.get(from_square)
                     if piece is None:
                         continue
@@ -4788,12 +5205,14 @@ class GameIndicateCheck(Game):
         return False
 
 
-def generate_fen_for_position(pieces,
-                              active_color,
-                              castling_availability,
-                              en_passant_target_square,
-                              halfmove_clock,
-                              fullmove_number):
+def generate_fen_for_position(
+    pieces,
+    active_color,
+    castling_availability,
+    en_passant_target_square,
+    halfmove_clock,
+    fullmove_number,
+):
     """Return Forsyth English Notation (FEN) string for Game position."""
     rank = 0
     file = -1
@@ -4804,13 +5223,13 @@ def generate_fen_for_position(pieces,
         if piece_rank != rank:
             if file != 7:
                 chars.append(str(7 - file))
-            chars.append('/')
+            chars.append("/")
             while True:
                 rank += 1
                 if piece_rank == rank:
                     file = -1
                     break
-                chars.append('8/')
+                chars.append("8/")
             else:
                 continue
         if piece_file != file:
@@ -4825,12 +5244,16 @@ def generate_fen_for_position(pieces,
     while True:
         if rank == 7:
             break
-        chars.append('/8')
+        chars.append("/8")
         rank += 1
-    fen = ' '.join((''.join(chars),
-                    active_color,
-                    castling_availability,
-                    en_passant_target_square,
-                    str(halfmove_clock),
-                    str(fullmove_number)))
+    fen = " ".join(
+        (
+            "".join(chars),
+            active_color,
+            castling_availability,
+            en_passant_target_square,
+            str(halfmove_clock),
+            str(fullmove_number),
+        )
+    )
     return fen
