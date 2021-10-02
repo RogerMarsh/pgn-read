@@ -28,27 +28,13 @@ The generate_fen_for_position function returns the Forsyth English Notation (FEN
 Installation Instructions
 =========================
 
-Install the package by typing
+This package is available on PyPI so can be installed by typing
 
-   python setup.py install
+   python -m pip install --user pgn-read
 
-at the command prompt with setup.py in the current directory.
+at the command prompt.
 
-You may need to give the path and version of Python depending on your system's configuration:
-
-   <path to python>/python<version> setup.py install
-
-   For example
-
-      C:\\Python33\\python setup.py install
-
-         on Microsoft Windows or
-
-      python3.3 setup.py install
-
-         on Unix-like systems.
-
-Use `Python`_ 3.3 or later.
+See `Python`_ and `pip`_ documentation for alternatives and platform-specific points.
 
 
 Tests
@@ -74,5 +60,6 @@ The pgn_read.core.tests sub-package was removed from the distribution created by
 
 
 .. _Python: https://python.org
+.. _pip: https://packaging.python.org/installing
 .. _PGN: https://www.chessclub.com/help/PGN-spec
 .. _repository: https://github.com/RogerMarsh/pgn-read
