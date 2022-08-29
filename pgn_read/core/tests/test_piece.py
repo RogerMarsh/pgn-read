@@ -16,7 +16,7 @@ class Piece(unittest.TestCase):
             TypeError,
             "".join(
                 (
-                    "__init__\(\) missing 1 required positional argument: ",
+                    r"__init__\(\) missing 1 required positional argument: ",
                     "'name'",
                 )
             ),
@@ -28,7 +28,7 @@ class Piece(unittest.TestCase):
             TypeError,
             "".join(
                 (
-                    "set_square\(\) missing 1 required positional argument: ",
+                    r"set_square\(\) missing 1 required positional argument: ",
                     "'name'",
                 )
             ),

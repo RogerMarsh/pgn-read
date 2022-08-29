@@ -1483,7 +1483,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/1PBP4/8/7B/7b/8/1pbp4/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/1PBP4/8/7B/7b/8/',
+                                            "1pbp4/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -1530,7 +1535,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/1BB5/8/7B/7b/8/1bb5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/1BB5/8/7B/7b/8/',
+                                            "1bb5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -1577,7 +1587,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/',
+                                            "2b4B/2b5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -1624,7 +1639,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/',
+                                            "2b4B/2b5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -1671,7 +1691,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/',
+                                            "2b5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -1718,7 +1743,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                                    "".join(
+                                        (
+                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
+                                            "2b3B1/R1N1N2K/8 ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -1765,7 +1795,12 @@ class StrictPGN(_BasePGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                                    "".join(
+                                        (
+                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
+                                            "2b3B1/R1N1N2K/8 ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -3762,7 +3797,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/7Q/PPPPPPPP/RNBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/',
+                            "7Q/PPPPPPPP/RNBQKBNR",
+                        )
+                    ),
                     ' w - - 0 1"]Nf3*',
                 )
             )
@@ -3775,7 +3815,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBRN',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/RNBQKBRN",
+                        )
+                    ),
                     ' w K - 0 1"]Nc3*',
                 )
             )
@@ -3788,7 +3833,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBRN',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/RNBQKBRN",
+                        )
+                    ),
                     ' w Qkq - 0 1"]Nc3*',
                 )
             )
@@ -3801,7 +3851,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/NRBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/NRBQKBNR",
+                        )
+                    ),
                     ' w Q - 0 1"]Nf3*',
                 )
             )
@@ -3814,7 +3869,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/NRBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbnr/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/NRBQKBNR",
+                        )
+                    ),
                     ' w Kkq - 0 1"]Nf3*',
                 )
             )
@@ -3827,7 +3887,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbrn/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbrn/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/RNBQKBNR",
+                        )
+                    ),
                     ' w k - 0 1"]Nc3*',
                 )
             )
@@ -3840,7 +3905,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"rnbqkbrn/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"rnbqkbrn/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/RNBQKBNR",
+                        )
+                    ),
                     ' w KQq - 0 1"]Nc3*',
                 )
             )
@@ -3853,7 +3923,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"nrbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"nrbqkbnr/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/RNBQKBNR",
+                        )
+                    ),
                     ' w q - 0 1"]Nf3*',
                 )
             )
@@ -3866,7 +3941,12 @@ class StrictFEN(_BasePGN):
         games = self.get(
             "".join(
                 (
-                    '[SetUp"1"][FEN"nrbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
+                    "".join(
+                        (
+                            '[SetUp"1"][FEN"nrbqkbnr/pppppppp/8/8/8/8/',
+                            "PPPPPPPP/RNBQKBNR",
+                        )
+                    ),
                     ' w KQk - 0 1"]Nf3*',
                 )
             )
@@ -4914,7 +4994,8 @@ class StrictDisambiguate(_BasePGN):
             "".join(
                 (
                     '[SetUp"1"]',
-                    '[FEN"2r3kq/Q1pnnpq1/3pp1pp/1q1bb3/3B4/2Q1NNP1/2PPPPBP/R1QK4 ',
+                    '[FEN"2r3kq/Q1pnnpq1/3pp1pp/1q1bb3/3B4/',
+                    "2Q1NNP1/2PPPPBP/R1QK4 ",
                     'w - - 24 1461"]',
                     "Q1a3*",
                 )
@@ -5068,7 +5149,7 @@ class StrictDisambiguate(_BasePGN):
 
 
 class StrictRAV(_BasePGN):
-    """Recursive annotation variation tests only.  StrictPGN tests are not done."""
+    """Recursive annotation variation tests.  StrictPGN tests are not done."""
 
     def fen_position(self, g, fen):
         self.assertEqual(
@@ -5232,8 +5313,10 @@ class StrictRAV(_BasePGN):
             "".join(
                 (
                     '[SetUp"1"]',
-                    '[FEN"r2b1rk1/ppp2p1n/7Q/4pb2/2B1N3/5N2/PPP2PPP/2K5 w - - 2 17"]',
-                    "Neg5e4(Bxg5)Nxh7exf3(Bxh7Ne5Be7Nxf7Rxf7Bxf7Kxf7Qxh7Kf6Qxe4)*",
+                    '[FEN"r2b1rk1/ppp2p1n/7Q/4pb2/2B1N3/5N2/PPP2PPP/2K5 ',
+                    'w - - 2 17"]',
+                    "Neg5e4(Bxg5)Nxh7exf3(Bxh7Ne5Be7Nxf7Rxf7Bxf7",
+                    "Kxf7Qxh7Kf6Qxe4)*",
                 )
             )
         )
@@ -6798,7 +6881,12 @@ class GameTextPGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/2B5//2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/2B5//2B4b/8/8/',
+                                            "2b4B/2b5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -6845,7 +6933,12 @@ class GameTextPGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                                    "".join(
+                                        (
+                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
+                                            "2b3B1/R1N1N2K/8 ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -6892,7 +6985,12 @@ class GameTextPGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                                    "".join(
+                                        (
+                                            '[FEN"8/r1n1n2k/2B3b1/2B5/',
+                                            "2b5/2b3B1/R1N1N2K/8 ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -7996,7 +8094,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/2B5/2B4b/8/',
+                                            "8/2b4B/2b5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -8043,7 +8146,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
+                                    "".join(
+                                        (
+                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/',
+                                            "2b4B/2b5/R1N1N2K ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -8090,7 +8198,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                                    "".join(
+                                        (
+                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
+                                            "2b3B1/R1N1N2K/8 ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),
@@ -8137,7 +8250,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                             '[SetUp"1"]',
                             c.join(
                                 (
-                                    '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
+                                    "".join(
+                                        (
+                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
+                                            "2b3B1/R1N1N2K/8 ",
+                                        )
+                                    ),
                                     ' - - 0 1"]',
                                 )
                             ),

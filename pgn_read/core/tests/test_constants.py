@@ -81,7 +81,8 @@ class Constants(unittest.TestCase):
             r"".join(
                 (
                     r"(?#Disambiguation Text)",
-                    r"((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8](?:=[QRBNqrbn])?)",
+                    r"((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8]",
+                    r"(?:=[QRBNqrbn])?)",
                     r"|",
                     r"(?:b[xX][QRBNqrbn]?[a-hA-H][18])",
                     r"|",
@@ -268,7 +269,8 @@ class Constants(unittest.TestCase):
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
                     r"(?#Disambiguation Text)",
-                    r"((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8](?:=[QRBNqrbn])?)",
+                    r"((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8]",
+                    r"(?:=[QRBNqrbn])?)",
                     r"|",
                     r"(?:b[xX][QRBNqrbn]?[a-hA-H][18])",
                     r"|",

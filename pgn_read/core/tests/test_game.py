@@ -22,7 +22,7 @@ class Game(unittest.TestCase):
     def test_01___init__(self):
         self.assertRaisesRegex(
             TypeError,
-            "__init__\(\) takes 1 positional argument but 2 were given",
+            r"__init__\(\) takes 1 positional argument but 2 were given",
             game.Game,
             *(None,),
         )

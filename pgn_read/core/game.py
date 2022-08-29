@@ -1026,8 +1026,8 @@ class Game:
 
         if destination in piece_placement_data:
 
-            # IMPORT_FORMAT regular expression treats 'Qe3c6' as 'Qe3' and 'c6',
-            # and 'Qe3xc6' as 'Qe3' and the unexpected 'xc6'.
+            # IMPORT_FORMAT regular expression treats 'Qe3c6' as 'Qe3' and
+            # 'c6', and 'Qe3xc6' as 'Qe3' and the unexpected 'xc6'.
             # The capture could be spotted, but not the move.
             # Allow all movetext like 'Qe3e6' or 'Qe3xe6' when _strict_pgn is
             # not enforced, and perhaps even 'Qe3-c6'.
@@ -2367,7 +2367,7 @@ class Game:
                         )
                     )
                 )
-            except:
+            except Exception:
                 raise GameError(
                     "En-passant target square does not fit position"
                 )
