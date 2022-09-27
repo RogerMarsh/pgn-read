@@ -269,13 +269,53 @@ class Game:
 
     @property
     def pgn_tags(self):
-        """Return the _tags dict of PGN tag names and values."""
+        """Return _tags dict of PGN tag names and values."""
         return self._tags
 
     @property
     def pgn_text(self):
-        """Return the _text str of PGN text (the whole game score)."""
+        """Return _text str of PGN text (the whole game score)."""
         return self._text
+
+    @property
+    def piece_placement_data(self):
+        """Return _piece_placement_data dict of ."""
+        return self._piece_placement_data
+
+    @property
+    def active_color(self):
+        """Return _active_color str indicating side to move."""
+        return self._active_color
+
+    @property
+    def castling_availability(self):
+        """Return _castling_availability str of castling options."""
+        return self._castling_availability
+
+    @property
+    def en_passant_target_square(self):
+        """Return _en_passant_target_square str for capture square."""
+        return self._en_passant_target_square
+
+    @property
+    def halfmove_clock(self):
+        """Return _halfmove_clock int of moves since capture or pawn move."""
+        return self._halfmove_clock
+
+    @property
+    def fullmove_number(self):
+        """Return _fullmove_number int of move number in game or variation."""
+        return self._fullmove_number
+
+    @property
+    def initial_position(self):
+        """Return _initial_position str of game or None."""
+        return self._initial_position
+
+    @property
+    def position_deltas(self):
+        """Return _position_deltas tuple of changes between positions."""
+        return self._position_deltas
 
     @property
     def game_ok(self):
