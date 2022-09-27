@@ -268,6 +268,11 @@ class Game:
             self._state_stack[-1] = self._state
 
     @property
+    def pgn_tags(self):
+        """Return the _tags dict of PGN tag names and values."""
+        return self._tags
+
+    @property
     def game_ok(self):
         """Return True if game and all variations have no PGN errors."""
         return bool(self._state is None and not self._error_list)
