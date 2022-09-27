@@ -273,6 +273,11 @@ class Game:
         return self._tags
 
     @property
+    def pgn_text(self):
+        """Return the _text str of PGN text (the whole game score)."""
+        return self._text
+
+    @property
     def game_ok(self):
         """Return True if game and all variations have no PGN errors."""
         return bool(self._state is None and not self._error_list)
