@@ -80,7 +80,7 @@ class _Bindings:
             except tkinter.TclError as exc:
                 if str(exc).startswith("bad window path name "):
                     continue
-                if str(exc).startswith("can't invoke \"bind\" command: "):
+                if str(exc).startswith('can\'t invoke "bind" command: '):
                     continue
                 raise
         self._bindings.clear()
@@ -288,7 +288,9 @@ class Main:
             self._bind_for_scrolling_only(entry)
         for entry in self.entry, self.text:
             self._bindings.bind(
-                entry, "<Alt-KeyPress-F5>", function="" if not active else self.select_pgn_file
+                entry,
+                "<Alt-KeyPress-F5>",
+                function="" if not active else self.select_pgn_file,
             )
             self._bindings.bind(
                 entry,
