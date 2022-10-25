@@ -62,6 +62,47 @@ def read_pgn(filename, game_class=None, size=10000000):
     )
 
 
+class _Bindings:
+    """A short version of solentware_bind.gui.bindings.Bindings.
+
+    This avoids pgn_read depending on solentware_bind.
+    """
+
+    def __init__(self):
+        """Initialize the bindings register."""
+        self._bindings = {}
+
+    def __del__(self):
+        """Destroy any bindings in _bindings."""
+        for key, funcid in self._bindings.items():
+            try:
+                key[0].unbind(key[1], funcid=funcid)
+            except tkinter.TclError as exc:
+                if str(exc).startswith("bad window path name "):
+                    continue
+                if str(exc).startswith("can't invoke \"bind\" command: "):
+                    continue
+                raise
+        self._bindings.clear()
+
+    def bind(self, widget, sequence, function=None, add=None):
+        """Bind sequence to function for widget and note binding identity.
+
+        If a binding exists for widget for sequence it is destroyed.
+
+        If function is not None a new binding is created and noted.
+
+        """
+        key = (widget, sequence)
+        if key in self._bindings and add is None:
+            widget.unbind(sequence, funcid=self._bindings[key])
+            del self._bindings[key]
+        if function is not None:
+            self._bindings[key] = widget.bind(
+                sequence=sequence, func=function, add=add
+            )
+
+
 class Main:
     """Select PGN file to process."""
 
@@ -69,6 +110,7 @@ class Main:
 
     def __init__(self, game_class=None, size=10000000, samples_title=""):
         """Build the user interface."""
+        self._bindings = _Bindings()
         self.game_class = game_class
         self.size = size
         root = tkinter.Tk()
@@ -99,8 +141,8 @@ class Main:
         self.entry = entry
         self.pgn_file = pgn_file
         self.set_menu_and_entry_events(True)
-        entry.bind("<ButtonPress-3>", self.show_menu)
-        text.bind("<ButtonPress-3>", self.show_menu)
+        self._bindings.bind(entry, "<ButtonPress-3>", function=self.show_menu)
+        self._bindings.bind(text, "<ButtonPress-3>", function=self.show_menu)
         self.insert_text(self._START_TEXT)
         entry.focus_set()
 
@@ -245,28 +287,30 @@ class Main:
         for entry in (self.text,):
             self._bind_for_scrolling_only(entry)
         for entry in self.entry, self.text:
-            entry.bind(
-                "<Alt-KeyPress-F5>", "" if not active else self.select_pgn_file
+            self._bindings.bind(
+                entry, "<Alt-KeyPress-F5>", function="" if not active else self.select_pgn_file
             )
-            entry.bind(
+            self._bindings.bind(
+                entry,
                 "<Alt-KeyPress-F4>",
-                "" if not active else self.process_pgn_file,
+                function="" if not active else self.process_pgn_file,
             )
-            entry.bind(
+            self._bindings.bind(
+                entry,
                 "<KeyPress-Return>",
-                "" if not active else self.process_pgn_file,
+                function="" if not active else self.process_pgn_file,
             )
 
     def _bind_for_scrolling_only(self, widget):
-        widget.bind("<KeyPress>", "break")
-        widget.bind("<Home>", "return")
-        widget.bind("<Left>", "return")
-        widget.bind("<Up>", "return")
-        widget.bind("<Right>", "return")
-        widget.bind("<Down>", "return")
-        widget.bind("<Prior>", "return")
-        widget.bind("<Next>", "return")
-        widget.bind("<End>", "return")
+        self._bindings.bind(widget, "<KeyPress>", function=lambda e: "break")
+        self._bindings.bind(widget, "<Home>", function=lambda e: None)
+        self._bindings.bind(widget, "<Left>", function=lambda e: None)
+        self._bindings.bind(widget, "<Up>", function=lambda e: None)
+        self._bindings.bind(widget, "<Right>", function=lambda e: None)
+        self._bindings.bind(widget, "<Down>", function=lambda e: None)
+        self._bindings.bind(widget, "<Prior>", function=lambda e: None)
+        self._bindings.bind(widget, "<Next>", function=lambda e: None)
+        self._bindings.bind(widget, "<End>", function=lambda e: None)
 
 
 def main(game_class=None, size=10000000, samples_title=""):
