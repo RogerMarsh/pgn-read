@@ -225,7 +225,7 @@ class PGN:
                         # PGN errors, until sufficient text has been read to
                         # resolve the problem.  '{[A"a"]}' is allowed as a
                         # comment in PGN.
-                        if game._text[game.state][0] in UNTERMINATED:
+                        if game.pgn_text[game.state][0] in UNTERMINATED:
                             game.append_token_after_error(match)
                             continue
 
@@ -242,7 +242,7 @@ class PGN:
                     elif match.lastindex == IFG_GAME_TERMINATION:
                         residue_start_on_error_at_pgntext_end = match.end()
                         error_despatch_table[match.lastindex](game, match)
-                        if len(game._ravstack) > 1:
+                        if game.len_ravstack() > 1:
                             game.set_game_error()
                         yield game
                         game = game_class()
@@ -254,7 +254,7 @@ class PGN:
                 elif match.lastindex == IFG_GAME_TERMINATION:
                     residue_start_on_error_at_pgntext_end = match.end()
                     despatch_table[match.lastindex](game, match)
-                    if len(game._ravstack) > 1:
+                    if game.len_ravstack() > 1:
                         game.set_game_error()
                     yield game
                     game = game_class()
@@ -276,7 +276,7 @@ class PGN:
 
         # The final game in the input has an error, or has no error but no game
         # termination marker either.
-        if game._text:
+        if game.pgn_text:
             game.set_game_error()
             yield game
 

@@ -125,6 +125,8 @@ from .constants import (
     WHITE_PAWN_CAPTURES,
     BLACK_PAWN_CAPTURES,
     PGN_NAMED_PIECES,
+    # The TAG_* list is long enough to cause a pylint duplicate-code report
+    # citing pgn_read.core.constants module.
     TAG_EVENT,
     TAG_SITE,
     TAG_DATE,
@@ -266,6 +268,10 @@ class Game:
         if self._state is None:
             self._state = len(self._text)
             self._state_stack[-1] = self._state
+
+    def len_ravstack(self):
+        """Return self._ravstack depth."""
+        return len(self._ravstack)
 
     @property
     def pgn_tags(self):
@@ -524,6 +530,7 @@ class Game:
 
         """
 
+    # self left in place.  Pylint reports no-self-use.
     def pgn_mark_comment_in_error(self, comment):
         """Return comment.  Subclasses should override to fit requirements.
 
@@ -1280,6 +1287,8 @@ class Game:
             except KeyError:
                 self.append_token_and_set_error(match)
                 return
+            # Pylint reports undefined-loop-variable for source later.
+            # The loop looks safe at this time.
             for source in source_squares:
                 if source.startswith(pawn_capture_from_file):
                     try:
@@ -1492,6 +1501,8 @@ class Game:
             except KeyError:
                 self.append_token_and_set_error(match)
                 return
+            # Pylint reports undefined-loop-variable for source later.
+            # The loop looks safe at this time.
             for source in source_squares:
                 if source.startswith(pawn_capture_from_file):
                     try:
@@ -2417,10 +2428,10 @@ class Game:
                         )
                     )
                 )
-            except Exception:
+            except Exception as error:
                 raise GameError(
                     "En-passant target square does not fit position"
-                )
+                ) from error
 
         if destination[1] in "18":
             if not promotion_piece:
@@ -2748,6 +2759,8 @@ class Game:
         pieces_on_board = self._pieces_on_board
         board = []
         piece_placement_data = self._piece_placement_data
+        # The item list in piece is long enough to cause pylint duplicate-code
+        # reports citing pgn_read.core.constants module.
         for piece in (
             FEN_WHITE_KING,
             FEN_WHITE_QUEEN,
@@ -2840,6 +2853,8 @@ class Game:
                 FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX
             ]
             if en_passant_target_square != FEN_NULL:
+                # Squares = Squares() at end of squares module.
+                # Pylint reports no-member.
                 if en_passant_target_square not in Squares.squares:
                     return False
                 if active_color == FEN_WHITE_ACTIVE:
@@ -3214,7 +3229,7 @@ class Game:
 
     def set_position_to_play_main_line_at_move(self):
         """Set position associated with end_of_rav token."""
-        count, rav_piece_placement_data, place, remove = self._ravstack[-1]
+        rav_piece_placement_data, place, remove = self._ravstack[-1][1:]
         pieces_on_board = self._pieces_on_board
         for val in pieces_on_board.values():
             val.clear()
@@ -3351,6 +3366,8 @@ class Game:
         """
         if self._castling_availability == FEN_NULL:
             return FEN_NULL
+        # Squares = Squares() at end of squares module.
+        # Pylint reports no-member.
         castling_rights_lost = "".join(
             Squares.squares[r[0]].castling_rights_lost for r in remove
         )
@@ -3373,57 +3390,24 @@ class Game:
         piece_placement_data = self._piece_placement_data
         active_color = self._active_color
 
-        point, line = FILE_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                return True
-
-        point, line = RANK_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                return True
-
-        point, line = LRD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                return True
-
-        point, line = RLD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                return True
+        for attacks in (
+            FILE_ATTACKS,
+            RANK_ATTACKS,
+            LRD_DIAGONAL_ATTACKS,
+            RLD_DIAGONAL_ATTACKS,
+        ):
+            point, line = attacks[square]
+            for square_list in reversed(line[:point]), line[point + 1 :]:
+                for sqr in square_list:
+                    if sqr not in piece_placement_data:
+                        continue
+                    piece = piece_placement_data[sqr]
+                    if piece.color == active_color:
+                        break
+                    sources = FEN_SOURCE_SQUARES.get(piece.name)
+                    if sources is None or sqr not in sources.get(square, ""):
+                        break
+                    return True
 
         if active_color == FEN_WHITE_ACTIVE:
             knight_search = FEN_BLACK_KNIGHT
@@ -4148,6 +4132,7 @@ class GameTextPGN(Game):
         does not cause noting detection of the sequence.
 
         """
+        del match
         self._bishop_or_bpawn = None
 
     def append_comment_to_eol(self, match):
@@ -4322,6 +4307,8 @@ class GameIgnoreCasePGN(GameTextPGN):
                     )
                     if pgn_match and pgn_match.lastindex == IFG_PAWN_TO_RANK:
                         self._undo_append_token_and_set_error()
+                        # Ignore method in GameTextPGN class.
+                        # Pylint reports bad-super-call.
                         super(GameTextPGN, self).append_pawn_move(pgn_match)
                         return
                 else:
@@ -4334,10 +4321,13 @@ class GameIgnoreCasePGN(GameTextPGN):
                         and pgn_match.lastindex == IFG_PAWN_PROMOTE_PIECE
                     ):
                         self._undo_append_token_and_set_error()
+                        # Ignore method in GameTextPGN class.
+                        # Pylint reports bad-super-call.
                         super(GameTextPGN, self).append_pawn_promote_move(
                             pgn_match
                         )
                         return
+        # Ignore method in GameTextPGN class.  Pylint reports bad-super-call.
         super(GameTextPGN, self).append_token_after_error(match)
 
     def append_other_or_disambiguation_pgn(self, match):
@@ -4369,6 +4359,8 @@ class GameIgnoreCasePGN(GameTextPGN):
         ):
             bishop = import_format.match(mgt[0].upper() + mgt[1:])
             if bishop and bishop.lastindex == IFG_PIECE_DESTINATION:
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_piece_move(bishop)
                 return
         super().append_other_or_disambiguation_pgn(pgn_match)
@@ -4420,6 +4412,8 @@ class GameIgnoreCasePGN(GameTextPGN):
             if piece_match.group(IFG_PIECE_MOVE) is None:
                 self.append_token_and_set_error(match)
                 return
+            # Ignore method in GameTextPGN class.
+            # Pylint reports bad-super-call.
             super(GameTextPGN, self).append_piece_move(piece_match)
             self._bishop_or_bpawn = None
             return
@@ -4485,10 +4479,14 @@ class GameIgnoreCasePGN(GameTextPGN):
             pawn_promotion_move.append_pawn_promote_move(pawn_promotion_match)
         if bishop_move.state is None:
             if not (pawn_match or pawn_promotion_match):
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_piece_move(piece_match)
                 self._bishop_or_bpawn = None
                 return
             if match[0].isupper():
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_piece_move(piece_match)
                 self._bishop_or_bpawn = None
                 return
@@ -4506,12 +4504,16 @@ class GameIgnoreCasePGN(GameTextPGN):
             # pass
         else:
             if pawn_match and pawn_match.lastindex == IFG_PAWN_TO_RANK:
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_pawn_move(pawn_match)
                 self._bishop_or_bpawn = None
             elif (
                 pawn_promotion_match
                 and pawn_promotion_match.lastindex == IFG_PAWN_PROMOTE_PIECE
             ):
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_pawn_promote_move(
                     pawn_promotion_match
                 )
@@ -4530,6 +4532,8 @@ class GameIgnoreCasePGN(GameTextPGN):
             if piece_match.group(IFG_PIECE_MOVE) is None:
                 self.append_token_and_set_error(match)
                 return
+            # Ignore method in GameTextPGN class.
+            # Pylint reports bad-super-call.
             super(GameTextPGN, self).append_piece_move(piece_match)
             self._bishop_or_bpawn = None
             return
@@ -4557,6 +4561,8 @@ class GameIgnoreCasePGN(GameTextPGN):
                 if promotion_match is None:
                     self.append_token_and_set_error(match)
                     return
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_pawn_promote_move(
                     promotion_match
                 )
@@ -4567,6 +4573,7 @@ class GameIgnoreCasePGN(GameTextPGN):
         if piece_match.group(IFG_PAWN_FROM_FILE) is None:
             self.append_token_and_set_error(match)
             return
+        # Ignore method in GameTextPGN class.  Pylint reports bad-super-call.
         super(GameTextPGN, self).append_pawn_move(piece_match)
         self._bishop_or_bpawn = None
 
@@ -4632,6 +4639,8 @@ class GameIgnoreCasePGN(GameTextPGN):
                 self._bishop_or_bpawn.group().upper() + match.group().lower()
             )
             if bishop:
+                # Ignore method in GameTextPGN class.
+                # Pylint reports bad-super-call.
                 super(GameTextPGN, self).append_piece_move(bishop)
                 self._bishop_or_bpawn = None
                 return
@@ -4702,6 +4711,7 @@ class GameIgnoreCasePGN(GameTextPGN):
             self.append_token_and_set_error(match)
             self._bishop_or_bpawn = None
             return
+        # Ignore method in GameTextPGN class.  Pylint reports bad-super-call.
         super(GameTextPGN, self).append_pawn_move(pgn_match)
         if self._state is None:
             self._bishop_or_bpawn = None
@@ -4753,6 +4763,7 @@ class GameIgnoreCasePGN(GameTextPGN):
             self.append_token_and_set_error(match)
             self._bishop_or_bpawn = None
             return
+        # Ignore method in GameTextPGN class.  Pylint reports bad-super-call.
         super(GameTextPGN, self).append_pawn_promote_move(promotion_match)
         self._bishop_or_bpawn = None
 
@@ -4867,6 +4878,7 @@ class GameIgnoreCasePGN(GameTextPGN):
         if pawn_match is None:
             self.append_token_and_set_error(match)
             return
+        # Ignore method in GameTextPGN class.  Pylint reports bad-super-call.
         super(GameTextPGN, self).append_pawn_move(pawn_match)
 
     # B[1-8][xX] and b[1-8xX] are intended targets.
@@ -5075,69 +5087,27 @@ class GameIndicateCheck(Game):
         active_color = self._active_color
         attacking_squares = []
 
-        point, line = FILE_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
+        for attacks in (
+            FILE_ATTACKS,
+            RANK_ATTACKS,
+            LRD_DIAGONAL_ATTACKS,
+            RLD_DIAGONAL_ATTACKS,
+        ):
+            point, line = attacks[square]
+            for square_list in reversed(line[:point]), line[point + 1 :]:
+                for sqr in square_list:
+                    if sqr not in piece_placement_data:
+                        continue
+                    piece = piece_placement_data[sqr]
+                    if piece.color == active_color:
+                        break
+                    sources = FEN_SOURCE_SQUARES.get(piece.name)
+                    if sources is None or sqr not in sources.get(square, ""):
+                        break
+                    attacking_squares.append(sqr)
+                    if len(attacking_squares) > 1:
+                        return attacking_squares
                     break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                attacking_squares.append(sqr)
-                if len(attacking_squares) > 1:
-                    return attacking_squares
-                break
-
-        point, line = RANK_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                attacking_squares.append(sqr)
-                if len(attacking_squares) > 1:
-                    return attacking_squares
-                break
-
-        point, line = LRD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                attacking_squares.append(sqr)
-                if len(attacking_squares) > 1:
-                    return attacking_squares
-                break
-
-        point, line = RLD_DIAGONAL_ATTACKS[square]
-        for square_list in reversed(line[:point]), line[point + 1 :]:
-            for sqr in square_list:
-                if sqr not in piece_placement_data:
-                    continue
-                piece = piece_placement_data[sqr]
-                if piece.color == active_color:
-                    break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
-                if sources is None or sqr not in sources.get(square, ""):
-                    break
-                attacking_squares.append(sqr)
-                if len(attacking_squares) > 1:
-                    return attacking_squares
-                break
 
         if active_color == FEN_WHITE_ACTIVE:
             knight_search = FEN_BLACK_KNIGHT

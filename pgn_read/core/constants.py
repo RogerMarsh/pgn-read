@@ -200,6 +200,8 @@ TAG_ROUND = "Round"
 TAG_WHITE = "White"
 TAG_BLACK = "Black"
 TAG_RESULT = "Result"
+# The item list in SEVEN_TAG_ROSTER is long enough to cause a pylint
+# duplicate-code report citing pgn_read.core.game module.
 SEVEN_TAG_ROSTER = (
     TAG_EVENT,
     TAG_SITE,
@@ -317,6 +319,8 @@ FEN_INITIAL_CASTLING = (
 
 # Mapping for FEN string to piece-square names: 'Pp' missing because pawns are
 # not named in moves, and 'a4' as a piece-square name means a black pawn.
+# The item lists in FEN_WHITE_PIECES and FEN_BLACK_PIECES are long enough to
+# cause pylint duplicate-code reports citing pgn_read.core.game module.
 FEN_WHITE_PIECES = "".join(
     (
         FEN_WHITE_KING,

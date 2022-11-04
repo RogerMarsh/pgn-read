@@ -87,4 +87,5 @@ class Squares:
                 squares[file + rank] = _Square(file, rank)
 
 
+# Pylint reports no-member for Squares.<attribute-name> references.
 Squares = Squares()

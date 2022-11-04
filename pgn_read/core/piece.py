@@ -42,6 +42,8 @@ class Piece:
         Provided for moving pieces during a game.
 
         """
+        # Squares = Squares() at end of squares module.
+        # Pylint reports no-member.
         self.square = Squares.squares[name]
 
     def promoted_pawn(self, name, *a):

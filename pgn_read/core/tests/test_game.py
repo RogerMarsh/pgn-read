@@ -547,6 +547,12 @@ class Game(unittest.TestCase):
         g._piece_placement_data["a7"] = p
         ae(g.is_square_attacked_by_other_side("f4"), False)
 
+    def test_55_len_ravstack(self):
+        ae = self.assertEqual
+        g = game.Game()
+        ae(g.len_ravstack(), 0)
+        ae(g.len_ravstack(), len(g._ravstack))
+
 
 class Ravstack(unittest.TestCase):
     def setUp(self):
