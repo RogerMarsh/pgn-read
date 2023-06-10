@@ -216,6 +216,9 @@ class Game:
     _castling_availability = None
     _active_color = None
 
+    # Locate position in PGN text file of latest game.
+    game_offset = 0
+
     def __init__(self):
         """Create empty data structure for a game presented in PGN format."""
         # There is 1:1 between self._text and self._position_deltas.

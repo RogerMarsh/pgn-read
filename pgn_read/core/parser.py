@@ -203,7 +203,10 @@ class PGN:
         error_despatch_table = self.error_despatch_table
         game_class = self._game_class
         residue = ""
+        pgntext_length = 0
         for pgntext in self._read_pgn(source, size):
+            pgntext_offset = pgntext_length - len(residue)
+            pgntext_length += len(pgntext)
 
             # The previous chunk of pgntext may have ended with an incomplete
             # game, with or without errors.
@@ -230,6 +233,7 @@ class PGN:
                             continue
 
                         residue_start_on_error_at_pgntext_end = match.start()
+                        game.game_offset = pgntext_offset + match.start()
                         yield game
                         game = game_class()
                         despatch_table[match.lastindex](game, match)
@@ -244,6 +248,7 @@ class PGN:
                         error_despatch_table[match.lastindex](game, match)
                         if game.len_ravstack() > 1:
                             game.set_game_error()
+                        game.game_offset = pgntext_offset + match.end()
                         yield game
                         game = game_class()
 
@@ -256,6 +261,7 @@ class PGN:
                     despatch_table[match.lastindex](game, match)
                     if game.len_ravstack() > 1:
                         game.set_game_error()
+                    game.game_offset = pgntext_offset + match.end()
                     yield game
                     game = game_class()
                 else:
@@ -278,6 +284,7 @@ class PGN:
         # termination marker either.
         if game.pgn_text:
             game.set_game_error()
+            game.game_offset = pgntext_offset + len(residue)
             yield game
 
 
