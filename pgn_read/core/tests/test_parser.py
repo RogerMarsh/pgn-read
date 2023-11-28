@@ -132,6 +132,22 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text, ['[A"a["]', "*"])
         ae(games[0]._tags, {"A": "a["})
 
+    # _NonStrictText ignores semicolon and text after.
+    def test_008_05_tag_and_semicolon_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"];*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"a"]', " ;*"])
+
+    # _NonStrictText ignores percent and text after.
+    def test_008_06_tag_and_percent_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]%*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"a"]', " %*"])
+
     def test_009_tag_and_star(self):
         ae = self.assertEqual
         games = self.get('[A "a"]*')
@@ -694,15 +710,21 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ['[A"a"]', "<r;c\n{C}e4(d4)%e\n>", "*"])
 
+    # _NonStrictText version gives error without captured text.
     def test_065_bare_escaped(self):
         ae = self.assertEqual
         games = self.get("%Run for your life!")
-        ae(len(games), 0)
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [" %Run ", " for ", " your ", " life!"])
 
+    # _NonStrictText version gives error without captured text.
     def test_065_01_escaped_and_star(self):
         ae = self.assertEqual
         games = self.get("%Run for your life!*")
-        ae(len(games), 0)
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, [" %Run ", " for ", " your ", " life!*"])
 
     def test_065_02_escaped_and_newline(self):
         ae = self.assertEqual
@@ -6394,6 +6416,22 @@ class _NonStrictText:
         games = self.get("The cat sat on the mat")
         ae(len(games), 0)
 
+    # StrictPGN version includes semicolon and text after.
+    def test_008_05_tag_and_semicolon_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"];*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"a"]'])
+
+    # StrictPGN version includes percent and text after.
+    def test_008_06_tag_and_percent_and_star(self):
+        ae = self.assertEqual
+        games = self.get('[A"a"]%*')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A"a"]'])
+
     # StrictPGN version gives two games.
     # games[1].state is False and 'ff[B"b"]' token is kept.
     def test_021_legal_game_and_gash_consuming_legal_game(self):
@@ -6507,6 +6545,18 @@ class _NonStrictText:
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text, ['[A"a"]', ' <r;c\n{C}e4(d4)[B"b"]'])
+
+    # StrictPGN version gives error with captured text.
+    def test_065_bare_escaped(self):
+        ae = self.assertEqual
+        games = self.get("%Run for your life!")
+        ae(len(games), 0)
+
+    # StrictPGN version gives error with captured text.
+    def test_065_01_escaped_and_star(self):
+        ae = self.assertEqual
+        games = self.get("%Run for your life!*")
+        ae(len(games), 0)
 
     # StrictPGN version gives error too, but '%!' token is kept.
     def test_066_tag_and_escaped(self):
