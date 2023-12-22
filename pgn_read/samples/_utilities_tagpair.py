@@ -21,9 +21,7 @@ def read_pgn_count_games(filename, game_class=None, size=10000000):
         open(filename, encoding="iso-8859-1"), size=size
     ):
         game_count += 1
-    return (
-        game_count,
-    )
+    return (game_count,)
 
 
 def read_pgn_count_tag_pairs(filename, game_class=None, size=10000000):

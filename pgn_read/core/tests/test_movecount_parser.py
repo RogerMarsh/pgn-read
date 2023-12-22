@@ -12,10 +12,9 @@ from .. import constants
 
 
 class MoveCount_method_args(unittest.TestCase):
-
     def setUp(self):
         self.gc1 = movecount_parser.MoveCount()
-    
+
     def test_01___init___01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -23,7 +22,7 @@ class MoveCount_method_args(unittest.TestCase):
             movecount_parser.MoveCount,
             *(None,),
         )
-    
+
     def test_02_set_game_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -31,7 +30,7 @@ class MoveCount_method_args(unittest.TestCase):
             self.gc1.set_game_error,
             *(None,),
         )
-    
+
     def test_03_append_comment_to_eol_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -43,7 +42,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_comment_to_eol,
         )
-    
+
     def test_04_append_pass_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -55,7 +54,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_pass_after_error,
         )
-    
+
     def test_05_append_token_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -67,7 +66,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token,
         )
-    
+
     def test_06_append_pass_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -79,7 +78,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_pass_and_set_error,
         )
-    
+
     def test_07_append_token_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -91,7 +90,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token_and_set_error,
         )
-    
+
     def test_08_append_token_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -103,7 +102,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token_after_error,
         )
-    
+
     def test_09_append_token_after_error_without_separator_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -115,7 +114,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token_after_error_without_separator,
         )
-    
+
     def test_10_append_comment_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -127,7 +126,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_comment_after_error,
         )
-    
+
     def test_11_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -139,7 +138,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_bad_tag_and_set_error,
         )
-    
+
     def test_12_append_bad_tag_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -151,7 +150,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_bad_tag_after_error,
         )
-    
+
     def test_13_append_game_termination_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -163,7 +162,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_game_termination_after_error,
         )
-    
+
     def test_14_append_comment_to_eol_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -175,7 +174,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_comment_to_eol_after_error,
         )
-    
+
     def test_15_append_start_rav_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -187,7 +186,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_start_rav_after_error,
         )
-    
+
     def test_16_append_end_rav_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -199,7 +198,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_end_rav_after_error,
         )
-    
+
     def test_17_append_escape_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -211,7 +210,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_escape_after_error,
         )
-    
+
     def test_18_append_other_or_disambiguation_pgn_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -223,7 +222,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_other_or_disambiguation_pgn,
         )
-    
+
     def test_19_append_start_tag_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -235,7 +234,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_start_tag,
         )
-    
+
     def test_20_append_move_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -247,7 +246,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_move,
         )
-    
+
     def test_21_append_start_rav_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -259,7 +258,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_start_rav,
         )
-    
+
     def test_22_append_end_rav_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -271,7 +270,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_end_rav,
         )
-    
+
     def test_23_append_game_termination_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -283,7 +282,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_game_termination,
         )
-    
+
     def test_24_append_glyph_for_traditional_annotation_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -295,7 +294,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_glyph_for_traditional_annotation,
         )
-    
+
     def test_25_ignore_escape_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -307,7 +306,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.ignore_escape,
         )
-    
+
     def test_26_ignore_end_of_file_marker_prefix_to_tag_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -319,7 +318,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.ignore_end_of_file_marker_prefix_to_tag,
         )
-    
+
     def test_27_ignore_move_number_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -331,7 +330,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.ignore_move_number,
         )
-    
+
     def test_28_ignore_dots_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -343,7 +342,7 @@ class MoveCount_method_args(unittest.TestCase):
             ),
             self.gc1.ignore_dots,
         )
-    
+
     def test_29_ignore_check_indicator_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -358,10 +357,9 @@ class MoveCount_method_args(unittest.TestCase):
 
 
 class MoveCount_method_calls(unittest.TestCase):
-
     def setUp(self):
         self.gc1 = movecount_parser.MoveCount()
-    
+
     def confirm_no_change_base(self, position_count):
         ae = self.assertEqual
         ae(self.gc1._state, None)
@@ -370,52 +368,52 @@ class MoveCount_method_calls(unittest.TestCase):
         ae(self.gc1._text_count, 0)
         ae(self.gc1._pieces_in_position, 32)
         ae(self.gc1._position_count, position_count)
-    
+
     def confirm_no_change(self):
         self.confirm_no_change_base(0)
         ae = self.assertEqual
         ae(self.gc1._piece_count, 0)
         ae(self.gc1._pieces_stack, [32])
-    
+
     def confirm_position_count(self, position_count):
         self.confirm_no_change_base(position_count)
         ae = self.assertEqual
         ae(self.gc1._piece_count, 32)
         ae(self.gc1._pieces_stack, [32])
-    
+
     def confirm_position_count_capture(self, position_count):
         self.confirm_no_change_base(position_count)
         ae = self.assertEqual
         ae(self.gc1._piece_count, 31)
         ae(self.gc1._pieces_stack, [31])
-    
+
     def test_01___init___01(self):
         ae = self.assertEqual
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_02_set_game_error_01(self):
         ae = self.assertEqual
         self.gc1.set_game_error()
         ae(self.gc1._state, True)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_03_append_comment_to_eol_01(self):
         self.gc1.append_comment_to_eol(None)
         self.confirm_no_change()
-    
+
     def test_04_append_pass_after_error_01(self):
         self.gc1.append_pass_after_error(None)
         self.confirm_no_change()
-    
+
     def test_05_append_token_01(self):
         self.gc1.append_token(None)
         self.confirm_no_change()
-    
+
     def test_06_append_pass_and_set_error_01(self):
         self.gc1.append_token(None)
         self.confirm_no_change()
-    
+
     def test_07_append_token_and_set_error_01(self):
         ae = self.assertEqual
         self.assertRaisesRegex(
@@ -426,47 +424,47 @@ class MoveCount_method_calls(unittest.TestCase):
         )
         ae(self.gc1._state, True)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_08_append_token_after_error_01(self):
         self.gc1.append_token_after_error(None)
         self.confirm_no_change()
-    
+
     def test_09_append_token_after_error_without_separator_01(self):
         self.gc1.append_token_after_error_without_separator(None)
         self.confirm_no_change()
-    
+
     def test_10_append_comment_after_error_01(self):
         self.gc1.append_comment_after_error(None)
         self.confirm_no_change()
-    
+
     def test_11_append_bad_tag_and_set_error_01(self):
         self.gc1.append_bad_tag_and_set_error(None)
         self.confirm_no_change()
-    
+
     def test_12_append_bad_tag_after_error_01(self):
         self.gc1.append_bad_tag_after_error(None)
         self.confirm_no_change()
-    
+
     def test_13_append_game_termination_after_error_01(self):
         self.gc1.append_game_termination_after_error(None)
         self.confirm_no_change()
-    
+
     def test_14_append_comment_to_eol_after_error_01(self):
         self.gc1.append_comment_to_eol_after_error(None)
         self.confirm_no_change()
-    
+
     def test_15_append_start_rav_after_error_01(self):
         self.gc1.append_start_rav_after_error(None)
         self.confirm_no_change()
-    
+
     def test_16_append_end_rav_after_error_01(self):
         self.gc1.append_end_rav_after_error(None)
         self.confirm_no_change()
-    
+
     def test_17_append_escape_after_error_01(self):
         self.gc1.append_escape_after_error(None)
         self.confirm_no_change()
-    
+
     def test_18_append_other_or_disambiguation_pgn_01(self):
         ae = self.assertEqual
         self.assertRaisesRegex(
@@ -477,11 +475,11 @@ class MoveCount_method_calls(unittest.TestCase):
         )
         ae(self.gc1._state, True)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_19_append_start_tag_01(self):
         self.gc1.append_start_tag(None)
         self.confirm_no_change()
-    
+
     def test_20_append_append_move_01(self):
         ae = self.assertEqual
         ae(self.gc1._position_count, 0)
@@ -492,74 +490,73 @@ class MoveCount_method_calls(unittest.TestCase):
             *(None,),
         )
         ae(self.gc1._position_count, 1)
-    
+
     def test_20_append_append_move_02(self):
         ae = self.assertEqual
         position_count = 0
         ae(self.gc1._position_count, position_count)
         move = movecount_parser.game_format.match("Qa4")
         self.gc1.append_move(move)
-        self.confirm_position_count(position_count+1)
-    
+        self.confirm_position_count(position_count + 1)
+
     def test_20_append_append_move_03(self):
         ae = self.assertEqual
         position_count = 0
         ae(self.gc1._position_count, position_count)
         move = movecount_parser.game_format.match("Qxa4")
         self.gc1.append_move(move)
-        self.confirm_position_count_capture(position_count+1)
-    
+        self.confirm_position_count_capture(position_count + 1)
+
     def test_21_append_start_rav_01(self):
         self.gc1.append_start_rav(None)
         self.confirm_no_change_base(0)
         ae = self.assertEqual
         ae(self.gc1._piece_count, 0)
         ae(self.gc1._pieces_stack, [32, 32])
-    
+
     def test_22_append_end_rav_01(self):
         self.gc1.append_end_rav(None)
         self.confirm_no_change()
-    
+
     def test_22_append_end_rav_02(self):
         self.confirm_no_change()  # Verify state before next line change.
         self.gc1._pieces_stack.append(self.gc1._pieces_stack[-1])
         self.gc1.append_end_rav(None)
         self.confirm_no_change()  # Verify append_end_rav() reverts change.
-    
+
     def test_23_append_game_termination_01(self):
         self.gc1.append_game_termination(None)
         self.confirm_no_change()
-    
+
     def test_24_append_glyph_for_traditional_annotation_01(self):
         self.gc1.append_game_termination(None)
         self.confirm_no_change()
-    
+
     def test_25_ignore_escape_01(self):
         self.gc1.ignore_escape(None)
         self.confirm_no_change()
-    
+
     def test_26_ignore_end_of_file_marker_prefix_to_tag_01(self):
         self.gc1.ignore_end_of_file_marker_prefix_to_tag(None)
         self.confirm_no_change()
-    
+
     def test_27_ignore_move_number_01(self):
         self.gc1.ignore_move_number(None)
         self.confirm_no_change()
-    
+
     def test_28_ignore_dots_01(self):
         self.gc1.ignore_dots(None)
         self.confirm_no_change()
-    
+
     def test_29_ignore_check_indicator_01(self):
         self.gc1.ignore_check_indicator(None)
         self.confirm_no_change()
 
 
 class TagPairGame_method_args(unittest.TestCase):
-
     def setUp(self):
         self.gc1 = movecount_parser.TagPairGame()
-    
+
     def test_01___init___01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -567,7 +564,7 @@ class TagPairGame_method_args(unittest.TestCase):
             movecount_parser.TagPairGame,
             *(None,),
         )
-    
+
     def test_02_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -579,7 +576,7 @@ class TagPairGame_method_args(unittest.TestCase):
             ),
             self.gc1.append_bad_tag_and_set_error,
         )
-    
+
     def test_03_append_start_tag_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -594,16 +591,15 @@ class TagPairGame_method_args(unittest.TestCase):
 
 
 class TagPairGame_method_calls(unittest.TestCase):
-
     def setUp(self):
         self.tpg1 = movecount_parser.TagPairGame()
-    
+
     def test_01___init___01(self):
         ae = self.assertEqual
         ae(self.tpg1._state, None)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {})
-    
+
     def test_02_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             AttributeError,
@@ -611,7 +607,7 @@ class TagPairGame_method_calls(unittest.TestCase):
             self.tpg1.append_bad_tag_and_set_error,
             *(None,),
         )
-    
+
     def test_02_append_bad_tag_and_set_error_02(self):
         ae = self.assertEqual
         match = movecount_parser.game_format.match("anything")
@@ -624,7 +620,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, 0)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {"anything": ""})
-    
+
     def test_02_append_bad_tag_and_set_error_03(self):
         ae = self.assertEqual
         match = movecount_parser.game_format.match('[Na@me"va\lue"]')
@@ -644,7 +640,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, 0)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {"Na@me": "va\\\\lue", "Name": "nextva\\\\lue"})
-    
+
     def test_03_append_start_tag_01(self):
         self.assertRaisesRegex(
             AttributeError,
@@ -652,7 +648,7 @@ class TagPairGame_method_calls(unittest.TestCase):
             self.tpg1.append_start_tag,
             *(None,),
         )
-    
+
     def test_03_append_start_tag_02(self):
         ae = self.assertEqual
         match = movecount_parser.game_format.match('[Na@me"value"]')
@@ -661,7 +657,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, None)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {None: None})
-    
+
     def test_03_append_start_tag_03(self):
         ae = self.assertEqual
         match = movecount_parser.game_format.match('[Name"value"]')
@@ -682,7 +678,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, True)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {"Name": "value"})
-    
+
     def test_03_append_start_tag_04(self):
         ae = self.assertEqual
         match = movecount_parser.game_format.match('[Name"value"]')
@@ -1011,9 +1007,9 @@ if __name__ == "__main__":
 
     runner().run(loader(MoveCount_method_args))
     runner().run(loader(MoveCount_method_calls))
-    #runner().run(loader(TagPairGame_method_args))
-    #runner().run(loader(TagPairGame_method_calls))
-    #runner().run(loader(ReadGames))
-    #runner().run(loader(GameCountPGN))
-    #runner().run(loader(TagPairGamePGN))
-    #runner().run(loader(AddTokenToGame))
+    # runner().run(loader(TagPairGame_method_args))
+    # runner().run(loader(TagPairGame_method_calls))
+    # runner().run(loader(ReadGames))
+    # runner().run(loader(GameCountPGN))
+    # runner().run(loader(TagPairGamePGN))
+    # runner().run(loader(AddTokenToGame))

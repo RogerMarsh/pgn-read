@@ -9,7 +9,6 @@ from ..core.game import GameStrictPGN
 
 
 if __name__ == "__main__":
-
     main(
         game_class=GameStrictPGN, samples_title="Sample Strict PGN File Report"
     )

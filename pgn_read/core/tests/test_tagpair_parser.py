@@ -12,10 +12,9 @@ from .. import constants
 
 
 class GameCount_method_args(unittest.TestCase):
-
     def setUp(self):
         self.gc1 = tagpair_parser.GameCount()
-    
+
     def test_01___init___01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -23,7 +22,7 @@ class GameCount_method_args(unittest.TestCase):
             tagpair_parser.GameCount,
             *(None,),
         )
-    
+
     def test_02_set_game_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -31,7 +30,7 @@ class GameCount_method_args(unittest.TestCase):
             self.gc1.set_game_error,
             *(None,),
         )
-    
+
     def test_03_append_comment_to_eol_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -43,7 +42,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_comment_to_eol,
         )
-    
+
     def test_04_append_token_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -55,7 +54,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token,
         )
-    
+
     def test_05_append_token_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -67,7 +66,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token_and_set_error,
         )
-    
+
     def test_06_append_token_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -79,7 +78,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token_after_error,
         )
-    
+
     def test_07_append_token_after_error_without_separator_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -91,7 +90,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_token_after_error_without_separator,
         )
-    
+
     def test_08_append_comment_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -103,7 +102,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_comment_after_error,
         )
-    
+
     def test_09_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -115,7 +114,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_bad_tag_and_set_error,
         )
-    
+
     def test_10_append_bad_tag_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -127,7 +126,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_bad_tag_after_error,
         )
-    
+
     def test_11_append_game_termination_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -139,7 +138,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_game_termination_after_error,
         )
-    
+
     def test_12_append_comment_to_eol_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -151,7 +150,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_comment_to_eol_after_error,
         )
-    
+
     def test_13_append_escape_after_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -163,7 +162,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_escape_after_error,
         )
-    
+
     def test_14_append_other_or_disambiguation_pgn_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -175,7 +174,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_other_or_disambiguation_pgn,
         )
-    
+
     def test_15_append_start_tag_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -187,7 +186,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_start_tag,
         )
-    
+
     def test_16_append_game_termination_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -199,7 +198,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.append_game_termination,
         )
-    
+
     def test_17_ignore_escape_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -211,7 +210,7 @@ class GameCount_method_args(unittest.TestCase):
             ),
             self.gc1.ignore_escape,
         )
-    
+
     def test_18_ignore_end_of_file_marker_prefix_to_tag_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -226,33 +225,32 @@ class GameCount_method_args(unittest.TestCase):
 
 
 class GameCount_method_calls(unittest.TestCase):
-
     def setUp(self):
         self.gc1 = tagpair_parser.GameCount()
-    
+
     def test_01___init___01(self):
         ae = self.assertEqual
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_02_set_game_error_01(self):
         ae = self.assertEqual
         self.gc1.set_game_error()
         ae(self.gc1._state, True)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_03_append_comment_to_eol_01(self):
         ae = self.assertEqual
         self.gc1.append_comment_to_eol(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_04_append_token_01(self):
         ae = self.assertEqual
         self.gc1.append_token(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_05_append_token_and_set_error_01(self):
         ae = self.assertEqual
         self.assertRaisesRegex(
@@ -263,55 +261,55 @@ class GameCount_method_calls(unittest.TestCase):
         )
         ae(self.gc1._state, True)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_06_append_token_after_error_01(self):
         ae = self.assertEqual
         self.gc1.append_token_after_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_07_append_token_after_error_without_separator_01(self):
         ae = self.assertEqual
         self.gc1.append_token_after_error_without_separator(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_08_append_comment_after_error_01(self):
         ae = self.assertEqual
         self.gc1.append_comment_after_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_09_append_bad_tag_and_set_error_01(self):
         ae = self.assertEqual
         self.gc1.append_bad_tag_and_set_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_10_append_bad_tag_after_error_01(self):
         ae = self.assertEqual
         self.gc1.append_bad_tag_after_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_11_append_game_termination_after_error_01(self):
         ae = self.assertEqual
         self.gc1.append_game_termination_after_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_12_append_comment_to_eol_after_error_01(self):
         ae = self.assertEqual
         self.gc1.append_comment_to_eol_after_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_13_append_escape_after_error_01(self):
         ae = self.assertEqual
         self.gc1.append_escape_after_error(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_14_append_other_or_disambiguation_pgn_01(self):
         ae = self.assertEqual
         self.assertRaisesRegex(
@@ -322,25 +320,25 @@ class GameCount_method_calls(unittest.TestCase):
         )
         ae(self.gc1._state, True)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_15_append_start_tag_01(self):
         ae = self.assertEqual
         self.gc1.append_start_tag(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_16_append_game_termination_01(self):
         ae = self.assertEqual
         self.gc1.append_game_termination(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_17_ignore_escape_01(self):
         ae = self.assertEqual
         self.gc1.ignore_escape(None)
         ae(self.gc1._state, None)
         ae(self.gc1.game_offset, 0)
-    
+
     def test_18_ignore_end_of_file_marker_prefix_to_tag_01(self):
         ae = self.assertEqual
         self.gc1.ignore_end_of_file_marker_prefix_to_tag(None)
@@ -349,10 +347,9 @@ class GameCount_method_calls(unittest.TestCase):
 
 
 class TagPairGame_method_args(unittest.TestCase):
-
     def setUp(self):
         self.gc1 = tagpair_parser.TagPairGame()
-    
+
     def test_01___init___01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -360,7 +357,7 @@ class TagPairGame_method_args(unittest.TestCase):
             tagpair_parser.TagPairGame,
             *(None,),
         )
-    
+
     def test_02_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -372,7 +369,7 @@ class TagPairGame_method_args(unittest.TestCase):
             ),
             self.gc1.append_bad_tag_and_set_error,
         )
-    
+
     def test_03_append_start_tag_01(self):
         self.assertRaisesRegex(
             TypeError,
@@ -387,16 +384,15 @@ class TagPairGame_method_args(unittest.TestCase):
 
 
 class TagPairGame_method_calls(unittest.TestCase):
-
     def setUp(self):
         self.tpg1 = tagpair_parser.TagPairGame()
-    
+
     def test_01___init___01(self):
         ae = self.assertEqual
         ae(self.tpg1._state, None)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {})
-    
+
     def test_02_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             AttributeError,
@@ -404,7 +400,7 @@ class TagPairGame_method_calls(unittest.TestCase):
             self.tpg1.append_bad_tag_and_set_error,
             *(None,),
         )
-    
+
     def test_02_append_bad_tag_and_set_error_02(self):
         ae = self.assertEqual
         match = tagpair_parser.game_format.match("anything")
@@ -417,7 +413,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, 0)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {"anything": ""})
-    
+
     def test_02_append_bad_tag_and_set_error_03(self):
         ae = self.assertEqual
         match = tagpair_parser.game_format.match('[Na@me"va\lue"]')
@@ -437,7 +433,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, 0)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {"Na@me": "va\\\\lue", "Name": "nextva\\\\lue"})
-    
+
     def test_03_append_start_tag_01(self):
         self.assertRaisesRegex(
             AttributeError,
@@ -445,7 +441,7 @@ class TagPairGame_method_calls(unittest.TestCase):
             self.tpg1.append_start_tag,
             *(None,),
         )
-    
+
     def test_03_append_start_tag_02(self):
         ae = self.assertEqual
         match = tagpair_parser.game_format.match('[Na@me"value"]')
@@ -454,7 +450,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, None)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {None: None})
-    
+
     def test_03_append_start_tag_03(self):
         ae = self.assertEqual
         match = tagpair_parser.game_format.match('[Name"value"]')
@@ -475,7 +471,7 @@ class TagPairGame_method_calls(unittest.TestCase):
         ae(self.tpg1._state, True)
         ae(self.tpg1.game_offset, 0)
         ae(self.tpg1._tags, {"Name": "value"})
-    
+
     def test_03_append_start_tag_04(self):
         ae = self.assertEqual
         match = tagpair_parser.game_format.match('[Name"value"]')

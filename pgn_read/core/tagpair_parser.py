@@ -430,7 +430,6 @@ class PGNTagPair:
             for match in self._rules.finditer(pgntext):
                 if game.state is not None:
                     if match.lastindex == TPF_END_TAG:
-
                         # A PGN Tag in an error sequence starts a new game
                         # except when the sequence starts with a comment, '{',
                         # or reserved, '<', sequence for which a matching '}'

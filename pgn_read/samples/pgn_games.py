@@ -9,5 +9,4 @@ from ._utilities import main
 
 
 if __name__ == "__main__":
-
     main(game_class=Game, samples_title="Sample PGN File Report")

@@ -9,7 +9,6 @@ from ._utilities_moves import main, read_pgn_count_moves
 
 
 if __name__ == "__main__":
-
     main(
         game_class=MoveCount,
         read_function=read_pgn_count_moves,

@@ -29,7 +29,7 @@ class Constants(unittest.TestCase):
                     r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
                     r"O-O-O|O-O|x[a-h][1-8])",
                 )
-            )
+            ),
         )
         ae(
             constants.GAME_TERMINATION,

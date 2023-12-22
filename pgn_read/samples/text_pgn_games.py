@@ -9,5 +9,4 @@ from ..core.game import GameTextPGN
 
 
 if __name__ == "__main__":
-
     main(game_class=GameTextPGN, samples_title="Sample Text PGN File Report")

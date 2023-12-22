@@ -690,7 +690,6 @@ class Game:
                 del self._state_stack[-1]
                 self._state = self._state_stack[-1]
             else:
-
                 # Cannot call append_end_rav() method because it tests some
                 # conditions that should be true when errors are absent.
                 if self._movetext_offset is None:
@@ -1084,7 +1083,6 @@ class Game:
         # Piece move without capture.
 
         if destination in piece_placement_data:
-
             # IMPORT_FORMAT regular expression treats 'Qe3c6' as 'Qe3' and
             # 'c6', and 'Qe3xc6' as 'Qe3' and the unexpected 'xc6'.
             # The capture could be spotted, but not the move.
@@ -1382,7 +1380,6 @@ class Game:
 
         destination = group(IFG_PAWN_FROM_FILE) + group(IFG_PAWN_TO_RANK)
         if destination in piece_placement_data:
-
             # The pawn-like move has been processed as part of a fully
             # disambiguated piece move.
             if self._full_disambiguation_detected:
@@ -1743,7 +1740,6 @@ class Game:
         # self._ravstack[-1][2] because it is None, but are processed in
         # the same way.
         elif self._continue_current_choice():
-
             # Clear out stuff left over from previous RAV at this level.
             del self._ravstack[-1][1:]
 
@@ -1752,7 +1748,6 @@ class Game:
             self._ravstack[-1][2][1] != self._active_color
             or self._ravstack[-1][2][5] != self._fullmove_number
         ):
-
             # Clear out stuff left over from previous RAV at this level.
             del self._ravstack[-1][1:]
 
@@ -3149,7 +3144,6 @@ class Game:
         """
         place, remove = self._position_deltas[-1]
         if len(place[0]) == len(remove[0]):
-
             # If these two piece names are different the source move was a pawn
             # promotion: remove and place the pieces on the board rather than
             # just change the square.
@@ -3165,7 +3159,6 @@ class Game:
                     self.place_piece_on_square(pce)
 
         else:
-
             # Pawns must be removed from board and placed on board because they
             # change name when capturing: the file is prefix to pawn name.
             # This name is the key into self._pieces_on_board.
@@ -3251,7 +3244,6 @@ class Game:
             else:
                 pieces_on_board[piece.name].append(piece)
         if len(place[0]) == len(remove[0]):
-
             # If these two piece names are different the source move was a pawn
             # promotion: remove and place the pieces on the board rather than
             # just change the square.
@@ -4728,7 +4720,6 @@ class GameIgnoreCasePGN(GameTextPGN):
         """Delegate lower case move with upper case promotion to superclass."""
         mgl = match.group().lower()
         if mgl.startswith(FEN_BLACK_BISHOP):
-
             # So the test on self._piece_placement_data gives a helpful answer.
             # Cannot wait for 'super().append_pawn_move(pgn_match)'.
             if self._movetext_offset is None:

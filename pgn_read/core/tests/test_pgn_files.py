@@ -53,7 +53,6 @@ class _StandardTests(unittest.TestCase):
 
 
 class _StrictPGN(_StandardTests):
-
     # 4ncl_* means downloaded from 4NCL website 4ncl.co.uk at some time.
     # FIDE_longest_possible_game.pgn downloaded from a file by Jesper Norgaard
     # via a link at www.ecforum.org.uk/viewtopic.php?f=2&t=10411
@@ -2842,7 +2841,6 @@ class TextPGNExtendByOneCharacter(
 
 
 class _IgnoreCaseTextPGN:
-
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_034_little_01(self):
         self.do_standard_tests("Little_01.pgn", None, 6, [6], [" ("], 59)
