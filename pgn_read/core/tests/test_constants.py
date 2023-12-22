@@ -13,6 +13,142 @@ from .. import constants
 class Constants(unittest.TestCase):
     def test_01_values(self):
         ae = self.assertEqual
+        TAG_PAIR = r"".join(
+            (
+                r"(?#Start Tag)\[\s*",
+                r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
+                r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                r"(?#End Tag)(\])",
+            )
+        )
+        ae(
+            constants.MOVE_SYMBOLS,
+            r"|".join(
+                (
+                    r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
+                    r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
+                    r"O-O-O|O-O|x[a-h][1-8])",
+                )
+            )
+        )
+        ae(
+            constants.GAME_TERMINATION,
+            r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)",
+        )
+        ae(constants.MOVE_NUMBER, r"(?#Move number)([1-9][0-9]*)")
+        ae(constants.EOL_COMMENT, r"(?#EOL comment)(;(?:[^\n]*))(?=\n)")
+        ae(constants.DOTS, r"(?#Dots)(\.+)")
+        ae(constants.COMMENT, r"(?#Comment)(\{[^}]*\})")
+        ae(constants.START_RAV, r"(?#Start RAV)(\()")
+        ae(constants.END_RAV, r"(?#End RAV)(\))")
+        ae(
+            constants.NAG,
+            r"(?#Numeric Annotation Glyph)(\$(?:[1-9][0-9]{0,2}))",
+        )
+        ae(constants.RESERVED, r"(?#Reserved)(<[^>]*>)")
+        ae(constants.ESCAPED, r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)")
+        ae(constants.PASS, r"(?#Pass)(--)")
+        ae(constants.CHECK, r"(?#Check indicators)(?<=[1-8QRBNO])([+#])")
+        ae(
+            constants.TRADITIONAL,
+            r"(?#Traditional Annonations)(?<=[1-8QRBNO+#])([!?][!?]?)",
+        )
+        ae(constants.BAD_COMMENT, r"(?#Bad Comment)(\{[^}]*)")
+        ae(constants.BAD_RESERVED, r"(?#Bad Reserved)(<[^>]*)")
+        ae(constants.BAD_TAG, r'(?#Bad Tag)(\[[^"]*".*?"\s*\])')
+        ae(
+            constants.END_OF_FILE_MARKER,
+            r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+        )
+        ae(
+            constants.TAG_PAIR_FORMAT,
+            r"".join(
+                (
+                    r"(?:\s*)(?:",
+                    r"(?#Start Tag)\[\s*",
+                    r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
+                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r"(?#End Tag)(\])",
+                    r"|",
+                    r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)",
+                    r"|",
+                    r"(?#EOL comment)(;(?:[^\n]*))(?=\n)",
+                    r"|",
+                    r"(?#Comment)(\{[^}]*\})",
+                    r"|",
+                    r"(?#Reserved)(<[^>]*>)",
+                    r"|",
+                    r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
+                    r"|",
+                    r"(?#Bad Comment)(\{[^}]*)",
+                    r"|",
+                    r"(?#Bad Reserved)(<[^>]*)",
+                    r"|",
+                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r"(?#Text)([^[;{<10*\n]+)",
+                    r")",
+                )
+            ),
+        )
+        ae(
+            constants.GAME_FORMAT,
+            r"".join(
+                (
+                    r"(?:\s*)(?:",
+                    r"(?#Start Tag)\[\s*",
+                    r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
+                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r"(?#End Tag)(\])",
+                    r"|",
+                    r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
+                    r"|",
+                    r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
+                    r"|",
+                    r"O-O-O|O-O|x[a-h][1-8])",
+                    r"|",
+                    r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)",
+                    r"|",
+                    r"(?#Move number)([1-9][0-9]*)",
+                    r"|",
+                    r"(?#Dots)(\.+)",
+                    r"|",
+                    r"(?#EOL comment)(;(?:[^\n]*))(?=\n)",
+                    r"|",
+                    r"(?#Comment)(\{[^}]*\})",
+                    r"|",
+                    r"(?#Start RAV)(\()",
+                    r"|",
+                    r"(?#End RAV)(\))",
+                    r"|",
+                    r"(?#Numeric Annotation Glyph)(\$(?:[1-9][0-9]{0,2}))",
+                    r"|",
+                    r"(?#Reserved)(<[^>]*>)",
+                    r"|",
+                    r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
+                    r"|",
+                    r"(?#Pass)(--)",
+                    r"|",
+                    r"(?#Check indicators)(?<=[1-8QRBNO])([+#])",
+                    r"|",
+                    r"(?#Traditional Annonations)",
+                    r"(?<=[1-8QRBNO+#])([!?][!?]?)",
+                    r"|",
+                    r"(?#Bad Comment)(\{[^}]*)",
+                    r"|",
+                    r"(?#Bad Reserved)(<[^>]*)",
+                    r"|",
+                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r"(?#Text)([^[;{<10*\s]+)",
+                    r")",
+                )
+            ),
+        )
         ae(
             constants.PGN_FORMAT,
             r"".join(
@@ -330,6 +466,19 @@ class Constants(unittest.TestCase):
         )
         ae(constants.TP_MOVE, 1)
         ae(constants.TP_PROMOTE_TO_PIECE, 2)
+        ae(constants.TPF_TAG_NAME, 1)
+        ae(constants.TPF_TAG_VALUE, 2)
+        ae(constants.TPF_END_TAG, 3)
+        ae(constants.TPF_GAME_TERMINATION, 4)
+        ae(constants.TPF_COMMENT_TO_EOL, 5)
+        ae(constants.TPF_COMMENT, 6)
+        ae(constants.TPF_RESERVED, 7)
+        ae(constants.TPF_ESCAPE, 8)
+        ae(constants.TPF_BAD_COMMENT, 9)
+        ae(constants.TPF_BAD_RESERVED, 10)
+        ae(constants.TPF_BAD_TAG, 11)
+        ae(constants.TPF_END_OF_FILE_MARKER, 12)
+        ae(constants.TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE, 13)
         ae(constants.PAWN_MOVE_TOKEN_POSSIBLE_BISHOP, r"\A[Bb][1-8]\Z")
         ae(constants.UNTERMINATED, "<{")
         ae(
@@ -4428,12 +4577,39 @@ class CountConstants(unittest.TestCase):
             sorted([c for c in dir(constants) if not c.startswith("_")]),
             [
                 "ANYTHING_ELSE",
+                "BAD_COMMENT",
+                "BAD_RESERVED",
+                "BAD_TAG",
                 "BISHOP_MOVES",
                 "BLACK_PAWN_CAPTURES",
                 "BLACK_PAWN_MOVES",
                 "CASTLING_MOVE_RIGHTS",
                 "CASTLING_PIECE_FOR_SQUARE",
                 "CASTLING_RIGHTS",
+                "CGM_BAD_COMMENT",
+                "CGM_BAD_RESERVED",
+                "CGM_BAD_TAG",
+                "CGM_CHECK",
+                "CGM_COMMENT",
+                "CGM_DOTS",
+                "CGM_END_OF_FILE_MARKER",
+                "CGM_END_RAV",
+                "CGM_END_TAG",
+                "CGM_EOL_COMMENT",
+                "CGM_ESCAPED",
+                "CGM_GAME_TERMINATION",
+                "CGM_MOVE_NUMBER",
+                "CGM_MOVE_SYMBOLS",
+                "CGM_NAG",
+                "CGM_OTHER",
+                "CGM_PASS",
+                "CGM_RESERVED",
+                "CGM_START_RAV",
+                "CGM_TAG_NAME",
+                "CGM_TAG_VALUE",
+                "CGM_TRADITIONAL",
+                "CHECK",
+                "COMMENT",
                 "DEFAULT_SORT_TAG_RESULT_VALUE",
                 "DEFAULT_SORT_TAG_VALUE",
                 "DEFAULT_SUPPLEMENTAL_TAG_VALUE",
@@ -4445,7 +4621,12 @@ class CountConstants(unittest.TestCase):
                 "DISAMBIGUATE_PGN",
                 "DISAMBIGUATE_PROMOTION",
                 "DISAMBIGUATE_TEXT",
+                "DOTS",
+                "END_OF_FILE_MARKER",
+                "END_RAV",
                 "EN_PASSANT_TARGET_SQUARES",
+                "EOL_COMMENT",
+                "ESCAPED",
                 "FEN_ACTIVE_COLOR_FIELD_INDEX",
                 "FEN_BLACK_ACTIVE",
                 "FEN_BLACK_BISHOP",
@@ -4479,6 +4660,8 @@ class CountConstants(unittest.TestCase):
                 "FEN_WHITE_ROOK",
                 "FILE_ATTACKS",
                 "FILE_NAMES",
+                "GAME_FORMAT",
+                "GAME_TERMINATION",
                 "IFG_BAD_COMMENT",
                 "IFG_BAD_RESERVED",
                 "IFG_BAD_TAG",
@@ -4521,7 +4704,11 @@ class CountConstants(unittest.TestCase):
                 "LAN_MOVE_SEPARATOR",
                 "LAN_PROMOTE_PIECE",
                 "LRD_DIAGONAL_ATTACKS",
+                "MOVE_NUMBER",
+                "MOVE_SYMBOLS",
+                "NAG",
                 "OTHER_SIDE",
+                "PASS",
                 "PAWN_MOVE_TOKEN_POSSIBLE_BISHOP",
                 "PGN_BISHOP",
                 "PGN_CAPTURE_MOVE",
@@ -4546,6 +4733,7 @@ class CountConstants(unittest.TestCase):
                 "QUEEN_MOVES",
                 "RANK_ATTACKS",
                 "RANK_NAMES",
+                "RESERVED",
                 "RLD_DIAGONAL_ATTACKS",
                 "ROOK_MOVES",
                 "SETUP_VALUE_FEN_ABSENT",
@@ -4553,6 +4741,7 @@ class CountConstants(unittest.TestCase):
                 "SEVEN_TAG_ROSTER",
                 "SEVEN_TAG_ROSTER_DEFAULTS",
                 "SOURCE_SQUARES",
+                "START_RAV",
                 "SUFFIX_ANNOTATION_TO_NAG",
                 "SUPPLEMENTAL_TAG_ROSTER",
                 "TAG_BLACK",
@@ -4562,6 +4751,8 @@ class CountConstants(unittest.TestCase):
                 "TAG_DATE",
                 "TAG_EVENT",
                 "TAG_FEN",
+                "TAG_PAIR",
+                "TAG_PAIR_FORMAT",
                 "TAG_RESULT",
                 "TAG_ROUND",
                 "TAG_SETUP",
@@ -4573,8 +4764,22 @@ class CountConstants(unittest.TestCase):
                 "TEXT_DISAMBIGUATION",
                 "TEXT_FORMAT",
                 "TEXT_PROMOTION",
+                "TPF_BAD_COMMENT",
+                "TPF_BAD_RESERVED",
+                "TPF_BAD_TAG",
+                "TPF_COMMENT",
+                "TPF_COMMENT_TO_EOL",
+                "TPF_END_OF_FILE_MARKER",
+                "TPF_END_TAG",
+                "TPF_ESCAPE",
+                "TPF_GAME_TERMINATION",
+                "TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE",
+                "TPF_RESERVED",
+                "TPF_TAG_NAME",
+                "TPF_TAG_VALUE",
                 "TP_MOVE",
                 "TP_PROMOTE_TO_PIECE",
+                "TRADITIONAL",
                 "UNTERMINATED",
                 "WHITE_PAWN_CAPTURES",
                 "WHITE_PAWN_MOVES",

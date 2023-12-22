@@ -9,6 +9,89 @@ the PGN game score represents a legal sequence of moves and variations.
 
 """
 
+# The non-movetext elements: for detecting games without testing moves.
+TAG_PAIR = r"".join(
+    (
+        r"(?#Start Tag)\[\s*",
+        r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
+        r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+        r"(?#End Tag)(\])",
+    )
+)
+MOVE_SYMBOLS = r"|".join(
+    (
+        r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
+        r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
+        r"O-O-O|O-O|x[a-h][1-8])",
+    )
+)
+GAME_TERMINATION = r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)"
+MOVE_NUMBER = r"(?#Move number)([1-9][0-9]*)"
+DOTS = r"(?#Dots)(\.+)"
+START_RAV = r"(?#Start RAV)(\()"
+END_RAV = r"(?#End RAV)(\))"
+NAG = r"(?#Numeric Annotation Glyph)(\$(?:[1-9][0-9]{0,2}))"
+EOL_COMMENT = r"(?#EOL comment)(;(?:[^\n]*))(?=\n)"
+COMMENT = r"(?#Comment)(\{[^}]*\})"
+RESERVED = r"(?#Reserved)(<[^>]*>)"
+ESCAPED = r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)"
+PASS = r"(?#Pass)(--)"
+CHECK = r"(?#Check indicators)(?<=[1-8QRBNO])([+#])"
+TRADITIONAL = r"(?#Traditional Annonations)(?<=[1-8QRBNO+#])([!?][!?]?)"
+BAD_COMMENT = r"(?#Bad Comment)(\{[^}]*)"
+BAD_RESERVED = r"(?#Bad Reserved)(<[^>]*)"
+BAD_TAG = r'(?#Bad Tag)(\[[^"]*".*?"\s*\])'
+END_OF_FILE_MARKER = r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])'
+TAG_PAIR_FORMAT = r"|".join(
+    (
+        TAG_PAIR,
+        GAME_TERMINATION,
+        EOL_COMMENT,
+        COMMENT,
+        RESERVED,
+        ESCAPED,
+        BAD_COMMENT,
+        BAD_RESERVED,
+        BAD_TAG,
+        END_OF_FILE_MARKER,
+        r"(?#Text)([^[;{<10*\n]+)",  # '\n' to catch '\n;'.
+    )
+).join(
+    (
+        r"(?:\s*)(?:",
+        r")",
+    )
+)
+GAME_FORMAT = r"|".join(
+    (
+        TAG_PAIR,
+        MOVE_SYMBOLS,
+        GAME_TERMINATION,
+        MOVE_NUMBER,
+        DOTS,
+        EOL_COMMENT,
+        COMMENT,
+        START_RAV,
+        END_RAV,
+        NAG,
+        RESERVED,
+        ESCAPED,
+        PASS,
+        CHECK,
+        TRADITIONAL,
+        BAD_COMMENT,
+        BAD_RESERVED,
+        BAD_TAG,
+        END_OF_FILE_MARKER,
+        r"(?#Text)([^[;{<10*\s]+)",  # '\s' to catch moves and '\n;'.
+    )
+).join(
+    (
+        r"(?:\s*)(?:",
+        r")",
+    )
+)
+
 # r'(?:([a-h])x)?(([a-h])(?:[2-7]|([18])))(?:=([QRBN]))?' is the alternative
 # considered for the pawn element of PGN_FORMAT.
 # It's good point is the destination square is in a single captured group.
@@ -21,34 +104,27 @@ the PGN game score represents a legal sequence of moves and variations.
 # additionally allowed in TEXT_FORMAT.  (It's another 10 seconds quicker too.)
 PGN_FORMAT = r"|".join(
     (
-        r"".join(
-            (
-                r"(?#Start Tag)\[\s*",
-                r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
-                r"(?#End Tag)(\])",
-            )
-        ),
+        TAG_PAIR,
         r"(?:(?#Moves)(?#Piece)([KQRBN])([a-h1-8]?)(x?)([a-h][1-8])",
         r"(?#Pawn)(?:([a-h])(?:x([a-h]))?(?:([2-7])|([18])(?:=([QRBN]))))",
         r"(?#Castle)(O-O-O|O-O)(?#sevoM))",
-        r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)",
-        r"(?#Move number)([1-9][0-9]*)",
-        r"(?#Dots)(\.+)",
-        r"(?#EOL comment)(;(?:[^\n]*))(?=\n)",
-        r"(?#Comment)(\{[^}]*\})",
-        r"(?#Start RAV)(\()",
-        r"(?#End RAV)(\))",
-        r"(?#Numeric Annotation Glyph)(\$(?:[1-9][0-9]{0,2}))",
-        r"(?#Reserved)(<[^>]*>)",
-        r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
-        r"(?#Pass)(--)",
-        r"(?#Check indicators)(?<=[1-8QRBNO])([+#])",
-        r"(?#Traditional Annonations)(?<=[1-8QRBNO+#])([!?][!?]?)",
-        r"(?#Bad Comment)(\{[^}]*)",
-        r"(?#Bad Reserved)(<[^>]*)",
-        r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
-        r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+        GAME_TERMINATION,
+        MOVE_NUMBER,
+        DOTS,
+        EOL_COMMENT,
+        COMMENT,
+        START_RAV,
+        END_RAV,
+        NAG,
+        RESERVED,
+        ESCAPED,
+        PASS,
+        CHECK,
+        TRADITIONAL,
+        BAD_COMMENT,
+        BAD_RESERVED,
+        BAD_TAG,
+        END_OF_FILE_MARKER,
     )
 )
 PGN_DISAMBIGUATION = r"".join(
@@ -171,6 +247,46 @@ TEXT_PROMOTION = r"(?#Lower case)([a-h](?:[x-][a-h])?[18]=?)([qrbn])"
 # Indicies of captured groups for normalising promotion move to PGN.
 TP_MOVE = 1
 TP_PROMOTE_TO_PIECE = 2
+
+# Indicies of captured groups in PGN ignoring movetext, for counting games
+# and extracting Tag Pairs but not moves.
+TPF_TAG_NAME = 1
+TPF_TAG_VALUE = 2
+TPF_END_TAG = 3
+TPF_GAME_TERMINATION = 4
+TPF_COMMENT_TO_EOL = 5
+TPF_COMMENT = 6
+TPF_RESERVED = 7
+TPF_ESCAPE = 8
+TPF_BAD_COMMENT = 9
+TPF_BAD_RESERVED = 10
+TPF_BAD_TAG = 11
+TPF_END_OF_FILE_MARKER = 12
+TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE = 13
+
+# Indicies of captured groups in PGN for estimating number of moves in games.
+CGM_TAG_NAME = 1
+CGM_TAG_VALUE = 2
+CGM_END_TAG = 3
+CGM_MOVE_SYMBOLS = 4
+CGM_GAME_TERMINATION = 5
+CGM_MOVE_NUMBER = 6
+CGM_DOTS = 7
+CGM_EOL_COMMENT = 8
+CGM_COMMENT = 9
+CGM_START_RAV = 10
+CGM_END_RAV = 11
+CGM_NAG = 12
+CGM_RESERVED = 13
+CGM_ESCAPED = 14
+CGM_PASS = 15
+CGM_CHECK = 16
+CGM_TRADITIONAL = 17
+CGM_BAD_COMMENT = 18
+CGM_BAD_RESERVED = 19
+CGM_BAD_TAG = 20
+CGM_END_OF_FILE_MARKER = 21
+CGM_OTHER = 22
 
 # For spotting rejected possible SAN b-pawn move tokens which may be first
 # part of bishop move, ignoring case if necessary.

@@ -258,11 +258,10 @@ class Game:
         when input text ends without a game termination marker but is valid up
         to that point.
 
-        set_game_error() sets _state to 'False' if _state does not
-        indicate the offset in _text of the token which caused the text to be
-        deemed invalid PGN.  _state is None initially and is set 'True'
-        when the first valid PGN Tag is found, or to the offset of the token
-        which makes the PGN text invalid.
+        set_game_error() does nothing if the current state is not None.
+
+        Otherwise the state is set to the current length of the list of
+        tokens found, and this value is appended to the state stack.
 
         set_game_error() should not be used within the Game class or any
         subclass.
