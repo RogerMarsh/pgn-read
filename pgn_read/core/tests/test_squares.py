@@ -16,7 +16,7 @@ class _Square(unittest.TestCase):
             "".join(
                 (
                     r"__init__\(\) missing 2 required positional arguments: ",
-                    "'file' and 'rank'",
+                    "'file' and 'rank'$",
                 )
             ),
             squares._Square,
@@ -25,13 +25,13 @@ class _Square(unittest.TestCase):
     def test_02___init__(self):
         self.assertRaisesRegex(
             ValueError,
-            "substring not found",
+            "substring not found$",
             squares._Square,
             *"k3",
         )
         self.assertRaisesRegex(
             ValueError,
-            "substring not found",
+            "substring not found$",
             squares._Square,
             *"a0",
         )

@@ -18,7 +18,7 @@ class MoveCount_method_args(unittest.TestCase):
     def test_01___init___01(self):
         self.assertRaisesRegex(
             TypeError,
-            r"__init__\(\) takes 1 positional argument but 2 were given",
+            r"__init__\(\) takes 1 positional argument but 2 were given$",
             movecount_parser.MoveCount,
             *(None,),
         )
@@ -26,7 +26,12 @@ class MoveCount_method_args(unittest.TestCase):
     def test_02_set_game_error_01(self):
         self.assertRaisesRegex(
             TypeError,
-            r"set_game_error\(\) takes 1 positional argument but 2 were given",
+            "".join(
+                (
+                    r"set_game_error\(\) takes 1 positional argument ",
+                    r"but 2 were given$",
+                )
+            ),
             self.gc1.set_game_error,
             *(None,),
         )
@@ -37,7 +42,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_comment_to_eol\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_comment_to_eol,
@@ -49,7 +54,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_pass_after_error\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_pass_after_error,
@@ -61,7 +66,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_token\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_token,
@@ -73,7 +78,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_pass_and_set_error\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_pass_and_set_error,
@@ -85,7 +90,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_token_and_set_error\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_token_and_set_error,
@@ -97,7 +102,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_token_after_error\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_token_after_error,
@@ -109,7 +114,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_token_after_error_without_separator",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_token_after_error_without_separator,
@@ -121,7 +126,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_comment_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_comment_after_error,
@@ -133,7 +138,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_bad_tag_and_set_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_bad_tag_and_set_error,
@@ -145,7 +150,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_bad_tag_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_bad_tag_after_error,
@@ -157,7 +162,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_game_termination_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_game_termination_after_error,
@@ -169,7 +174,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_comment_to_eol_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_comment_to_eol_after_error,
@@ -181,7 +186,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_start_rav_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_start_rav_after_error,
@@ -193,7 +198,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_end_rav_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_end_rav_after_error,
@@ -205,7 +210,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_escape_after_error",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_escape_after_error,
@@ -217,7 +222,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_other_or_disambiguation_pgn",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_other_or_disambiguation_pgn,
@@ -229,7 +234,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_start_tag",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_start_tag,
@@ -241,7 +246,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_move",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_move,
@@ -253,7 +258,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_start_rav",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_start_rav,
@@ -265,7 +270,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_end_rav",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_end_rav,
@@ -277,7 +282,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_game_termination",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_game_termination,
@@ -289,7 +294,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.append_glyph_for_traditional_annotation",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_glyph_for_traditional_annotation,
@@ -301,7 +306,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.ignore_escape",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.ignore_escape,
@@ -313,7 +318,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.ignore_end_of_file_marker_prefix_to_tag",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.ignore_end_of_file_marker_prefix_to_tag,
@@ -325,7 +330,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.ignore_move_number",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.ignore_move_number,
@@ -337,7 +342,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.ignore_dots",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.ignore_dots,
@@ -349,7 +354,7 @@ class MoveCount_method_args(unittest.TestCase):
             "".join(
                 (
                     r"MoveCount.ignore_check_indicator",
-                    r"\(\) missing 1 required positional argument: 'match'",
+                    r"\(\) missing 1 required positional argument: 'match'$",
                 )
             ),
             self.gc1.ignore_check_indicator,
@@ -418,7 +423,7 @@ class MoveCount_method_calls(unittest.TestCase):
         ae = self.assertEqual
         self.assertRaisesRegex(
             AttributeError,
-            "'NoneType' object has no attribute 'group'",
+            "'NoneType' object has no attribute 'group'$",
             self.gc1.append_token_and_set_error,
             *(None,),
         )
@@ -469,7 +474,7 @@ class MoveCount_method_calls(unittest.TestCase):
         ae = self.assertEqual
         self.assertRaisesRegex(
             AttributeError,
-            "'NoneType' object has no attribute 'group'",
+            "'NoneType' object has no attribute 'group'$",
             self.gc1.append_other_or_disambiguation_pgn,
             *(None,),
         )
@@ -485,7 +490,7 @@ class MoveCount_method_calls(unittest.TestCase):
         ae(self.gc1._position_count, 0)
         self.assertRaisesRegex(
             AttributeError,
-            "'NoneType' object has no attribute 'group'",
+            "'NoneType' object has no attribute 'group'$",
             self.gc1.append_move,
             *(None,),
         )
@@ -560,7 +565,7 @@ class TagPairGame_method_args(unittest.TestCase):
     def test_01___init___01(self):
         self.assertRaisesRegex(
             TypeError,
-            r"__init__\(\) takes 1 positional argument but 2 were given",
+            r"__init__\(\) takes 1 positional argument but 2 were given$",
             movecount_parser.TagPairGame,
             *(None,),
         )
@@ -571,7 +576,7 @@ class TagPairGame_method_args(unittest.TestCase):
             "".join(
                 (
                     r"TagPairGame.append_bad_tag_and_set_error\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_bad_tag_and_set_error,
@@ -583,7 +588,7 @@ class TagPairGame_method_args(unittest.TestCase):
             "".join(
                 (
                     r"TagPairGame.append_start_tag\(\) missing 1 ",
-                    r"required positional argument: 'match'",
+                    r"required positional argument: 'match'$",
                 )
             ),
             self.gc1.append_start_tag,
@@ -603,7 +608,7 @@ class TagPairGame_method_calls(unittest.TestCase):
     def test_02_append_bad_tag_and_set_error_01(self):
         self.assertRaisesRegex(
             AttributeError,
-            "'NoneType' object has no attribute 'group'",
+            "'NoneType' object has no attribute 'group'$",
             self.tpg1.append_bad_tag_and_set_error,
             *(None,),
         )
@@ -623,28 +628,28 @@ class TagPairGame_method_calls(unittest.TestCase):
 
     def test_02_append_bad_tag_and_set_error_03(self):
         ae = self.assertEqual
-        match = movecount_parser.game_format.match('[Na@me"va\lue"]')
+        match = movecount_parser.game_format.match(r'[Na@me"va\lue"]')
         ae(match.lastindex, 11)
         self.tpg1.append_bad_tag_and_set_error(match)
         ae(self.tpg1._state, None)
         ae(self.tpg1.game_offset, 0)
-        ae(self.tpg1._tags, {"Na@me": "va\\\\lue"})
-        match = movecount_parser.game_format.match('[Na@me"nextva\lue"]')
+        ae(self.tpg1._tags, {"Na@me": "value"})
+        match = movecount_parser.game_format.match(r'[Na@me"nextva\lue"]')
         self.tpg1.append_bad_tag_and_set_error(match)
         ae(self.tpg1._state, 0)
         ae(self.tpg1.game_offset, 0)
-        ae(self.tpg1._tags, {"Na@me": "va\\\\lue"})
-        match = movecount_parser.game_format.match('[Name"nextva\lue"]')
+        ae(self.tpg1._tags, {"Na@me": "value"})
+        match = movecount_parser.game_format.match(r'[Name"nextva\lue"]')
         ae(match.lastindex, 3)
         self.tpg1.append_bad_tag_and_set_error(match)
         ae(self.tpg1._state, 0)
         ae(self.tpg1.game_offset, 0)
-        ae(self.tpg1._tags, {"Na@me": "va\\\\lue", "Name": "nextva\\\\lue"})
+        ae(self.tpg1._tags, {"Na@me": "value", "Name": "nextvalue"})
 
     def test_03_append_start_tag_01(self):
         self.assertRaisesRegex(
             AttributeError,
-            "'NoneType' object has no attribute 'group'",
+            "'NoneType' object has no attribute 'group'$",
             self.tpg1.append_start_tag,
             *(None,),
         )
@@ -868,7 +873,7 @@ class AddTokenToGame(unittest.TestCase):
             "".join(
                 (
                     r"add_token_to_game\(\) missing 2 required ",
-                    r"positional arguments: 'text' and 'game'",
+                    r"positional arguments: 'text' and 'game'$",
                 )
             ),
             movecount_parser.add_token_to_game,
@@ -880,7 +885,7 @@ class AddTokenToGame(unittest.TestCase):
             "".join(
                 (
                     r"add_token_to_game\(\) takes from 2 to 3 ",
-                    r"positional arguments but 4 were given",
+                    r"positional arguments but 4 were given$",
                 )
             ),
             movecount_parser.add_token_to_game,

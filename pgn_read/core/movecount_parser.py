@@ -114,7 +114,7 @@ class MoveCount:
 
     @property
     def pgn_text(self):
-        """Return True if text has been found for game"""
+        """Return True if text has been found for game."""
         return self._first_error_text
 
     @property

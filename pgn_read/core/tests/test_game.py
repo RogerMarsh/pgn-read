@@ -22,7 +22,7 @@ class Game(unittest.TestCase):
     def test_01___init__(self):
         self.assertRaisesRegex(
             TypeError,
-            r"__init__\(\) takes 1 positional argument but 2 were given",
+            r"__init__\(\) takes 1 positional argument but 2 were given$",
             game.Game,
             *(None,),
         )
@@ -275,7 +275,7 @@ class Game(unittest.TestCase):
         g._pieces_on_board["r"] = []
         self.assertRaisesRegex(
             game.GameError,
-            "rc5 not in _pieces_on_board at square c5",
+            "rc5 not in _pieces_on_board at square c5$",
             g.remove_piece_from_board,
             *(("c5", None),),
         )

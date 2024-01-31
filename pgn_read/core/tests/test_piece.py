@@ -17,7 +17,7 @@ class Piece(unittest.TestCase):
             "".join(
                 (
                     r"__init__\(\) missing 1 required positional argument: ",
-                    "'name'",
+                    "'name'$",
                 )
             ),
             piece.Piece,
@@ -29,7 +29,7 @@ class Piece(unittest.TestCase):
             "".join(
                 (
                     r"set_square\(\) missing 1 required positional argument: ",
-                    "'name'",
+                    "'name'$",
                 )
             ),
             piece.Piece,
@@ -39,7 +39,7 @@ class Piece(unittest.TestCase):
     def test_03___init__(self):
         self.assertRaisesRegex(
             KeyError,
-            "'a'",
+            "'a'$",
             piece.Piece,
             *("x", "a"),
         )
