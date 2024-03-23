@@ -39,6 +39,7 @@ from .constants import (
     TPF_BAD_TAG,
     TPF_END_OF_FILE_MARKER,
     TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE,
+    PGN_TOKEN_SEPARATOR,
 )
 
 game_format = re.compile(TAG_PAIR_FORMAT)
@@ -63,13 +64,13 @@ class GameCount:
 
     # Defaults for Game instance state.
     _state = None
-    _first_error_text = None
 
     # Locate position in PGN text file of latest game.
     game_offset = 0
 
     def __init__(self):
         """Create empty data structure for noting existence of game text."""
+        self._text = []
 
     def set_game_error(self):
         """Declare parsing of game text has failed.
@@ -88,12 +89,12 @@ class GameCount:
 
         """
         if self._state is None:
-            self._state = True
+            self._state = len(self._text)
 
     @property
     def pgn_text(self):
         """Return True if text has been found for game."""
-        return self._first_error_text
+        return self._text
 
     @property
     def state(self):
@@ -130,8 +131,8 @@ class GameCount:
 
         """
         if self._state is None:
-            self._state = True
-            self._first_error_text = match.group()
+            self._state = len(self._text)
+        self._text.append(PGN_TOKEN_SEPARATOR + match.group())
 
     def append_token_after_error(self, match):
         """Append token to game score after an error has been found."""
@@ -438,7 +439,10 @@ class PGNTagPair:
                         # PGN errors, until sufficient text has been read to
                         # resolve the problem.  '{[A"a"]}' is allowed as a
                         # comment in PGN.
-                        if game.pgn_text and game.pgn_text in UNTERMINATED:
+                        if (
+                            game.pgn_text
+                            and game.pgn_text[game.state][0] in UNTERMINATED
+                        ):
                             game.append_token_after_error(match)
                             continue
 

@@ -2,7 +2,7 @@
 # Copyright 2023 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
-"""Utilities to run a sample module for PGNMoveCount parser."""
+"""Utilities to run a sample module for PGNMoveText parser."""
 
 import tkinter
 import tkinter.ttk
@@ -11,32 +11,14 @@ import tkinter.messagebox
 import os
 import time
 
-from ..core.movecount_parser import PGNMoveCount
-
-
-def read_pgn_count_moves(filename, game_class=None, size=10000000):
-    """Return ok and error counts, and PGN text in error."""
-    game_count = 0
-    move_count = 0
-    piece_count = 0
-    for y in PGNMoveCount(game_class=game_class).read_games(
-        open(filename, encoding="iso-8859-1"), size=size
-    ):
-        game_count += 1
-        move_count += y._position_count
-        piece_count += y._piece_count
-    return (
-        game_count,
-        move_count,
-        piece_count,
-    )
+from ..core.movetext_parser import PGNMoveText
 
 
 def read_pgn_count_tag_pairs(filename, game_class=None, size=10000000):
     """Return ok and error counts, and PGN text in error."""
     game_count = 0
     tag_pair_count = 0
-    for y in PGNMoveCount(game_class=game_class).read_games(
+    for y in PGNMoveText(game_class=game_class).read_games(
         open(filename, encoding="iso-8859-1"), size=size
     ):
         game_count += 1

@@ -241,7 +241,7 @@ class GameCount_method_calls(unittest.TestCase):
     def test_02_set_game_error_01(self):
         ae = self.assertEqual
         self.gc1.set_game_error()
-        ae(self.gc1._state, True)
+        ae(self.gc1._state, 0)
         ae(self.gc1.game_offset, 0)
 
     def test_03_append_comment_to_eol_01(self):
@@ -264,7 +264,7 @@ class GameCount_method_calls(unittest.TestCase):
             self.gc1.append_token_and_set_error,
             *(None,),
         )
-        ae(self.gc1._state, True)
+        ae(self.gc1._state, 0)
         ae(self.gc1.game_offset, 0)
 
     def test_06_append_token_after_error_01(self):
@@ -323,7 +323,7 @@ class GameCount_method_calls(unittest.TestCase):
             self.gc1.append_other_or_disambiguation_pgn,
             *(None,),
         )
-        ae(self.gc1._state, True)
+        ae(self.gc1._state, 0)
         ae(self.gc1.game_offset, 0)
 
     def test_15_append_start_tag_01(self):
@@ -708,40 +708,40 @@ class AddTokenToGame(unittest.TestCase):
         ae(game.state, None)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 16)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 24)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 34)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 44)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 53)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 76)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 77)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 91)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 106)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 121)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 122)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, None)
-        ae(game.state, True)
+        ae(game.state, 0)
 
     def test_02_add_token_to_game_02(self):
         ae = self.assertEqual
@@ -775,28 +775,28 @@ class AddTokenToGame(unittest.TestCase):
         ae(game.state, None)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 51)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 74)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 75)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 89)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 104)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 119)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, 120)
-        ae(game.state, True)
+        ae(game.state, 0)
         pos = tagpair_parser.add_token_to_game(text, game, pos=pos)
         ae(pos, None)
-        ae(game.state, True)
+        ae(game.state, 0)
 
 
 if __name__ == "__main__":

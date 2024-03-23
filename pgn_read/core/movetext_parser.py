@@ -1,27 +1,21 @@
-# movecount_parser.py
+# movetext_parser.py
 # Copyright 2023 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
 """Portable Game Notation (PGN) parser which counts moves in movetext.
 
-The PGNMoveCount class provides the read_games method which splits text into
-tokens and by default passes them to an instance of the MoveCountGame class
-to build a data structure representing the number of Tag Pairs, moves,
-positions, and piece locations, in a game.
+The PGNMoveText class provides the read_games method which splits text into
+tokens and by default passes them to an instance of the MoveText class to
+build a data structure representing the Tag Pairs and syntactically
+correct movetext in a game.
 
 The add_token_to_game function searches for the next token in the text
-argument and adds it to the instance of MoveCountGame class, or susubclass,
+argument and adds it to the instance of MoveText class, or susubclass,
 in the game argument.
 
-The MoveCountGame class allows the games; Tag Pairs, positions and moves
-within a game; to be counted without verifying the movetext represents a
-legal game or collecting these elements.  This should save significant
-time when the moves played are not of interest.
-
-The MoveGame class allows the Tag Pairs, Movetext, and position and piece
-counts, of games to be collected without verifying the movetext represents
-a legal game.  This should save significant time when the validity of moves
-played is not of interest.
+The MoveText class allows the Tag Pairs and Movetext to be verified withou
+confirming the movetext represents a legal game.  Significant time should
+be saved when the validity of moves played is not of interest.
 
 """
 import re
@@ -36,31 +30,32 @@ from .constants import (
     CGM_GAME_TERMINATION,
     CGM_MOVE_NUMBER,
     CGM_DOTS,
-    CGM_EOL_COMMENT,
+    CGM_COMMENT_TO_EOL,
     CGM_COMMENT,
     CGM_START_RAV,
     CGM_END_RAV,
-    CGM_NAG,
+    CGM_NUMERIC_ANNOTATION_GLYPH,
     CGM_RESERVED,
-    CGM_ESCAPED,
+    CGM_ESCAPE,
     CGM_PASS,
-    CGM_CHECK,
-    CGM_TRADITIONAL,
+    CGM_CHECK_INDICATOR,
+    CGM_TRADITIONAL_ANNOTATION,
     CGM_BAD_COMMENT,
     CGM_BAD_RESERVED,
     CGM_BAD_TAG,
     CGM_END_OF_FILE_MARKER,
-    CGM_OTHER,
+    CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE,
+    PGN_TOKEN_SEPARATOR,
 )
 
 game_format = re.compile(GAME_FORMAT)
 
 
-class PGNMoveCountError(Exception):
-    """Exception raised where PGNMoveCount parsing cannot continue."""
+class PGNMoveTextError(Exception):
+    """Exception raised where PGNMoveText parsing cannot continue."""
 
 
-class MoveCount:
+class MoveText:
     """Data structure of game movetext symbols derived from a PGN game score.
 
     Movetext is ignored except for detecting comment, reserved, and
@@ -69,29 +64,35 @@ class MoveCount:
 
     Almost all games will be flagged as games with errors because they
     contain movetext, which is seen as invalid movetext by the parser
-    in PGNMoveCount.
+    in PGNMoveText.
 
     """
 
-    # Defaults for MoveCount instance state.
+    # Defaults for MoveText instance state.
     _state = None
-    _first_error_text = None
 
     # Locate position in PGN text file of latest game.
     game_offset = 0
 
-    # Count Tag Pairs, Movetext, positions, piece locations of game.
-    # Subclasses which validate PGN for legal moves will probably ignore
-    # these attributes because they have the actual data.
-    _tag_count = 0
-    _text_count = 0
-    _position_count = 0  # Add 1 per move.
-    _pieces_in_position = 32  # Reduce by 1 when a piece is captured.
-    _piece_count = 0  # Add _pieces_in_position per move.
-
     def __init__(self):
-        """Create empty data structure for noting existence of game text."""
-        self._pieces_stack = [self._pieces_in_position]
+        """Create empty data structure for Tag Pairs and Movetext of game."""
+        super().__init__()
+        self._text = []
+        self._tags = {}
+
+    @property
+    def pgn_tags(self):
+        """Return _tags dict of PGN tag names and values."""
+        return self._tags
+
+    def is_pgn_valid(self):
+        """Return True if the tags and movetext in the game are valid.
+
+        Movetext with no PGN errors in the main line but errors in one or more
+        RAVs will cause this method to return True.
+
+        """
+        return True
 
     def set_game_error(self):
         """Declare parsing of game text has failed.
@@ -110,12 +111,12 @@ class MoveCount:
 
         """
         if self._state is None:
-            self._state = True
+            self._state = len(self._text)
 
     @property
     def pgn_text(self):
         """Return True if text has been found for game."""
-        return self._first_error_text
+        return self._text
 
     @property
     def state(self):
@@ -133,9 +134,11 @@ class MoveCount:
         and the game state is adjusted to fit.
 
         """
+        self._text.append(match.group().lstrip() + "\n")
 
     def append_pass_after_error(self, match):
         """Append '--' token found after detection of PGN error."""
+        self.append_token_after_error(match)
 
     def append_token(self, match):
         """Append valid non-tag token from game score.
@@ -144,6 +147,7 @@ class MoveCount:
         and the game state is adjusted to fit.
 
         """
+        self._text.append(match.group().lstrip())
 
     append_reserved = append_token
 
@@ -159,11 +163,12 @@ class MoveCount:
 
         """
         if self._state is None:
-            self._state = True
-            self._first_error_text = match.group()
+            self._state = len(self._text)
+        self._text.append(PGN_TOKEN_SEPARATOR + match.group().lstrip())
 
     def append_token_after_error(self, match):
         """Append token to game score after an error has been found."""
+        self._text.append(PGN_TOKEN_SEPARATOR + match.group().lstrip())
 
     def append_token_after_error_without_separator(self, match):
         """Append token without separator from game score after PGN error.
@@ -174,9 +179,11 @@ class MoveCount:
         Check indicators are not prefixed with a separator.
 
         """
+        self._text.append(match.group().lstrip())
 
     def append_comment_after_error(self, match):
         """Append comment token to game score after an error has been found."""
+        self._text.append(PGN_TOKEN_SEPARATOR + match.group().lstrip())
 
     def append_bad_tag_and_set_error(self, match):
         r"""Append incomplete or badly formed tag to game score and set error.
@@ -191,9 +198,28 @@ class MoveCount:
         the unknown result symbol '*'.
 
         """
+        bad_tag = match.group().split('"')
+        val = (
+            '"'.join(bad_tag[1:-1])
+            .replace('"', '"')
+            .replace("\\\\", "\\")
+            .replace("\\", "\\\\")
+            .replace('"', r"\"")
+        )
+
+        # Copy from append_start_tag() to apply correctly formatted PGN tag,
+        # which must not be duplicated.
+        tag_name = bad_tag[0].lstrip("[").strip()
+        if tag_name in self._tags:
+            if self._state is None:
+                self._state = len(self._tags) - 1
+            return
+        self._tags[tag_name] = val
+        return
 
     def append_bad_tag_after_error(self, match):
         """Append token to game score after an error has been found."""
+        self._text.append(match.group().lstrip())
 
     def append_game_termination_after_error(self, match):
         """Delegate action to append_token_after_error method.
@@ -212,12 +238,15 @@ class MoveCount:
         token.
 
         """
+        self._text.append(match.group().lstrip() + "\n")
 
     def append_start_rav_after_error(self, match):
         """Append start RAV token from game score after PGN error found."""
+        self.append_token_after_error(match)
 
     def append_end_rav_after_error(self, match):
         """Append end RAV token from game score after PGN error found."""
+        self.append_token_after_error(match)
 
     def append_escape_after_error(self, match):
         r"""Append escape token to game score after an error has been found.
@@ -228,6 +257,7 @@ class MoveCount:
         The '\n' is appended to the token.
 
         """
+        self._text.append(match.group().lstrip() + "\n")
 
     def append_other_or_disambiguation_pgn(self, match):
         """Ignore token previously used for disambiguation, or set PGN error.
@@ -246,6 +276,22 @@ class MoveCount:
         Put game in error state if a duplicate tag name is found.
 
         """
+        if self._state is not None:
+            self.append_token_and_set_error(match)
+            return
+        group = match.group
+        tag_name = group(CGM_TAG_NAME)
+        tag_value = group(CGM_TAG_VALUE)
+        self._text.append("".join(("[", tag_name, '"', tag_value, '"]')))
+
+        # Tag names must not be duplicated.
+        if tag_name in self._tags:
+            if self._state is None:
+                self._state = len(self._tags) - 1
+            return
+
+        self._tags[tag_name] = tag_value
+        return
 
     def append_move(self, match):
         """Append piece move token to game score and update board state.
@@ -253,10 +299,7 @@ class MoveCount:
         Put game in error state if the token represents an illegal move.
 
         """
-        self._position_count += 1
-        if "x" in match.group() and self._pieces_stack[-1] > 2:
-            self._pieces_stack[-1] -= 1
-        self._piece_count += self._pieces_stack[-1]
+        self._text.append(match.group().lstrip())
 
     def append_start_rav(self, match):
         """Append start recursive annotation variation token to game score.
@@ -265,7 +308,7 @@ class MoveCount:
         in game score.
 
         """
-        self._pieces_stack.append(self._pieces_in_position)
+        self._text.append(match.group().lstrip())
 
     def append_end_rav(self, match):
         """Append end recursive annotation variation token to game score.
@@ -274,8 +317,7 @@ class MoveCount:
         place in game score.
 
         """
-        if len(self._pieces_stack) > 1:
-            self._pieces_stack.pop()
+        self._text.append(match.group().lstrip())
 
     def append_game_termination(self, match):
         """Append game termination token to game score and update game state.
@@ -288,6 +330,7 @@ class MoveCount:
         position is not attempted.
 
         """
+        self._text.append(match.group().lstrip())
 
     def append_glyph_for_traditional_annotation(self, match):
         """Append NAG for traditional annotation to game score.
@@ -296,6 +339,7 @@ class MoveCount:
         and the game state is adjusted to fit.
 
         """
+        self._text.append(match.group().lstrip())
 
     def ignore_escape(self, match):
         r"""Ignore escape token and rest of line containing the token.
@@ -348,79 +392,11 @@ class MoveCount:
         """
 
 
-class MoveText(MoveCount):
-    """Extend to capture PGN Tag Pairs and Movetext."""
-
-    def __init__(self):
-        """Create empty data structure for Tag Pairs and Movetext of game."""
-        super().__init__()
-        self._tags = {}
-
-    @property
-    def pgn_tags(self):
-        """Return _tags dict of PGN tag names and values."""
-        return self._tags
-
-    def append_bad_tag_and_set_error(self, match):
-        r"""Append incomplete or badly formed tag to game score and set error.
-
-        The tag is formed like '[ Tagname "Tagvalue" ]' with extra, or
-        less, whitespace allowed.  In particular there is at least one '\' or
-        '"' without the '\' escape prefix.  If _state and _movetext_offset
-        allow and the rules do not state _strict_pgn the escape prefix is
-        added as needed, rather than declare an error and terminate the game.
-
-        The tag is wrapped in a comment, '{}' and the game is terminated with
-        the unknown result symbol '*'.
-
-        """
-        bad_tag = match.group().split('"')
-        val = (
-            '"'.join(bad_tag[1:-1])
-            .replace('"', '"')
-            .replace("\\\\", "\\")
-            .replace("\\", "\\\\")
-            .replace('"', r"\"")
-        )
-
-        # Copy from append_start_tag() to apply correctly formatted PGN tag,
-        # which must not be duplicated.
-        tag_name = bad_tag[0].lstrip("[").strip()
-        if tag_name in self._tags:
-            if self._state is None:
-                self._state = len(self._tags) - 1
-            return
-        self._tags[tag_name] = val
-        return
-
-    def append_start_tag(self, match):
-        """Append tag token to game score and update game tags.
-
-        Put game in error state if a duplicate tag name is found.
-
-        """
-        if self._state is not None:
-            self.append_token_and_set_error(match)
-            return
-        group = match.group
-        tag_name = group(CGM_TAG_NAME)
-        tag_value = group(CGM_TAG_VALUE)
-
-        # Tag names must not be duplicated.
-        if tag_name in self._tags:
-            if self._state is None:
-                self._state = True
-            return
-
-        self._tags[tag_name] = tag_value
-        return
-
-
-class PGNMoveCount:
+class PGNMoveText:
     """Extract tokens from text using definitions in PGN specification.
 
-    The tokens are passed to an instance of the MoveText class which
-    decides whether the token is allowed in the current context.
+    The tokens are passed by default to an instance of the MoveText class
+    which decides whether the token is allowed in the current context.
 
     Input is assumed to be Import Format PGN, with Export Format PGN
     treated as a valid Import Format.
@@ -438,7 +414,7 @@ class PGNMoveCount:
 
     """
 
-    def __init__(self, game_class=MoveCount):
+    def __init__(self, game_class=MoveText):
         """Initialise switches to call game_class methods."""
         super().__init__()
         self._rules = game_format
@@ -552,7 +528,10 @@ class PGNMoveCount:
                         # PGN errors, until sufficient text has been read to
                         # resolve the problem.  '{[A"a"]}' is allowed as a
                         # comment in PGN.
-                        if game.pgn_text and game.pgn_text in UNTERMINATED:
+                        if (
+                            game.pgn_text
+                            and game.pgn_text[game.state][0] in UNTERMINATED
+                        ):
                             game.append_token_after_error(match)
                             continue
 
@@ -576,7 +555,7 @@ class PGNMoveCount:
 
                     else:
                         error_despatch_table[match.lastindex](game, match)
-                elif match.lastindex == CGM_OTHER:
+                elif match.lastindex == CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE:
                     despatch_table[match.lastindex](game, match)
                 elif match.lastindex == CGM_GAME_TERMINATION:
                     residue_start_on_error_at_pgntext_end = match.end()

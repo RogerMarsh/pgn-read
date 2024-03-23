@@ -3408,6 +3408,8 @@ class Game:
         else:
             knight_search = FEN_WHITE_KNIGHT
         square_list = FEN_SOURCE_SQUARES[knight_search]
+        # pylint message C0206 'Consider iterating with .items()'.
+        # Reference to 'square_list[sqr]' is not considered frequent enough.
         for sqr in square_list:
             if sqr not in piece_placement_data:
                 continue
@@ -4047,7 +4049,7 @@ class GameTextPGN(Game):
                 super().append_piece_move(bishop)
                 self._bishop_or_bpawn = None
                 return
-            self.append_token_and_set_error()
+            self.append_token_and_set_error(match)
             return
         mgl = match.group()
 
@@ -4638,7 +4640,7 @@ class GameIgnoreCasePGN(GameTextPGN):
                 super(GameTextPGN, self).append_piece_move(bishop)
                 self._bishop_or_bpawn = None
                 return
-            self.append_token_and_set_error()
+            self.append_token_and_set_error(match)
             return
 
         mgl = match.group().lower()
@@ -4790,8 +4792,7 @@ class GameIgnoreCasePGN(GameTextPGN):
             bishop_match and bishop_match.lastindex == IFG_PIECE_DESTINATION
         )
         pawn_lastindex = pawn_match and (
-            pawn_match.lastindex == IFG_PAWN_TO_RANK
-            or pawn_match.lastindex == IFG_PAWN_PROMOTE_PIECE
+            pawn_match.lastindex in (IFG_PAWN_TO_RANK, IFG_PAWN_PROMOTE_PIECE)
         )
 
         # Try the available matches.
@@ -5107,6 +5108,8 @@ class GameIndicateCheck(Game):
         else:
             knight_search = FEN_WHITE_KNIGHT
         square_list = FEN_SOURCE_SQUARES[knight_search]
+        # pylint message C0206 'Consider iterating with .items()'.
+        # Reference to 'square_list[sqr]' is not considered frequent enough.
         for sqr in square_list:
             if sqr not in piece_placement_data:
                 continue

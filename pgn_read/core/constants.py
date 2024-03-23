@@ -272,21 +272,21 @@ CGM_MOVE_SYMBOLS = 4
 CGM_GAME_TERMINATION = 5
 CGM_MOVE_NUMBER = 6
 CGM_DOTS = 7
-CGM_EOL_COMMENT = 8
+CGM_COMMENT_TO_EOL = 8
 CGM_COMMENT = 9
 CGM_START_RAV = 10
 CGM_END_RAV = 11
-CGM_NAG = 12
+CGM_NUMERIC_ANNOTATION_GLYPH = 12
 CGM_RESERVED = 13
-CGM_ESCAPED = 14
+CGM_ESCAPE = 14
 CGM_PASS = 15
-CGM_CHECK = 16
-CGM_TRADITIONAL = 17
+CGM_CHECK_INDICATOR = 16
+CGM_TRADITIONAL_ANNOTATION = 17
 CGM_BAD_COMMENT = 18
 CGM_BAD_RESERVED = 19
 CGM_BAD_TAG = 20
 CGM_END_OF_FILE_MARKER = 21
-CGM_OTHER = 22
+CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE = 22
 
 # For spotting rejected possible SAN b-pawn move tokens which may be first
 # part of bishop move, ignoring case if necessary.
@@ -523,10 +523,20 @@ ranks = {}
 for r in RANK_NAMES:
     ranks[r] = {f + r for f in FILE_NAMES}
 ROOK_MOVES = {}
-for f in files:
-    for r in ranks:
-        ROOK_MOVES[f + r] = files[f].union(ranks[r])
+# 'file' and 'rank' introduced to avoid two pylint C0206 messages
+# 'Consider iterating with .items()', which is reasonable.
+for f, file in files.items():
+    for r, rank in ranks.items():
+        ROOK_MOVES[f + r] = file.union(rank)
         ROOK_MOVES[f + r].remove(f + r)
+# The 'del' for 'file' and 'rank' attracts two pylint W0631 messages
+# 'Using possibly undefined loop variable 'file' and
+# 'Using possibly undefined loop variable 'rank'.
+# The 'del' for 'f' and 'r' is at end of module ('files' and 'ranks' too).
+# Not sure why 'f' and 'r' do not get W0631 messages if deleted here when
+# changing 'f' to 'a' causes a W0631 for 'a'.
+# 'a', 'file', and 'rank', are not used elsewhere but 'f' and 'r' are.
+del file, rank
 left_to_right = []
 right_to_left = []
 for e in range(len(FILE_NAMES)):
