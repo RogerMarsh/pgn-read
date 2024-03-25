@@ -46,6 +46,8 @@ from .constants import (
     CGM_END_OF_FILE_MARKER,
     CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE,
     PGN_TOKEN_SEPARATOR,
+    SEVEN_TAG_ROSTER,
+    SUPPLEMENTAL_TAG_ROSTER,
 )
 
 game_format = re.compile(GAME_FORMAT)
@@ -86,12 +88,29 @@ class MoveText:
         return self._tags
 
     def is_pgn_valid(self):
-        """Return True if the tags and movetext in the game are valid.
+        """Return True if the tags in the game are valid.
 
-        Movetext with no PGN errors in the main line but errors in one or more
-        RAVs will cause this method to return True.
+        Movetext is only relevant to this class for identifying presence
+        of comments and the RAV structure so the end of a game can be
+        found correctly.
 
         """
+        return bool(self._tags)
+
+    def is_tag_roster_valid(self):
+        """Return True if the game's tag roster is valid."""
+        tags = self._tags
+        for str_tag in SEVEN_TAG_ROSTER:
+            if str_tag not in tags:
+                # A mandatory tag is missing.
+                return False
+            if len(tags[str_tag]) == 0:
+                # Mandatory tags must have a non-null value.
+                return False
+        for str_tag in SUPPLEMENTAL_TAG_ROSTER:
+            if str_tag in tags:
+                if len(tags[str_tag]) == 0:
+                    return False
         return True
 
     def set_game_error(self):
