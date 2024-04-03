@@ -360,6 +360,19 @@ class MoveText_method_args(unittest.TestCase):
             self.gc1.ignore_check_indicator,
         )
 
+    def test_30_is_tag_roster_valid_01(self):
+        self.assertRaisesRegex(
+            TypeError,
+            "".join(
+                (
+                    r"is_tag_roster_valid\(\) takes 1 positional argument ",
+                    r"but 2 were given$",
+                )
+            ),
+            self.gc1.is_tag_roster_valid,
+            *(None,),
+        )
+
 
 class MoveText_method_calls(unittest.TestCase):
     def setUp(self):
@@ -384,7 +397,7 @@ class MoveText_method_calls(unittest.TestCase):
 
     def test_02_is_pgn_valid_01(self):
         ae = self.assertEqual
-        ae(self.gc1.is_pgn_valid(), True)
+        ae(self.gc1.is_pgn_valid(), False)
 
     def test_03_set_game_error_01(self):
         ae = self.assertEqual
@@ -593,6 +606,10 @@ class MoveText_method_calls(unittest.TestCase):
         ae(self.gc1.ignore_check_indicator(self.m), None)
         ae(self.gc1._text, [])
         ae(self.gc1._state, None)
+
+    def test_31_is_tag_roster_valid_01(self):
+        ae = self.assertEqual
+        ae(self.gc1.is_tag_roster_valid(), False)
 
 
 class _ReadGames:
