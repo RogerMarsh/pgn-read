@@ -258,12 +258,7 @@ class GameCount_method_calls(unittest.TestCase):
 
     def test_05_append_token_and_set_error_01(self):
         ae = self.assertEqual
-        self.assertRaisesRegex(
-            AttributeError,
-            "'NoneType' object has no attribute 'group'$",
-            self.gc1.append_token_and_set_error,
-            *(None,),
-        )
+        self.gc1.append_token_and_set_error(None)
         ae(self.gc1._state, 0)
         ae(self.gc1.game_offset, 0)
 
@@ -317,12 +312,7 @@ class GameCount_method_calls(unittest.TestCase):
 
     def test_14_append_other_or_disambiguation_pgn_01(self):
         ae = self.assertEqual
-        self.assertRaisesRegex(
-            AttributeError,
-            "'NoneType' object has no attribute 'group'$",
-            self.gc1.append_other_or_disambiguation_pgn,
-            *(None,),
-        )
+        self.gc1.append_other_or_disambiguation_pgn(None)
         ae(self.gc1._state, 0)
         ae(self.gc1.game_offset, 0)
 
@@ -529,9 +519,7 @@ class ReadGames(unittest.TestCase, _ReadGames):
             game_class=tagpair_parser.GameCount
         )
         games = self.get("Anything")
-        ae(len(games), 1)
-        for game in games:
-            ae(isinstance(game, tagpair_parser.GameCount), True)
+        ae(len(games), 0)
 
     def test_02_get_01(self):
         ae = self.assertEqual
@@ -539,9 +527,7 @@ class ReadGames(unittest.TestCase, _ReadGames):
             game_class=tagpair_parser.TagPairGame
         )
         games = self.get("Anything")
-        ae(len(games), 1)
-        for game in games:
-            ae(isinstance(game, tagpair_parser.TagPairGame), True)
+        ae(len(games), 0)
 
 
 class GameCountPGN(_GameCountPGN):
@@ -550,14 +536,14 @@ class GameCountPGN(_GameCountPGN):
     def test_01_get_01(self):
         ae = self.assertEqual
         games = self.get("Anything*else")
-        ae(len(games), 2)
+        ae(len(games), 1)
         for game in games:
             ae(isinstance(game, tagpair_parser.GameCount), True)
 
     def test_01_get_02(self):
         ae = self.assertEqual
         games = self.get('[Name"value"]*Anything')
-        ae(len(games), 2)
+        ae(len(games), 1)
         for game in games:
             ae(isinstance(game, tagpair_parser.GameCount), True)
 
@@ -603,7 +589,7 @@ class TagPairGamePGN(_TagPairGamePGN):
     def test_01_get_01(self):
         ae = self.assertEqual
         games = self.get("Anything*else")
-        ae(len(games), 2)
+        ae(len(games), 1)
         for game, tagcount in zip(games, [0]):
             ae(isinstance(game, tagpair_parser.TagPairGame), True)
             ae(len(game.pgn_tags), tagcount)
@@ -611,7 +597,7 @@ class TagPairGamePGN(_TagPairGamePGN):
     def test_01_get_02(self):
         ae = self.assertEqual
         games = self.get('[Name"value"]*Anything')
-        ae(len(games), 2)
+        ae(len(games), 1)
         for game, tagcount in zip(games, [1, 0]):
             ae(isinstance(game, tagpair_parser.TagPairGame), True)
             ae(len(game.pgn_tags), tagcount)

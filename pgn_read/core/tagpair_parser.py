@@ -132,7 +132,6 @@ class GameCount:
         """
         if self._state is None:
             self._state = len(self._text)
-        self._text.append(PGN_TOKEN_SEPARATOR + match.group())
 
     def append_token_after_error(self, match):
         """Append token to game score after an error has been found."""
@@ -279,7 +278,7 @@ class TagPairGame(GameCount):
         the unknown result symbol '*'.
 
         """
-        bad_tag = match.group().split('"')
+        bad_tag = match.group().strip().split('"')
         val = (
             '"'.join(bad_tag[1:-1])
             .replace('"', '"')

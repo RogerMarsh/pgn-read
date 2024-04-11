@@ -464,7 +464,7 @@ class MoveText_method_calls(unittest.TestCase):
         ae = self.assertEqual
         ae(self.gc1._state, None)
         ae(self.gc1.append_bad_tag_and_set_error(self.m), None)
-        ae(self.gc1._text, [])
+        ae(self.gc1._text, ['[Qe4""]'])
         ae(self.gc1._tags, {"Qe4": ""})
         ae(self.gc1._state, None)
         ae(self.gc1.append_bad_tag_and_set_error(self.m), None)

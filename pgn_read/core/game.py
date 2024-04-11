@@ -629,7 +629,7 @@ class Game:
                     raise
                 self.add_board_state_none(None)
             return
-        bad_tag = match.group().split('"')
+        bad_tag = match.group().strip().split('"')
         val = (
             '"'.join(bad_tag[1:-1])
             .replace('"', '"')

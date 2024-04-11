@@ -217,7 +217,7 @@ class MoveText:
         the unknown result symbol '*'.
 
         """
-        bad_tag = match.group().split('"')
+        bad_tag = match.group().strip().split('"')
         val = (
             '"'.join(bad_tag[1:-1])
             .replace('"', '"')
@@ -234,6 +234,7 @@ class MoveText:
                 self._state = len(self._tags) - 1
             return
         self._tags[tag_name] = val
+        self._text.append("".join(("[", tag_name, '"', val, '"]')))
         return
 
     def append_bad_tag_after_error(self, match):
