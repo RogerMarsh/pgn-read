@@ -9600,6 +9600,84 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ae(games[0].state, s)
 
 
+class GameLongAlgebraicNotationPawnMove(_BasePGN):
+    """Provide PGN parser using Game and get() to read PGN text."""
+
+    def setUp(self):
+        self.pgn = parser.PGN(game_class=game.Game)
+
+    def test_01_01_pawn_e7_takes_f8_equals_queen(self):
+        ae = self.assertEqual
+        games = self.get(
+            "".join(
+                (
+                    [
+                        '[SetUp"1"]',
+                        '[FEN"5r2/4P3/8/8/8/2K5/8/3k4 w - - 0 1"]',
+                        "e7xf8=Q1-0",
+                    ]
+                )
+            )
+        )
+        ae(len(games), 1)
+        ae(games[0].state, 2)
+
+    def test_01_02_pawn_e_takes_f8_equals_queen(self):
+        ae = self.assertEqual
+        games = self.get(
+            "".join(
+                (
+                    [
+                        '[SetUp"1"]',
+                        '[FEN"5r2/4P3/8/8/8/2K5/8/3k4 w - - 0 1"]',
+                        "exf8=Q1-0",
+                    ]
+                )
+            )
+        )
+        ae(len(games), 1)
+        ae(games[0].state, None)
+
+
+class GameTextPGNLongAlgebraicNotationPawnMove(_BasePGN):
+    """Provide PGN parser using GameTextPGN and get() to read PGN text."""
+
+    def setUp(self):
+        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+
+    def test_01_01_pawn_e7_takes_f8_equals_queen(self):
+        ae = self.assertEqual
+        games = self.get(
+            "".join(
+                (
+                    [
+                        '[SetUp"1"]',
+                        '[FEN"5r2/4P3/8/8/8/2K5/8/3k4 w - - 0 1"]',
+                        "e7xf8=Q1-0",
+                    ]
+                )
+            )
+        )
+        ae(len(games), 1)
+        ae(games[0].state, None)
+
+    def test_01_02_pawn_e_takes_f8_equals_queen(self):
+        ae = self.assertEqual
+        games = self.get(
+            "".join(
+                (
+                    [
+                        '[SetUp"1"]',
+                        '[FEN"5r2/4P3/8/8/8/2K5/8/3k4 w - - 0 1"]',
+                        "exf8=Q1-0",
+                    ]
+                )
+            )
+        )
+        ae(len(games), 1)
+        ae(games[0].state, None)
+
+
 if __name__ == "__main__":
     runner = unittest.TextTestRunner
     loader = unittest.defaultTestLoader.loadTestsFromTestCase
@@ -9619,3 +9697,5 @@ if __name__ == "__main__":
     runner().run(loader(RAV))
     runner().run(loader(GameTextPGN))
     runner().run(loader(GameIgnoreCasePGN))
+    runner().run(loader(GameLongAlgebraicNotationPawnMove))
+    runner().run(loader(GameTextPGNLongAlgebraicNotationPawnMove))

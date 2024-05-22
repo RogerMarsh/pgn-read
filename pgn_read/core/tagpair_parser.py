@@ -39,7 +39,6 @@ from .constants import (
     TPF_BAD_TAG,
     TPF_END_OF_FILE_MARKER,
     TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE,
-    PGN_TOKEN_SEPARATOR,
 )
 
 game_format = re.compile(TAG_PAIR_FORMAT)
@@ -130,6 +129,7 @@ class GameCount:
         at the end of the variation in which it occured.
 
         """
+        del match
         if self._state is None:
             self._state = len(self._text)
 

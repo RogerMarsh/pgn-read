@@ -1392,6 +1392,10 @@ class Game:
             # specification.  Pawn promotions such as 'e7e8=Q' or 'e7xf8=Q'
             # are handled here, not by the append_pawn_promote_move method
             # which handles 'e8=Q' and 'exf8=Q'.
+            # The pawn promotion comment seems to be wrong given outcome of
+            # GameLongAlgebraicNotationPawnMove and
+            # GameTextPGNLongAlgebraicNotationPawnMove
+            # tests in .core.tests.test_parser module.
             if self._strict_pgn:
                 self.append_token_and_set_error(match)
             else:
@@ -2212,6 +2216,8 @@ class Game:
                             (group(IFG_PIECE_MOVE), destination)
                         )
                     )
+                # pylint error E0601, used-before-assignment, ignored
+                # because sfile set if file_count and rank_count True.
                 elif file_count[sfile] == 1:
                     self._text.append(
                         "".join(
@@ -2223,6 +2229,8 @@ class Game:
                             )
                         )
                     )
+                # pylint error E0601, used-before-assignment, ignored
+                # because srank set if file_count and rank_count True.
                 elif rank_count[srank] == 1:
                     self._text.append(
                         "".join(
@@ -2455,6 +2463,18 @@ class Game:
                 ):
                     self.append_token_and_set_error(match)
                     return
+                # Binding for 'piece' deduced from cython compilation errors
+                # and similar code in other paths.
+                # No pylint complaint about following piece references,
+                # perhaps 'from .piece import Piece' masked problem.
+                # This code is probably unreachable given the outcome of
+                # tests added to .tests.test_parser to verify correctness
+                # of this change.  See classes in that module
+                # GameLongAlgebraicNotationPawnMove and
+                # GameTextPGNLongAlgebraicNotationPawnMove
+                # which suggest the Game class does not see e7xf8=Q as a
+                # movetext token while GameTextPGN does.
+                piece = piece_placement_data[square_name]
                 remove = (
                     (destination, piece_placement_data[destination]),
                     (piece.square.name, piece),
