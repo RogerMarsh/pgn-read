@@ -47,7 +47,7 @@ class Constants(unittest.TestCase):
         )
         ae(constants.RESERVED, r"(?#Reserved)(<[^>]*>)")
         ae(constants.ESCAPED, r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)")
-        ae(constants.PASS, r"(?#Pass)(--)")
+        ae(constants.PASS, r"(?#Pass)(--|Z0)")
         ae(constants.CHECK, r"(?#Check indicators)(?<=[1-8QRBNO])([+#])")
         ae(
             constants.TRADITIONAL,
@@ -129,7 +129,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
                     r"|",
-                    r"(?#Pass)(--)",
+                    r"(?#Pass)(--|Z0)",
                     r"|",
                     r"(?#Check indicators)(?<=[1-8QRBNO])([+#])",
                     r"|",
@@ -187,7 +187,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
                     r"|",
-                    r"(?#Pass)(--)",
+                    r"(?#Pass)(--|Z0)",
                     r"|",
                     r"(?#Check indicators)(?<=[1-8QRBNO])([+#])",
                     r"|",
@@ -268,7 +268,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
                     r"|",
-                    r"(?#Pass)(--)",
+                    r"(?#Pass)(--|Z0)",
                     r"|",
                     r"(?#Check indicators)(?<=[1-8QRBNO])([+#])",
                     r"|",
@@ -328,7 +328,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
                     r"|",
-                    r"(?#Pass)(--)",
+                    r"(?#Pass)(--|Z0)",
                     r"|",
                     r"(?#Check indicators)(?<=[1-8QRBNO0])([+#])",
                     r"|",
@@ -389,7 +389,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Escaped)(\A%[^\n]*|\n%[^\n]*)(?=\n)",
                     r"|",
-                    r"(?#Pass)(--)",
+                    r"(?#Pass)(--|Z0)",
                     r"|",
                     r"(?#Check indicators)(?<=[1-8QRBNOqrbno0])([+#])",
                     r"|",

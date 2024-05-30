@@ -3587,6 +3587,40 @@ class StrictPGN(_BasePGN):
             )
             ae(games[0].state, s)
 
+    # Added for Github issue 3.
+    def test_188_01_pass_double_minus(self):
+        ae = self.assertEqual
+        games = self.get("e4--d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " --", " d4", " *"])
+
+    # Added for Github issue 3.
+    def test_188_02_pass_Z0(self):
+        ae = self.assertEqual
+        games = self.get("e4Z0d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " Z0", " d4", " *"])
+
+    # Added for Github issue 3.
+    # Different outcome in GameTextPGN and GameIgnoreCasePGN tests.
+    def test_188_03_bad_pass_Z1(self):
+        ae = self.assertEqual
+        games = self.get("e4Z1d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " Z1d4*"])
+
+    # Added for Github issue 3.
+    # Different outcome in GameTextPGN and GameIgnoreCasePGN tests.
+    def test_188_04_bad_pass_Z1(self):
+        ae = self.assertEqual
+        games = self.get("e4 Z1 d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " Z1 ", " d4", " *"])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -8062,6 +8096,24 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             )
             ae(games[0].state, s)
 
+    # Added for Github issue 3.
+    # Different outcome in GameStrictPGN tests.
+    def test_188_03_bad_pass_Z1(self):
+        ae = self.assertEqual
+        games = self.get("e4Z1d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4"])
+
+    # Added for Github issue 3.
+    # Different outcome in GameStrictPGN tests.
+    def test_188_04_bad_pass_Z1(self):
+        ae = self.assertEqual
+        games = self.get("e4 Z1 d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " d4", " *"])
+
 
 class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -9598,6 +9650,24 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                 ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'] + t,
             )
             ae(games[0].state, s)
+
+    # Added for Github issue 3.
+    # Different outcome in GameStrictPGN tests.
+    def test_188_03_bad_pass_Z1(self):
+        ae = self.assertEqual
+        games = self.get("e4Z1d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4"])
+
+    # Added for Github issue 3.
+    # Different outcome in GameStrictPGN tests.
+    def test_188_04_bad_pass_Z1(self):
+        ae = self.assertEqual
+        games = self.get("e4 Z1 d4*")
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " d4", " *"])
 
 
 class GameLongAlgebraicNotationPawnMove(_BasePGN):
