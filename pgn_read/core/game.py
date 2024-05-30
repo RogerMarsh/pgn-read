@@ -2820,8 +2820,7 @@ class Game:
                     self._state = len(self._text)
                     self._state_stack[-1] = self._state
                     return False
-                rank, file = divmod(i, 8)
-                piece = Piece(fen_char, FILE_NAMES[file] + RANK_NAMES[rank])
+                piece = Piece(fen_char, Squares.square_names[i])
                 piece_placement_data[piece.square.name] = piece
                 board.append(piece)
                 if fen_char == FEN_WHITE_PAWN:

@@ -256,7 +256,10 @@ class _Square(unittest.TestCase):
 class Squares(unittest.TestCase):
     def test_01_Squares(self):
         ae = self.assertEqual
-        ae(sorted(squares.Squares.__dict__.keys()), ["squares"])
+        ae(
+            sorted(squares.Squares.__dict__.keys()),
+            ["square_names", "squares"],
+        )
         ae(len(squares.Squares.squares), 64)
         ae(
             sorted(sq for sq in squares.Squares.squares),
@@ -347,6 +350,79 @@ class Squares(unittest.TestCase):
                 ae(sq.castling_rights_lost, "k")
             else:
                 ae(sq.castling_rights_lost, "")
+
+    def test_02_Squares(self):
+        ae = self.assertEqual
+        ae(len(squares.Squares.square_names), 64)
+        ae(
+            squares.Squares.square_names,
+            {
+                0: "a8",
+                1: "b8",
+                2: "c8",
+                3: "d8",
+                4: "e8",
+                5: "f8",
+                6: "g8",
+                7: "h8",
+                8: "a7",
+                9: "b7",
+                10: "c7",
+                11: "d7",
+                12: "e7",
+                13: "f7",
+                14: "g7",
+                15: "h7",
+                16: "a6",
+                17: "b6",
+                18: "c6",
+                19: "d6",
+                20: "e6",
+                21: "f6",
+                22: "g6",
+                23: "h6",
+                24: "a5",
+                25: "b5",
+                26: "c5",
+                27: "d5",
+                28: "e5",
+                29: "f5",
+                30: "g5",
+                31: "h5",
+                32: "a4",
+                33: "b4",
+                34: "c4",
+                35: "d4",
+                36: "e4",
+                37: "f4",
+                38: "g4",
+                39: "h4",
+                40: "a3",
+                41: "b3",
+                42: "c3",
+                43: "d3",
+                44: "e3",
+                45: "f3",
+                46: "g3",
+                47: "h3",
+                48: "a2",
+                49: "b2",
+                50: "c2",
+                51: "d2",
+                52: "e2",
+                53: "f2",
+                54: "g2",
+                55: "h2",
+                56: "a1",
+                57: "b1",
+                58: "c1",
+                59: "d1",
+                60: "e1",
+                61: "f1",
+                62: "g1",
+                63: "h1",
+            },
+        )
 
 
 if __name__ == "__main__":

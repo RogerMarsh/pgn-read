@@ -75,16 +75,27 @@ class _Square:
 
 
 class Squares:
-    """The squares on a chessboard."""
+    """The squares on a chessboard.
+
+    self.squares maps square names (a8, b8, ..., a7, ..., h2, ..., g1, h1)
+    to instances of _Square.
+
+    self.square_names maps square numbers in FEN piece placement field
+    order to square names {0: "a8", 1: "b8", ..., 63: "h1"}.
+
+    """
 
     def __init__(self):
         """Define the squares on a chessboard."""
         self.squares = {}
+        self.square_names = {}
         squares = self.squares
+        square_names = self.square_names
         rank_names = constants.RANK_NAMES
-        for file in constants.FILE_NAMES:
-            for rank in rank_names:
+        for file_number, file in enumerate(constants.FILE_NAMES):
+            for rank_number, rank in enumerate(rank_names):
                 squares[file + rank] = _Square(file, rank)
+                square_names[rank_number * 8 + file_number] = file + rank
 
 
 # Pylint reports no-member for Squares.<attribute-name> references.
