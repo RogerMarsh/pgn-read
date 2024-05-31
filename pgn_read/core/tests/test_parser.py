@@ -3621,6 +3621,103 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 1)
         ae(games[0]._text, ["e4", " Z1 ", " d4", " *"])
 
+    def test_189_01_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4$1e5*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "$1", "e5", "*"])
+
+    def test_189_02_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4$11e5*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "$11", "e5", "*"])
+
+    def test_189_03_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4$111e5*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "$111", "e5", "*"])
+
+    def test_189_04_nag_and_game_termination_marker(self):
+        # Fourth '1' is treated as a move number indicator and ignored.
+        ae = self.assertEqual
+        games = self.get("e4$1111e5*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "$111", "e5", "*"])
+
+    def test_189_05_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4e5$1*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$1", "*"])
+
+    def test_189_06_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4e5$11*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$11", "*"])
+
+    def test_189_07_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4e5$111*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$111", "*"])
+
+    def test_189_08_nag_and_game_termination_marker(self):
+        # Fourth '1' is treated as a move number indicator and ignored.
+        ae = self.assertEqual
+        games = self.get("e4e5$1111*")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$111", "*"])
+
+    def test_189_09_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4e5$11-0")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$1", "1-0"])
+
+    def test_189_10_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4e5$111-0")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$11", "1-0"])
+
+    def test_189_11_nag_and_game_termination_marker(self):
+        ae = self.assertEqual
+        games = self.get("e4e5$1111-0")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$111", "1-0"])
+
+    # Different outcome in GameTextPGN and GameIgnoreCasePGN tests.
+    def test_189_12_nag_and_game_termination_marker(self):
+        # Fourth and fifth '1's are treated as a move number indicator and
+        # ignored.
+        ae = self.assertEqual
+        games = self.get("e4e5$11111-0")
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text, ["e4", "e5", "$111", " -0"])
+
+    def test_189_13_nag_and_game_termination_marker(self):
+        # Fourth '1' is treated as a move number indicator and ignored.
+        ae = self.assertEqual
+        games = self.get("e4e5$1111.1-0")
+        ae(len(games), 1)
+        ae(games[0].state, None)
+        ae(games[0]._text, ["e4", "e5", "$111", "1-0"])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -8114,6 +8211,16 @@ class GameTextPGN(_NonStrictText, StrictPGN):
         ae(games[0].state, 1)
         ae(games[0]._text, ["e4", " d4", " *"])
 
+    # Different outcome in GameStrictPGN tests.
+    def test_189_12_nag_and_game_termination_marker(self):
+        # Fourth and fifth '1's are treated as a move number indicator and
+        # ignored.
+        ae = self.assertEqual
+        games = self.get("e4e5$11111-0")
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text, ["e4", "e5", "$111"])
+
 
 class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -9668,6 +9775,16 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
         ae(len(games), 1)
         ae(games[0].state, 1)
         ae(games[0]._text, ["e4", " d4", " *"])
+
+    # Different outcome in GameStrictPGN tests.
+    def test_189_12_nag_and_game_termination_marker(self):
+        # Fourth and fifth '1's are treated as a move number indicator and
+        # ignored.
+        ae = self.assertEqual
+        games = self.get("e4e5$11111-0")
+        ae(len(games), 1)
+        ae(games[0].state, 3)
+        ae(games[0]._text, ["e4", "e5", "$111"])
 
 
 class GameLongAlgebraicNotationPawnMove(_BasePGN):

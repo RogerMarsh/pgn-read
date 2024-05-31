@@ -30,7 +30,20 @@ MOVE_NUMBER = r"(?#Move number)([1-9][0-9]*)"
 DOTS = r"(?#Dots)(\.+)"
 START_RAV = r"(?#Start RAV)(\()"
 END_RAV = r"(?#End RAV)(\))"
-NAG = r"(?#Numeric Annotation Glyph)(\$(?:[1-9][0-9]{0,2}))"
+# Allow for "$11/2-1/2" and similar meaning "$1" then "1/2-1/2" with maximum
+# three digits like "$123" in NAG.
+NAG = r"".join(
+    (
+        r"(?#Numeric Annotation Glyph)",
+        r"(\$",
+        r"(?:",
+        r"(?:[1-9][0-9](?:(?=[01][-/])|[0-9]))",
+        r"|(?:[1-9](?:(?=[01][-/])|[0-9]))|",
+        r"(?:[1-9])",
+        r")",
+        r")",
+    )
+)
 EOL_COMMENT = r"(?#EOL comment)(;(?:[^\n]*))(?=\n)"
 COMMENT = r"(?#Comment)(\{[^}]*\})"
 RESERVED = r"(?#Reserved)(<[^>]*>)"
