@@ -2,7 +2,7 @@
 # Copyright 2012, 2016, 2020 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
-"""parser tests"""
+"""Test processing of tokens found by methods in games module."""
 
 import unittest
 import io
