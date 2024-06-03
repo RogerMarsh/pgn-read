@@ -22,16 +22,6 @@ class Constants(unittest.TestCase):
             )
         )
         ae(
-            constants.MOVE_SYMBOLS,
-            r"|".join(
-                (
-                    r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
-                    r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
-                    r"O-O-O|O-O|x[a-h][1-8])",
-                )
-            ),
-        )
-        ae(
             constants.GAME_TERMINATION,
             r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)",
         )
@@ -71,6 +61,7 @@ class Constants(unittest.TestCase):
             constants.END_OF_FILE_MARKER,
             r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
         )
+        ae(constants.TEXT, r"\S+[ \t\r\f\v]*")
         ae(
             constants.TAG_PAIR_FORMAT,
             r"".join(
@@ -162,7 +153,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
-                    r"(?#Text)([^[;{<10*\s]+)",
+                    r"(?#Text)(\S+[ \t\r\f\v]*)",
                     r")",
                 )
             ),
@@ -4751,7 +4742,6 @@ class CountConstants(unittest.TestCase):
                 "LAN_PROMOTE_PIECE",
                 "LRD_DIAGONAL_ATTACKS",
                 "MOVE_NUMBER",
-                "MOVE_SYMBOLS",
                 "NAG",
                 "OTHER_SIDE",
                 "PASS",
@@ -4807,6 +4797,7 @@ class CountConstants(unittest.TestCase):
                 "TAG_WHITEELO",
                 "TAG_WHITENA",
                 "TAG_WHITETITLE",
+                "TEXT",
                 "TEXT_DISAMBIGUATION",
                 "TEXT_FORMAT",
                 "TEXT_PROMOTION",

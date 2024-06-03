@@ -1,4 +1,4 @@
-# test_read_games.py
+# test_movetext_read_games.py
 # Copyright 2024 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
@@ -15,8 +15,7 @@ is nothing wrong with the file being imported.
 import unittest
 import io
 
-from .. import parser
-from .. import game
+from .. import movetext_parser
 
 
 class _BasePGN(unittest.TestCase):
@@ -27,7 +26,7 @@ class _BasePGN(unittest.TestCase):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameStrictPGN)
+        self.pgn = movetext_parser.PGNMoveText()
 
     def tearDown(self):
         del self.pgn

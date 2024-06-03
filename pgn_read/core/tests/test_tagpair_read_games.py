@@ -1,4 +1,4 @@
-# test_read_games.py
+# test_tagpair_read_games.py
 # Copyright 2024 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
@@ -15,8 +15,7 @@ is nothing wrong with the file being imported.
 import unittest
 import io
 
-from .. import parser
-from .. import game
+from .. import tagpair_parser
 
 
 class _BasePGN(unittest.TestCase):
@@ -27,23 +26,31 @@ class _BasePGN(unittest.TestCase):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameStrictPGN)
+        self.pgn = tagpair_parser.PGNTagPair(
+            game_class=tagpair_parser.TagPairGame
+        )
 
     def tearDown(self):
         del self.pgn
 
-    def get(self, text, size):
-        """Return Game instances derived from text using buffer size bytes."""
-        return [g for g in self.pgn.read_games(io.StringIO(text), size)]
+    def get(self, text):
+        """Return Game instances derived from text using readline."""
+        return [g for g in self.pgn.read_games(io.StringIO(text))]
 
     def shared_test(self, games):
         """The tests for all cases."""
         ae = self.assertEqual
         ae(len(games), 2)
         for game in games:
-            ae(game.state, None)
-        for game, text in zip(games, (self.game1, self.game2)):
-            ae("".join(game.pgn_text), self.compare_text(text))
+            ae(game.state, 0)
+        for game, tags in zip(
+            games,
+            (
+                {"Event": "Test1", "Result": "*"},
+                {"Event": "Test2", "Result": "1-0"},
+            ),
+        ):
+            ae(game.pgn_tags, tags)
 
 
 class _NoWhitespacePGN(_BasePGN):
@@ -57,10 +64,6 @@ class _NoWhitespacePGN(_BasePGN):
         self.len_game2 = len(self.game2)
         self.text = "".join((self.game1, self.game2))
 
-    def compare_text(self, text):
-        """Return text as original had nothing which parser removes."""
-        return text
-
 
 class _WhitespacePGN(_BasePGN):
     """Setup input text with whitespace similar to PGN file structure."""
@@ -72,10 +75,6 @@ class _WhitespacePGN(_BasePGN):
         self.len_game1 = len(self.game1)
         self.len_game2 = len(self.game2)
         self.text = "".join((self.game1, self.game2))
-
-    def compare_text(self, text):
-        """Return text with all stuff ignored by parser removed."""
-        return text.replace(" ", "").replace("\n", "").replace("1.", "")
 
 
 class _NoWhitespaceCommentPGN(_BasePGN):
@@ -89,10 +88,6 @@ class _NoWhitespaceCommentPGN(_BasePGN):
         self.len_game2 = len(self.game2)
         self.text = "".join((self.game1, self.game2))
 
-    def compare_text(self, text):
-        """Return text as original had nothing which parser removes."""
-        return text
-
 
 class _WhitespaceCommentPGN(_BasePGN):
     """Setup input text with whitespace similar to PGN file structure."""
@@ -104,11 +99,6 @@ class _WhitespaceCommentPGN(_BasePGN):
         self.len_game1 = len(self.game1)
         self.len_game2 = len(self.game2)
         self.text = "".join((self.game1, self.game2))
-
-    def compare_text(self, text):
-        """Return text with all stuff ignored by parser removed."""
-        text = text.replace(" ", "").replace("\n", "").replace("1.", "")
-        return text.replace("overnewline", "over\nnewline")
 
 
 class _NoWhitespaceReservedPGN(_BasePGN):
@@ -122,10 +112,6 @@ class _NoWhitespaceReservedPGN(_BasePGN):
         self.len_game2 = len(self.game2)
         self.text = "".join((self.game1, self.game2))
 
-    def compare_text(self, text):
-        """Return text as original had nothing which parser removes."""
-        return text
-
 
 class _WhitespaceReservedPGN(_BasePGN):
     """Setup input text with whitespace similar to PGN file structure."""
@@ -137,11 +123,6 @@ class _WhitespaceReservedPGN(_BasePGN):
         self.len_game1 = len(self.game1)
         self.len_game2 = len(self.game2)
         self.text = "".join((self.game1, self.game2))
-
-    def compare_text(self, text):
-        """Return text with all stuff ignored by parser removed."""
-        text = text.replace(" ", "").replace("\n", "").replace("1.", "")
-        return text.replace("overnewline", "over\nnewline")
 
 
 class _PGNtests:
@@ -161,10 +142,9 @@ class _PGNtests:
 
     """
 
-    def test_001_all_buffer_lengths(self):
-        for length in range(1, self.len_game1 + self.len_game2 + 2):
-            games = self.get(self.text, length)
-            self.shared_test(games)
+    def test_001_readline(self):
+        games = self.get(self.text)
+        self.shared_test(games)
 
 
 class NoWhitespacePGN(_NoWhitespacePGN, _PGNtests):

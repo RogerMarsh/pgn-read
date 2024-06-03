@@ -18,13 +18,6 @@ TAG_PAIR = r"".join(
         r"(?#End Tag)(\])",
     )
 )
-MOVE_SYMBOLS = r"|".join(
-    (
-        r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
-        r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
-        r"O-O-O|O-O|x[a-h][1-8])",
-    )
-)
 GAME_TERMINATION = r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)"
 MOVE_NUMBER = r"(?#Move number)([1-9][0-9]*)"
 DOTS = r"(?#Dots)(\.+)"
@@ -55,6 +48,7 @@ BAD_COMMENT = r"(?#Bad Comment)(\{[^}]*)"
 BAD_RESERVED = r"(?#Bad Reserved)(<[^>]*)"
 BAD_TAG = r'(?#Bad Tag)(\[[^"]*".*?"\s*\])'
 END_OF_FILE_MARKER = r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])'
+TEXT = r"\S+[ \t\r\f\v]*"
 TAG_PAIR_FORMAT = r"|".join(
     (
         TAG_PAIR,
@@ -78,7 +72,9 @@ TAG_PAIR_FORMAT = r"|".join(
 GAME_FORMAT = r"|".join(
     (
         TAG_PAIR,
-        MOVE_SYMBOLS,
+        r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
+        r"[a-h](?:x[a-h])?[1-8](?:=[QRBN])?",
+        r"O-O-O|O-O|x[a-h][1-8])",
         GAME_TERMINATION,
         MOVE_NUMBER,
         DOTS,
@@ -96,7 +92,7 @@ GAME_FORMAT = r"|".join(
         BAD_RESERVED,
         BAD_TAG,
         END_OF_FILE_MARKER,
-        r"(?#Text)([^[;{<10*\s]+)",  # '\s' to catch moves and '\n;'.
+        TEXT.join((r"(?#Text)(", r")")),
     )
 ).join(
     (
@@ -161,7 +157,7 @@ IGNORE_CASE_DISAMBIGUATION = r"".join(
         r"=[QRBNqrbn]",
     )
 )
-ANYTHING_ELSE = r"(?#Anything else)\S+[ \t\r\f\v]*)"
+ANYTHING_ELSE = TEXT.join((r"(?#Anything else)", r")"))
 IMPORT_FORMAT = r"|".join((PGN_FORMAT, PGN_DISAMBIGUATION, ANYTHING_ELSE))
 TEXT_FORMAT = (
     r"|".join((PGN_FORMAT, TEXT_DISAMBIGUATION, ANYTHING_ELSE))

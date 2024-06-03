@@ -653,7 +653,7 @@ class MoveTextPGN(_MoveTextPGN):
     def test_01_get_01(self):
         ae = self.assertEqual
         games = self.get("Anything*else")
-        ae(len(games), 2)
+        ae(len(games), 1)
         for game in games:
             ae(isinstance(game, movetext_parser.MoveText), True)
 
@@ -681,7 +681,7 @@ class MoveTextPGN(_MoveTextPGN):
     def test_01_get_05(self):
         ae = self.assertEqual
         games = self.get('Anything[Name"value"]*')
-        ae(len(games), 2)
+        ae(len(games), 1)
         for game in games:
             ae(isinstance(game, movetext_parser.MoveText), True)
 

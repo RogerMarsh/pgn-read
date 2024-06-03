@@ -388,12 +388,19 @@ class PGNTagPair:
 
     @staticmethod
     def _read_pgn(source, length):
+        """Read length // 80 lines from file source or all if str.
+
+        Assume 80 characters per line.
+
+        This parser requires input terminated by newline or reaching EOF.
+
+        """
         if isinstance(source, str):
             yield source
             return
         try:
             while True:
-                pgntext = source.read(length)
+                pgntext = "".join(source.readlines(length // 80))
                 yield pgntext
                 if not pgntext:
                     break
