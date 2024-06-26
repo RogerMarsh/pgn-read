@@ -388,18 +388,17 @@ class PGNTagPair:
 
     @staticmethod
     def _read_pgn(source, length):
-        """Read length // 80 lines from file source or all if str.
-
-        Assume 80 characters per line.
-
-        This parser requires input terminated by newline or reaching EOF.
-
-        """
         if isinstance(source, str):
             yield source
             return
         try:
             while True:
+                # 80 chosen because I misread 'hint' argument description
+                # as maximum number of lines read.
+                # But effect on time taken is neutral, while not dividing
+                # by 80 takes about 5% longer.  Say 10 seconds per million
+                # games, so negligible compared with database update times.
+                # Tempting to not bother adjusting the length argument.
                 pgntext = "".join(source.readlines(length // 80))
                 yield pgntext
                 if not pgntext:
