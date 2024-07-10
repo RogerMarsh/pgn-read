@@ -13,13 +13,16 @@ from .. import constants
 class Constants(unittest.TestCase):
     def test_01_values(self):
         ae = self.assertEqual
-        TAG_PAIR = r"".join(
-            (
-                r"(?#Start Tag)\[\s*",
-                r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
-                r"(?#End Tag)(\])",
-            )
+        ae(
+            constants.TAG_PAIR,
+            r"".join(
+                (
+                    r"(?#Start Tag)\[\s*",
+                    r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
+                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r"(?#End Tag)(\])",
+                )
+            ),
         )
         ae(
             constants.GAME_TERMINATION,

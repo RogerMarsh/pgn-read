@@ -393,13 +393,7 @@ class PGNTagPair:
             return
         try:
             while True:
-                # 80 chosen because I misread 'hint' argument description
-                # as maximum number of lines read.
-                # But effect on time taken is neutral, while not dividing
-                # by 80 takes about 5% longer.  Say 10 seconds per million
-                # games, so negligible compared with database update times.
-                # Tempting to not bother adjusting the length argument.
-                pgntext = "".join(source.readlines(length // 80))
+                pgntext = source.read(length) + source.readline()
                 yield pgntext
                 if not pgntext:
                     break
