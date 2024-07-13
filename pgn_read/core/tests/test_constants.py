@@ -14,12 +14,18 @@ class Constants(unittest.TestCase):
     def test_01_values(self):
         ae = self.assertEqual
         ae(
+            constants.PGN_TAG,
+            r'\[[^"]*"(?:[^\\"]*(?:\\.[^\\"]*)*)"[^\]]*\]',
+        )
+        ae(constants.BACK_STEP, 1000)
+        ae(
             constants.TAG_PAIR,
             r"".join(
                 (
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                 )
             ),
@@ -59,7 +65,10 @@ class Constants(unittest.TestCase):
         )
         ae(constants.BAD_COMMENT, r"(?#Bad Comment)(\{[^}]*)")
         ae(constants.BAD_RESERVED, r"(?#Bad Reserved)(<[^>]*)")
-        ae(constants.BAD_TAG, r'(?#Bad Tag)(\[[^"]*".*?"\s*\])')
+        ae(
+            constants.TAG_PAIR_DATA_ERROR,
+            r'(?#Bad Tag)(\[[^"]*"(?:.*?|[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
+        )
         ae(
             constants.END_OF_FILE_MARKER,
             r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
@@ -72,7 +81,8 @@ class Constants(unittest.TestCase):
                     r"(?:\s*)(?:",
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                     r"|",
                     r"(?#Game termination)(1-0|1/2-1/2|0-1|\*)",
@@ -89,7 +99,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Bad Reserved)(<[^>]*)",
                     r"|",
-                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r'(?#Bad Tag)(\[[^"]*"(?:.*?',
+                    r"|",
+                    r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
@@ -105,7 +117,8 @@ class Constants(unittest.TestCase):
                     r"(?:\s*)(?:",
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                     r"|",
                     r"(?#Move symbols)([KQRBN](?:[a-h1-8]?x?)?[a-h][1-8]",
@@ -152,7 +165,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Bad Reserved)(<[^>]*)",
                     r"|",
-                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r'(?#Bad Tag)(\[[^"]*"(?:.*?',
+                    r"|",
+                    r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
@@ -167,7 +182,8 @@ class Constants(unittest.TestCase):
                 (
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                     r"|",
                     r"(?:(?#Moves)",
@@ -217,7 +233,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Bad Reserved)(<[^>]*)",
                     r"|",
-                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r'(?#Bad Tag)(\[[^"]*"(?:.*?',
+                    r"|",
+                    r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                 )
@@ -255,7 +273,8 @@ class Constants(unittest.TestCase):
                 (
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                     r"|",
                     r"(?:(?#Moves)",
@@ -305,7 +324,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Bad Reserved)(<[^>]*)",
                     r"|",
-                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r'(?#Bad Tag)(\[[^"]*"(?:.*?',
+                    r"|",
+                    r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
@@ -321,7 +342,8 @@ class Constants(unittest.TestCase):
                 (
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                     r"|",
                     r"(?:(?#Moves)",
@@ -372,7 +394,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Bad Reserved)(<[^>]*)",
                     r"|",
-                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r'(?#Bad Tag)(\[[^"]*"(?:.*?',
+                    r"|",
+                    r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
@@ -388,7 +412,8 @@ class Constants(unittest.TestCase):
                 (
                     r"(?#Start Tag)\[\s*",
                     r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-                    r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+                    r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+                    r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
                     r"(?#End Tag)(\])",
                     r"|",
                     r"(?:(?#Moves)",
@@ -440,7 +465,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r"(?#Bad Reserved)(<[^>]*)",
                     r"|",
-                    r'(?#Bad Tag)(\[[^"]*".*?"\s*\])',
+                    r'(?#Bad Tag)(\[[^"]*"(?:.*?',
+                    r"|",
+                    r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
@@ -4617,9 +4644,9 @@ class CountConstants(unittest.TestCase):
             sorted([c for c in dir(constants) if not c.startswith("_")]),
             [
                 "ANYTHING_ELSE",
+                "BACK_STEP",
                 "BAD_COMMENT",
                 "BAD_RESERVED",
-                "BAD_TAG",
                 "BISHOP_MOVES",
                 "BLACK_PAWN_CAPTURES",
                 "BLACK_PAWN_MOVES",
@@ -4765,6 +4792,7 @@ class CountConstants(unittest.TestCase):
                 "PGN_PROMOTION",
                 "PGN_QUEEN",
                 "PGN_ROOK",
+                "PGN_TAG",
                 "PGN_TOKEN_SEPARATOR",
                 "PIECE_TO_KING",
                 "POINT_TO_POINT",
@@ -4791,6 +4819,7 @@ class CountConstants(unittest.TestCase):
                 "TAG_EVENT",
                 "TAG_FEN",
                 "TAG_PAIR",
+                "TAG_PAIR_DATA_ERROR",
                 "TAG_PAIR_FORMAT",
                 "TAG_RESULT",
                 "TAG_ROUND",

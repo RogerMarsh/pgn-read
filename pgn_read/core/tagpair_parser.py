@@ -24,6 +24,8 @@ time when the moves played are not of interest.
 import re
 
 from .constants import (
+    PGN_TAG,
+    BACK_STEP,
     TAG_PAIR_FORMAT,
     UNTERMINATED,
     TPF_TAG_NAME,
@@ -42,6 +44,7 @@ from .constants import (
 )
 
 game_format = re.compile(TAG_PAIR_FORMAT)
+tagpair = re.compile(PGN_TAG)
 
 
 class PGNTagPairError(Exception):
@@ -388,15 +391,40 @@ class PGNTagPair:
 
     @staticmethod
     def _read_pgn(source, length):
+        def _end_last_tag(buffer):
+            step_match = None
+            for step in (BACK_STEP, BACK_STEP + BACK_STEP):
+                if step > len(buffer):
+                    break
+                for found in tagpair.finditer(buffer[-step:]):
+                    step_match = found
+                if step_match:
+                    return len(buffer) - step + step_match.end()
+            tag_match = None
+            for found in tagpair.finditer(buffer):
+                tag_match = found
+            if tag_match:
+                return tag_match.end()
+            return None
+
         if isinstance(source, str):
             yield source
             return
         try:
+            tail = ""
             while True:
-                pgntext = source.read(length) + source.readline()
-                yield pgntext
-                if not pgntext:
+                text = source.read(length)
+                if not text:
+                    yield tail
                     break
+                end = _end_last_tag(text)
+                if end is None:
+                    tail += text
+                    continue
+                tail += text[:end]
+                text = text[end:]
+                yield tail
+                tail = text
         finally:
             source.close()
 

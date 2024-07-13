@@ -2251,6 +2251,20 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 0)
         ae(games[0]._text, [' [A"a'])
 
+    def test_141_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A:"a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, ['{::Bad Tag::[A:"a" ]::Bad Tag::}'])
+
+    def test_141_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A:"\na" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 0)
+        ae(games[0]._text, ['{::Bad Tag::[A:"\na" ]::Bad Tag::}'])
+
     def test_142_bad_value_in_tag_01(self):
         ae = self.assertEqual
         games = self.get('[A""a" ]')
@@ -5520,6 +5534,20 @@ class _NonStrictPGN:
         ae(games[0].state, None)
         ae(games[0]._text, ["e4", "e5", "*"])
 
+    def test_141_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A:"a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A:"a"]'])
+
+    def test_141_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A:"\na" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A:"\na"]'])
+
     def test_142_bad_value_in_tag_01(self):
         ae = self.assertEqual
         games = self.get('[A""a" ]')
@@ -6834,6 +6862,13 @@ class _NonStrictText:
         games = self.get('[A"a')
         ae(len(games), 0)
 
+    def test_141_bad_value_in_tag_01(self):
+        ae = self.assertEqual
+        games = self.get('[A:"a" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A:"a"]'])
+
     def test_142_bad_value_in_tag_01(self):
         ae = self.assertEqual
         games = self.get('[A""a" ]')
@@ -7316,6 +7351,14 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             games[0]._text,
             ['[SetUp"1"]', '[FEN"2r5/8/B6k/6q1/8/8/8/4K3 w - - 0 1"]'],
         )
+
+    # Added to test '\n' in tag value.
+    def test_141_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A:"\na" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A:"\na"]'])
 
     # Added while fixing 'e4e5nf3nc6bb5a6' problem.
     # The first 'b', in 'bb5', caused an error when lower case allowed.
@@ -8709,6 +8752,14 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                 "*",
             ],
         )
+
+    # Added to test '\n' in tag value.
+    def test_141_bad_value_in_tag_02(self):
+        ae = self.assertEqual
+        games = self.get('[A:"\na" ]')
+        ae(len(games), 1)
+        ae(games[0].state, 1)
+        ae(games[0]._text, ['[A:"\na"]'])
 
     # Added while fixing 'Nf3((Nc3)a3(e3))' problem.
     # The first 'b', in 'b4', caused an error.

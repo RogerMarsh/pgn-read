@@ -9,12 +9,17 @@ the PGN game score represents a legal sequence of moves and variations.
 
 """
 
+# PGN Tag Pair without capturing name and value.
+PGN_TAG = r'\[[^"]*"(?:[^\\"]*(?:\\.[^\\"]*)*)"[^\]]*\]'
+# Initial backstep from end of buffer when searching for PGN Tag Pair.
+BACK_STEP = 1000
 # The non-movetext elements: for detecting games without testing moves.
 TAG_PAIR = r"".join(
     (
         r"(?#Start Tag)\[\s*",
         r"(?#Tag Name)([A-Za-z0-9_]+)\s*",
-        r'(?#Tag Value)"((?:[^\\"]|\\.)*)"\s*',
+        r'(?#Tag Value)"((?:[^\\"\t\r\f\v\n]*',
+        r'(?:\\[^\t\r\f\v\n][^\\"\t\r\f\v\n]*)*))"\s*',
         r"(?#End Tag)(\])",
     )
 )
@@ -46,7 +51,9 @@ CHECK = r"(?#Check indicators)(?<=[1-8QRBNO])([+#])"
 TRADITIONAL = r"(?#Traditional Annonations)(?<=[1-8QRBNO+#])([!?][!?]?)"
 BAD_COMMENT = r"(?#Bad Comment)(\{[^}]*)"
 BAD_RESERVED = r"(?#Bad Reserved)(<[^>]*)"
-BAD_TAG = r'(?#Bad Tag)(\[[^"]*".*?"\s*\])'
+TAG_PAIR_DATA_ERROR = r"".join(
+    (r'(?#Bad Tag)(\[[^"]*"(?:.*?|', r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])')
+)
 END_OF_FILE_MARKER = r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])'
 TEXT = r"\S+[ \t\r\f\v]*"
 TAG_PAIR_FORMAT = r"|".join(
@@ -59,7 +66,7 @@ TAG_PAIR_FORMAT = r"|".join(
         ESCAPED,
         BAD_COMMENT,
         BAD_RESERVED,
-        BAD_TAG,
+        TAG_PAIR_DATA_ERROR,
         END_OF_FILE_MARKER,
         r"(?#Text)([^[;{<10*\n]+)",  # '\n' to catch '\n;'.
     )
@@ -90,7 +97,7 @@ GAME_FORMAT = r"|".join(
         TRADITIONAL,
         BAD_COMMENT,
         BAD_RESERVED,
-        BAD_TAG,
+        TAG_PAIR_DATA_ERROR,
         END_OF_FILE_MARKER,
         TEXT.join((r"(?#Text)(", r")")),
     )
@@ -132,7 +139,7 @@ PGN_FORMAT = r"|".join(
         TRADITIONAL,
         BAD_COMMENT,
         BAD_RESERVED,
-        BAD_TAG,
+        TAG_PAIR_DATA_ERROR,
         END_OF_FILE_MARKER,
     )
 )
