@@ -24,6 +24,10 @@ The add_token_to_game function searches for the next PGN token in a string and a
 
 The generate_fen_for_position function returns the Forsyth English Notation (FEN) string for the representation of a position in the Game class, or a subclass.
 
+The movetext_parser module provides classes which expect movetext but do not expect it to represent a game.
+
+The tagpair_parser module provides classes which take just enough notice of movetext to correctly spot PGN Tag Pairs and Game Termination Markers.
+
 
 Installation Instructions
 =========================
