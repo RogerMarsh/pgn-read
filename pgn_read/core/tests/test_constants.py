@@ -238,6 +238,8 @@ class Constants(unittest.TestCase):
                     r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r"(?#Disambiguated)([QBN][1-8][a-h](?:x)?[a-h][1-8])",
                 )
             ),
         )
@@ -266,6 +268,10 @@ class Constants(unittest.TestCase):
         ae(
             constants.ANYTHING_ELSE,
             r"".join((r"(?#Anything else)\S+[ \t\r\f\v]*)",)),
+        )
+        ae(
+            constants.DISAMBIGUATED,
+            r"(?#Disambiguated)([QBN][1-8][a-h](?:x)?[a-h][1-8])",
         )
         ae(
             constants.IMPORT_FORMAT,
@@ -329,6 +335,8 @@ class Constants(unittest.TestCase):
                     r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r"(?#Disambiguated)([QBN][1-8][a-h](?:x)?[a-h][1-8])",
                     r"|",
                     r"(?#Disambiguation PGN)(x?[a-h][1-8]",
                     r"|",
@@ -399,6 +407,8 @@ class Constants(unittest.TestCase):
                     r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])',
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
+                    r"|",
+                    r"(?#Disambiguated)([QBN][1-8][a-h](?:[-x])?[a-h][1-8])",
                     r"|",
                     r"(?#Disambiguation Text)((?:-|x[QRBN]?)?[a-h][1-8]",
                     r"|",
@@ -471,6 +481,9 @@ class Constants(unittest.TestCase):
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
+                    r"(?#Disambiguated)([QBNqbn][1-8][a-hA-H]",
+                    r"(?:[xX])?[a-hA-H][1-8])",
+                    r"|",
                     r"(?#Disambiguation Text)",
                     r"((?:(?:-|[xX][QRBNqrbn]?)?[a-hA-H][1-8]",
                     r"(?:=[QRBNqrbn])?)",
@@ -513,7 +526,8 @@ class Constants(unittest.TestCase):
         ae(constants.IFG_BAD_RESERVED, 28)
         ae(constants.IFG_BAD_TAG, 29)
         ae(constants.IFG_END_OF_FILE_MARKER, 30)
-        ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 31)
+        ae(constants.IFG_DISAMBIGUATED, 31)
+        ae(constants.IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE, 32)
         ae(constants.DISAMBIGUATE_TEXT, r"\A(x?)([a-h][1-8])")
         ae(constants.DISAMBIGUATE_PGN, r"\Ax?[a-h][1-8]")
         ae(constants.DISAMBIGUATE_PROMOTION, r"\A=[QRBNqrbn]")
@@ -4685,6 +4699,7 @@ class CountConstants(unittest.TestCase):
                 "DEFAULT_TAG_VALUE",
                 "DG_CAPTURE",
                 "DG_DESTINATION",
+                "DISAMBIGUATED",
                 "DISAMBIGUATE_PGN",
                 "DISAMBIGUATE_PROMOTION",
                 "DISAMBIGUATE_TEXT",
@@ -4736,6 +4751,7 @@ class CountConstants(unittest.TestCase):
                 "IFG_CHECK_INDICATOR",
                 "IFG_COMMENT",
                 "IFG_COMMENT_TO_EOL",
+                "IFG_DISAMBIGUATED",
                 "IFG_DOTS",
                 "IFG_END_OF_FILE_MARKER",
                 "IFG_END_RAV",
