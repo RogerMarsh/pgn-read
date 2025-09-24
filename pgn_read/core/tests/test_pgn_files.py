@@ -2832,6 +2832,24 @@ class TextPGNOneCharacterAtATime(
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameTextPGN)
 
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_034_little_01(self):
+        self.do_standard_tests(
+            "Little_01.pgn", None, [6, 3], [[6], []], ["", " ("], [63, 3]
+        )
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_035_little_02(self):
+        self.do_standard_tests(
+            "Little_02.pgn", None, [3, 3], [[3], []], ["", " ("], [60, 3]
+        )
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_036_little_03(self):
+        games = self.do_standard_tests(
+            "Little_03.pgn", None, [7, 3], [[7], []], ["", " Qd1"], [51, 3]
+        )
+
 
 class TextPGNExtendByOneCharacter(
     _TextFormatTests, StrictPGNExtendByOneCharacter
@@ -3057,6 +3075,24 @@ class IgnoreCaseTextPGNOneCharacterAtATime(
 ):
     def setUp(self):
         self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_034_little_01(self):
+        self.do_standard_tests(
+            "Little_01.pgn", None, [6, 3], [[6], []], ["", " ("], [64, 3]
+        )
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_035_little_02(self):
+        self.do_standard_tests(
+            "Little_02.pgn", None, [3, 3], [[3], []], ["", " ("], [61, 3]
+        )
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_036_little_03(self):
+        games = self.do_standard_tests(
+            "Little_03.pgn", None, [8, 3], [[8], []], ["", " Qd1"], [48, 3]
+        )
 
 
 class IgnoreCaseTextPGNExtendByOneCharacter(
@@ -3522,6 +3558,24 @@ class TextPGNLowerOneCharacterAtATime(
     def setUp(self):
         self.pgn = PGNLower(game_class=game.GameIgnoreCasePGN)
 
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_034_little_01(self):
+        self.do_standard_tests(
+            "Little_01.pgn", None, [6, 3], [[6], []], ["", " ("], [64, 3]
+        )
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_035_little_02(self):
+        self.do_standard_tests(
+            "Little_02.pgn", None, [3, 3], [[3], []], ["", " ("], [61, 3]
+        )
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_036_little_03(self):
+        games = self.do_standard_tests(
+            "Little_03.pgn", None, [8, 3], [[8], []], ["", " Qd1"], [48, 3]
+        )
+
 
 class TextPGNLowerExtendByOneCharacter(
     _IgnoreCasePGNLower, TextPGNExtendByOneCharacter
@@ -3825,6 +3879,21 @@ class TextPGNUpperOneCharacterAtATime(
 ):
     def setUp(self):
         self.pgn = PGNUpper(game_class=game.GameIgnoreCasePGN)
+
+    def test_034_little_01(self):
+        self.do_standard_tests(
+            "Little_01.pgn", None, [6, 3], [[6], []], ["", " ("], [64, 3]
+        )
+
+    def test_035_little_02(self):
+        self.do_standard_tests(
+            "Little_02.pgn", None, [3, 3], [[3], []], ["", " ("], [61, 3]
+        )
+
+    def test_036_little_03(self):
+        self.do_standard_tests(
+            "Little_03.pgn", None, [8, 3], [[8], []], ["", " Qd1"], [48, 3]
+        )
 
 
 class TextPGNUpperExtendByOneCharacter(
