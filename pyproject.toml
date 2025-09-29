@@ -10,7 +10,7 @@ line-length = 79
 
 [project]
 name = "pgn-read"
-version = "2.5.dev0"
+version = "2.5.dev1"
 authors = [
   { name="Roger Marsh", email="roger.marsh@solentware.co.uk" },
 ]

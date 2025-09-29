@@ -55,7 +55,6 @@ TAG_PAIR_DATA_ERROR = r"".join(
     (r'(?#Bad Tag)(\[[^"]*"(?:.*?|', r'[^\\"]*(?:\\.[^\\"]*)*)"\s*\])')
 )
 END_OF_FILE_MARKER = r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])'
-DISAMBIGUATED = r"(?#Disambiguated)([QBN][1-8][a-h](?:x)?[a-h][1-8])"
 TEXT = r"\S+[ \t\r\f\v]*"
 TAG_PAIR_FORMAT = r"|".join(
     (
@@ -142,7 +141,6 @@ PGN_FORMAT = r"|".join(
         BAD_RESERVED,
         TAG_PAIR_DATA_ERROR,
         END_OF_FILE_MARKER,
-        DISAMBIGUATED,
     )
 )
 PGN_DISAMBIGUATION = r"".join(
@@ -173,9 +171,8 @@ TEXT_FORMAT = (
     .replace(r"O-O-O|O-O", r"O-O-O|O-O|0-0-0|0-0")
     .replace(r"(?:=([QRBN])", r"(?:=?([QRBN])")
     .replace(r"8QRBNO", r"8QRBNO0")
-    .replace(r"?:x(", r"?:(?:[2-7][-x]|x)(")
+    .replace(r"?:x", r"?:(?:[2-7][-x]|x)")
     .replace(r"x?", r"[-x]?")
-    .replace(r"?:x)?", r"?:[-x])?")
 )
 
 # Assume 'B' means bishop unless followed by '[1-8]', and 'b' means bishop
@@ -197,10 +194,8 @@ IGNORE_CASE_FORMAT = (
     .replace(r"[a-h1-8]", r"[a-hA-H1-8]")
     .replace(r"[a-h]", r"[a-hA-H]")
     .replace(r"(x?)", r"([xX]?)")
-    .replace(r":x)?", r":[xX])?")
-    .replace(r"?:x(", r"?:(?:[2-7][-xX]|[xX])(")
+    .replace(r"?:x", r"?:(?:[2-7][-xX]|[xX])")
     .replace(r"[QRBN]", r"[QRBNqrbn]")
-    .replace(r"[QBN]", r"[QBNqbn]")
 )
 
 # Indicies of captured groups in PGN input format for match.group.
@@ -234,8 +229,7 @@ IFG_BAD_COMMENT = 27
 IFG_BAD_RESERVED = 28
 IFG_BAD_TAG = 29
 IFG_END_OF_FILE_MARKER = 30
-IFG_DISAMBIGUATED = 31
-IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 32
+IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 31
 
 # For spotting the pawn-move-like string which is the destination of a fully
 # disambiguated piece move, say 'Qb4d4+??' including optional sufficies, where

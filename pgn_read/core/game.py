@@ -1871,22 +1871,6 @@ class Game:
         except IndexError:
             self.add_board_state_none(None)
 
-    def append_disambiguated(self, match):
-        """Append tokens matching '[QBN][1-8][a-h][a-h][1-8]' as errors.
-
-        This pattern is matched at the end of PGN_FORMAT pattern to allow
-        subclasses to treat it as a fully disambiguated move, like 'Qb1c2'.
-
-        Movetext like 'Q1bc2' could be provided by an override of the
-        _append_piece_movetext() method.
-
-        The processing of <anything else> pattern allows 'Qb1' followed by
-        'c2' to mean move the queen on b1 to c2, but 'Q1bc2' cannot have
-        such a meaning so call it an error always.
-
-        """
-        self.append_token_and_set_error(match)
-
     def ignore_escape(self, match):
         r"""Ignore escape token and rest of line containing the token.
 
@@ -1936,20 +1920,6 @@ class Game:
         be overridden to do this.
 
         """
-
-    def _append_piece_movetext(self, piece_movetext):
-        """Append movetext for a piece move to game score.
-
-        This method exists so subclasses of Game and GameStrictPGN which
-        are external to pgn-read may override the appends done from the
-        _disambiguate_piece_move() method.
-
-        Movetext like 'Qb1c2' could be converted to 'Q1bc2' for later
-        processing through an override of the append_disambiguated()
-        method.
-
-        """
-        self._text.append(piece_movetext)
 
     def _disambiguate_piece_move(self, match):
         group = match.group
@@ -2027,7 +1997,7 @@ class Game:
                 self.place_piece_on_square(remove[1])
                 self.append_token_and_set_error(match)
                 return
-            self._append_piece_movetext(group() + dtfm.group())
+            self._text.append(group() + dtfm.group())
             self.modify_board_state(
                 (
                     (
@@ -2100,7 +2070,7 @@ class Game:
             self.place_piece_on_square(remove)
             self.append_token_and_set_error(match)
             return
-        self._append_piece_movetext(group() + dtfm.group())
+        self._text.append(group() + dtfm.group())
         self.modify_board_state(
             (
                 (

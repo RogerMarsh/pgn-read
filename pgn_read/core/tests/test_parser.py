@@ -3732,31 +3732,6 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ["e4", "e5", "$111", "1-0"])
 
-    def test_190_01_disambiguated_queen(self):
-        # Like test_004_a_sentence(self).
-        ae = self.assertEqual
-        games = self.get("Q1bc2")
-        ae(len(games), 1)
-        ae(games[0].state, 0)
-        ae(games[0]._text, [" Q1bc2"])
-
-    def test_190_02_disambiguated_queen_captures(self):
-        # Like test_004_a_sentence(self).
-        ae = self.assertEqual
-        games = self.get("Q1bxc2")
-        ae(len(games), 1)
-        ae(games[0].state, 0)
-        ae(games[0]._text, [" Q1bxc2"])
-
-    # Different outcome in GameTextPGN and GameIgnoreCasePGN tests.
-    def test_190_03_disambiguated_rook(self):
-        # Like test_004_a_sentence(self).
-        ae = self.assertEqual
-        games = self.get("R1bc1")
-        ae(len(games), 1)
-        ae(games[0].state, 0)
-        ae(games[0]._text, [" R1bc1"])
-
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -8289,11 +8264,6 @@ class GameTextPGN(_NonStrictText, StrictPGN):
         ae(games[0].state, 3)
         ae(games[0]._text, ["e4", "e5", "$111"])
 
-    def test_190_03_disambiguated_rook(self):
-        ae = self.assertEqual
-        games = self.get("R1bc1")
-        ae(len(games), 0)
-
 
 class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -9866,11 +9836,6 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
         ae(len(games), 1)
         ae(games[0].state, 3)
         ae(games[0]._text, ["e4", "e5", "$111"])
-
-    def test_190_03_disambiguated_rook(self):
-        ae = self.assertEqual
-        games = self.get("R1bc1")
-        ae(len(games), 0)
 
 
 class GameLongAlgebraicNotationPawnMove(_BasePGN):
