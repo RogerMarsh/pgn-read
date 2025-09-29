@@ -546,6 +546,10 @@ class Constants(unittest.TestCase):
         ae(constants.TPF_BAD_TAG, 11)
         ae(constants.TPF_END_OF_FILE_MARKER, 12)
         ae(constants.TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE, 13)
+        ae(
+            constants.FULL_DISAMBIGUATION_ALLOWED,
+            r'(?s:1=Q.*1=Q|8=Q.*8=Q|[18]=[BN]|\[\s*FEN\s*")',
+        )
         ae(constants.PAWN_MOVE_TOKEN_POSSIBLE_BISHOP, r"\A[Bb][1-8]\Z")
         ae(constants.UNTERMINATED, "<{")
         ae(
@@ -4727,6 +4731,7 @@ class CountConstants(unittest.TestCase):
                 "FEN_WHITE_ROOK",
                 "FILE_ATTACKS",
                 "FILE_NAMES",
+                "FULL_DISAMBIGUATION_ALLOWED",
                 "GAME_FORMAT",
                 "GAME_TERMINATION",
                 "IFG_BAD_COMMENT",

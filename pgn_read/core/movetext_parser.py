@@ -22,6 +22,7 @@ import re
 
 from .constants import (
     GAME_FORMAT,
+    FULL_DISAMBIGUATION_ALLOWED,
     UNTERMINATED,
     CGM_TAG_NAME,
     CGM_TAG_VALUE,
@@ -51,6 +52,7 @@ from .constants import (
 )
 
 game_format = re.compile(GAME_FORMAT)
+full_disambiguation_allowed = re.compile(FULL_DISAMBIGUATION_ALLOWED)
 
 
 class PGNMoveTextError(Exception):
@@ -112,6 +114,20 @@ class MoveText:
                 if len(tags[str_tag]) == 0:
                     return False
         return True
+
+    def is_full_disambiguation_allowed(self):
+        """Return True if self._text could have fully disambiguated moves.
+
+        A True response implies the movetext tokens in self._text are not
+        reliable and the text should be reprocessed with a .parser.PGN
+        instance using .game.Game as it's game_class argument.
+
+        For example the fully disambiguated move 'Qb1c2' will be seen as
+        [..., 'Qb1', 'c2', ...] in self._text, but the <PGN, Game> version
+        will give [..., 'Qb1c2', ...].
+
+        """
+        return bool(full_disambiguation_allowed.search("".join(self._text)))
 
     def set_game_error(self):
         """Declare parsing of game text has failed.

@@ -304,6 +304,19 @@ CGM_BAD_TAG = 20
 CGM_END_OF_FILE_MARKER = 21
 CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE = 22
 
+# A number of character sequences in PGN text which has space separators
+# removed imply fully disambiguated moves may be present.  This matters in
+# the GAME_FORMAT pattern which treats the destination square of fully
+# disambiguated movetext as a pawn move, without the recovery options
+# possible in the patterns based on PGN_FORMAT.
+# If the PGN text is known to represent playable moves processing based on
+# GAME_FORMAT without tracking piece locations is much quicker than based
+# on PGN_FORMAT with piece location tracking.
+# This pattern allows the existence of necessary fully disambiguated moves
+# to be ruled out.  Full disambiguation is not necessary if a position has
+# less than 3 queens, bishops, or knights, of the same side.
+FULL_DISAMBIGUATION_ALLOWED = r'(?s:1=Q.*1=Q|8=Q.*8=Q|[18]=[BN]|\[\s*FEN\s*")'
+
 # For spotting rejected possible SAN b-pawn move tokens which may be first
 # part of bishop move, ignoring case if necessary.
 # The token is assumed to not represent a pawn move.

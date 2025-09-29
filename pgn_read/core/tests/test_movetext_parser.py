@@ -611,6 +611,24 @@ class MoveText_method_calls(unittest.TestCase):
         ae = self.assertEqual
         ae(self.gc1.is_tag_roster_valid(), False)
 
+    def test_32_is_full_disambiguation_allowed_01(self):
+        ae = self.assertEqual
+        ae(self.gc1._text, [])
+        ae(self.gc1.is_full_disambiguation_allowed(), False)
+
+    def test_32_is_full_disambiguation_allowed_02(self):
+        ae = self.assertEqual
+        ae(self.gc1.append_token(self.m), None)
+        ae(self.gc1._text[0], "Qe4")
+        ae(self.gc1.is_full_disambiguation_allowed(), False)
+
+    def test_32_is_full_disambiguation_allowed_03(self):
+        ae = self.assertEqual
+        self.m = movetext_parser.game_format.match("c8=B")
+        ae(self.gc1.append_token(self.m), None)
+        ae(self.gc1._text[0], "c8=B")
+        ae(self.gc1.is_full_disambiguation_allowed(), True)
+
 
 class _ReadGames:
     """Provide get() method which reads games from an io.StringIO object.
@@ -698,6 +716,27 @@ class MoveTextPGN(_MoveTextPGN):
         ae(len(games), 2)
         for game in games:
             ae(isinstance(game, movetext_parser.MoveText), True)
+
+    def test_02_get_01(self):
+        ae = self.assertEqual
+        games = self.get("c8=Qb1=Q")
+        ae(len(games), 1)
+        for game in games:
+            ae(game.is_full_disambiguation_allowed(), False)
+
+    def test_02_get_02(self):
+        ae = self.assertEqual
+        games = self.get("c8=Qb1=Qa8=Q")
+        ae(len(games), 1)
+        for game in games:
+            ae(game.is_full_disambiguation_allowed(), True)
+
+    def test_02_get_02(self):
+        ae = self.assertEqual
+        games = self.get('[FEN "k7/8/8/8/8/8/8/7k w - - 1 1" ]')
+        ae(len(games), 1)
+        for game in games:
+            ae(game.is_full_disambiguation_allowed(), True)
 
 
 class AddTokenToGame(unittest.TestCase):
