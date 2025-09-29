@@ -4636,9 +4636,11 @@ class GameIgnoreCasePGN(GameTextPGN):
         for pgn_np in PGN_NAMED_PIECES:
             if group(IFG_PIECE_MOVE) == pgn_np:
                 for pobsq in self._pieces_on_board[
-                    pgn_np.lower()
-                    if self._active_color == FEN_BLACK_ACTIVE
-                    else pgn_np
+                    (
+                        pgn_np.lower()
+                        if self._active_color == FEN_BLACK_ACTIVE
+                        else pgn_np
+                    )
                 ]:
                     if POINT_TO_POINT.get(pobsq.square.name, square):
                         return True
@@ -5043,18 +5045,18 @@ class GameIndicateCheck(Game):
         for sqr in escape_squares:
             if sqr not in piece_placement_data:
                 if not self.is_square_attacked_by_other_side(sqr):
-                    self._piece_placement_data[
-                        king_square
-                    ] = piece_placement_data[king_square]
+                    self._piece_placement_data[king_square] = (
+                        piece_placement_data[king_square]
+                    )
                     return False
             elif (
                 PIECE_TO_KING[piece_placement_data[sqr].name]
                 != side_to_move_king
             ):
                 if not self.is_square_attacked_by_other_side(sqr):
-                    self._piece_placement_data[
-                        king_square
-                    ] = piece_placement_data[king_square]
+                    self._piece_placement_data[king_square] = (
+                        piece_placement_data[king_square]
+                    )
                     return False
 
         # Put king back.

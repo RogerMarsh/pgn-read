@@ -812,9 +812,9 @@ class GenerateFENForPosition(unittest.TestCase):
 class GameIndicateCheck(unittest.TestCase):
     def setUp(self):
         self.game = game.GameIndicateCheck()
-        self.game._tags[
-            constants.TAG_SETUP
-        ] = constants.SETUP_VALUE_FEN_PRESENT
+        self.game._tags[constants.TAG_SETUP] = (
+            constants.SETUP_VALUE_FEN_PRESENT
+        )
 
     def tearDown(self):
         del self.game
