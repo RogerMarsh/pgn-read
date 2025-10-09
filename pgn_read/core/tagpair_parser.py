@@ -9,16 +9,18 @@ tokens and by default passes them to an instance of the TagPairGame class
 to build a data structure representing the tag pairs of a game.
 
 The add_token_to_game function searches for the next token in the text
-argument and adds it to the instance of TagPairGame class, or susubclass,
+argument and adds it to the instance of TagPairGame class, or subclass,
 in the game argument.
 
-The GameCount class allows the games to be counted without verifying the
-movetext represents a legal game or collecting the Tag Pairs.  This should
-save significant time when the moves played are not of interest.
+The GameCount class allows the games to be counted without verifying text
+outside tags, comments, and termination markers, is SAN (Standard Algebraic
+Notation) format.  This should save significant time when the moves played
+are not of interest.
 
 The TagPairGame class allows the Tag Pairs of games to be collected without
-verifying the movetext represents a legal game.  This should save significant
-time when the moves played are not of interest.
+verifying the movetext represents a legal game or contains SAN format move
+descriptions.  This should save significant time when the moves played are
+not of interest.
 
 """
 import re

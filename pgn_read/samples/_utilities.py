@@ -12,7 +12,7 @@ import os
 import time
 
 from ..core.parser import PGN
-from ..core.game import generate_fen_for_position
+from ..core.gamedata import generate_fen_for_position
 
 
 def read_pgn(filename, game_class=None, size=10000000):

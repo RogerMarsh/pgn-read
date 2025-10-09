@@ -2,7 +2,7 @@
 # Copyright 2023 Roger Marsh
 # Licence: See LICENCE (BSD licence)
 
-"""Portable Game Notation (PGN) parser which counts moves in movetext.
+"""Portable Game Notation (PGN) parser which validates movetext format.
 
 The PGNMoveText class provides the read_games method which splits text into
 tokens and by default passes them to an instance of the MoveText class to
@@ -10,10 +10,10 @@ build a data structure representing the Tag Pairs and syntactically
 correct movetext in a game.
 
 The add_token_to_game function searches for the next token in the text
-argument and adds it to the instance of MoveText class, or susubclass,
+argument and adds it to the instance of MoveText class, or subclass,
 in the game argument.
 
-The MoveText class allows the Tag Pairs and Movetext to be verified withou
+The MoveText class allows the Tag Pairs and Movetext to be verified without
 confirming the movetext represents a legal game.  Significant time should
 be saved when the validity of moves played is not of interest.
 
@@ -422,7 +422,7 @@ class MoveText:
         Check indicators are required in PGN export format.  This PGN parser
         verifies a move does not leave the moving side's king in check, but
         takes no interest in whether a move gives check or checkmate except
-        for output in PGN export format.  Game.append_check_indicator can
+        for output in PGN export format.  Game._append_check_indicator can
         be overridden to do this.
 
         """

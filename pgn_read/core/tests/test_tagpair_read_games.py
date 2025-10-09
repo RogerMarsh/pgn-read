@@ -19,9 +19,9 @@ from .. import tagpair_parser
 
 
 class _BasePGN(unittest.TestCase):
-    """Provide PGN parser using GameStrictPGN and get() to read PGN text.
+    """Provide PGN parser using TagPairGame and get() to read PGN text.
 
-    Subclasses override setUp() to use alternatives to GameStrictPGN.
+    Subclasses override setUp() to use alternatives to TagPairGame.
 
     """
 

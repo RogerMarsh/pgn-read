@@ -10,19 +10,15 @@ by default passes them to an instance of the game.Game class to build a data
 structure representing a game.
 
 The add_token_to_game function searches for the next token in the text
-argument and adds it to the instance of game.Game class, or susubclass, in the
+argument and adds it to the instance of game.Game class, or subclass, in the
 game argument.
 
 """
 import re
 
-from .game import (
-    Game,
-    GameTextPGN,
-    GameIgnoreCasePGN,
-    import_format,
-    text_format,
-)
+from .game import Game
+from .game_text_pgn import GameTextPGN, import_format, text_format
+from .game_ignore_case_pgn import GameIgnoreCasePGN
 
 from .constants import (
     IGNORE_CASE_FORMAT,

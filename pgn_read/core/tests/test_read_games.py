@@ -16,7 +16,7 @@ import unittest
 import io
 
 from .. import parser
-from .. import game
+from .. import game_strict_pgn
 
 
 class _BasePGN(unittest.TestCase):
@@ -27,7 +27,7 @@ class _BasePGN(unittest.TestCase):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameStrictPGN)
+        self.pgn = parser.PGN(game_class=game_strict_pgn.GameStrictPGN)
 
     def tearDown(self):
         del self.pgn

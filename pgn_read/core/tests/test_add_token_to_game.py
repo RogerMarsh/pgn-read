@@ -9,6 +9,9 @@ import io
 
 from .. import parser
 from .. import game
+from .. import game_strict_pgn
+from .. import game_text_pgn
+from .. import game_ignore_case_pgn
 
 
 class Game(unittest.TestCase):
@@ -19,7 +22,7 @@ class Game(unittest.TestCase):
         pass
 
     def test_01(self):
-        g = game.GameIgnoreCasePGN()
+        g = game_ignore_case_pgn.GameIgnoreCasePGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -45,7 +48,7 @@ class Game(unittest.TestCase):
         self.assertEqual(g.state, None)
 
     def test_02(self):
-        g = game.GameTextPGN()
+        g = game_text_pgn.GameTextPGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -97,7 +100,7 @@ class Game(unittest.TestCase):
         self.assertEqual(g.state, None)
 
     def test_04(self):
-        g = game.GameStrictPGN()
+        g = game_strict_pgn.GameStrictPGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -131,7 +134,7 @@ class GameNewline(unittest.TestCase):
         pass
 
     def test_01(self):
-        g = game.GameIgnoreCasePGN()
+        g = game_ignore_case_pgn.GameIgnoreCasePGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -156,7 +159,7 @@ class GameNewline(unittest.TestCase):
         self.assertEqual(g.state, None)
 
     def test_02(self):
-        g = game.GameTextPGN()
+        g = game_text_pgn.GameTextPGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -206,7 +209,7 @@ class GameNewline(unittest.TestCase):
         self.assertEqual(g.state, None)
 
     def test_04(self):
-        g = game.GameStrictPGN()
+        g = game_strict_pgn.GameStrictPGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -239,7 +242,7 @@ class GameNonPGNText(unittest.TestCase):
         pass
 
     def test_01(self):
-        g = game.GameIgnoreCasePGN()
+        g = game_ignore_case_pgn.GameIgnoreCasePGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -252,7 +255,7 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(g.state, None)
 
     def test_02(self):
-        g = game.GameTextPGN()
+        g = game_text_pgn.GameTextPGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)
@@ -294,7 +297,7 @@ class GameNonPGNText(unittest.TestCase):
         self.assertEqual(g.state, 6)
 
     def test_04(self):
-        g = game.GameStrictPGN()
+        g = game_strict_pgn.GameStrictPGN()
         me = parser.add_token_to_game(self.text, g)
         while me < len(self.text):
             me = parser.add_token_to_game(self.text, g, pos=me)

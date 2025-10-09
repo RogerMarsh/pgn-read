@@ -9,7 +9,11 @@ import io
 
 from .. import parser
 from .. import constants
+from .. import gamedata
 from .. import game
+from .. import game_strict_pgn
+from .. import game_text_pgn
+from .. import game_ignore_case_pgn
 
 
 class _BasePGN(unittest.TestCase):
@@ -20,7 +24,7 @@ class _BasePGN(unittest.TestCase):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameStrictPGN)
+        self.pgn = parser.PGN(game_class=game_strict_pgn.GameStrictPGN)
 
     def tearDown(self):
         del self.pgn
@@ -5320,7 +5324,7 @@ class StrictRAV(_BasePGN):
 
     def fen_position(self, g, fen):
         self.assertEqual(
-            game.generate_fen_for_position(
+            gamedata.generate_fen_for_position(
                 g._piece_placement_data.values(),
                 g._active_color,
                 g._castling_availability,
@@ -6418,7 +6422,7 @@ class DisambiguateTextPGN(Disambiguate):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+        self.pgn = parser.PGN(game_class=game_text_pgn.GameTextPGN)
 
     def test_505_disambiguate_move_needed(self):
         games = self.get(
@@ -6485,7 +6489,9 @@ class DisambiguateIgnoreCasePGN(DisambiguateTextPGN):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+        self.pgn = parser.PGN(
+            game_class=game_ignore_case_pgn.GameIgnoreCasePGN
+        )
 
     def test_505_disambiguate_move_needed(self):
         games = self.get(
@@ -7049,7 +7055,7 @@ class GameTextPGN(_NonStrictText, StrictPGN):
     """Provide tests for GameTextPGN version of parser."""
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+        self.pgn = parser.PGN(game_class=game_text_pgn.GameTextPGN)
 
     def test_118_01_BxC4_without_B_on_board(self):
         ae = self.assertEqual
@@ -8280,7 +8286,9 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
     """
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+        self.pgn = parser.PGN(
+            game_class=game_ignore_case_pgn.GameIgnoreCasePGN
+        )
 
     # Added after changes to convertion of chess engine responses to PGN.
     def test_114_long_algebraic_pawn_move_wrong_direction(self):
@@ -9881,7 +9889,7 @@ class GameTextPGNLongAlgebraicNotationPawnMove(_BasePGN):
     """Provide PGN parser using GameTextPGN and get() to read PGN text."""
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+        self.pgn = parser.PGN(game_class=game_text_pgn.GameTextPGN)
 
     def test_01_01_pawn_e7_takes_f8_equals_queen(self):
         ae = self.assertEqual

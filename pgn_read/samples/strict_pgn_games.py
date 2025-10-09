@@ -5,7 +5,7 @@
 """Report time to parse a PGN file, errors detected, and allow correction."""
 
 from ._utilities import main
-from ..core.game import GameStrictPGN
+from ..core.game_strict_pgn import GameStrictPGN
 
 
 if __name__ == "__main__":

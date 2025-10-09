@@ -7,7 +7,9 @@
 import unittest
 import re
 
+from .. import gamedata
 from .. import game
+from .. import game_indicate_check
 from .. import constants
 from .. import piece
 
@@ -379,7 +381,7 @@ class Game(unittest.TestCase):
         ae = self.assertEqual
         g = game.Game()
         g._active_color = "w"
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_34_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -387,7 +389,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("P", "g3")
         g._piece_placement_data["g3"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_35_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -395,7 +397,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("P", "g5")
         g._piece_placement_data["g5"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_36_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -403,7 +405,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("Q", "f7")
         g._piece_placement_data["f7"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_37_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -411,7 +413,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("B", "d6")
         g._piece_placement_data["d6"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_38_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -419,7 +421,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("R", "a4")
         g._piece_placement_data["a4"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_39_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -427,7 +429,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("N", "d3")
         g._piece_placement_data["d3"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_40_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -435,7 +437,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("P", "f3")
         g._piece_placement_data["f3"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_41_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -443,7 +445,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("P", "f2")
         g._piece_placement_data["f2"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_42_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -451,13 +453,13 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("P", "f5")
         g._piece_placement_data["f5"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_43_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
         g = game.Game()
         g._active_color = "b"
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_44_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -465,7 +467,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("P", "g3")
         g._piece_placement_data["g3"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), True)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), True)
 
     def test_45_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -473,7 +475,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("P", "g5")
         g._piece_placement_data["g5"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_46_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -481,7 +483,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("Q", "f7")
         g._piece_placement_data["f7"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), True)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), True)
 
     def test_47_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -489,7 +491,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("B", "d6")
         g._piece_placement_data["d6"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), True)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), True)
 
     def test_48_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -497,7 +499,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("R", "a4")
         g._piece_placement_data["a4"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), True)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), True)
 
     def test_49_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -505,7 +507,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("N", "d3")
         g._piece_placement_data["d3"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), True)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), True)
 
     def test_50_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -513,7 +515,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("P", "f3")
         g._piece_placement_data["f3"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_51_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -521,7 +523,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("P", "f2")
         g._piece_placement_data["f2"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_52_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -529,7 +531,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("P", "f5")
         g._piece_placement_data["f5"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_53_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -537,7 +539,7 @@ class Game(unittest.TestCase):
         g._active_color = "w"
         p = piece.Piece("Q", "a7")
         g._piece_placement_data["a7"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_54_is_square_attacked_by_other_side(self):
         ae = self.assertEqual
@@ -545,7 +547,7 @@ class Game(unittest.TestCase):
         g._active_color = "b"
         p = piece.Piece("Q", "a7")
         g._piece_placement_data["a7"] = p
-        ae(g.is_square_attacked_by_other_side("f4"), False)
+        ae(g.is_square_attacked_by_other_side("f4", g._active_color), False)
 
     def test_55_len_ravstack(self):
         ae = self.assertEqual
@@ -646,7 +648,7 @@ class Ravstack(unittest.TestCase):
             [None, "w", None, None, None, 2],
             [None, "w", None, None, None, 2],
         ]
-        ae(g.append_end_rav(self.match), True)
+        ae(g.append_end_rav(self.match), None)
         ae(g._state, None)
 
     def test_08_append_start_end_start_rav_sequence(self):
@@ -663,7 +665,7 @@ class Ravstack(unittest.TestCase):
             [None, "w", None, None, None, 2],
             [None, "w", None, None, None, 2],
         ]
-        ae(g.append_end_rav(self.match), True)
+        ae(g.append_end_rav(self.match), None)
         ae(g._state, None)
         ae(g.append_start_rav(self.match), None)
         ae(g._state, None)
@@ -718,7 +720,7 @@ class GenerateFENForPosition(unittest.TestCase):
     def test_01_generate_fen(self):
         ae = self.assertEqual
         ae(
-            game.generate_fen_for_position(
+            gamedata.generate_fen_for_position(
                 [
                     piece.Piece(
                         constants.FEN_WHITE_KING,
@@ -749,7 +751,7 @@ class GenerateFENForPosition(unittest.TestCase):
     def test_02_generate_fen(self):
         ae = self.assertEqual
         ae(
-            game.generate_fen_for_position(
+            gamedata.generate_fen_for_position(
                 [
                     piece.Piece(
                         constants.FEN_WHITE_KING,
@@ -780,7 +782,7 @@ class GenerateFENForPosition(unittest.TestCase):
     def test_03_generate_fen(self):
         ae = self.assertEqual
         ae(
-            game.generate_fen_for_position(
+            gamedata.generate_fen_for_position(
                 [
                     piece.Piece(
                         constants.FEN_WHITE_KING,
@@ -811,7 +813,7 @@ class GenerateFENForPosition(unittest.TestCase):
 
 class GameIndicateCheck(unittest.TestCase):
     def setUp(self):
-        self.game = game.GameIndicateCheck()
+        self.game = game_indicate_check.GameIndicateCheck()
         self.game._tags[constants.TAG_SETUP] = (
             constants.SETUP_VALUE_FEN_PRESENT
         )
@@ -827,63 +829,63 @@ class GameIndicateCheck(unittest.TestCase):
         self.setposition("r3K3/8/4k3/8/8/8/8/8 w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), True)
+        ae(g._is_position_checkmate(), True)
 
     def test_02_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("r3K3/8/4k3/8/8/8/7B/8 w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), False)
+        ae(g._is_position_checkmate(), False)
 
     def test_03_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("r3K3/8/4k3/8/8/8/8/7B w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), False)
+        ae(g._is_position_checkmate(), False)
 
     def test_04_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("rr6/8/8/1Pp5/1KN5/8/2k2b2/7q w - c6 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), True)
+        ae(g._is_position_checkmate(), True)
 
     def test_05_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("rr6/2p5/8/1P6/1KN5/8/2k2b2/4q3 w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), False)
+        ae(g._is_position_checkmate(), False)
 
     def test_06_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("rr6/2p5/8/1Pb5/1KN5/8/2k5/7q w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), False)
+        ae(g._is_position_checkmate(), False)
 
     def test_07_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("r7/8/8/1Pp5/1KN5/8/2k2b2/7q w - c6 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), False)
+        ae(g._is_position_checkmate(), False)
 
     def test_08_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("r7/8/8/1Pp5/1KN5/8/2k2b2/7q w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), True)
+        ae(g._is_position_checkmate(), True)
 
     def test_09_is_position_checkmate(self):
         ae = self.assertEqual
         self.setposition("r7/2p5/8/1P6/1KN4r/8/2k2b2/4q3 w - - 1 1")
         g = self.game
         g.set_initial_position()
-        ae(g.is_position_checkmate(), True)
+        ae(g._is_position_checkmate(), True)
 
 
 if __name__ == "__main__":

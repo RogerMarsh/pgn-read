@@ -19,7 +19,11 @@ import os
 
 from .. import parser
 from .. import constants
+from .. import gamedata
 from .. import game
+from .. import game_strict_pgn
+from .. import game_text_pgn
+from .. import game_ignore_case_pgn
 
 
 class _StandardTests(unittest.TestCase):
@@ -128,7 +132,7 @@ class _StrictPGN(_StandardTests):
     )
 
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameStrictPGN)
+        self.pgn = parser.PGN(game_class=game_strict_pgn.GameStrictPGN)
 
     def tearDown(self):
         del self.pgn
@@ -159,15 +163,21 @@ class _StrictPGN(_StandardTests):
                 self.fens = {}
 
             def modify_board_state(self, position_delta):
+                # Local subversion revision 6505 moved append to self._text
+                # from just before the call of modify_board_state() to just
+                # after.  This affects the value of the self.fens key
+                # generated.  The number of FENs generated is unchanged.
                 super().modify_board_state(position_delta)
                 bs = position_delta[1]
-                self.fens[len(self._text)] = game.generate_fen_for_position(
-                    self._piece_placement_data.values(),
-                    bs[1],
-                    bs[2],
-                    bs[3],
-                    bs[4],
-                    bs[5],
+                self.fens[len(self._text)] = (
+                    gamedata.generate_fen_for_position(
+                        self._piece_placement_data.values(),
+                        bs[1],
+                        bs[2],
+                        bs[3],
+                        bs[4],
+                        bs[5],
+                    )
                 )
 
         self.pgn = parser.PGN(game_class=G)
@@ -265,7 +275,7 @@ class StrictPGN(_StrictPGN):
     def test_011_break_pgn_0_8_1_c_pgn(self):
         g = self._011_break_pgn_0_8_1_c_pgn(True)
         self.assertEqual(
-            game.generate_fen_for_position(
+            gamedata.generate_fen_for_position(
                 g._piece_placement_data.values(),
                 g._active_color,
                 g._castling_availability,
@@ -712,7 +722,7 @@ class StrictPGN(_StrictPGN):
     def test_030_calgames_04(self):
         g = self._030_calgames_04(True)
         self.assertEqual(
-            game.generate_fen_for_position(
+            gamedata.generate_fen_for_position(
                 g._piece_placement_data.values(),
                 g._active_color,
                 g._castling_availability,
@@ -1031,10 +1041,12 @@ class StrictPGN(_StrictPGN):
         self._056_calgames_10(True)
         self.pgn_positions()
         g = self._056_calgames_10(True)
+        # See _StrictPGN.pgn_positions() comments on <key> in g.fens[<key>].
         self.assertEqual(
-            g.fens[52],
+            g.fens[51],
             "2kr4/bpp2ppp/p1p5/N3Pb2/n1P2P2/P1Br4/1P1N2PP/2RKR3 w - - 9 20",
         )
+        self.assertEqual(len(g.fens), 38)
 
     # calgames_11.pgn has multiple, and nested, '--' tokens.
     def _057_calgames_11(self, strictness):
@@ -1051,9 +1063,11 @@ class StrictPGN(_StrictPGN):
         self._057_calgames_11(True)
         self.pgn_positions()
         g = self._057_calgames_11(True)
+        # See _StrictPGN.pgn_positions() comments on <key> in g.fens[<key>].
         self.assertEqual(
-            g.fens[186], "rnQ2n1k/1p4pp/p5qN/3p4/8/6P1/P1PB2BP/4R2K b - - 0 26"
+            g.fens[185], "rnQ2n1k/1p4pp/p5qN/3p4/8/6P1/P1PB2BP/4R2K b - - 0 26"
         )
+        self.assertEqual(len(g.fens), 122)
 
 
 class _OneCharacterAtATime:
@@ -2823,14 +2837,14 @@ class _TextFormatTests:
 
 class TextPGN(_TextFormatTests, StrictPGN):
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+        self.pgn = parser.PGN(game_class=game_text_pgn.GameTextPGN)
 
 
 class TextPGNOneCharacterAtATime(
     _OneCharacterAtATime, _TextFormatTests, StrictPGN
 ):
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+        self.pgn = parser.PGN(game_class=game_text_pgn.GameTextPGN)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_034_little_01(self):
@@ -2855,7 +2869,7 @@ class TextPGNExtendByOneCharacter(
     _TextFormatTests, StrictPGNExtendByOneCharacter
 ):
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameTextPGN)
+        self.pgn = parser.PGN(game_class=game_text_pgn.GameTextPGN)
 
 
 class _IgnoreCaseTextPGN:
@@ -3067,14 +3081,18 @@ class _IgnoreCaseTextPGN:
 
 class IgnoreCaseTextPGN(_IgnoreCaseTextPGN, TextPGN):
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+        self.pgn = parser.PGN(
+            game_class=game_ignore_case_pgn.GameIgnoreCasePGN
+        )
 
 
 class IgnoreCaseTextPGNOneCharacterAtATime(
     _IgnoreCaseTextPGN, TextPGNOneCharacterAtATime
 ):
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+        self.pgn = parser.PGN(
+            game_class=game_ignore_case_pgn.GameIgnoreCasePGN
+        )
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_034_little_01(self):
@@ -3099,7 +3117,9 @@ class IgnoreCaseTextPGNExtendByOneCharacter(
     _IgnoreCaseTextPGN, TextPGNExtendByOneCharacter
 ):
     def setUp(self):
-        self.pgn = parser.PGN(game_class=game.GameIgnoreCasePGN)
+        self.pgn = parser.PGN(
+            game_class=game_ignore_case_pgn.GameIgnoreCasePGN
+        )
 
 
 class PGNLower(parser.PGN):
@@ -3549,14 +3569,14 @@ class _IgnoreCasePGNLower:
 
 class TextPGNLower(_IgnoreCasePGNLower, TextPGN):
     def setUp(self):
-        self.pgn = PGNLower(game_class=game.GameIgnoreCasePGN)
+        self.pgn = PGNLower(game_class=game_ignore_case_pgn.GameIgnoreCasePGN)
 
 
 class TextPGNLowerOneCharacterAtATime(
     _OneCharacterAtATime, _IgnoreCasePGNLower, _TextFormatTests, StrictPGN
 ):
     def setUp(self):
-        self.pgn = PGNLower(game_class=game.GameIgnoreCasePGN)
+        self.pgn = PGNLower(game_class=game_ignore_case_pgn.GameIgnoreCasePGN)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_034_little_01(self):
@@ -3581,7 +3601,7 @@ class TextPGNLowerExtendByOneCharacter(
     _IgnoreCasePGNLower, TextPGNExtendByOneCharacter
 ):
     def setUp(self):
-        self.pgn = PGNLower(game_class=game.GameIgnoreCasePGN)
+        self.pgn = PGNLower(game_class=game_ignore_case_pgn.GameIgnoreCasePGN)
 
 
 class PGNUpper(parser.PGN):
@@ -3871,14 +3891,14 @@ class _IgnoreCasePGNUpper:
 # is mis-interpreted as a bishop move, 'BxC4' for example.
 class TextPGNUpper(_IgnoreCasePGNUpper, TextPGN):
     def setUp(self):
-        self.pgn = PGNUpper(game_class=game.GameIgnoreCasePGN)
+        self.pgn = PGNUpper(game_class=game_ignore_case_pgn.GameIgnoreCasePGN)
 
 
 class TextPGNUpperOneCharacterAtATime(
     _OneCharacterAtATime, _IgnoreCasePGNUpper, _TextFormatTests, StrictPGN
 ):
     def setUp(self):
-        self.pgn = PGNUpper(game_class=game.GameIgnoreCasePGN)
+        self.pgn = PGNUpper(game_class=game_ignore_case_pgn.GameIgnoreCasePGN)
 
     def test_034_little_01(self):
         self.do_standard_tests(
@@ -3900,7 +3920,7 @@ class TextPGNUpperExtendByOneCharacter(
     _IgnoreCasePGNUpper, TextPGNExtendByOneCharacter
 ):
     def setUp(self):
-        self.pgn = PGNUpper(game_class=game.GameIgnoreCasePGN)
+        self.pgn = PGNUpper(game_class=game_ignore_case_pgn.GameIgnoreCasePGN)
 
 
 class ExportPGN(_StrictPGN):

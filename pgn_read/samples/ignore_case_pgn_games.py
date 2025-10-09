@@ -5,7 +5,7 @@
 """Report time to parse a PGN file, errors detected, and allow correction."""
 
 from ._utilities import main
-from ..core.game import GameIgnoreCasePGN
+from ..core.game_ignore_case_pgn import GameIgnoreCasePGN
 
 
 if __name__ == "__main__":
