@@ -1379,46 +1379,24 @@ class Game(GameData):
                     self.place_piece_on_square(remove[1])
                     self.append_token_and_set_error(match)
                     return
-                self.modify_board_state(
+                # to here is removed, unlike in the non-capture path.
+                self._modify_game_state_piece_move(
                     (
-                        (
-                            remove,
-                            self._active_color,
-                            self._castling_availability,
-                            self._en_passant_target_square,
-                            self._halfmove_clock,
-                            self._fullmove_number,
-                        ),
-                        (
-                            (place,),
-                            OTHER_SIDE[self._active_color],
-                            self.get_castling_options_after_move_applied(
-                                remove
-                            ),
-                            FEN_NULL,
-                            0,
-                            fullmove_number_for_next_halfmove,
-                        ),
-                    )
+                        (destination, piece_placement_data[destination]),
+                        (piece.square.name, piece),
+                    ),
+                    ((destination, piece),),
+                    fullmove_number_for_next_halfmove,
                 )
-                # to here is replaced by the commented code immediately below.
-                # self._modify_game_state_piece_move(
-                #     (
-                #         (destination, piece_placement_data[destination]),
-                #         (piece.square.name, piece),
-                #     ),
-                #     ((destination, piece),),
-                #     fullmove_number_for_next_halfmove,
-                # )
-                # if self.is_square_attacked_by_other_side(
-                #     self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                #         0
-                #     ].square.name,
-                #     OTHER_SIDE[self._active_color],
-                # ):
-                #     self.undo_board_state()
-                #     self._append_token_and_set_error(match)
-                #     return
+                if self.is_square_attacked_by_other_side(
+                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
+                        0
+                    ].square.name,
+                    OTHER_SIDE[self._active_color],
+                ):
+                    self.undo_board_state()
+                    self._append_token_and_set_error(match)
+                    return
                 if len(file_count) < 2 and len(rank_count) < 2:
                     self._append_decorated_text(
                         PGN_CAPTURE_MOVE.join(
@@ -1505,58 +1483,20 @@ class Game(GameData):
             if not self.line_empty(piece.square.name, destination):
                 self._append_token_and_set_error(match)
                 return
-            # Some unittests fail if the code from here:
-            remove = piece.square.name, piece
-            self.remove_piece_on_square(remove)
-            place = destination, piece
-            self.place_piece_on_square(place)
+            self._modify_game_state_piece_move(
+                ((piece.square.name, piece),),
+                ((destination, piece),),
+                fullmove_number_for_next_halfmove,
+            )
             if self.is_square_attacked_by_other_side(
                 self._pieces_on_board[PIECE_TO_KING[piece.name]][
                     0
                 ].square.name,
-                self._active_color,
+                OTHER_SIDE[self._active_color],
             ):
-                self.remove_piece_on_square(place)
-                self.place_piece_on_square(remove)
-                self.append_token_and_set_error(match)
+                self.undo_board_state()
+                self._append_token_and_set_error(match)
                 return
-            self.modify_board_state(
-                (
-                    (
-                        (remove,),
-                        self._active_color,
-                        self._castling_availability,
-                        self._en_passant_target_square,
-                        self._halfmove_clock,
-                        self._fullmove_number,
-                    ),
-                    (
-                        (place,),
-                        OTHER_SIDE[self._active_color],
-                        self.get_castling_options_after_move_applied(
-                            (remove,)
-                        ),
-                        FEN_NULL,
-                        self._halfmove_clock + 1,
-                        fullmove_number_for_next_halfmove,
-                    ),
-                )
-            )
-            # to here is replaced by the commented code immediately below.
-            # self._modify_game_state_piece_move(
-            #     ((piece.square.name, piece),),
-            #     ((destination, piece),),
-            #     fullmove_number_for_next_halfmove,
-            # )
-            # if self.is_square_attacked_by_other_side(
-            #     self._pieces_on_board[PIECE_TO_KING[piece.name]][
-            #         0
-            #     ].square.name,
-            #     OTHER_SIDE[self._active_color],
-            # ):
-            #     self.undo_board_state()
-            #     self._append_token_and_set_error(match)
-            #     return
             if len(file_count) < 2 and len(rank_count) < 2:
                 self._append_decorated_text(
                     group(IFG_PIECE_MOVE) + destination

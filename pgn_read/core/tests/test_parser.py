@@ -3736,6 +3736,22 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, None)
         ae(games[0]._text, ["e4", "e5", "$111", "1-0"])
 
+    def test_190_01_attempt_move_with_pinned_piece(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"4k3/8/8/8/1b6/2N5/8/4K3 w - - 0 1"]Ne4*'
+        )
+        ae(games[0].state, 2)
+        ae(games[0]._position_deltas, [None, None, None])
+
+    def test_190_02_attempt_capture_with_pinned_piece(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"4k3/8/8/8/1b2p3/2N1P3/8/4K3 w - - 0 1"]Nxe4*'
+        )
+        ae(games[0].state, 2)
+        ae(games[0]._position_deltas, [None, None, None])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -4279,10 +4295,12 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_517_disambiguate_move_and_rank_pin_one(self):
+        ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*'
         )
-        self.assertEqual(games[0].state, 2)
+        ae(games[0].state, 2)
+        ae(games[0]._position_deltas, [None, None, None])
 
     def test_518_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
@@ -4747,10 +4765,12 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_617_disambiguate_capture_and_rank_pin_one(self):
+        ae = self.assertEqual
         games = self.get(
             '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q2N3/6K1/8 b - - 0 1"]Qb6xe3*'
         )
-        self.assertEqual(games[0].state, 2)
+        ae(games[0].state, 2)
+        ae(games[0]._position_deltas, [None, None, None])
 
     def test_618_disambiguate_capture_and_rank_pin_one(self):
         games = self.get(

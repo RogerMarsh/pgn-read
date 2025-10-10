@@ -336,14 +336,14 @@ class GameData:
         recent move would leave the king of moving side in check.
 
         """
-        del self._position_deltas[-1]
         (
             self._active_color,
             self._castling_availability,
             self._en_passant_target_square,
             self._halfmove_clock,
             self._fullmove_number,
-        ) = self._position_deltas[-1][1][1:]
+        ) = self._position_deltas[-1][0][1:]
+        del self._position_deltas[-1]
 
     def is_square_attacked_by_other_side(self, square, side):
         """Return True if square is attacked by a piece not of side."""
