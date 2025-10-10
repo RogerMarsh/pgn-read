@@ -1359,27 +1359,27 @@ class Game(GameData):
                 if not self.line_empty(piece.square.name, destination):
                     self._append_token_and_set_error(match)
                     return
-                # Some unittests fail if the code from here:
-                remove = (
-                    (destination, piece_placement_data[destination]),
-                    (piece.square.name, piece),
-                )
-                self.remove_piece_from_board(remove[0])
-                self.remove_piece_on_square(remove[1])
-                place = destination, piece
-                self.place_piece_on_square(place)
-                if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                        0
-                    ].square.name,
-                    self._active_color,
-                ):
-                    self.remove_piece_on_square(place)
-                    self.place_piece_on_board(remove[0])
-                    self.place_piece_on_square(remove[1])
-                    self.append_token_and_set_error(match)
-                    return
-                # to here is removed, unlike in the non-capture path.
+                # Does piece move without capture path need this if clause?
+                if not self._strict_pgn:
+                    remove = (
+                        (destination, piece_placement_data[destination]),
+                        (piece.square.name, piece),
+                    )
+                    self.remove_piece_from_board(remove[0])
+                    self.remove_piece_on_square(remove[1])
+                    place = destination, piece
+                    self.place_piece_on_square(place)
+                    if self.is_square_attacked_by_other_side(
+                        self._pieces_on_board[PIECE_TO_KING[piece.name]][
+                            0
+                        ].square.name,
+                        self._active_color,
+                    ):
+                        self.remove_piece_on_square(place)
+                        self.place_piece_on_board(remove[0])
+                        self.place_piece_on_square(remove[1])
+                        self.append_token_and_set_error(match)
+                        return
                 self._modify_game_state_piece_move(
                     (
                         (destination, piece_placement_data[destination]),
@@ -1483,6 +1483,9 @@ class Game(GameData):
             if not self.line_empty(piece.square.name, destination):
                 self._append_token_and_set_error(match)
                 return
+            # Should if clause at corresponding place in piece move with
+            # capture path be here too.
+            # (Is there a test, not yet thought of, which breaks this code?)
             self._modify_game_state_piece_move(
                 ((piece.square.name, piece),),
                 ((destination, piece),),
