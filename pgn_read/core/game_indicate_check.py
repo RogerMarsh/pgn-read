@@ -20,10 +20,6 @@ from .constants import (
     POINT_TO_POINT,
     EN_PASSANT_TARGET_SQUARES,
     FEN_PAWNS,
-    RANK_ATTACKS,
-    FILE_ATTACKS,
-    LRD_DIAGONAL_ATTACKS,
-    RLD_DIAGONAL_ATTACKS,
     SOURCE_SQUARES,
     FEN_SOURCE_SQUARES,
     SIDE_TO_MOVE_KING,
@@ -32,6 +28,7 @@ from .constants import (
     KNIGHT_MOVES,
 )
 from .game import Game
+from .squares import Squares
 
 
 class GameIndicateCheck(Game):
@@ -154,27 +151,20 @@ class GameIndicateCheck(Game):
         active_color = self._active_color
         attacking_squares = []
 
-        for attacks in (
-            FILE_ATTACKS,
-            RANK_ATTACKS,
-            LRD_DIAGONAL_ATTACKS,
-            RLD_DIAGONAL_ATTACKS,
-        ):
-            point, line = attacks[square]
-            for square_list in reversed(line[:point]), line[point + 1 :]:
-                for sqr in square_list:
-                    if sqr not in piece_placement_data:
-                        continue
-                    piece = piece_placement_data[sqr]
-                    if piece.color == active_color:
-                        break
-                    sources = FEN_SOURCE_SQUARES.get(piece.name)
-                    if sources is None or sqr not in sources.get(square, ""):
-                        break
-                    attacking_squares.append(sqr)
-                    if len(attacking_squares) > 1:
-                        return attacking_squares
+        for square_list in Squares.squares[square].attack_lines():
+            for sqr in square_list:
+                if sqr not in piece_placement_data:
+                    continue
+                piece = piece_placement_data[sqr]
+                if piece.color == active_color:
                     break
+                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                if sources is None or sqr not in sources.get(square, ""):
+                    break
+                attacking_squares.append(sqr)
+                if len(attacking_squares) > 1:
+                    return attacking_squares
+                break
 
         if active_color == FEN_WHITE_ACTIVE:
             knight_search = FEN_BLACK_KNIGHT
@@ -182,7 +172,9 @@ class GameIndicateCheck(Game):
             knight_search = FEN_WHITE_KNIGHT
         square_list = FEN_SOURCE_SQUARES[knight_search]
         # pylint message C0206 'Consider iterating with .items()'.
-        # Reference to 'square_list[sqr]' is not considered frequent enough.
+        # Evaluating 'square_list[sqr]' is not considered frequent enough.
+        # Changing to 'square_list.keys()' attracts extra C0201 message
+        # 'Consider iterating dictionary directly instead of calling .keys()'.
         for sqr in square_list:
             if sqr not in piece_placement_data:
                 continue

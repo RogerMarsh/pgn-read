@@ -56,6 +56,19 @@ class _Square:
         if castling_rights is not None:
             self.castling_rights_lost = castling_rights
 
+        # For square d4 the squares a4 b4 c4 and [a-h][1-3] are low squares
+        # and e4 f4 g4 h4 and [a-h][5-8] are high squares.
+        # Square d4 is on the a7 to g1 lrd diagonal (down from left to right).
+        # Square d4 is on the h8 to a1 rld diagonal (down from right to left).
+        self.low_file_attacks = None
+        self.high_file_attacks = None
+        self.low_rank_attacks = None
+        self.high_rank_attacks = None
+        self.low_lrd_attacks = None
+        self.high_lrd_attacks = None
+        self.low_rld_attacks = None
+        self.high_rld_attacks = None
+
     # Comparisions for deciding if squares occupy the same line.
 
     def __eq__(self, other):
@@ -83,20 +96,33 @@ class _Square:
         if id(self) == id(other):
             return None
         if self.file == other.file:
-            return constants.FILE_ATTACKS[self.name]
+            return self.low_file_attacks, self.high_file_attacks
         if self.rank == other.rank:
-            return constants.RANK_ATTACKS[self.name]
+            return self.low_rank_attacks, self.high_rank_attacks
         if (
             self.left_to_right_down_diagonal
             == other.left_to_right_down_diagonal
         ):
-            return constants.LRD_DIAGONAL_ATTACKS[self.name]
+            return self.low_lrd_attacks, self.high_lrd_attacks
         if (
             self.right_to_left_down_diagonal
             == other.right_to_left_down_diagonal
         ):
-            return constants.RLD_DIAGONAL_ATTACKS[self.name]
+            return self.low_rld_attacks, self.high_rld_attacks
         return None
+
+    def attack_lines(self):
+        """Return the eight lines of attack on a square."""
+        return (
+            self.low_file_attacks,
+            self.high_file_attacks,
+            self.low_rank_attacks,
+            self.high_rank_attacks,
+            self.low_lrd_attacks,
+            self.high_lrd_attacks,
+            self.low_rld_attacks,
+            self.high_rld_attacks,
+        )
 
 
 class Squares:
@@ -116,11 +142,57 @@ class Squares:
         self.square_names = {}
         squares = self.squares
         square_names = self.square_names
+        files = {}
+        ranks = {}
+        file_names = constants.FILE_NAMES
         rank_names = constants.RANK_NAMES
-        for file_number, file in enumerate(constants.FILE_NAMES):
+        for file_number, file in enumerate(file_names):
+            files[file] = {file + r for r in rank_names}
             for rank_number, rank in enumerate(rank_names):
                 squares[file + rank] = _Square(file, rank)
                 square_names[rank_number * 8 + file_number] = file + rank
+        for rank in rank_names:
+            ranks[rank] = {f + rank for f in file_names}
+        left_to_right = []
+        right_to_left = []
+        for e in range(len(file_names)):
+            left_to_right.append(set())
+            for x, y in zip(file_names[e:], rank_names):
+                left_to_right[-1].add(x + y)
+            right_to_left.append(set())
+            for x, y in zip(
+                reversed(file_names[: e + 1]), rank_names[: e + 2]
+            ):
+                right_to_left[-1].add(x + y)
+        for e in range(len(rank_names) - 1):
+            left_to_right.append(set())
+            for x, y in zip(file_names[: -e - 1], rank_names[e + 1 :]):
+                left_to_right[-1].add(x + y)
+            right_to_left.append(set())
+            for x, y in zip(
+                reversed(file_names[-e - 1 :]), rank_names[-e - 1 :]
+            ):
+                right_to_left[-1].add(x + y)
+        for v in files.values():
+            line = tuple(sorted(v))
+            for e, sq1 in enumerate(line):
+                squares[sq1].low_file_attacks = tuple(list(reversed(line[:e])))
+                squares[sq1].high_file_attacks = tuple(line[e + 1 :])
+        for v in ranks.values():
+            line = tuple(sorted(v))
+            for e, sq1 in enumerate(line):
+                squares[sq1].low_rank_attacks = tuple(list(reversed(line[:e])))
+                squares[sq1].high_rank_attacks = tuple(line[e + 1 :])
+        for v in left_to_right:
+            line = tuple(sorted(v))
+            for e, sq1 in enumerate(line):
+                squares[sq1].high_lrd_attacks = tuple(list(reversed(line[:e])))
+                squares[sq1].low_lrd_attacks = tuple(line[e + 1 :])
+        for v in right_to_left:
+            line = tuple(sorted(v))
+            for e, sq1 in enumerate(line):
+                squares[sq1].low_rld_attacks = tuple(list(reversed(line[:e])))
+                squares[sq1].high_rld_attacks = tuple(line[e + 1 :])
 
 
 # Pylint reports no-member for Squares.<attribute-name> references.

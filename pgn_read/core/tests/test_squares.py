@@ -7,6 +7,7 @@
 import unittest
 
 from .. import squares
+from .. import constants
 
 
 class _Square(unittest.TestCase):
@@ -46,7 +47,15 @@ class _Square(unittest.TestCase):
             [
                 "bit",
                 "file",
+                "high_file_attacks",
+                "high_lrd_attacks",
+                "high_rank_attacks",
+                "high_rld_attacks",
                 "left_to_right_down_diagonal",
+                "low_file_attacks",
+                "low_lrd_attacks",
+                "low_rank_attacks",
+                "low_rld_attacks",
                 "name",
                 "number",
                 "rank",
@@ -65,7 +74,15 @@ class _Square(unittest.TestCase):
                 "bit",
                 "castling_rights_lost",
                 "file",
+                "high_file_attacks",
+                "high_lrd_attacks",
+                "high_rank_attacks",
+                "high_rld_attacks",
                 "left_to_right_down_diagonal",
+                "low_file_attacks",
+                "low_lrd_attacks",
+                "low_rank_attacks",
+                "low_rld_attacks",
                 "name",
                 "number",
                 "rank",
@@ -475,36 +492,487 @@ class Squares(unittest.TestCase):
         sss = squares.Squares.squares
         ae(
             sss["c4"].attack_line(sss["b4"]),
-            (2, ("a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4")),
+            (("b4", "a4"), ("d4", "e4", "f4", "g4", "h4")),
         )
         ae(
             sss["c4"].attack_line(sss["b5"]),
-            (2, ("a6", "b5", "c4", "d3", "e2", "f1")),
+            (("d3", "e2", "f1"), ("b5", "a6")),
         )
         ae(
             sss["c4"].attack_line(sss["c5"]),
-            (3, ("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8")),
+            (("c3", "c2", "c1"), ("c5", "c6", "c7", "c8")),
         )
         ae(
             sss["c4"].attack_line(sss["d5"]),
-            (2, ("a2", "b3", "c4", "d5", "e6", "f7", "g8")),
+            (("b3", "a2"), ("d5", "e6", "f7", "g8")),
         )
         ae(
             sss["c4"].attack_line(sss["d4"]),
-            (2, ("a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4")),
+            (("b4", "a4"), ("d4", "e4", "f4", "g4", "h4")),
         )
         ae(
             sss["c4"].attack_line(sss["d3"]),
-            (2, ("a6", "b5", "c4", "d3", "e2", "f1")),
+            (("d3", "e2", "f1"), ("b5", "a6")),
         )
         ae(
             sss["c4"].attack_line(sss["c3"]),
-            (3, ("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8")),
+            (("c3", "c2", "c1"), ("c5", "c6", "c7", "c8")),
         )
         ae(
             sss["c4"].attack_line(sss["b3"]),
-            (2, ("a2", "b3", "c4", "d5", "e6", "f7", "g8")),
+            (("b3", "a2"), ("d5", "e6", "f7", "g8")),
         )
+
+    def test_10_Squares(self):
+        ae = self.assertEqual
+        sss = squares.Squares.squares
+        ae(sss["a1"].low_file_attacks, ())
+        ae(sss["a2"].low_file_attacks, ("a1",))
+        ae(sss["a3"].low_file_attacks, ("a2", "a1"))
+        ae(sss["a4"].low_file_attacks, ("a3", "a2", "a1"))
+        ae(sss["a5"].low_file_attacks, ("a4", "a3", "a2", "a1"))
+        ae(sss["a6"].low_file_attacks, ("a5", "a4", "a3", "a2", "a1"))
+        ae(sss["a7"].low_file_attacks, ("a6", "a5", "a4", "a3", "a2", "a1"))
+        ae(
+            sss["a8"].low_file_attacks,
+            ("a7", "a6", "a5", "a4", "a3", "a2", "a1"),
+        )
+        ae(sss["b1"].low_file_attacks, ())
+        ae(sss["b2"].low_file_attacks, ("b1",))
+        ae(sss["b3"].low_file_attacks, ("b2", "b1"))
+        ae(sss["b4"].low_file_attacks, ("b3", "b2", "b1"))
+        ae(sss["b5"].low_file_attacks, ("b4", "b3", "b2", "b1"))
+        ae(sss["b6"].low_file_attacks, ("b5", "b4", "b3", "b2", "b1"))
+        ae(sss["b7"].low_file_attacks, ("b6", "b5", "b4", "b3", "b2", "b1"))
+        ae(
+            sss["b8"].low_file_attacks,
+            ("b7", "b6", "b5", "b4", "b3", "b2", "b1"),
+        )
+        ae(sss["c1"].low_file_attacks, ())
+        ae(sss["c2"].low_file_attacks, ("c1",))
+        ae(sss["c3"].low_file_attacks, ("c2", "c1"))
+        ae(sss["c4"].low_file_attacks, ("c3", "c2", "c1"))
+        ae(sss["c5"].low_file_attacks, ("c4", "c3", "c2", "c1"))
+        ae(sss["c6"].low_file_attacks, ("c5", "c4", "c3", "c2", "c1"))
+        ae(sss["c7"].low_file_attacks, ("c6", "c5", "c4", "c3", "c2", "c1"))
+        ae(
+            sss["c8"].low_file_attacks,
+            ("c7", "c6", "c5", "c4", "c3", "c2", "c1"),
+        )
+        ae(sss["d1"].low_file_attacks, ())
+        ae(sss["d2"].low_file_attacks, ("d1",))
+        ae(sss["d3"].low_file_attacks, ("d2", "d1"))
+        ae(sss["d4"].low_file_attacks, ("d3", "d2", "d1"))
+        ae(sss["d5"].low_file_attacks, ("d4", "d3", "d2", "d1"))
+        ae(sss["d6"].low_file_attacks, ("d5", "d4", "d3", "d2", "d1"))
+        ae(sss["d7"].low_file_attacks, ("d6", "d5", "d4", "d3", "d2", "d1"))
+        ae(
+            sss["d8"].low_file_attacks,
+            ("d7", "d6", "d5", "d4", "d3", "d2", "d1"),
+        )
+        ae(sss["e1"].low_file_attacks, ())
+        ae(sss["e2"].low_file_attacks, ("e1",))
+        ae(sss["e3"].low_file_attacks, ("e2", "e1"))
+        ae(sss["e4"].low_file_attacks, ("e3", "e2", "e1"))
+        ae(sss["e5"].low_file_attacks, ("e4", "e3", "e2", "e1"))
+        ae(sss["e6"].low_file_attacks, ("e5", "e4", "e3", "e2", "e1"))
+        ae(sss["e7"].low_file_attacks, ("e6", "e5", "e4", "e3", "e2", "e1"))
+        ae(
+            sss["e8"].low_file_attacks,
+            ("e7", "e6", "e5", "e4", "e3", "e2", "e1"),
+        )
+        ae(sss["f1"].low_file_attacks, ())
+        ae(sss["f2"].low_file_attacks, ("f1",))
+        ae(sss["f3"].low_file_attacks, ("f2", "f1"))
+        ae(sss["f4"].low_file_attacks, ("f3", "f2", "f1"))
+        ae(sss["f5"].low_file_attacks, ("f4", "f3", "f2", "f1"))
+        ae(sss["f6"].low_file_attacks, ("f5", "f4", "f3", "f2", "f1"))
+        ae(sss["f7"].low_file_attacks, ("f6", "f5", "f4", "f3", "f2", "f1"))
+        ae(
+            sss["f8"].low_file_attacks,
+            ("f7", "f6", "f5", "f4", "f3", "f2", "f1"),
+        )
+        ae(sss["g1"].low_file_attacks, ())
+        ae(sss["g2"].low_file_attacks, ("g1",))
+        ae(sss["g3"].low_file_attacks, ("g2", "g1"))
+        ae(sss["g4"].low_file_attacks, ("g3", "g2", "g1"))
+        ae(sss["g5"].low_file_attacks, ("g4", "g3", "g2", "g1"))
+        ae(sss["g6"].low_file_attacks, ("g5", "g4", "g3", "g2", "g1"))
+        ae(sss["g7"].low_file_attacks, ("g6", "g5", "g4", "g3", "g2", "g1"))
+        ae(
+            sss["g8"].low_file_attacks,
+            ("g7", "g6", "g5", "g4", "g3", "g2", "g1"),
+        )
+        ae(
+            sss["h1"].low_file_attacks,
+            (),
+        )
+        ae(sss["h2"].low_file_attacks, ("h1",))
+        ae(sss["h3"].low_file_attacks, ("h2", "h1"))
+        ae(sss["h4"].low_file_attacks, ("h3", "h2", "h1"))
+        ae(sss["h5"].low_file_attacks, ("h4", "h3", "h2", "h1"))
+        ae(sss["h6"].low_file_attacks, ("h5", "h4", "h3", "h2", "h1"))
+        ae(sss["h7"].low_file_attacks, ("h6", "h5", "h4", "h3", "h2", "h1"))
+        ae(
+            sss["h8"].low_file_attacks,
+            ("h7", "h6", "h5", "h4", "h3", "h2", "h1"),
+        )
+        ae(
+            sss["a1"].high_file_attacks,
+            ("a2", "a3", "a4", "a5", "a6", "a7", "a8"),
+        )
+        ae(sss["a2"].high_file_attacks, ("a3", "a4", "a5", "a6", "a7", "a8"))
+        ae(sss["a3"].high_file_attacks, ("a4", "a5", "a6", "a7", "a8"))
+        ae(sss["a4"].high_file_attacks, ("a5", "a6", "a7", "a8"))
+        ae(sss["a5"].high_file_attacks, ("a6", "a7", "a8"))
+        ae(sss["a6"].high_file_attacks, ("a7", "a8"))
+        ae(sss["a7"].high_file_attacks, ("a8",))
+        ae(sss["a8"].high_file_attacks, ())
+        ae(
+            sss["b1"].high_file_attacks,
+            ("b2", "b3", "b4", "b5", "b6", "b7", "b8"),
+        )
+        ae(sss["b2"].high_file_attacks, ("b3", "b4", "b5", "b6", "b7", "b8"))
+        ae(sss["b3"].high_file_attacks, ("b4", "b5", "b6", "b7", "b8"))
+        ae(sss["b4"].high_file_attacks, ("b5", "b6", "b7", "b8"))
+        ae(sss["b5"].high_file_attacks, ("b6", "b7", "b8"))
+        ae(sss["b6"].high_file_attacks, ("b7", "b8"))
+        ae(sss["b7"].high_file_attacks, ("b8",))
+        ae(sss["b8"].high_file_attacks, ())
+        ae(
+            sss["c1"].high_file_attacks,
+            ("c2", "c3", "c4", "c5", "c6", "c7", "c8"),
+        )
+        ae(sss["c2"].high_file_attacks, ("c3", "c4", "c5", "c6", "c7", "c8"))
+        ae(sss["c3"].high_file_attacks, ("c4", "c5", "c6", "c7", "c8"))
+        ae(sss["c4"].high_file_attacks, ("c5", "c6", "c7", "c8"))
+        ae(sss["c5"].high_file_attacks, ("c6", "c7", "c8"))
+        ae(sss["c6"].high_file_attacks, ("c7", "c8"))
+        ae(sss["c7"].high_file_attacks, ("c8",))
+        ae(sss["c8"].high_file_attacks, ())
+        ae(
+            sss["d1"].high_file_attacks,
+            ("d2", "d3", "d4", "d5", "d6", "d7", "d8"),
+        )
+        ae(sss["d2"].high_file_attacks, ("d3", "d4", "d5", "d6", "d7", "d8"))
+        ae(sss["d3"].high_file_attacks, ("d4", "d5", "d6", "d7", "d8"))
+        ae(sss["d4"].high_file_attacks, ("d5", "d6", "d7", "d8"))
+        ae(sss["d5"].high_file_attacks, ("d6", "d7", "d8"))
+        ae(sss["d6"].high_file_attacks, ("d7", "d8"))
+        ae(sss["d7"].high_file_attacks, ("d8",))
+        ae(sss["d8"].high_file_attacks, ())
+        ae(
+            sss["e1"].high_file_attacks,
+            ("e2", "e3", "e4", "e5", "e6", "e7", "e8"),
+        )
+        ae(sss["e2"].high_file_attacks, ("e3", "e4", "e5", "e6", "e7", "e8"))
+        ae(sss["e3"].high_file_attacks, ("e4", "e5", "e6", "e7", "e8"))
+        ae(sss["e4"].high_file_attacks, ("e5", "e6", "e7", "e8"))
+        ae(sss["e5"].high_file_attacks, ("e6", "e7", "e8"))
+        ae(sss["e6"].high_file_attacks, ("e7", "e8"))
+        ae(sss["e7"].high_file_attacks, ("e8",))
+        ae(sss["e8"].high_file_attacks, ())
+        ae(
+            sss["f1"].high_file_attacks,
+            ("f2", "f3", "f4", "f5", "f6", "f7", "f8"),
+        )
+        ae(sss["f2"].high_file_attacks, ("f3", "f4", "f5", "f6", "f7", "f8"))
+        ae(sss["f3"].high_file_attacks, ("f4", "f5", "f6", "f7", "f8"))
+        ae(sss["f4"].high_file_attacks, ("f5", "f6", "f7", "f8"))
+        ae(sss["f5"].high_file_attacks, ("f6", "f7", "f8"))
+        ae(sss["f6"].high_file_attacks, ("f7", "f8"))
+        ae(sss["f7"].high_file_attacks, ("f8",))
+        ae(sss["f8"].high_file_attacks, ())
+        ae(
+            sss["g1"].high_file_attacks,
+            ("g2", "g3", "g4", "g5", "g6", "g7", "g8"),
+        )
+        ae(sss["g2"].high_file_attacks, ("g3", "g4", "g5", "g6", "g7", "g8"))
+        ae(sss["g3"].high_file_attacks, ("g4", "g5", "g6", "g7", "g8"))
+        ae(sss["g4"].high_file_attacks, ("g5", "g6", "g7", "g8"))
+        ae(sss["g5"].high_file_attacks, ("g6", "g7", "g8"))
+        ae(sss["g6"].high_file_attacks, ("g7", "g8"))
+        ae(sss["g7"].high_file_attacks, ("g8",))
+        ae(sss["g8"].high_file_attacks, ())
+        ae(
+            sss["h1"].high_file_attacks,
+            ("h2", "h3", "h4", "h5", "h6", "h7", "h8"),
+        )
+        ae(sss["h2"].high_file_attacks, ("h3", "h4", "h5", "h6", "h7", "h8"))
+        ae(sss["h3"].high_file_attacks, ("h4", "h5", "h6", "h7", "h8"))
+        ae(sss["h4"].high_file_attacks, ("h5", "h6", "h7", "h8"))
+        ae(sss["h5"].high_file_attacks, ("h6", "h7", "h8"))
+        ae(sss["h6"].high_file_attacks, ("h7", "h8"))
+        ae(sss["h7"].high_file_attacks, ("h8",))
+        ae(sss["h8"].high_file_attacks, ())
+        ae(sss["a1"].low_lrd_attacks, ())
+        ae(sss["a2"].low_lrd_attacks, ("b1",))
+        ae(sss["a3"].low_lrd_attacks, ("b2", "c1"))
+        ae(sss["a4"].low_lrd_attacks, ("b3", "c2", "d1"))
+        ae(sss["a5"].low_lrd_attacks, ("b4", "c3", "d2", "e1"))
+        ae(sss["a6"].low_lrd_attacks, ("b5", "c4", "d3", "e2", "f1"))
+        ae(sss["a7"].low_lrd_attacks, ("b6", "c5", "d4", "e3", "f2", "g1"))
+        ae(
+            sss["a8"].low_lrd_attacks,
+            ("b7", "c6", "d5", "e4", "f3", "g2", "h1"),
+        )
+        ae(sss["b1"].low_lrd_attacks, ())
+        ae(sss["b2"].low_lrd_attacks, ("c1",))
+        ae(sss["b3"].low_lrd_attacks, ("c2", "d1"))
+        ae(sss["b4"].low_lrd_attacks, ("c3", "d2", "e1"))
+        ae(sss["b5"].low_lrd_attacks, ("c4", "d3", "e2", "f1"))
+        ae(sss["b6"].low_lrd_attacks, ("c5", "d4", "e3", "f2", "g1"))
+        ae(sss["b7"].low_lrd_attacks, ("c6", "d5", "e4", "f3", "g2", "h1"))
+        ae(sss["b8"].low_lrd_attacks, ("c7", "d6", "e5", "f4", "g3", "h2"))
+        ae(sss["c1"].low_lrd_attacks, ())
+        ae(sss["c2"].low_lrd_attacks, ("d1",))
+        ae(sss["c3"].low_lrd_attacks, ("d2", "e1"))
+        ae(sss["c4"].low_lrd_attacks, ("d3", "e2", "f1"))
+        ae(sss["c5"].low_lrd_attacks, ("d4", "e3", "f2", "g1"))
+        ae(sss["c6"].low_lrd_attacks, ("d5", "e4", "f3", "g2", "h1"))
+        ae(sss["c7"].low_lrd_attacks, ("d6", "e5", "f4", "g3", "h2"))
+        ae(sss["c8"].low_lrd_attacks, ("d7", "e6", "f5", "g4", "h3"))
+        ae(sss["d1"].low_lrd_attacks, ())
+        ae(sss["d2"].low_lrd_attacks, ("e1",))
+        ae(sss["d3"].low_lrd_attacks, ("e2", "f1"))
+        ae(sss["d4"].low_lrd_attacks, ("e3", "f2", "g1"))
+        ae(sss["d5"].low_lrd_attacks, ("e4", "f3", "g2", "h1"))
+        ae(sss["d6"].low_lrd_attacks, ("e5", "f4", "g3", "h2"))
+        ae(sss["d7"].low_lrd_attacks, ("e6", "f5", "g4", "h3"))
+        ae(sss["d8"].low_lrd_attacks, ("e7", "f6", "g5", "h4"))
+        ae(sss["e1"].low_lrd_attacks, ())
+        ae(sss["e2"].low_lrd_attacks, ("f1",))
+        ae(sss["e3"].low_lrd_attacks, ("f2", "g1"))
+        ae(sss["e4"].low_lrd_attacks, ("f3", "g2", "h1"))
+        ae(sss["e5"].low_lrd_attacks, ("f4", "g3", "h2"))
+        ae(sss["e6"].low_lrd_attacks, ("f5", "g4", "h3"))
+        ae(sss["e7"].low_lrd_attacks, ("f6", "g5", "h4"))
+        ae(sss["e8"].low_lrd_attacks, ("f7", "g6", "h5"))
+        ae(sss["f1"].low_lrd_attacks, ())
+        ae(sss["f2"].low_lrd_attacks, ("g1",))
+        ae(sss["f3"].low_lrd_attacks, ("g2", "h1"))
+        ae(sss["f4"].low_lrd_attacks, ("g3", "h2"))
+        ae(sss["f5"].low_lrd_attacks, ("g4", "h3"))
+        ae(sss["f6"].low_lrd_attacks, ("g5", "h4"))
+        ae(sss["f7"].low_lrd_attacks, ("g6", "h5"))
+        ae(sss["f8"].low_lrd_attacks, ("g7", "h6"))
+        ae(sss["g1"].low_lrd_attacks, ())
+        ae(sss["g2"].low_lrd_attacks, ("h1",))
+        ae(sss["g3"].low_lrd_attacks, ("h2",))
+        ae(sss["g4"].low_lrd_attacks, ("h3",))
+        ae(sss["g5"].low_lrd_attacks, ("h4",))
+        ae(sss["g6"].low_lrd_attacks, ("h5",))
+        ae(sss["g7"].low_lrd_attacks, ("h6",))
+        ae(sss["g8"].low_lrd_attacks, ("h7",))
+        ae(sss["h1"].low_lrd_attacks, ())
+        ae(sss["h2"].low_lrd_attacks, ())
+        ae(sss["h3"].low_lrd_attacks, ())
+        ae(sss["h4"].low_lrd_attacks, ())
+        ae(sss["h5"].low_lrd_attacks, ())
+        ae(sss["h6"].low_lrd_attacks, ())
+        ae(sss["h7"].low_lrd_attacks, ())
+        ae(sss["h8"].low_lrd_attacks, ())
+        ae(sss["a1"].high_lrd_attacks, ())
+        ae(sss["a2"].high_lrd_attacks, ())
+        ae(sss["a3"].high_lrd_attacks, ())
+        ae(sss["a4"].high_lrd_attacks, ())
+        ae(sss["a5"].high_lrd_attacks, ())
+        ae(sss["a6"].high_lrd_attacks, ())
+        ae(sss["a7"].high_lrd_attacks, ())
+        ae(sss["a8"].high_lrd_attacks, ())
+        ae(sss["b1"].high_lrd_attacks, ("a2",))
+        ae(sss["b2"].high_lrd_attacks, ("a3",))
+        ae(sss["b3"].high_lrd_attacks, ("a4",))
+        ae(sss["b4"].high_lrd_attacks, ("a5",))
+        ae(sss["b5"].high_lrd_attacks, ("a6",))
+        ae(sss["b6"].high_lrd_attacks, ("a7",))
+        ae(sss["b7"].high_lrd_attacks, ("a8",))
+        ae(sss["b8"].high_lrd_attacks, ())
+        ae(sss["c1"].high_lrd_attacks, ("b2", "a3"))
+        ae(sss["c2"].high_lrd_attacks, ("b3", "a4"))
+        ae(sss["c3"].high_lrd_attacks, ("b4", "a5"))
+        ae(sss["c4"].high_lrd_attacks, ("b5", "a6"))
+        ae(sss["c5"].high_lrd_attacks, ("b6", "a7"))
+        ae(sss["c6"].high_lrd_attacks, ("b7", "a8"))
+        ae(sss["c7"].high_lrd_attacks, ("b8",))
+        ae(sss["c8"].high_lrd_attacks, ())
+        ae(sss["d1"].high_lrd_attacks, ("c2", "b3", "a4"))
+        ae(sss["d2"].high_lrd_attacks, ("c3", "b4", "a5"))
+        ae(sss["d3"].high_lrd_attacks, ("c4", "b5", "a6"))
+        ae(sss["d4"].high_lrd_attacks, ("c5", "b6", "a7"))
+        ae(sss["d5"].high_lrd_attacks, ("c6", "b7", "a8"))
+        ae(sss["d6"].high_lrd_attacks, ("c7", "b8"))
+        ae(sss["d7"].high_lrd_attacks, ("c8",))
+        ae(sss["d8"].high_lrd_attacks, ())
+        ae(sss["e1"].high_lrd_attacks, ("d2", "c3", "b4", "a5"))
+        ae(sss["e2"].high_lrd_attacks, ("d3", "c4", "b5", "a6"))
+        ae(sss["e3"].high_lrd_attacks, ("d4", "c5", "b6", "a7"))
+        ae(sss["e4"].high_lrd_attacks, ("d5", "c6", "b7", "a8"))
+        ae(sss["e5"].high_lrd_attacks, ("d6", "c7", "b8"))
+        ae(sss["e6"].high_lrd_attacks, ("d7", "c8"))
+        ae(sss["e7"].high_lrd_attacks, ("d8",))
+        ae(sss["e8"].high_lrd_attacks, ())
+        ae(sss["f1"].high_lrd_attacks, ("e2", "d3", "c4", "b5", "a6"))
+        ae(sss["f2"].high_lrd_attacks, ("e3", "d4", "c5", "b6", "a7"))
+        ae(sss["f3"].high_lrd_attacks, ("e4", "d5", "c6", "b7", "a8"))
+        ae(sss["f4"].high_lrd_attacks, ("e5", "d6", "c7", "b8"))
+        ae(sss["f5"].high_lrd_attacks, ("e6", "d7", "c8"))
+        ae(sss["f6"].high_lrd_attacks, ("e7", "d8"))
+        ae(sss["f7"].high_lrd_attacks, ("e8",))
+        ae(sss["f8"].high_lrd_attacks, ())
+        ae(sss["g1"].high_lrd_attacks, ("f2", "e3", "d4", "c5", "b6", "a7"))
+        ae(sss["g2"].high_lrd_attacks, ("f3", "e4", "d5", "c6", "b7", "a8"))
+        ae(sss["g3"].high_lrd_attacks, ("f4", "e5", "d6", "c7", "b8"))
+        ae(sss["g4"].high_lrd_attacks, ("f5", "e6", "d7", "c8"))
+        ae(sss["g5"].high_lrd_attacks, ("f6", "e7", "d8"))
+        ae(sss["g6"].high_lrd_attacks, ("f7", "e8"))
+        ae(sss["g7"].high_lrd_attacks, ("f8",))
+        ae(sss["g8"].high_lrd_attacks, ())
+        ae(
+            sss["h1"].high_lrd_attacks,
+            ("g2", "f3", "e4", "d5", "c6", "b7", "a8"),
+        )
+        ae(sss["h2"].high_lrd_attacks, ("g3", "f4", "e5", "d6", "c7", "b8"))
+        ae(sss["h3"].high_lrd_attacks, ("g4", "f5", "e6", "d7", "c8"))
+        ae(sss["h4"].high_lrd_attacks, ("g5", "f6", "e7", "d8"))
+        ae(sss["h5"].high_lrd_attacks, ("g6", "f7", "e8"))
+        ae(sss["h6"].high_lrd_attacks, ("g7", "f8"))
+        ae(sss["h7"].high_lrd_attacks, ("g8",))
+        ae(sss["h8"].high_lrd_attacks, ())
+        ae(sss["a1"].low_rld_attacks, ())
+        ae(sss["a2"].low_rld_attacks, ())
+        ae(sss["a3"].low_rld_attacks, ())
+        ae(sss["a4"].low_rld_attacks, ())
+        ae(sss["a5"].low_rld_attacks, ())
+        ae(sss["a6"].low_rld_attacks, ())
+        ae(sss["a7"].low_rld_attacks, ())
+        ae(sss["a8"].low_rld_attacks, ())
+        ae(sss["b1"].low_rld_attacks, ())
+        ae(sss["b2"].low_rld_attacks, ("a1",))
+        ae(sss["b3"].low_rld_attacks, ("a2",))
+        ae(sss["b4"].low_rld_attacks, ("a3",))
+        ae(sss["b5"].low_rld_attacks, ("a4",))
+        ae(sss["b6"].low_rld_attacks, ("a5",))
+        ae(sss["b7"].low_rld_attacks, ("a6",))
+        ae(sss["b8"].low_rld_attacks, ("a7",))
+        ae(sss["c1"].low_rld_attacks, ())
+        ae(sss["c2"].low_rld_attacks, ("b1",))
+        ae(sss["c3"].low_rld_attacks, ("b2", "a1"))
+        ae(sss["c4"].low_rld_attacks, ("b3", "a2"))
+        ae(sss["c5"].low_rld_attacks, ("b4", "a3"))
+        ae(sss["c6"].low_rld_attacks, ("b5", "a4"))
+        ae(sss["c7"].low_rld_attacks, ("b6", "a5"))
+        ae(sss["c8"].low_rld_attacks, ("b7", "a6"))
+        ae(sss["d1"].low_rld_attacks, ())
+        ae(sss["d2"].low_rld_attacks, ("c1",))
+        ae(sss["d3"].low_rld_attacks, ("c2", "b1"))
+        ae(sss["d4"].low_rld_attacks, ("c3", "b2", "a1"))
+        ae(sss["d5"].low_rld_attacks, ("c4", "b3", "a2"))
+        ae(sss["d6"].low_rld_attacks, ("c5", "b4", "a3"))
+        ae(sss["d7"].low_rld_attacks, ("c6", "b5", "a4"))
+        ae(sss["d8"].low_rld_attacks, ("c7", "b6", "a5"))
+        ae(sss["e1"].low_rld_attacks, ())
+        ae(sss["e2"].low_rld_attacks, ("d1",))
+        ae(sss["e3"].low_rld_attacks, ("d2", "c1"))
+        ae(sss["e4"].low_rld_attacks, ("d3", "c2", "b1"))
+        ae(sss["e5"].low_rld_attacks, ("d4", "c3", "b2", "a1"))
+        ae(sss["e6"].low_rld_attacks, ("d5", "c4", "b3", "a2"))
+        ae(sss["e7"].low_rld_attacks, ("d6", "c5", "b4", "a3"))
+        ae(sss["e8"].low_rld_attacks, ("d7", "c6", "b5", "a4"))
+        ae(sss["f1"].low_rld_attacks, ())
+        ae(sss["f2"].low_rld_attacks, ("e1",))
+        ae(sss["f3"].low_rld_attacks, ("e2", "d1"))
+        ae(sss["f4"].low_rld_attacks, ("e3", "d2", "c1"))
+        ae(sss["f5"].low_rld_attacks, ("e4", "d3", "c2", "b1"))
+        ae(sss["f6"].low_rld_attacks, ("e5", "d4", "c3", "b2", "a1"))
+        ae(sss["f7"].low_rld_attacks, ("e6", "d5", "c4", "b3", "a2"))
+        ae(sss["f8"].low_rld_attacks, ("e7", "d6", "c5", "b4", "a3"))
+        ae(sss["g1"].low_rld_attacks, ())
+        ae(sss["g2"].low_rld_attacks, ("f1",))
+        ae(sss["g3"].low_rld_attacks, ("f2", "e1"))
+        ae(sss["g4"].low_rld_attacks, ("f3", "e2", "d1"))
+        ae(sss["g5"].low_rld_attacks, ("f4", "e3", "d2", "c1"))
+        ae(sss["g6"].low_rld_attacks, ("f5", "e4", "d3", "c2", "b1"))
+        ae(sss["g7"].low_rld_attacks, ("f6", "e5", "d4", "c3", "b2", "a1"))
+        ae(sss["g8"].low_rld_attacks, ("f7", "e6", "d5", "c4", "b3", "a2"))
+        ae(sss["h1"].low_rld_attacks, ())
+        ae(sss["h2"].low_rld_attacks, ("g1",))
+        ae(sss["h3"].low_rld_attacks, ("g2", "f1"))
+        ae(sss["h4"].low_rld_attacks, ("g3", "f2", "e1"))
+        ae(sss["h5"].low_rld_attacks, ("g4", "f3", "e2", "d1"))
+        ae(sss["h6"].low_rld_attacks, ("g5", "f4", "e3", "d2", "c1"))
+        ae(sss["h7"].low_rld_attacks, ("g6", "f5", "e4", "d3", "c2", "b1"))
+        ae(
+            sss["h8"].low_rld_attacks,
+            ("g7", "f6", "e5", "d4", "c3", "b2", "a1"),
+        )
+        ae(
+            sss["a1"].high_rld_attacks,
+            ("b2", "c3", "d4", "e5", "f6", "g7", "h8"),
+        )
+        ae(sss["a2"].high_rld_attacks, ("b3", "c4", "d5", "e6", "f7", "g8"))
+        ae(sss["a3"].high_rld_attacks, ("b4", "c5", "d6", "e7", "f8"))
+        ae(sss["a4"].high_rld_attacks, ("b5", "c6", "d7", "e8"))
+        ae(sss["a5"].high_rld_attacks, ("b6", "c7", "d8"))
+        ae(sss["a6"].high_rld_attacks, ("b7", "c8"))
+        ae(sss["a7"].high_rld_attacks, ("b8",))
+        ae(sss["a8"].high_rld_attacks, ())
+        ae(sss["b1"].high_rld_attacks, ("c2", "d3", "e4", "f5", "g6", "h7"))
+        ae(sss["b2"].high_rld_attacks, ("c3", "d4", "e5", "f6", "g7", "h8"))
+        ae(sss["b3"].high_rld_attacks, ("c4", "d5", "e6", "f7", "g8"))
+        ae(sss["b4"].high_rld_attacks, ("c5", "d6", "e7", "f8"))
+        ae(sss["b5"].high_rld_attacks, ("c6", "d7", "e8"))
+        ae(sss["b6"].high_rld_attacks, ("c7", "d8"))
+        ae(sss["b7"].high_rld_attacks, ("c8",))
+        ae(sss["b8"].high_rld_attacks, ())
+        ae(sss["c1"].high_rld_attacks, ("d2", "e3", "f4", "g5", "h6"))
+        ae(sss["c2"].high_rld_attacks, ("d3", "e4", "f5", "g6", "h7"))
+        ae(sss["c3"].high_rld_attacks, ("d4", "e5", "f6", "g7", "h8"))
+        ae(sss["c4"].high_rld_attacks, ("d5", "e6", "f7", "g8"))
+        ae(sss["c5"].high_rld_attacks, ("d6", "e7", "f8"))
+        ae(sss["c6"].high_rld_attacks, ("d7", "e8"))
+        ae(sss["c7"].high_rld_attacks, ("d8",))
+        ae(sss["c8"].high_rld_attacks, ())
+        ae(sss["d1"].high_rld_attacks, ("e2", "f3", "g4", "h5"))
+        ae(sss["d2"].high_rld_attacks, ("e3", "f4", "g5", "h6"))
+        ae(sss["d3"].high_rld_attacks, ("e4", "f5", "g6", "h7"))
+        ae(sss["d4"].high_rld_attacks, ("e5", "f6", "g7", "h8"))
+        ae(sss["d5"].high_rld_attacks, ("e6", "f7", "g8"))
+        ae(sss["d6"].high_rld_attacks, ("e7", "f8"))
+        ae(sss["d7"].high_rld_attacks, ("e8",))
+        ae(sss["d8"].high_rld_attacks, ())
+        ae(sss["e1"].high_rld_attacks, ("f2", "g3", "h4"))
+        ae(sss["e2"].high_rld_attacks, ("f3", "g4", "h5"))
+        ae(sss["e3"].high_rld_attacks, ("f4", "g5", "h6"))
+        ae(sss["e4"].high_rld_attacks, ("f5", "g6", "h7"))
+        ae(sss["e5"].high_rld_attacks, ("f6", "g7", "h8"))
+        ae(sss["e6"].high_rld_attacks, ("f7", "g8"))
+        ae(sss["e7"].high_rld_attacks, ("f8",))
+        ae(sss["e8"].high_rld_attacks, ())
+        ae(sss["f1"].high_rld_attacks, ("g2", "h3"))
+        ae(sss["f2"].high_rld_attacks, ("g3", "h4"))
+        ae(sss["f3"].high_rld_attacks, ("g4", "h5"))
+        ae(sss["f4"].high_rld_attacks, ("g5", "h6"))
+        ae(sss["f5"].high_rld_attacks, ("g6", "h7"))
+        ae(sss["f6"].high_rld_attacks, ("g7", "h8"))
+        ae(sss["f7"].high_rld_attacks, ("g8",))
+        ae(sss["f8"].high_rld_attacks, ())
+        ae(sss["g1"].high_rld_attacks, ("h2",))
+        ae(sss["g2"].high_rld_attacks, ("h3",))
+        ae(sss["g3"].high_rld_attacks, ("h4",))
+        ae(sss["g4"].high_rld_attacks, ("h5",))
+        ae(sss["g5"].high_rld_attacks, ("h6",))
+        ae(sss["g6"].high_rld_attacks, ("h7",))
+        ae(sss["g7"].high_rld_attacks, ("h8",))
+        ae(sss["g8"].high_rld_attacks, ())
+        ae(sss["h1"].high_rld_attacks, ())
+        ae(sss["h2"].high_rld_attacks, ())
+        ae(sss["h3"].high_rld_attacks, ())
+        ae(sss["h4"].high_rld_attacks, ())
+        ae(sss["h5"].high_rld_attacks, ())
+        ae(sss["h6"].high_rld_attacks, ())
+        ae(sss["h7"].high_rld_attacks, ())
+        ae(sss["h8"].high_rld_attacks, ())
 
 
 if __name__ == "__main__":

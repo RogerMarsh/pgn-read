@@ -691,39 +691,27 @@ for k, v in QUEEN_MOVES.items():
     v.update(ROOK_MOVES[k])
     v.update(BISHOP_MOVES[k])
 POINT_TO_POINT = {}
-RANK_ATTACKS = {}
-FILE_ATTACKS = {}
-
-# LRD_* is diagonals parallel to 'a8-h1' (left to right down)
-# RLD_* is diagonals parallel to 'a1-h8'
-LRD_DIAGONAL_ATTACKS = {}
-RLD_DIAGONAL_ATTACKS = {}
-
 for k, v in files.items():
     line = tuple(v)
     for e, sq1 in enumerate(line):
-        FILE_ATTACKS[sq1] = e, line
         for es, sq2 in enumerate(line[e + 1 :]):
             POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
             POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
 for k, v in ranks.items():
     line = tuple(sorted(v))
     for e, sq1 in enumerate(line):
-        RANK_ATTACKS[sq1] = e, line
         for es, sq2 in enumerate(line[e + 1 :]):
             POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
             POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
 for v in left_to_right:
     line = tuple(sorted(v))
     for e, sq1 in enumerate(line):
-        LRD_DIAGONAL_ATTACKS[sq1] = e, line
         for es, sq2 in enumerate(line[e + 1 :]):
             POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
             POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
 for v in right_to_left:
     line = tuple(sorted(v))
     for e, sq1 in enumerate(line):
-        RLD_DIAGONAL_ATTACKS[sq1] = e, line
         for es, sq2 in enumerate(line[e + 1 :]):
             POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
             POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]

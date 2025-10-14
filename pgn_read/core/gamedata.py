@@ -43,10 +43,6 @@ from .constants import (
     EN_PASSANT_TARGET_SQUARES,
     CASTLING_RIGHTS,
     CASTLING_PIECE_FOR_SQUARE,
-    RANK_ATTACKS,
-    FILE_ATTACKS,
-    LRD_DIAGONAL_ATTACKS,
-    RLD_DIAGONAL_ATTACKS,
     FEN_SOURCE_SQUARES,
     OTHER_SIDE,
     SIDE_TO_MOVE_KING,
@@ -362,8 +358,7 @@ class GameData:
             )
             if attack_line is None:
                 continue
-            point, line = attack_line
-            for square_list in reversed(line[:point]), line[point + 1 :]:
+            for square_list in attack_line:
                 for square in square_list:
                     if square not in piece_placement_data:
                         continue
@@ -387,24 +382,17 @@ class GameData:
         """Return True if square is attacked by a piece not of side."""
         piece_placement_data = self._piece_placement_data
 
-        for attacks in (
-            FILE_ATTACKS,
-            RANK_ATTACKS,
-            LRD_DIAGONAL_ATTACKS,
-            RLD_DIAGONAL_ATTACKS,
-        ):
-            point, line = attacks[square]
-            for square_list in reversed(line[:point]), line[point + 1 :]:
-                for sqr in square_list:
-                    if sqr not in piece_placement_data:
-                        continue
-                    piece = piece_placement_data[sqr]
-                    if piece.color == side:
-                        break
-                    sources = FEN_SOURCE_SQUARES.get(piece.name)
-                    if sources is None or sqr not in sources.get(square, ""):
-                        break
-                    return True
+        for square_list in Squares.squares[square].attack_lines():
+            for sqr in square_list:
+                if sqr not in piece_placement_data:
+                    continue
+                piece = piece_placement_data[sqr]
+                if piece.color == side:
+                    break
+                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                if sources is None or sqr not in sources.get(square, ""):
+                    break
+                return True
 
         if side == FEN_WHITE_ACTIVE:
             knight_search = FEN_BLACK_KNIGHT
@@ -412,7 +400,9 @@ class GameData:
             knight_search = FEN_WHITE_KNIGHT
         square_list = FEN_SOURCE_SQUARES[knight_search]
         # pylint message C0206 'Consider iterating with .items()'.
-        # Reference to 'square_list[sqr]' is not considered frequent enough.
+        # Evaluating 'square_list[sqr]' is not considered frequent enough.
+        # Changing to 'square_list.keys()' attracts extra C0201 message
+        # 'Consider iterating dictionary directly instead of calling .keys()'.
         for sqr in square_list:
             if sqr not in piece_placement_data:
                 continue
@@ -452,8 +442,7 @@ class GameData:
         side = self._active_color
         king_square_name = king_square.name
         piece_placement_data = self._piece_placement_data
-        point, line = attack_line
-        for square_list in reversed(line[:point]), line[point + 1 :]:
+        for square_list in attack_line:
             for square in square_list:
                 if square not in piece_placement_data:
                     continue
