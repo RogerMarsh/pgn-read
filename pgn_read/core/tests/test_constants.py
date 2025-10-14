@@ -695,6 +695,7 @@ class Constants(unittest.TestCase):
             },
         )
         ae(constants.OTHER_SIDE, {"w": "b", "b": "w"})
+        ae(constants.SIDE_TO_MOVE_KING, {"w": "K", "b": "k"})
         ae(
             constants.PIECE_TO_KING,
             {
@@ -4812,6 +4813,7 @@ class CountConstants(unittest.TestCase):
                 "SETUP_VALUE_FEN_PRESENT",
                 "SEVEN_TAG_ROSTER",
                 "SEVEN_TAG_ROSTER_DEFAULTS",
+                "SIDE_TO_MOVE_KING",
                 "SOURCE_SQUARES",
                 "START_RAV",
                 "SUFFIX_ANNOTATION_TO_NAG",

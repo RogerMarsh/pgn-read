@@ -73,6 +73,31 @@ class _Square:
             )
         )
 
+    def attack_line(self, other):
+        """Return squares in line if squares occupy same line or None.
+
+        other is the square from which the attack originates, or is behind
+        or in front of the attcking square.
+
+        """
+        if id(self) == id(other):
+            return None
+        if self.file == other.file:
+            return constants.FILE_ATTACKS[self.name]
+        if self.rank == other.rank:
+            return constants.RANK_ATTACKS[self.name]
+        if (
+            self.left_to_right_down_diagonal
+            == other.left_to_right_down_diagonal
+        ):
+            return constants.LRD_DIAGONAL_ATTACKS[self.name]
+        if (
+            self.right_to_left_down_diagonal
+            == other.right_to_left_down_diagonal
+        ):
+            return constants.RLD_DIAGONAL_ATTACKS[self.name]
+        return None
+
 
 class Squares:
     """The squares on a chessboard.

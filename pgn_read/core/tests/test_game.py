@@ -12,6 +12,7 @@ from .. import game
 from .. import game_indicate_check
 from .. import constants
 from .. import piece
+from .. import parser
 
 
 class Game(unittest.TestCase):
@@ -886,6 +887,211 @@ class GameIndicateCheck(unittest.TestCase):
         g = self.game
         g.set_initial_position()
         ae(g._is_position_checkmate(), True)
+
+    def test_10_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("e4", g)
+        ae(g._active_color, "b")
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_11_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("f4", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_12_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("dxc6", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_13_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("d6", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_14_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Rb5", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_15_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Bd2", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_16_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Ne2", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_17_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Qf8", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_18_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Rf8", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_19_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Qd8", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_20_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Qg8", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_21_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Rg8", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_22_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3N1 w - c6 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Nh3", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_23_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("Q6R/8/8/R1pP2k1/8/4PP2/8/K1B3n1 b - - 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("Nh3", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "g5",
+        )
+        ae(g.is_check_given_by_move(), False)
+
+    def test_24_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("5k2/8/8/8/8/8/8/4K2R w K - 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("O-O", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "f8",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_25_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("5b2/4P3/8/8/5k2/8/8/K7 w - - 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("exf8=R", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "f4",
+        )
+        ae(g.is_check_given_by_move(), True)
+
+    def test_26_is_check_given_by_move(self):
+        ae = self.assertEqual
+        self.setposition("5b2/4P3/8/8/5k2/8/8/K7 w - - 1 1")
+        g = self.game
+        g.set_initial_position()
+        parser.add_token_to_game("exf8=B", g)
+        ae(
+            g._pieces_on_board["k"][0].square.name,
+            "f4",
+        )
+        ae(g.is_check_given_by_move(), False)
 
 
 if __name__ == "__main__":

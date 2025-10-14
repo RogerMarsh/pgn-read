@@ -10,10 +10,7 @@ movetext from games stored on the database.
 
 """
 from .constants import (
-    FEN_WHITE_KING,
-    FEN_BLACK_KING,
     FEN_WHITE_ACTIVE,
-    FEN_BLACK_ACTIVE,
     FEN_NULL,
     FEN_WHITE_PAWN,
     FEN_BLACK_PAWN,
@@ -29,16 +26,12 @@ from .constants import (
     RLD_DIAGONAL_ATTACKS,
     SOURCE_SQUARES,
     FEN_SOURCE_SQUARES,
+    SIDE_TO_MOVE_KING,
     PIECE_TO_KING,
     KING_MOVES,
     KNIGHT_MOVES,
 )
 from .game import Game
-
-SIDE_TO_MOVE_KING = {
-    FEN_WHITE_ACTIVE: FEN_WHITE_KING,
-    FEN_BLACK_ACTIVE: FEN_BLACK_KING,
-}
 
 
 class GameIndicateCheck(Game):
@@ -76,12 +69,11 @@ class GameIndicateCheck(Game):
         set here but is not implemented yet.
 
         """
-        if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[SIDE_TO_MOVE_KING[self._active_color]][
-                0
-            ].square.name,
-            self._active_color,
-        ):
+        # The move will be legal, so is_square_attacked_by_other_side tests
+        # too much.  Only need to consider direct attacks from destination
+        # square of knight move, through the source and destination squares,
+        # and through the square of a pawn captured en-passant.
+        if self.is_check_given_by_move():
             self._text[-1] += "#" if self._is_position_checkmate() else "+"
 
     def _is_position_checkmate(self):

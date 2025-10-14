@@ -44,7 +44,6 @@ from .constants import (
     PGN_O_O,
     SOURCE_SQUARES,
     OTHER_SIDE,
-    PIECE_TO_KING,
     PROMOTED_PIECE_NAME,
     DISAMBIGUATE_TEXT,
     DG_CAPTURE,
@@ -521,12 +520,7 @@ class Game(GameData):
                     ((destination, piece),),
                     fullmove_number_for_next_halfmove,
                 )
-                if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                        0
-                    ].square.name,
-                    OTHER_SIDE[self._active_color],
-                ):
+                if self.is_side_off_move_in_check():
                     self.undo_board_state()
                     self._append_token_and_set_error(match)
                     return
@@ -540,20 +534,16 @@ class Game(GameData):
             for piece in candidates:
                 if not self.line_empty(piece.square.name, destination):
                     continue
+                square_before_move = piece.square
                 remove = (
                     (destination, piece_placement_data[destination]),
-                    (piece.square.name, piece),
+                    (square_before_move.name, piece),
                 )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_on_square(remove[1])
                 place = destination, piece
                 self.place_piece_on_square(place)
-                if not self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                        0
-                    ].square.name,
-                    self._active_color,
-                ):
+                if not self.is_piece_pinned_to_king(piece, square_before_move):
                     if from_file_or_rank:
                         if from_file_or_rank in remove[-1][0]:
                             chosen_move = remove, place
@@ -597,7 +587,10 @@ class Game(GameData):
                 (chosen_move[1],),
                 fullmove_number_for_next_halfmove,
             )
-            # The king in check test was done as part of setting chosen_move.
+            if self.is_side_off_move_in_check():
+                self.undo_board_state()
+                self._append_token_and_set_error(match)
+                return
             self._append_decorated_text(movetext)
             return
 
@@ -653,12 +646,7 @@ class Game(GameData):
                 ((destination, piece),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -672,16 +660,12 @@ class Game(GameData):
         for piece in candidates:
             if not self.line_empty(piece.square.name, destination):
                 continue
-            remove = piece.square.name, piece
+            square_before_move = piece.square
+            remove = square_before_move.name, piece
             self.remove_piece_on_square(remove)
             place = destination, piece
             self.place_piece_on_square(place)
-            if not self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                    0
-                ].square.name,
-                self._active_color,
-            ):
+            if not self.is_piece_pinned_to_king(piece, square_before_move):
                 if from_file_or_rank:
                     if from_file_or_rank in remove[0]:
                         chosen_move = remove, place
@@ -721,7 +705,10 @@ class Game(GameData):
             (chosen_move[1],),
             fullmove_number_for_next_halfmove,
         )
-        # The king in check test was done as part of setting chosen_move.
+        if self.is_side_off_move_in_check():
+            self.undo_board_state()
+            self._append_token_and_set_error(match)
+            return
         self._append_decorated_text(movetext)
 
     def append_pawn_move(self, match):
@@ -811,12 +798,7 @@ class Game(GameData):
                 ((destination, piece),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -878,10 +860,7 @@ class Game(GameData):
             fullmove_number_for_next_halfmove,
             new_en_passant_target_square,
         )
-        if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name,
-            OTHER_SIDE[self._active_color],
-        ):
+        if self.is_side_off_move_in_check():
             self.undo_board_state()
             self._append_token_and_set_error(match)
             return
@@ -981,12 +960,7 @@ class Game(GameData):
                 ((destination, promoted_pawn),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -1032,12 +1006,7 @@ class Game(GameData):
             ((destination, promoted_pawn),),
             fullmove_number_for_next_halfmove,
         )
-        if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
-                0
-            ].square.name,
-            OTHER_SIDE[self._active_color],
-        ):
+        if self.is_side_off_move_in_check():
             self.undo_board_state()
             self._append_token_and_set_error(match)
             return
@@ -1174,20 +1143,18 @@ class Game(GameData):
             for cpiece in candidates:
                 if not self.line_empty(cpiece.square.name, destination):
                     continue
-                cpfile, cprank = cpiece.square.name
+                square_before_move = cpiece.square
+                cpfile, cprank = square_before_move.name
                 remove = (
                     (destination, piece_placement_data[destination]),
-                    (cpiece.square.name, cpiece),
+                    (square_before_move.name, cpiece),
                 )
                 self.remove_piece_from_board(remove[0])
                 self.remove_piece_on_square(remove[1])
                 place = destination, cpiece
                 self.place_piece_on_square(place)
-                if not self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
-                        0
-                    ].square.name,
-                    self._active_color,
+                if not self.is_piece_pinned_to_king(
+                    cpiece, square_before_move
                 ):
                     if cpfile == sfile:
                         file_count += 1
@@ -1207,12 +1174,7 @@ class Game(GameData):
                 ((destination, piece),),  # Did have useless , piece.name),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -1231,17 +1193,13 @@ class Game(GameData):
         for cpiece in candidates:
             if not self.line_empty(cpiece.square.name, destination):
                 continue
-            cpfile, cprank = cpiece.square.name
-            remove = cpiece.square.name, cpiece
+            square_before_move = cpiece.square
+            cpfile, cprank = square_before_move.name
+            remove = square_before_move.name, cpiece
             self.remove_piece_on_square(remove)
             place = destination, cpiece
             self.place_piece_on_square(place)
-            if not self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
-                    0
-                ].square.name,
-                self._active_color,
-            ):
+            if not self.is_piece_pinned_to_king(cpiece, square_before_move):
                 if cpfile == sfile:
                     file_count += 1
                 if cprank == srank:
@@ -1256,10 +1214,7 @@ class Game(GameData):
             ((destination, piece),),
             fullmove_number_for_next_halfmove,
         )
-        if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name,
-            OTHER_SIDE[self._active_color],
-        ):
+        if self.is_side_off_move_in_check():
             self.undo_board_state()
             self._append_token_and_set_error(match)
             return
@@ -1330,20 +1285,18 @@ class Game(GameData):
                             cpiece.square.name, destination
                         ):
                             continue
-                        cpfile, cprank = cpiece.square.name
+                        square_before_move = cpiece.square
+                        cpfile, cprank = square_before_move.name
                         remove = (
                             (destination, piece_placement_data[destination]),
-                            (cpiece.square.name, cpiece),
+                            (square_before_move.name, cpiece),
                         )
                         self.remove_piece_from_board(remove[0])
                         self.remove_piece_on_square(remove[1])
                         place = destination, cpiece
                         self.place_piece_on_square(place)
-                        if not self.is_square_attacked_by_other_side(
-                            self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
-                                0
-                            ].square.name,
-                            self._active_color,
+                        if not self.is_piece_pinned_to_king(
+                            cpiece, square_before_move
                         ):
                             if cpfile not in file_count:
                                 file_count[cpfile] = 1
@@ -1359,27 +1312,25 @@ class Game(GameData):
                 if not self.line_empty(piece.square.name, destination):
                     self._append_token_and_set_error(match)
                     return
-                # Does piece move without capture path need this if clause?
-                if not self._strict_pgn:
-                    remove = (
-                        (destination, piece_placement_data[destination]),
-                        (piece.square.name, piece),
-                    )
-                    self.remove_piece_from_board(remove[0])
-                    self.remove_piece_on_square(remove[1])
-                    place = destination, piece
-                    self.place_piece_on_square(place)
-                    if self.is_square_attacked_by_other_side(
-                        self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                            0
-                        ].square.name,
-                        self._active_color,
-                    ):
-                        self.remove_piece_on_square(place)
-                        self.place_piece_on_board(remove[0])
-                        self.place_piece_on_square(remove[1])
-                        self.append_token_and_set_error(match)
-                        return
+                # Does piece move without capture path need code from here:
+                square_before_move = piece.square
+                remove = (
+                    (destination, piece_placement_data[destination]),
+                    (square_before_move.name, piece),
+                )
+                self.remove_piece_from_board(remove[0])
+                self.remove_piece_on_square(remove[1])
+                place = destination, piece
+                self.place_piece_on_square(place)
+                if self.is_piece_pinned_to_king(piece, square_before_move):
+                    self.remove_piece_on_square(place)
+                    self.place_piece_on_board(remove[0])
+                    self.place_piece_on_square(remove[1])
+                    self.append_token_and_set_error(match)
+                    return
+                # to here?
+                # The only _long_algebraic_notation_piece_move() call at time
+                # of writing is guarded by a test on self._strict_pgn.
                 self._modify_game_state_piece_move(
                     (
                         (destination, piece_placement_data[destination]),
@@ -1388,12 +1339,7 @@ class Game(GameData):
                     ((destination, piece),),
                     fullmove_number_for_next_halfmove,
                 )
-                if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                        0
-                    ].square.name,
-                    OTHER_SIDE[self._active_color],
-                ):
+                if self.is_side_off_move_in_check():
                     self.undo_board_state()
                     self._append_token_and_set_error(match)
                     return
@@ -1459,16 +1405,14 @@ class Game(GameData):
                 for cpiece in candidates:
                     if not self.line_empty(cpiece.square.name, destination):
                         continue
-                    cpfile, cprank = cpiece.square.name
-                    remove = cpiece.square.name, cpiece
+                    square_before_move = cpiece.square
+                    cpfile, cprank = square_before_move.name
+                    remove = square_before_move.name, cpiece
                     self.remove_piece_on_square(remove)
                     place = destination, cpiece
                     self.place_piece_on_square(place)
-                    if not self.is_square_attacked_by_other_side(
-                        self._pieces_on_board[PIECE_TO_KING[cpiece.name]][
-                            0
-                        ].square.name,
-                        self._active_color,
+                    if not self.is_piece_pinned_to_king(
+                        cpiece, square_before_move
                     ):
                         if cpfile not in file_count:
                             file_count[cpfile] = 1
@@ -1483,20 +1427,16 @@ class Game(GameData):
             if not self.line_empty(piece.square.name, destination):
                 self._append_token_and_set_error(match)
                 return
-            # Should if clause at corresponding place in piece move with
-            # capture path be here too.
+            # Should the block of code in the piece move with capture path
+            # which tests if piece cannot be moved because it is pinned be
+            # copied to here?
             # (Is there a test, not yet thought of, which breaks this code?)
             self._modify_game_state_piece_move(
                 ((piece.square.name, piece),),
                 ((destination, piece),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -1623,12 +1563,7 @@ class Game(GameData):
                     ((destination, promoted_pawn),),
                     fullmove_number_for_next_halfmove,
                 )
-                if self.is_square_attacked_by_other_side(
-                    self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
-                        0
-                    ].square.name,
-                    OTHER_SIDE[self._active_color],
-                ):
+                if self.is_side_off_move_in_check():
                     self.undo_board_state()
                     self._append_token_and_set_error(match)
                     return
@@ -1651,12 +1586,7 @@ class Game(GameData):
                 ((destination, promoted_pawn),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[promoted_pawn.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -1717,12 +1647,7 @@ class Game(GameData):
                 ((destination, piece),),
                 fullmove_number_for_next_halfmove,
             )
-            if self.is_square_attacked_by_other_side(
-                self._pieces_on_board[PIECE_TO_KING[piece.name]][
-                    0
-                ].square.name,
-                OTHER_SIDE[self._active_color],
-            ):
+            if self.is_side_off_move_in_check():
                 self.undo_board_state()
                 self._append_token_and_set_error(match)
                 return
@@ -1756,10 +1681,7 @@ class Game(GameData):
             fullmove_number_for_next_halfmove,
             new_en_passant_target_square,
         )
-        if self.is_square_attacked_by_other_side(
-            self._pieces_on_board[PIECE_TO_KING[piece.name]][0].square.name,
-            OTHER_SIDE[self._active_color],
-        ):
+        if self.is_side_off_move_in_check():
             self.undo_board_state()
             self._append_token_and_set_error(match)
             return

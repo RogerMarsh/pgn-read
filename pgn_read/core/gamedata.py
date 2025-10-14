@@ -49,6 +49,8 @@ from .constants import (
     RLD_DIAGONAL_ATTACKS,
     FEN_SOURCE_SQUARES,
     OTHER_SIDE,
+    SIDE_TO_MOVE_KING,
+    PIECE_TO_KING,
     # The TAG_* list is long enough to cause a pylint duplicate-code report
     # citing pgn_read.core.constants module.
     TAG_EVENT,
@@ -71,6 +73,7 @@ from .piece import Piece
 from .squares import Squares
 
 white_black_tag_value_format = re.compile(r"\s*([^,.\s]+)")
+KNIGHTS = FEN_WHITE_KNIGHT + FEN_BLACK_KNIGHT
 
 
 class GameError(Exception):
@@ -345,6 +348,41 @@ class GameData:
         ) = self._position_deltas[-1][0][1:]
         del self._position_deltas[-1]
 
+    def is_check_given_by_move(self):
+        """Return True if move gives check."""
+        piece_placement_data = self._piece_placement_data
+        delta = self._position_deltas[-1]
+        side = self._active_color
+        king_square = self._pieces_on_board[SIDE_TO_MOVE_KING[side]][0].square
+        king_square_name = king_square.name
+        source_square_piece = delta[1][0]
+        for delta_square_piece in source_square_piece + delta[0][0]:
+            attack_line = king_square.attack_line(
+                Squares.squares[delta_square_piece[0]]
+            )
+            if attack_line is None:
+                continue
+            point, line = attack_line
+            for square_list in reversed(line[:point]), line[point + 1 :]:
+                for square in square_list:
+                    if square not in piece_placement_data:
+                        continue
+                    square_piece = piece_placement_data[square]
+                    if square_piece.color == side:
+                        break
+                    sources = FEN_SOURCE_SQUARES.get(square_piece.name)
+                    if sources is None or square not in sources.get(
+                        king_square_name, ""
+                    ):
+                        break
+                    return True
+        if source_square_piece[0][1].name in KNIGHTS:
+            return (
+                source_square_piece[0][1].square.name
+                in FEN_SOURCE_SQUARES[FEN_WHITE_KNIGHT][king_square_name]
+            )
+        return False
+
     def is_square_attacked_by_other_side(self, square, side):
         """Return True if square is attacked by a piece not of side."""
         piece_placement_data = self._piece_placement_data
@@ -385,6 +423,49 @@ class GameData:
                 if square in square_list[sqr]:
                     return True
 
+        return False
+
+    # There are situations where it is reasonable to assume False is the
+    # correct answer.  In those cases is_side_off_move_in_check should be
+    # overridden to return False.
+    def is_side_off_move_in_check(self):
+        """Return True if king of side off-move is in check.
+
+        This method is intended to test a move does not leave the king of
+        the side making the move in check.
+
+        """
+        side = OTHER_SIDE[self._active_color]
+        return self.is_square_attacked_by_other_side(
+            self._pieces_on_board[SIDE_TO_MOVE_KING[side]][0].square.name,
+            side,
+        )
+
+    def is_piece_pinned_to_king(self, piece, square_before_move):
+        """Return True if piece is pinned to king."""
+        king_square = self._pieces_on_board[PIECE_TO_KING[piece.name]][
+            0
+        ].square
+        attack_line = king_square.attack_line(square_before_move)
+        if attack_line is None:
+            return False
+        side = self._active_color
+        king_square_name = king_square.name
+        piece_placement_data = self._piece_placement_data
+        point, line = attack_line
+        for square_list in reversed(line[:point]), line[point + 1 :]:
+            for square in square_list:
+                if square not in piece_placement_data:
+                    continue
+                square_piece = piece_placement_data[square]
+                if square_piece.color == side:
+                    break
+                sources = FEN_SOURCE_SQUARES.get(square_piece.name)
+                if sources is None or square not in sources.get(
+                    king_square_name, ""
+                ):
+                    break
+                return True
         return False
 
     def set_initial_position(self):

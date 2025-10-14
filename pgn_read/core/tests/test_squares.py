@@ -424,6 +424,88 @@ class Squares(unittest.TestCase):
             },
         )
 
+    def test_03_Squares(self):
+        ae = self.assertEqual
+        for sq in squares.Squares.squares.values():
+            ae(sq.attack_line(sq), None)
+
+    def test_04_Squares(self):
+        ae = self.assertEqual
+        for sq1 in squares.Squares.squares.values():
+            for sq2 in squares.Squares.squares.values():
+                if sq1.rank == sq2.rank and sq1 is not sq2:
+                    ae(sq1.attack_line(sq2) is not None, True)
+
+    def test_05_Squares(self):
+        ae = self.assertEqual
+        for sq1 in squares.Squares.squares.values():
+            for sq2 in squares.Squares.squares.values():
+                if sq1.file == sq2.file and sq1 is not sq2:
+                    ae(sq1.attack_line(sq2) is not None, True)
+
+    def test_06_Squares(self):
+        ae = self.assertEqual
+        for sq1 in squares.Squares.squares.values():
+            for sq2 in squares.Squares.squares.values():
+                if (
+                    sq1.left_to_right_down_diagonal
+                    == sq2.left_to_right_down_diagonal
+                ) and sq1 is not sq2:
+                    ae(sq1.attack_line(sq2) is not None, True)
+
+    def test_07_Squares(self):
+        ae = self.assertEqual
+        for sq1 in squares.Squares.squares.values():
+            for sq2 in squares.Squares.squares.values():
+                if (
+                    sq1.right_to_left_down_diagonal
+                    == sq2.right_to_left_down_diagonal
+                ) and sq1 is not sq2:
+                    ae(sq1.attack_line(sq2) is not None, True)
+
+    def test_08_Squares(self):
+        ae = self.assertEqual
+        for sq1 in squares.Squares.squares.values():
+            for sq2 in squares.Squares.squares.values():
+                if sq1 != sq2:
+                    ae(sq1.attack_line(sq2) is None, True)
+
+    def test_09_Squares(self):
+        ae = self.assertEqual
+        sss = squares.Squares.squares
+        ae(
+            sss["c4"].attack_line(sss["b4"]),
+            (2, ("a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["b5"]),
+            (2, ("a6", "b5", "c4", "d3", "e2", "f1")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["c5"]),
+            (3, ("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["d5"]),
+            (2, ("a2", "b3", "c4", "d5", "e6", "f7", "g8")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["d4"]),
+            (2, ("a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["d3"]),
+            (2, ("a6", "b5", "c4", "d3", "e2", "f1")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["c3"]),
+            (3, ("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8")),
+        )
+        ae(
+            sss["c4"].attack_line(sss["b3"]),
+            (2, ("a2", "b3", "c4", "d5", "e6", "f7", "g8")),
+        )
+
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner
