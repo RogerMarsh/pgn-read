@@ -85,7 +85,7 @@ class _Square:
 
     # Comparisions for deciding if squares occupy the same line.
 
-    def __eq__(self, other):
+    def is_in_same_line(self, other):
         """Return True if squares occupy same line, False otherwise."""
         return id(self) != id(other) and (
             self.file == other.file

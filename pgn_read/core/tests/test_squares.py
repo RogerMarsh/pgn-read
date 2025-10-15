@@ -92,48 +92,48 @@ class _Square(unittest.TestCase):
             ],
         )
 
-    def test_05___eq__(self):
+    def test_05_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("a", "1")
         sq2 = squares._Square("a", "1")
-        ae(sq1 == sq1, False)
-        ae(sq1 == sq2, True)
+        ae(sq1.is_in_same_line(sq1), False)
+        ae(sq1.is_in_same_line(sq2), True)
 
-    def test_06___eq__(self):
+    def test_06_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("a", "1")
         sq2 = squares._Square("a", "2")
-        ae(sq1 == sq2, True)
+        ae(sq1.is_in_same_line(sq2), True)
 
-    def test_07___eq__(self):
+    def test_07_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("a", "1")
         sq2 = squares._Square("f", "1")
-        ae(sq1 == sq2, True)
+        ae(sq1.is_in_same_line(sq2), True)
 
-    def test_08___eq__(self):
+    def test_08_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("a", "1")
         sq2 = squares._Square("h", "8")
-        ae(sq1 == sq2, True)
+        ae(sq1.is_in_same_line(sq2), True)
 
-    def test_09___eq__(self):
+    def test_09_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("a", "8")
         sq2 = squares._Square("h", "1")
-        ae(sq1 == sq2, True)
+        ae(sq1.is_in_same_line(sq2), True)
 
-    def test_10___eq__(self):
+    def test_10_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("b", "1")
         sq2 = squares._Square("h", "8")
-        ae(sq1 == sq2, False)
+        ae(sq1.is_in_same_line(sq2), False)
 
-    def test_11___eq__(self):
+    def test_11_is_in_same_line(self):
         ae = self.assertEqual
         sq1 = squares._Square("b", "8")
         sq2 = squares._Square("h", "1")
-        ae(sq1 == sq2, False)
+        ae(sq1.is_in_same_line(sq2), False)
 
     def test_12_number(self):
         ae = self.assertEqual
@@ -550,7 +550,7 @@ class Squares(unittest.TestCase):
         ae = self.assertEqual
         for sq1 in squares.fen_squares.values():
             for sq2 in squares.fen_squares.values():
-                if sq1 != sq2:
+                if not sq1.is_in_same_line(sq2):
                     ae(sq1.attack_line(sq2) is None, True)
 
     def test_09_Squares(self):
