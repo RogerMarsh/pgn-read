@@ -68,6 +68,20 @@ class _Square:
         self.high_lrd_attacks = None
         self.low_rld_attacks = None
         self.high_rld_attacks = None
+        self.highlow = constants.FILE_NAMES.index(
+            file
+        ) + 8 * (7 - constants.RANK_NAMES.index(rank))
+
+    # Comparisions for deciding which of high_* and low_* is relevant when
+    # deciding attacks between squares.
+
+    def higher_than(self, other):
+        """Return (self.highlow > other.highlow)."""
+        return self.highlow > other.highlow
+
+    def lower_than(self, other):
+        """Return (self.highlow < other.highlow)."""
+        return self.highlow < other.highlow
 
     # Comparisions for deciding if squares occupy the same line.
 

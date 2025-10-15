@@ -51,6 +51,7 @@ class _Square(unittest.TestCase):
                 "high_lrd_attacks",
                 "high_rank_attacks",
                 "high_rld_attacks",
+                "highlow",
                 "left_to_right_down_diagonal",
                 "low_file_attacks",
                 "low_lrd_attacks",
@@ -78,6 +79,7 @@ class _Square(unittest.TestCase):
                 "high_lrd_attacks",
                 "high_rank_attacks",
                 "high_rld_attacks",
+                "highlow",
                 "left_to_right_down_diagonal",
                 "low_file_attacks",
                 "low_lrd_attacks",
@@ -268,6 +270,74 @@ class _Square(unittest.TestCase):
         ae(sq(*"f1").bit, 1 << 61)
         ae(sq(*"g1").bit, 1 << 62)
         ae(sq(*"h1").bit, 1 << 63)
+
+    def test_14_highlow(self):
+        ae = self.assertEqual
+        sq = squares._Square
+        ae(sq(*"a8").highlow, 56)
+        ae(sq(*"b8").highlow, 57)
+        ae(sq(*"c8").highlow, 58)
+        ae(sq(*"d8").highlow, 59)
+        ae(sq(*"e8").highlow, 60)
+        ae(sq(*"f8").highlow, 61)
+        ae(sq(*"g8").highlow, 62)
+        ae(sq(*"h8").highlow, 63)
+        ae(sq(*"a7").highlow, 48)
+        ae(sq(*"b7").highlow, 49)
+        ae(sq(*"c7").highlow, 50)
+        ae(sq(*"d7").highlow, 51)
+        ae(sq(*"e7").highlow, 52)
+        ae(sq(*"f7").highlow, 53)
+        ae(sq(*"g7").highlow, 54)
+        ae(sq(*"h7").highlow, 55)
+        ae(sq(*"a6").highlow, 40)
+        ae(sq(*"b6").highlow, 41)
+        ae(sq(*"c6").highlow, 42)
+        ae(sq(*"d6").highlow, 43)
+        ae(sq(*"e6").highlow, 44)
+        ae(sq(*"f6").highlow, 45)
+        ae(sq(*"g6").highlow, 46)
+        ae(sq(*"h6").highlow, 47)
+        ae(sq(*"a5").highlow, 32)
+        ae(sq(*"b5").highlow, 33)
+        ae(sq(*"c5").highlow, 34)
+        ae(sq(*"d5").highlow, 35)
+        ae(sq(*"e5").highlow, 36)
+        ae(sq(*"f5").highlow, 37)
+        ae(sq(*"g5").highlow, 38)
+        ae(sq(*"h5").highlow, 39)
+        ae(sq(*"a4").highlow, 24)
+        ae(sq(*"b4").highlow, 25)
+        ae(sq(*"c4").highlow, 26)
+        ae(sq(*"d4").highlow, 27)
+        ae(sq(*"e4").highlow, 28)
+        ae(sq(*"f4").highlow, 29)
+        ae(sq(*"g4").highlow, 30)
+        ae(sq(*"h4").highlow, 31)
+        ae(sq(*"a3").highlow, 16)
+        ae(sq(*"b3").highlow, 17)
+        ae(sq(*"c3").highlow, 18)
+        ae(sq(*"d3").highlow, 19)
+        ae(sq(*"e3").highlow, 20)
+        ae(sq(*"f3").highlow, 21)
+        ae(sq(*"g3").highlow, 22)
+        ae(sq(*"h3").highlow, 23)
+        ae(sq(*"a2").highlow, 8)
+        ae(sq(*"b2").highlow, 9)
+        ae(sq(*"c2").highlow, 10)
+        ae(sq(*"d2").highlow, 11)
+        ae(sq(*"e2").highlow, 12)
+        ae(sq(*"f2").highlow, 13)
+        ae(sq(*"g2").highlow, 14)
+        ae(sq(*"h2").highlow, 15)
+        ae(sq(*"a1").highlow, 0)
+        ae(sq(*"b1").highlow, 1)
+        ae(sq(*"c1").highlow, 2)
+        ae(sq(*"d1").highlow, 3)
+        ae(sq(*"e1").highlow, 4)
+        ae(sq(*"f1").highlow, 5)
+        ae(sq(*"g1").highlow, 6)
+        ae(sq(*"h1").highlow, 7)
 
 
 class Squares(unittest.TestCase):
@@ -973,6 +1043,158 @@ class Squares(unittest.TestCase):
         ae(sss["h6"].high_rld_attacks, ())
         ae(sss["h7"].high_rld_attacks, ())
         ae(sss["h8"].high_rld_attacks, ())
+
+    def test_11_Squares_highlow_low_file_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.low_file_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.higher_than(sss[sqr]), True)
+                    ae(square.file, sss[sqr].file)
+                    ane(square.rank, sss[sqr].rank)
+                    ane(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+                    ane(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+
+    def test_12_Squares_highlow_low_rank_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.low_rank_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.higher_than(sss[sqr]), True)
+                    ae(square.rank, sss[sqr].rank)
+                    ane(square.file, sss[sqr].file)
+                    ane(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+                    ane(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+
+    def test_13_Squares_highlow_low_lrd_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.low_lrd_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.higher_than(sss[sqr]), True)
+                    ae(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+                    ane(square.rank, sss[sqr].rank)
+                    ane(square.file, sss[sqr].file)
+                    ane(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+
+    def test_14_Squares_highlow_low_rld_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.low_rld_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.higher_than(sss[sqr]), True)
+                    ae(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+                    ane(square.rank, sss[sqr].rank)
+                    ane(square.file, sss[sqr].file)
+                    ane(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+
+    def test_15_Squares_highlow_high_file_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.high_file_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.lower_than(sss[sqr]), True)
+                    ae(square.file, sss[sqr].file)
+                    ane(square.rank, sss[sqr].rank)
+                    ane(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+                    ane(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+
+    def test_16_Squares_highlow_high_rank_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.high_rank_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.lower_than(sss[sqr]), True)
+                    ae(square.rank, sss[sqr].rank)
+                    ane(square.file, sss[sqr].file)
+                    ane(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+                    ane(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+
+    def test_17_Squares_highlow_high_lrd_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.high_lrd_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.lower_than(sss[sqr]), True)
+                    ae(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
+                    ane(square.rank, sss[sqr].rank)
+                    ane(square.file, sss[sqr].file)
+                    ane(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+
+    def test_18_Squares_highlow_high_rld_attacks(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.Squares.squares
+        for square in sss.values():
+            for sqr in square.high_rld_attacks:
+                with self.subTest(square=square, sqr=sqr):
+                    ae(square.lower_than(sss[sqr]), True)
+                    ae(
+                        square.right_to_left_down_diagonal,
+                        sss[sqr].right_to_left_down_diagonal,
+                    )
+                    ane(square.rank, sss[sqr].rank)
+                    ane(square.file, sss[sqr].file)
+                    ane(
+                        square.left_to_right_down_diagonal,
+                        sss[sqr].left_to_right_down_diagonal,
+                    )
 
 
 if __name__ == "__main__":
