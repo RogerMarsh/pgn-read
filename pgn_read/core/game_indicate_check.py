@@ -28,7 +28,7 @@ from .constants import (
     KNIGHT_MOVES,
 )
 from .game import Game
-from .squares import Squares
+from .squares import fen_squares
 
 
 class GameIndicateCheck(Game):
@@ -151,7 +151,7 @@ class GameIndicateCheck(Game):
         active_color = self._active_color
         attacking_squares = []
 
-        for square_list in Squares.squares[square].attack_lines():
+        for square_list in fen_squares[square].attack_lines():
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue

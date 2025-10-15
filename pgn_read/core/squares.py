@@ -7,7 +7,10 @@
 Define for each square it's name, file, rank, diagonals, and castling rights
 lost when activity occurs on a square.
 
-This module provides an instance of the class Squares.
+This module provides two dicts:
+fen_squares, which maps square names like 'a1' to a _Square instance.
+fen_square_names, which maps square number in Forsyth Edwards Notation
+order to square name.
 
 """
 from . import constants
@@ -35,9 +38,6 @@ class _Square:
     in bit order.  Bit values should allow the bit string to be read left to
     right in FEN order but the existing mapping in previous versions happens
     to read right to left.
-
-    Instances of this class should be accessed via the Squares class.
-
     """
 
     castling_rights_lost = ""
@@ -68,9 +68,9 @@ class _Square:
         self.high_lrd_attacks = None
         self.low_rld_attacks = None
         self.high_rld_attacks = None
-        self.highlow = constants.FILE_NAMES.index(
-            file
-        ) + 8 * (7 - constants.RANK_NAMES.index(rank))
+        self.highlow = constants.FILE_NAMES.index(file) + 8 * (
+            7 - constants.RANK_NAMES.index(rank)
+        )
 
     # Comparisions for deciding which of high_* and low_* is relevant when
     # deciding attacks between squares.
@@ -139,75 +139,66 @@ class _Square:
         )
 
 
-class Squares:
-    """The squares on a chessboard.
+def _create_squares():
+    """Populate fen_squares and fen_square_names with _Square instances.
 
-    self.squares maps square names (a8, b8, ..., a7, ..., h2, ..., g1, h1)
+    fen_squares maps square names (a8, b8, ..., a7, ..., h2, ..., g1, h1)
     to instances of _Square.
 
-    self.square_names maps square numbers in FEN piece placement field
+    fen_square_names maps square numbers in FEN piece placement field
     order to square names {0: "a8", 1: "b8", ..., 63: "h1"}.
 
     """
-
-    def __init__(self):
-        """Define the squares on a chessboard."""
-        self.squares = {}
-        self.square_names = {}
-        squares = self.squares
-        square_names = self.square_names
-        files = {}
-        ranks = {}
-        file_names = constants.FILE_NAMES
-        rank_names = constants.RANK_NAMES
-        for file_number, file in enumerate(file_names):
-            files[file] = {file + r for r in rank_names}
-            for rank_number, rank in enumerate(rank_names):
-                squares[file + rank] = _Square(file, rank)
-                square_names[rank_number * 8 + file_number] = file + rank
-        for rank in rank_names:
-            ranks[rank] = {f + rank for f in file_names}
-        left_to_right = []
-        right_to_left = []
-        for e in range(len(file_names)):
-            left_to_right.append(set())
-            for x, y in zip(file_names[e:], rank_names):
-                left_to_right[-1].add(x + y)
-            right_to_left.append(set())
-            for x, y in zip(
-                reversed(file_names[: e + 1]), rank_names[: e + 2]
-            ):
-                right_to_left[-1].add(x + y)
-        for e in range(len(rank_names) - 1):
-            left_to_right.append(set())
-            for x, y in zip(file_names[: -e - 1], rank_names[e + 1 :]):
-                left_to_right[-1].add(x + y)
-            right_to_left.append(set())
-            for x, y in zip(
-                reversed(file_names[-e - 1 :]), rank_names[-e - 1 :]
-            ):
-                right_to_left[-1].add(x + y)
-        for v in files.values():
-            line = tuple(sorted(v))
-            for e, sq1 in enumerate(line):
-                squares[sq1].low_file_attacks = tuple(list(reversed(line[:e])))
-                squares[sq1].high_file_attacks = tuple(line[e + 1 :])
-        for v in ranks.values():
-            line = tuple(sorted(v))
-            for e, sq1 in enumerate(line):
-                squares[sq1].low_rank_attacks = tuple(list(reversed(line[:e])))
-                squares[sq1].high_rank_attacks = tuple(line[e + 1 :])
-        for v in left_to_right:
-            line = tuple(sorted(v))
-            for e, sq1 in enumerate(line):
-                squares[sq1].high_lrd_attacks = tuple(list(reversed(line[:e])))
-                squares[sq1].low_lrd_attacks = tuple(line[e + 1 :])
-        for v in right_to_left:
-            line = tuple(sorted(v))
-            for e, sq1 in enumerate(line):
-                squares[sq1].low_rld_attacks = tuple(list(reversed(line[:e])))
-                squares[sq1].high_rld_attacks = tuple(line[e + 1 :])
+    files = {}
+    ranks = {}
+    file_names = constants.FILE_NAMES
+    rank_names = constants.RANK_NAMES
+    for file_number, file in enumerate(file_names):
+        files[file] = {file + r for r in rank_names}
+        for rank_number, rank in enumerate(rank_names):
+            fen_squares[file + rank] = _Square(file, rank)
+            fen_square_names[rank_number * 8 + file_number] = file + rank
+    for rank in rank_names:
+        ranks[rank] = {f + rank for f in file_names}
+    left_to_right = []
+    right_to_left = []
+    for e in range(len(file_names)):
+        left_to_right.append(set())
+        for x, y in zip(file_names[e:], rank_names):
+            left_to_right[-1].add(x + y)
+        right_to_left.append(set())
+        for x, y in zip(reversed(file_names[: e + 1]), rank_names[: e + 2]):
+            right_to_left[-1].add(x + y)
+    for e in range(len(rank_names) - 1):
+        left_to_right.append(set())
+        for x, y in zip(file_names[: -e - 1], rank_names[e + 1 :]):
+            left_to_right[-1].add(x + y)
+        right_to_left.append(set())
+        for x, y in zip(reversed(file_names[-e - 1 :]), rank_names[-e - 1 :]):
+            right_to_left[-1].add(x + y)
+    for v in files.values():
+        line = tuple(sorted(v))
+        for e, sq1 in enumerate(line):
+            fen_squares[sq1].low_file_attacks = tuple(list(reversed(line[:e])))
+            fen_squares[sq1].high_file_attacks = tuple(line[e + 1 :])
+    for v in ranks.values():
+        line = tuple(sorted(v))
+        for e, sq1 in enumerate(line):
+            fen_squares[sq1].low_rank_attacks = tuple(list(reversed(line[:e])))
+            fen_squares[sq1].high_rank_attacks = tuple(line[e + 1 :])
+    for v in left_to_right:
+        line = tuple(sorted(v))
+        for e, sq1 in enumerate(line):
+            fen_squares[sq1].high_lrd_attacks = tuple(list(reversed(line[:e])))
+            fen_squares[sq1].low_lrd_attacks = tuple(line[e + 1 :])
+    for v in right_to_left:
+        line = tuple(sorted(v))
+        for e, sq1 in enumerate(line):
+            fen_squares[sq1].low_rld_attacks = tuple(list(reversed(line[:e])))
+            fen_squares[sq1].high_rld_attacks = tuple(line[e + 1 :])
 
 
-# Pylint reports no-member for Squares.<attribute-name> references.
-Squares = Squares()
+fen_squares = {}
+fen_square_names = {}
+_create_squares()
+del _create_squares

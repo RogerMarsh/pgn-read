@@ -13,7 +13,7 @@ from .constants import (
     FEN_WHITE_KING,
     FEN_BLACK_KING,
 )
-from .squares import Squares
+from .squares import fen_squares
 
 
 class Piece:
@@ -42,9 +42,7 @@ class Piece:
         Provided for moving pieces during a game.
 
         """
-        # Squares = Squares() at end of squares module.
-        # Pylint reports no-member.
-        self.square = Squares.squares[name]
+        self.square = fen_squares[name]
 
     def promoted_pawn(self, name, *a):
         """Return a new Piece instance for a promoted pawn.

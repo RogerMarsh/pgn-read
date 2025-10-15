@@ -66,7 +66,7 @@ from .constants import (
     PGN_TOKEN_SEPARATOR,
 )
 from .piece import Piece
-from .squares import Squares
+from .squares import fen_squares, fen_square_names
 
 white_black_tag_value_format = re.compile(r"\s*([^,.\s]+)")
 KNIGHTS = FEN_WHITE_KNIGHT + FEN_BLACK_KNIGHT
@@ -354,7 +354,7 @@ class GameData:
         source_square_piece = delta[1][0]
         for delta_square_piece in source_square_piece + delta[0][0]:
             attack_line = king_square.attack_line(
-                Squares.squares[delta_square_piece[0]]
+                fen_squares[delta_square_piece[0]]
             )
             if attack_line is None:
                 continue
@@ -382,7 +382,7 @@ class GameData:
         """Return True if square is attacked by a piece not of side."""
         piece_placement_data = self._piece_placement_data
 
-        for square_list in Squares.squares[square].attack_lines():
+        for square_list in fen_squares[square].attack_lines():
             for sqr in square_list:
                 if sqr not in piece_placement_data:
                     continue
@@ -531,7 +531,7 @@ class GameData:
                     self._state = len(self._text)
                     self._state_stack[-1] = self._state
                     return False
-                piece = Piece(fen_char, Squares.square_names[i])
+                piece = Piece(fen_char, fen_square_names[i])
                 piece_placement_data[piece.square.name] = piece
                 board.append(piece)
                 if fen_char == FEN_WHITE_PAWN:
@@ -580,9 +580,7 @@ class GameData:
                 FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX
             ]
             if en_passant_target_square != FEN_NULL:
-                # Squares = Squares() at end of squares module.
-                # Pylint reports no-member.
-                if en_passant_target_square not in Squares.squares:
+                if en_passant_target_square not in fen_squares:
                     return False
                 if active_color == FEN_WHITE_ACTIVE:
                     target_pawn = FEN_BLACK_PAWN
@@ -1077,10 +1075,8 @@ class GameData:
         """
         if self._castling_availability == FEN_NULL:
             return FEN_NULL
-        # Squares = Squares() at end of squares module.
-        # Pylint reports no-member.
         castling_rights_lost = "".join(
-            Squares.squares[r[0]].castling_rights_lost for r in remove
+            fen_squares[r[0]].castling_rights_lost for r in remove
         )
         if not castling_rights_lost:
             return self._castling_availability

@@ -343,13 +343,9 @@ class _Square(unittest.TestCase):
 class Squares(unittest.TestCase):
     def test_01_Squares(self):
         ae = self.assertEqual
+        ae(len(squares.fen_squares), 64)
         ae(
-            sorted(squares.Squares.__dict__.keys()),
-            ["square_names", "squares"],
-        )
-        ae(len(squares.Squares.squares), 64)
-        ae(
-            sorted(sq for sq in squares.Squares.squares),
+            sorted(sq for sq in squares.fen_squares),
             [
                 "a1",
                 "a2",
@@ -417,7 +413,7 @@ class Squares(unittest.TestCase):
                 "h8",
             ],
         )
-        for k, sq in squares.Squares.squares.items():
+        for k, sq in squares.fen_squares.items():
             ae(isinstance(sq, squares._Square), True)
             ae(k, sq.name)
             ae(sq.name, sq.file + sq.rank)
@@ -440,9 +436,9 @@ class Squares(unittest.TestCase):
 
     def test_02_Squares(self):
         ae = self.assertEqual
-        ae(len(squares.Squares.square_names), 64)
+        ae(len(squares.fen_square_names), 64)
         ae(
-            squares.Squares.square_names,
+            squares.fen_square_names,
             {
                 0: "a8",
                 1: "b8",
@@ -513,27 +509,27 @@ class Squares(unittest.TestCase):
 
     def test_03_Squares(self):
         ae = self.assertEqual
-        for sq in squares.Squares.squares.values():
+        for sq in squares.fen_squares.values():
             ae(sq.attack_line(sq), None)
 
     def test_04_Squares(self):
         ae = self.assertEqual
-        for sq1 in squares.Squares.squares.values():
-            for sq2 in squares.Squares.squares.values():
+        for sq1 in squares.fen_squares.values():
+            for sq2 in squares.fen_squares.values():
                 if sq1.rank == sq2.rank and sq1 is not sq2:
                     ae(sq1.attack_line(sq2) is not None, True)
 
     def test_05_Squares(self):
         ae = self.assertEqual
-        for sq1 in squares.Squares.squares.values():
-            for sq2 in squares.Squares.squares.values():
+        for sq1 in squares.fen_squares.values():
+            for sq2 in squares.fen_squares.values():
                 if sq1.file == sq2.file and sq1 is not sq2:
                     ae(sq1.attack_line(sq2) is not None, True)
 
     def test_06_Squares(self):
         ae = self.assertEqual
-        for sq1 in squares.Squares.squares.values():
-            for sq2 in squares.Squares.squares.values():
+        for sq1 in squares.fen_squares.values():
+            for sq2 in squares.fen_squares.values():
                 if (
                     sq1.left_to_right_down_diagonal
                     == sq2.left_to_right_down_diagonal
@@ -542,8 +538,8 @@ class Squares(unittest.TestCase):
 
     def test_07_Squares(self):
         ae = self.assertEqual
-        for sq1 in squares.Squares.squares.values():
-            for sq2 in squares.Squares.squares.values():
+        for sq1 in squares.fen_squares.values():
+            for sq2 in squares.fen_squares.values():
                 if (
                     sq1.right_to_left_down_diagonal
                     == sq2.right_to_left_down_diagonal
@@ -552,14 +548,14 @@ class Squares(unittest.TestCase):
 
     def test_08_Squares(self):
         ae = self.assertEqual
-        for sq1 in squares.Squares.squares.values():
-            for sq2 in squares.Squares.squares.values():
+        for sq1 in squares.fen_squares.values():
+            for sq2 in squares.fen_squares.values():
                 if sq1 != sq2:
                     ae(sq1.attack_line(sq2) is None, True)
 
     def test_09_Squares(self):
         ae = self.assertEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         ae(
             sss["c4"].attack_line(sss["b4"]),
             (("b4", "a4"), ("d4", "e4", "f4", "g4", "h4")),
@@ -595,7 +591,7 @@ class Squares(unittest.TestCase):
 
     def test_10_Squares(self):
         ae = self.assertEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         ae(sss["a1"].low_file_attacks, ())
         ae(sss["a2"].low_file_attacks, ("a1",))
         ae(sss["a3"].low_file_attacks, ("a2", "a1"))
@@ -1047,7 +1043,7 @@ class Squares(unittest.TestCase):
     def test_11_Squares_highlow_low_file_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.low_file_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1066,7 +1062,7 @@ class Squares(unittest.TestCase):
     def test_12_Squares_highlow_low_rank_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.low_rank_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1085,7 +1081,7 @@ class Squares(unittest.TestCase):
     def test_13_Squares_highlow_low_lrd_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.low_lrd_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1104,7 +1100,7 @@ class Squares(unittest.TestCase):
     def test_14_Squares_highlow_low_rld_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.low_rld_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1123,7 +1119,7 @@ class Squares(unittest.TestCase):
     def test_15_Squares_highlow_high_file_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.high_file_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1142,7 +1138,7 @@ class Squares(unittest.TestCase):
     def test_16_Squares_highlow_high_rank_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.high_rank_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1161,7 +1157,7 @@ class Squares(unittest.TestCase):
     def test_17_Squares_highlow_high_lrd_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.high_lrd_attacks:
                 with self.subTest(square=square, sqr=sqr):
@@ -1180,7 +1176,7 @@ class Squares(unittest.TestCase):
     def test_18_Squares_highlow_high_rld_attacks(self):
         ae = self.assertEqual
         ane = self.assertNotEqual
-        sss = squares.Squares.squares
+        sss = squares.fen_squares
         for square in sss.values():
             for sqr in square.high_rld_attacks:
                 with self.subTest(square=square, sqr=sqr):
