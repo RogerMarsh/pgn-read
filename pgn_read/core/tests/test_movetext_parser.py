@@ -627,6 +627,27 @@ class MoveText_method_calls(unittest.TestCase):
         self.m = movetext_parser.game_format.match("c8=B")
         ae(self.gc1.append_token(self.m), None)
         ae(self.gc1._text[0], "c8=B")
+        ae(self.gc1.is_full_disambiguation_allowed(), False)
+        ae(self.gc1.append_token(self.m), None)
+        ae(self.gc1._text[1], "c8=B")
+        ae(self.gc1.is_full_disambiguation_allowed(), True)
+
+    def test_32_is_full_disambiguation_allowed_04(self):
+        ae = self.assertEqual
+        self.m = movetext_parser.game_format.match("c8=B")
+        ae(self.gc1.append_token(self.m), None)
+        ae(self.gc1._text[0], "c8=B")
+        ae(self.gc1.is_full_disambiguation_allowed(), False)
+        self.m = movetext_parser.game_format.match("c8=Q")
+        ae(self.gc1.append_token(self.m), None)
+        ae(self.gc1._text[1], "c8=Q")
+        ae(self.gc1.is_full_disambiguation_allowed(), False)
+
+    def test_32_is_full_disambiguation_allowed_05(self):
+        ae = self.assertEqual
+        self.m = movetext_parser.game_format.match("c8=N")
+        ae(self.gc1.append_token(self.m), None)
+        ae(self.gc1._text[0], "c8=N")
         ae(self.gc1.is_full_disambiguation_allowed(), True)
 
 

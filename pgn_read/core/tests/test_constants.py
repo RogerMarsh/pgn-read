@@ -548,7 +548,7 @@ class Constants(unittest.TestCase):
         ae(constants.TPF_OTHER_WITH_NON_NEWLINE_WHITESPACE, 13)
         ae(
             constants.FULL_DISAMBIGUATION_ALLOWED,
-            r'(?s:1=Q.*1=Q|8=Q.*8=Q|[18]=[BN]|\[\s*FEN\s*")',
+            r'(?s:([18]=[QB]).*\1|[18]=N|\[\s*FEN\s*")',
         )
         ae(constants.PAWN_MOVE_TOKEN_POSSIBLE_BISHOP, r"\A[Bb][1-8]\Z")
         ae(constants.UNTERMINATED, "<{")

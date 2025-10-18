@@ -315,7 +315,7 @@ CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE = 22
 # This pattern allows the existence of necessary fully disambiguated moves
 # to be ruled out.  Full disambiguation is not necessary if a position has
 # less than 3 queens, bishops, or knights, of the same side.
-FULL_DISAMBIGUATION_ALLOWED = r'(?s:1=Q.*1=Q|8=Q.*8=Q|[18]=[BN]|\[\s*FEN\s*")'
+FULL_DISAMBIGUATION_ALLOWED = r'(?s:([18]=[QB]).*\1|[18]=N|\[\s*FEN\s*")'
 
 # For spotting rejected possible SAN b-pawn move tokens which may be first
 # part of bishop move, ignoring case if necessary.
