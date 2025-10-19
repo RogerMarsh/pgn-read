@@ -35,13 +35,11 @@ from .constants import (
     IFG_PAWN_PROMOTE_TO_RANK,
     IFG_PAWN_PROMOTE_PIECE,
     PGN_CAPTURE_MOVE,
-    EN_PASSANT_TARGET_SQUARES,
     FEN_TO_PGN,
     PGN_ROOK,
     CASTLING_MOVE_RIGHTS,
     FEN_PAWNS,
     PGN_O_O,
-    SOURCE_SQUARES,
     OTHER_SIDE,
     PROMOTED_PIECE_NAME,
     DISAMBIGUATE_TEXT,
@@ -58,7 +56,7 @@ from .constants import (
     SUFFIX_ANNOTATION_TO_NAG,
 )
 from .gamedata import GameData, generate_fen_for_position, GameError
-from .squares import fen_squares
+from .squares import fen_squares, source_squares, en_passant_target_squares
 
 disambiguate_pgn_format = re.compile(DISAMBIGUATE_PGN)
 disambiguate_text_format = re.compile(DISAMBIGUATE_TEXT)
@@ -477,7 +475,7 @@ class Game(GameData):
             fullmove_number_for_next_halfmove = self._fullmove_number + 1
         destination = group(IFG_PIECE_DESTINATION)
         try:
-            source_squares = SOURCE_SQUARES[group(IFG_PIECE_MOVE)][destination]
+            src_squares = source_squares[group(IFG_PIECE_MOVE)][destination]
         except KeyError:
             self._append_token_and_set_error(match)
             return
@@ -491,7 +489,7 @@ class Game(GameData):
                 return
             candidates = []
             for piece in self._pieces_on_board[piece_name]:
-                if piece.square.name in source_squares:
+                if piece.square.name in src_squares:
                     candidates.append(piece)
             if len(candidates) == 1:
                 piece = candidates[0]
@@ -620,7 +618,7 @@ class Game(GameData):
 
         candidates = []
         for piece in self._pieces_on_board[piece_name]:
-            if piece.square.name in source_squares:
+            if piece.square.name in src_squares:
                 candidates.append(piece)
         if len(candidates) == 1:
             piece = candidates[0]
@@ -742,15 +740,13 @@ class Game(GameData):
                 fullmove_number_for_next_halfmove = self._fullmove_number + 1
                 source_squares_index = FEN_BLACK_PAWN + PGN_CAPTURE_MOVE
             try:
-                source_squares = SOURCE_SQUARES[source_squares_index][
-                    destination
-                ]
+                src_squares = source_squares[source_squares_index][destination]
             except KeyError:
                 self._append_token_and_set_error(match)
                 return
             # Pylint reports undefined-loop-variable for source later.
             # The loop looks safe at this time.
-            for source in source_squares:
+            for source in src_squares:
                 if source.startswith(pawn_capture_from_file):
                     try:
                         if (
@@ -769,7 +765,7 @@ class Game(GameData):
                 if self._en_passant_target_square == FEN_NULL:
                     self._append_token_and_set_error(match)
                     return
-                capture_square = EN_PASSANT_TARGET_SQUARES.get(group()[:4])
+                capture_square = en_passant_target_squares.get(group()[:4])
                 if not capture_square:
                     self._append_token_and_set_error(match)
                     return
@@ -838,11 +834,11 @@ class Game(GameData):
             fullmove_number_for_next_halfmove = self._fullmove_number + 1
             source_squares_index = FEN_BLACK_PAWN
         try:
-            source_squares = SOURCE_SQUARES[source_squares_index][destination]
+            src_squares = source_squares[source_squares_index][destination]
         except KeyError:
             self._append_token_and_set_error(match)
             return
-        for source in source_squares:
+        for source in src_squares:
             if source in piece_placement_data:
                 piece = piece_placement_data[source]
                 if FEN_PAWNS.get(piece.name) == self._active_color:
@@ -851,7 +847,7 @@ class Game(GameData):
         else:
             self._append_token_and_set_error(match)
             return
-        new_en_passant_target_square = EN_PASSANT_TARGET_SQUARES[
+        new_en_passant_target_square = en_passant_target_squares[
             OTHER_SIDE[self._active_color]
         ].get((destination, piece.square.name), FEN_NULL)
         self._modify_game_state_pawn_move(
@@ -898,15 +894,13 @@ class Game(GameData):
                 fullmove_number_for_next_halfmove = self._fullmove_number + 1
                 source_squares_index = FEN_BLACK_PAWN + PGN_CAPTURE_MOVE
             try:
-                source_squares = SOURCE_SQUARES[source_squares_index][
-                    destination
-                ]
+                src_squares = source_squares[source_squares_index][destination]
             except KeyError:
                 self._append_token_and_set_error(match)
                 return
             # Pylint reports undefined-loop-variable for source later.
             # The loop looks safe at this time.
-            for source in source_squares:
+            for source in src_squares:
                 if source.startswith(pawn_capture_from_file):
                     try:
                         if (
@@ -925,7 +919,7 @@ class Game(GameData):
                 if self._en_passant_target_square == FEN_NULL:
                     self._append_token_and_set_error(match)
                     return
-                capture_square = EN_PASSANT_TARGET_SQUARES.get(group()[:4])
+                capture_square = en_passant_target_squares.get(group()[:4])
                 if not capture_square:
                     self._append_token_and_set_error(match)
                     return
@@ -982,11 +976,11 @@ class Game(GameData):
             fullmove_number_for_next_halfmove = self._fullmove_number + 1
             source_squares_index = FEN_BLACK_PAWN
         try:
-            source_squares = SOURCE_SQUARES[source_squares_index][destination]
+            src_squares = source_squares[source_squares_index][destination]
         except KeyError:
             self._append_token_and_set_error(match)
             return
-        for source in source_squares:
+        for source in src_squares:
             if source in piece_placement_data:
                 piece = piece_placement_data[source]
                 if FEN_PAWNS.get(piece.name) == self._active_color:
@@ -1125,7 +1119,7 @@ class Game(GameData):
         piece_placement_data = self._piece_placement_data
         piece = piece_placement_data[group(IFG_PIECE_DESTINATION)]
         destination = dtfm.group(DG_DESTINATION)
-        source_squares = SOURCE_SQUARES[group(IFG_PIECE_MOVE)][destination]
+        src_squares = source_squares[group(IFG_PIECE_MOVE)][destination]
 
         # Piece move and capture.
 
@@ -1135,7 +1129,7 @@ class Game(GameData):
                 return
             candidates = []
             for cpiece in self._pieces_on_board[piece_name]:
-                if cpiece.square.name in source_squares:
+                if cpiece.square.name in src_squares:
                     candidates.append(cpiece)
             file_count = 0
             rank_count = 0
@@ -1185,7 +1179,7 @@ class Game(GameData):
         # Piece move without capture.
         candidates = []
         for cpiece in self._pieces_on_board[piece_name]:
-            if cpiece.square.name in source_squares:
+            if cpiece.square.name in src_squares:
                 candidates.append(cpiece)
         file_count = 0
         rank_count = 0
@@ -1265,13 +1259,13 @@ class Game(GameData):
                 self._append_token_and_set_error(match)
                 return
             piece = piece_placement_data[group(IFG_PIECE_DESTINATION)]
-            source_squares = SOURCE_SQUARES[group(IFG_PIECE_MOVE)][destination]
+            src_squares = source_squares[group(IFG_PIECE_MOVE)][destination]
 
             # Piece move and capture.
             if capture == PGN_CAPTURE_MOVE:
                 candidates = []
                 for cpiece in self._pieces_on_board[piece_name]:
-                    if cpiece.square.name in source_squares:
+                    if cpiece.square.name in src_squares:
                         candidates.append(cpiece)
                 if not candidates:
                     self._append_token_and_set_error(match)
@@ -1393,7 +1387,7 @@ class Game(GameData):
             # Piece move without capture.
             candidates = []
             for cpiece in self._pieces_on_board[piece_name]:
-                if cpiece.square.name in source_squares:
+                if cpiece.square.name in src_squares:
                     candidates.append(cpiece)
             if not candidates:
                 self._append_token_and_set_error(match)
@@ -1524,7 +1518,7 @@ class Game(GameData):
             if capture == PGN_CAPTURE_MOVE:
                 if (
                     square_name
-                    not in SOURCE_SQUARES[
+                    not in source_squares[
                         source_squares_index + PGN_CAPTURE_MOVE
                     ][destination]
                 ):
@@ -1573,7 +1567,7 @@ class Game(GameData):
             # Promotion move without capture.
             if (
                 square_name
-                not in SOURCE_SQUARES[source_squares_index][destination]
+                not in source_squares[source_squares_index][destination]
             ):
                 self._append_token_and_set_error(match)
                 return
@@ -1600,7 +1594,7 @@ class Game(GameData):
         if capture == PGN_CAPTURE_MOVE:
             if (
                 square_name
-                not in SOURCE_SQUARES[source_squares_index + PGN_CAPTURE_MOVE][
+                not in source_squares[source_squares_index + PGN_CAPTURE_MOVE][
                     destination
                 ]
             ):
@@ -1614,7 +1608,7 @@ class Game(GameData):
                 self._append_token_and_set_error(match)
                 return
             if destination not in piece_placement_data:
-                capture_square = EN_PASSANT_TARGET_SQUARES.get(
+                capture_square = en_passant_target_squares.get(
                     PGN_CAPTURE_MOVE.join(
                         (group(IFG_PAWN_FROM_FILE), destination)
                     )
@@ -1661,7 +1655,7 @@ class Game(GameData):
         # Pawn move without capturing or promoting.
         if (
             square_name
-            not in SOURCE_SQUARES[source_squares_index][destination]
+            not in source_squares[source_squares_index][destination]
         ):
             self._append_token_and_set_error(match)
             return
@@ -1672,7 +1666,7 @@ class Game(GameData):
         if not self.line_empty(destination, square_name):
             self._append_token_and_set_error(match)
             return
-        new_en_passant_target_square = EN_PASSANT_TARGET_SQUARES[
+        new_en_passant_target_square = en_passant_target_squares[
             OTHER_SIDE[self._active_color]
         ].get((destination, piece.square.name), FEN_NULL)
         self._modify_game_state_pawn_move(

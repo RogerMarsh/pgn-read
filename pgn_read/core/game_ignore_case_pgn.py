@@ -41,8 +41,6 @@ from .constants import (
     TEXT_PROMOTION,
     TP_MOVE,
     TP_PROMOTE_TO_PIECE,
-    WHITE_PAWN_CAPTURES,
-    BLACK_PAWN_CAPTURES,
     PGN_NAMED_PIECES,
 )
 from .game_text_pgn import (
@@ -52,6 +50,7 @@ from .game_text_pgn import (
     possible_bishop_or_bpawn,
 )
 from .gamedata import generate_fen_for_position
+from .squares import fen_source_squares
 
 disambiguate_promotion_format = re.compile(DISAMBIGUATE_PROMOTION)
 text_promotion_format = re.compile(TEXT_PROMOTION)
@@ -423,11 +422,10 @@ class GameIgnoreCasePGN(GameTextPGN):
         if not group(IFG_PIECE_CAPTURE):
             return True
         if self._active_color == FEN_WHITE_ACTIVE:
-            source_squares = WHITE_PAWN_CAPTURES.get(square)
             pawn = FEN_WHITE_PAWN
         else:
-            source_squares = BLACK_PAWN_CAPTURES.get(square)
             pawn = FEN_BLACK_PAWN
+        source_squares = fen_source_squares[pawn].get(square)
 
         # In case this is done for first movetext element after tags.
         if self._movetext_offset is None:

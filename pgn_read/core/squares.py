@@ -214,10 +214,174 @@ def _create_squares():
             fen_squares[sq1].low_rld_attacks = tuple(list(reversed(line[:e])))
             fen_squares[sq1].high_rld_attacks = tuple(line[e + 1 :])
             _point_to_point(e, sq1, line)
+    rook_moves = {}
+    for f, file in files.items():
+        for r, rank in ranks.items():
+            rook_moves[f + r] = file.union(rank)
+            rook_moves[f + r].remove(f + r)
+    bishop_moves = {}
+    for f in file_names:
+        for r in rank_names:
+            sq = f + r
+            for x in left_to_right:
+                if sq in x:
+                    for y in right_to_left:
+                        if sq in y:
+                            bishop_moves[sq] = x.union(y)
+                            bishop_moves[sq].remove(sq)
+                            break
+                    break
+    knight_moves = {}
+    for ef, f in enumerate(file_names):
+        for er, r in enumerate(rank_names):
+            sq = f + r
+            knight_moves[sq] = set()
+            for h, v in (
+                (2, 1),
+                (2, -1),
+                (1, -2),
+                (1, 2),
+                (-2, -1),
+                (-2, 1),
+                (-1, 2),
+                (-1, -2),
+            ):
+                h += ef
+                v += er
+                if h < 0 or h > 7 or v < 0 or v > 7:
+                    continue
+                knight_moves[sq].add(file_names[h] + rank_names[v])
+    king_moves = {}
+    for ef, f in enumerate(file_names):
+        for er, r in enumerate(rank_names):
+            sq = f + r
+            king_moves[sq] = set()
+            for h, v in (
+                (1, 1),
+                (1, 0),
+                (1, -1),
+                (0, 1),
+                (-1, 1),
+                (-1, 0),
+                (-1, -1),
+                (0, -1),
+            ):
+                h += ef
+                v += er
+                if h < 0 or h > 7 or v < 0 or v > 7:
+                    continue
+                king_moves[sq].add(file_names[h] + rank_names[v])
+    queen_moves = {k: set() for k in rook_moves}
+    for k, v in queen_moves.items():
+        v.update(rook_moves[k])
+        v.update(bishop_moves[k])
+
+    # The square names on each file need to be in sorted order for pawn
+    # move calculations.
+    for f in files:
+        files[f] = sorted(files[f])
+
+    white_pawn_moves = {}
+    for sqs in files.values():
+        for e, sq in enumerate(sqs[2:]):
+            white_pawn_moves[sq] = {sqs[e + 1]}
+        white_pawn_moves[sqs[3]].add(sqs[1])
+        en_passant_target_squares[constants.FEN_BLACK_ACTIVE][
+            sqs[3], sqs[1]
+        ] = sqs[2]
+    black_pawn_moves = {}
+    for sqs in files.values():
+        sqs = list(reversed(sqs))
+        for e, sq in enumerate(sqs[2:]):
+            black_pawn_moves[sq] = {sqs[e + 1]}
+        black_pawn_moves[sqs[3]].add(sqs[1])
+        en_passant_target_squares[constants.FEN_WHITE_ACTIVE][
+            sqs[3], sqs[1]
+        ] = sqs[2]
+    white_pawn_captures = {}
+    for ef, f in enumerate(file_names):
+        for er, r in enumerate(files[f][2:]):
+            white_pawn_captures[r] = set()
+            if ef < 7:
+                white_pawn_captures[r].add(files[file_names[ef + 1]][er + 1])
+            if ef > 0:
+                white_pawn_captures[r].add(files[file_names[ef - 1]][er + 1])
+        if ef < 7:
+            en_passant_target_squares[
+                constants.PGN_CAPTURE_MOVE.join(
+                    (f, files[file_names[ef + 1]][5])
+                )
+            ] = files[file_names[ef + 1]][4]
+        if ef > 0:
+            en_passant_target_squares[
+                constants.PGN_CAPTURE_MOVE.join(
+                    (f, files[file_names[ef - 1]][5])
+                )
+            ] = files[file_names[ef - 1]][4]
+    black_pawn_captures = {}
+    for ef, f in enumerate(file_names):
+        for er, r in enumerate(files[f][:-2]):
+            black_pawn_captures[r] = set()
+            if ef < 7:
+                black_pawn_captures[r].add(files[file_names[ef + 1]][er + 1])
+            if ef > 0:
+                black_pawn_captures[r].add(files[file_names[ef - 1]][er + 1])
+        if ef < 7:
+            en_passant_target_squares[
+                constants.PGN_CAPTURE_MOVE.join(
+                    (f, files[file_names[ef + 1]][-6])
+                )
+            ] = files[file_names[ef + 1]][-5]
+        if ef > 0:
+            en_passant_target_squares[
+                constants.PGN_CAPTURE_MOVE.join(
+                    (f, files[file_names[ef - 1]][-6])
+                )
+            ] = files[file_names[ef - 1]][-5]
+
+    # For testing moves in PGN.
+    source_squares[constants.PGN_KING] = king_moves
+    source_squares[constants.PGN_QUEEN] = queen_moves
+    source_squares[constants.PGN_ROOK] = rook_moves
+    source_squares[constants.PGN_BISHOP] = bishop_moves
+    source_squares[constants.PGN_KNIGHT] = knight_moves
+    source_squares[constants.FEN_WHITE_PAWN] = white_pawn_moves
+    source_squares[constants.FEN_BLACK_PAWN] = black_pawn_moves
+    source_squares[constants.FEN_WHITE_PAWN + constants.PGN_CAPTURE_MOVE] = (
+        white_pawn_captures
+    )
+    source_squares[constants.FEN_BLACK_PAWN + constants.PGN_CAPTURE_MOVE] = (
+        black_pawn_captures
+    )
+
+    # For testing if a square is attacked by a piece.
+    fen_source_squares[constants.FEN_WHITE_KING] = king_moves
+    fen_source_squares[constants.FEN_WHITE_QUEEN] = queen_moves
+    fen_source_squares[constants.FEN_WHITE_ROOK] = rook_moves
+    fen_source_squares[constants.FEN_WHITE_BISHOP] = bishop_moves
+    fen_source_squares[constants.FEN_WHITE_KNIGHT] = knight_moves
+    fen_source_squares[constants.FEN_WHITE_PAWN] = white_pawn_captures
+    fen_source_squares[constants.FEN_BLACK_KING] = king_moves
+    fen_source_squares[constants.FEN_BLACK_QUEEN] = queen_moves
+    fen_source_squares[constants.FEN_BLACK_ROOK] = rook_moves
+    fen_source_squares[constants.FEN_BLACK_BISHOP] = bishop_moves
+    fen_source_squares[constants.FEN_BLACK_KNIGHT] = knight_moves
+    fen_source_squares[constants.FEN_BLACK_PAWN] = black_pawn_captures
 
 
 fen_squares = {}
 fen_square_names = {}
+en_passant_target_squares = {
+    constants.FEN_WHITE_ACTIVE: {},
+    constants.FEN_BLACK_ACTIVE: {},
+}
+
+# The squares a piece can move to from this square.
+source_squares = {}
+
+# The squares attacked by a piece on this square.
+fen_source_squares = {}
+
 _create_squares()
 del _create_squares
 del _point_to_point

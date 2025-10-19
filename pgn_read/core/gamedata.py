@@ -40,10 +40,8 @@ from .constants import (
     FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX,
     FEN_HALFMOVE_CLOCK_FIELD_INDEX,
     FEN_FULLMOVE_NUMBER_FIELD_INDEX,
-    EN_PASSANT_TARGET_SQUARES,
     CASTLING_RIGHTS,
     CASTLING_PIECE_FOR_SQUARE,
-    FEN_SOURCE_SQUARES,
     OTHER_SIDE,
     SIDE_TO_MOVE_KING,
     PIECE_TO_KING,
@@ -66,7 +64,12 @@ from .constants import (
     PGN_TOKEN_SEPARATOR,
 )
 from .piece import Piece
-from .squares import fen_squares, fen_square_names
+from .squares import (
+    fen_squares,
+    fen_square_names,
+    fen_source_squares,
+    en_passant_target_squares,
+)
 
 white_black_tag_value_format = re.compile(r"\s*([^,.\s]+)")
 KNIGHTS = FEN_WHITE_KNIGHT + FEN_BLACK_KNIGHT
@@ -365,7 +368,7 @@ class GameData:
                     square_piece = piece_placement_data[square]
                     if square_piece.color == side:
                         break
-                    sources = FEN_SOURCE_SQUARES.get(square_piece.name)
+                    sources = fen_source_squares.get(square_piece.name)
                     if sources is None or square not in sources.get(
                         king_square_name, ""
                     ):
@@ -374,7 +377,7 @@ class GameData:
         if source_square_piece[0][1].name in KNIGHTS:
             return (
                 source_square_piece[0][1].square.name
-                in FEN_SOURCE_SQUARES[FEN_WHITE_KNIGHT][king_square_name]
+                in fen_source_squares[FEN_WHITE_KNIGHT][king_square_name]
             )
         return False
 
@@ -389,7 +392,7 @@ class GameData:
                 piece = piece_placement_data[sqr]
                 if piece.color == side:
                     break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                sources = fen_source_squares.get(piece.name)
                 if sources is None or sqr not in sources.get(square, ""):
                     break
                 return True
@@ -398,7 +401,7 @@ class GameData:
             knight_search = FEN_BLACK_KNIGHT
         else:
             knight_search = FEN_WHITE_KNIGHT
-        square_list = FEN_SOURCE_SQUARES[knight_search]
+        square_list = fen_source_squares[knight_search]
         # pylint message C0206 'Consider iterating with .items()'.
         # Evaluating 'square_list[sqr]' is not considered frequent enough.
         # Changing to 'square_list.keys()' attracts extra C0201 message
@@ -449,7 +452,7 @@ class GameData:
                 square_piece = piece_placement_data[square]
                 if square_piece.color == side:
                     break
-                sources = FEN_SOURCE_SQUARES.get(square_piece.name)
+                sources = fen_source_squares.get(square_piece.name)
                 if sources is None or square not in sources.get(
                     king_square_name, ""
                 ):
@@ -588,7 +591,7 @@ class GameData:
                     target_pawn = FEN_WHITE_PAWN
                 if en_passant_target_square in piece_placement_data:
                     return False
-                for k, target_square in EN_PASSANT_TARGET_SQUARES[
+                for k, target_square in en_passant_target_squares[
                     active_color
                 ].items():
                     if target_square == en_passant_target_square:

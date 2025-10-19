@@ -17,17 +17,19 @@ from .constants import (
     FEN_WHITE_KNIGHT,
     FEN_BLACK_KNIGHT,
     PGN_CAPTURE_MOVE,
-    EN_PASSANT_TARGET_SQUARES,
     FEN_PAWNS,
-    SOURCE_SQUARES,
-    FEN_SOURCE_SQUARES,
     SIDE_TO_MOVE_KING,
     PIECE_TO_KING,
-    KING_MOVES,
-    KNIGHT_MOVES,
+    PGN_KING,
+    PGN_KNIGHT,
 )
 from .game import Game
-from .squares import fen_squares
+from .squares import (
+    fen_squares,
+    source_squares,
+    fen_source_squares,
+    en_passant_target_squares,
+)
 
 
 class GameIndicateCheck(Game):
@@ -78,7 +80,7 @@ class GameIndicateCheck(Game):
         pieces_on_board = self._pieces_on_board
         side_to_move_king = SIDE_TO_MOVE_KING[self._active_color]
         king_square = pieces_on_board[side_to_move_king][0].square.name
-        escape_squares = KING_MOVES[king_square]
+        escape_squares = source_squares[PGN_KING][king_square]
         active_color = self._active_color
 
         # Be sure to put king back!
@@ -128,7 +130,7 @@ class GameIndicateCheck(Game):
                 if self._legal_move_to_square_exists(sqr, "", king_square):
                     return False
             return True
-        ptp = KNIGHT_MOVES.get(attack_lines[0])
+        ptp = source_squares[PGN_KNIGHT].get(attack_lines[0])
         if ptp is not None:
             for sqr in ptp:
                 if self._legal_move_to_square_exists(sqr, "", king_square):
@@ -157,7 +159,7 @@ class GameIndicateCheck(Game):
                 piece = piece_placement_data[sqr]
                 if piece.color == active_color:
                     break
-                sources = FEN_SOURCE_SQUARES.get(piece.name)
+                sources = fen_source_squares.get(piece.name)
                 if sources is None or sqr not in sources.get(square, ""):
                     break
                 attacking_squares.append(sqr)
@@ -169,7 +171,7 @@ class GameIndicateCheck(Game):
             knight_search = FEN_BLACK_KNIGHT
         else:
             knight_search = FEN_WHITE_KNIGHT
-        square_list = FEN_SOURCE_SQUARES[knight_search]
+        square_list = fen_source_squares[knight_search]
         # pylint message C0206 'Consider iterating with .items()'.
         # Evaluating 'square_list[sqr]' is not considered frequent enough.
         # Changing to 'square_list.keys()' attracts extra C0201 message
@@ -211,8 +213,8 @@ class GameIndicateCheck(Game):
                 continue
             if name in FEN_PAWNS:
                 name += capture
-                if square in SOURCE_SQUARES[name]:
-                    if from_square not in SOURCE_SQUARES[name][square]:
+                if square in source_squares[name]:
+                    if from_square not in source_squares[name][square]:
                         continue
                     ppd_to = ppd.pop(square, None)
                     ppd_from = ppd.pop(from_square)
@@ -227,7 +229,7 @@ class GameIndicateCheck(Game):
                     if not check:
                         return True
                 continue
-            if from_square in FEN_SOURCE_SQUARES[name][square]:
+            if from_square in fen_source_squares[name][square]:
                 if name in (FEN_WHITE_KNIGHT, FEN_BLACK_KNIGHT):
                     ppd_to = ppd.pop(square, None)
                     ppd_from = ppd.pop(from_square)
@@ -260,7 +262,7 @@ class GameIndicateCheck(Game):
                     if not check:
                         return True
         if capture and self._en_passant_target_square != FEN_NULL:
-            for k, value in EN_PASSANT_TARGET_SQUARES[active_color].items():
+            for k, value in en_passant_target_squares[active_color].items():
                 if value != self._en_passant_target_square:
                     continue
                 if k[0] != square:
@@ -269,7 +271,7 @@ class GameIndicateCheck(Game):
                     pawn = FEN_WHITE_PAWN
                 else:
                     pawn = FEN_BLACK_PAWN
-                for from_square in FEN_SOURCE_SQUARES[pawn][
+                for from_square in fen_source_squares[pawn][
                     self._en_passant_target_square
                 ]:
                     piece = ppd.get(from_square)
