@@ -690,31 +690,6 @@ QUEEN_MOVES = {k: set() for k in ROOK_MOVES}
 for k, v in QUEEN_MOVES.items():
     v.update(ROOK_MOVES[k])
     v.update(BISHOP_MOVES[k])
-POINT_TO_POINT = {}
-for k, v in files.items():
-    line = tuple(v)
-    for e, sq1 in enumerate(line):
-        for es, sq2 in enumerate(line[e + 1 :]):
-            POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
-            POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
-for k, v in ranks.items():
-    line = tuple(sorted(v))
-    for e, sq1 in enumerate(line):
-        for es, sq2 in enumerate(line[e + 1 :]):
-            POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
-            POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
-for v in left_to_right:
-    line = tuple(sorted(v))
-    for e, sq1 in enumerate(line):
-        for es, sq2 in enumerate(line[e + 1 :]):
-            POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
-            POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
-for v in right_to_left:
-    line = tuple(sorted(v))
-    for e, sq1 in enumerate(line):
-        for es, sq2 in enumerate(line[e + 1 :]):
-            POINT_TO_POINT[sq1, sq2] = e + 1, e + 1 + es, line
-            POINT_TO_POINT[sq2, sq1] = POINT_TO_POINT[sq1, sq2]
 
 # For testing moves in PGN.
 SOURCE_SQUARES = {
@@ -746,5 +721,5 @@ FEN_SOURCE_SQUARES = {
 }
 
 # Get rid of all names used as scaffolding when creating constants.
-del e, ef, er, es, f, files, h, k, left_to_right, r, ranks
-del right_to_left, sq, sq1, sq2, sqs, v, x, y, line
+del e, ef, er, f, files, h, k, left_to_right, r, ranks
+del right_to_left, sq, sqs, v, x, y

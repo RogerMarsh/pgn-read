@@ -4080,130 +4080,6 @@ class QueenMoves(unittest.TestCase):
         )
 
 
-class PointToPoint(unittest.TestCase):
-    def verify_square_combination(self, sq1, sq2):
-        ae = self.assertEqual
-        ptp = constants.POINT_TO_POINT
-        if sq1 == sq2:
-            ae(
-                (sq1, sq2) in ptp,
-                False,
-                " ".join((repr((sq1, sq2)), "in POINT_TO_POINT")),
-            )
-            return
-        f1, r1 = sq1
-        f2, r2 = sq2
-        if not (
-            (
-                f1 == f2
-                or r1 == r2
-                or (ord(f1) + ord(r1) == ord(f2) + ord(r2))
-                or (ord(f1) - ord(r1) == ord(f2) - ord(r2))
-            )
-        ):
-            ae(
-                (sq1, sq2) in ptp,
-                False,
-                " ".join((repr((sq1, sq2)), "in POINT_TO_POINT")),
-            )
-            return
-        ref = ptp[sq1, sq2]
-        ae(
-            ref is ptp[sq2, sq1],
-            True,
-            " ".join(
-                (
-                    repr((sq1, sq2)),
-                    "is not",
-                    repr((sq2, sq1)),
-                    "in POINT_TO_POINT",
-                )
-            ),
-        )
-        if f1 == f2:
-            pass
-        elif r1 == r2:
-            pass
-        elif ord(f1) + ord(r1) == ord(f2) + ord(r2):
-            pass
-        elif ord(f1) - ord(r1) == ord(f2) - ord(r2):
-            pass
-        else:
-            ae(
-                True,
-                False,
-                " ".join((repr((sq1, sq2)), "unknown line in POINT_TO_POINT")),
-            )
-        isq1 = ref[2].index(sq1)
-        isq2 = ref[2].index(sq2)
-        if isq2 > isq1:
-            ae(
-                ref[2].index(sq1),
-                ref[0] - 1,
-                " ".join(
-                    (
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[0]",
-                        "does not fit position of",
-                        sq1,
-                        "in",
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[2]",
-                    )
-                ),
-            )
-            ae(
-                ref[2].index(sq2),
-                ref[1],
-                " ".join(
-                    (
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[1]",
-                        "does not fit position of",
-                        sq2,
-                        "in",
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[2]",
-                    )
-                ),
-            )
-        else:
-            ae(
-                ref[2].index(sq2),
-                ref[0] - 1,
-                " ".join(
-                    (
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[0]",
-                        "does not fit position of",
-                        sq1,
-                        "in",
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[2]",
-                    )
-                ),
-            )
-            ae(
-                ref[2].index(sq1),
-                ref[1],
-                " ".join(
-                    (
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[1]",
-                        "does not fit position of",
-                        sq2,
-                        "in",
-                        "POINT_TO_POINT" + repr([sq1, sq2]) + "[2]",
-                    )
-                ),
-            )
-
-    def test_01_point_to_point(self):
-        fn = constants.FILE_NAMES
-        rn = constants.RANK_NAMES
-        for ef, f in enumerate(fn):
-            for er, r in enumerate(rn):
-                sq1 = f + r
-                self.verify_square_combination(sq1, sq1)
-                for fi in range(ef + 1):
-                    for ri in range(er + 1):
-                        sq2 = fn[fi] + rn[ri]
-                        self.verify_square_combination(sq1, sq2)
-
-
 class SourceSquares(unittest.TestCase):
     def test_01_source_squares(self):
         ai = self.assertIs
@@ -4399,7 +4275,6 @@ class CountConstants(unittest.TestCase):
                 "PGN_TAG",
                 "PGN_TOKEN_SEPARATOR",
                 "PIECE_TO_KING",
-                "POINT_TO_POINT",
                 "PROMOTED_PIECE_NAME",
                 "QUEEN_MOVES",
                 "RANK_NAMES",
@@ -4473,7 +4348,6 @@ if __name__ == "__main__":
     runner().run(loader(WhitePawnCaptures))
     runner().run(loader(BlackPawnCaptures))
     runner().run(loader(QueenMoves))
-    runner().run(loader(PointToPoint))
     runner().run(loader(SourceSquares))
     runner().run(loader(FENSourceSquares))
     runner().run(loader(CountConstants))

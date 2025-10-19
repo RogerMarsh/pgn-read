@@ -72,6 +72,11 @@ class _Square:
             7 - constants.RANK_NAMES.index(rank)
         )
 
+        # The squares between this square and each square in the *_attacks
+        # attributes.  Thus for square "a3" point_to_point["c5"] is ("b4",)
+        # and point["b5"] does not exist.
+        self.point_to_point = {}
+
     # Comparisions for deciding which of high_* and low_* is relevant when
     # deciding attacks between squares.
 
@@ -139,6 +144,15 @@ class _Square:
         )
 
 
+def _point_to_point(e, sq1, line):
+    """Populate point_to_point for sq1 paired with line squares."""
+    for es, sq2 in enumerate(line[e + 1 :]):
+        fen_squares[sq1].point_to_point[sq2] = tuple(line[e + 1 : e + 1 + es])
+        fen_squares[sq2].point_to_point[sq1] = fen_squares[sq1].point_to_point[
+            sq2
+        ]
+
+
 def _create_squares():
     """Populate fen_squares and fen_square_names with _Square instances.
 
@@ -181,24 +195,29 @@ def _create_squares():
         for e, sq1 in enumerate(line):
             fen_squares[sq1].low_file_attacks = tuple(list(reversed(line[:e])))
             fen_squares[sq1].high_file_attacks = tuple(line[e + 1 :])
+            _point_to_point(e, sq1, line)
     for v in ranks.values():
         line = tuple(sorted(v))
         for e, sq1 in enumerate(line):
             fen_squares[sq1].low_rank_attacks = tuple(list(reversed(line[:e])))
             fen_squares[sq1].high_rank_attacks = tuple(line[e + 1 :])
+            _point_to_point(e, sq1, line)
     for v in left_to_right:
         line = tuple(sorted(v))
         for e, sq1 in enumerate(line):
             fen_squares[sq1].high_lrd_attacks = tuple(list(reversed(line[:e])))
             fen_squares[sq1].low_lrd_attacks = tuple(line[e + 1 :])
+            _point_to_point(e, sq1, line)
     for v in right_to_left:
         line = tuple(sorted(v))
         for e, sq1 in enumerate(line):
             fen_squares[sq1].low_rld_attacks = tuple(list(reversed(line[:e])))
             fen_squares[sq1].high_rld_attacks = tuple(line[e + 1 :])
+            _point_to_point(e, sq1, line)
 
 
 fen_squares = {}
 fen_square_names = {}
 _create_squares()
 del _create_squares
+del _point_to_point

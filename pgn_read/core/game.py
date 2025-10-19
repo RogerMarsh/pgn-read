@@ -35,7 +35,6 @@ from .constants import (
     IFG_PAWN_PROMOTE_TO_RANK,
     IFG_PAWN_PROMOTE_PIECE,
     PGN_CAPTURE_MOVE,
-    POINT_TO_POINT,
     EN_PASSANT_TARGET_SQUARES,
     FEN_TO_PGN,
     PGN_ROOK,
@@ -59,6 +58,7 @@ from .constants import (
     SUFFIX_ANNOTATION_TO_NAG,
 )
 from .gamedata import GameData, generate_fen_for_position, GameError
+from .squares import fen_squares
 
 disambiguate_pgn_format = re.compile(DISAMBIGUATE_PGN)
 disambiguate_text_format = re.compile(DISAMBIGUATE_TEXT)
@@ -435,11 +435,11 @@ class Game(GameData):
         # attacked by the other side.
         # No need to test if king is in check after applying remove and place
         # instructions to board.
-        ptp = POINT_TO_POINT[king_square, king_destination]
+        ptp = fen_squares[king_square].point_to_point[king_destination]
         for square in (
             king_square,
             king_destination,
-            ptp[2][ptp[0] : ptp[1]][0],
+            ptp[0],
         ):
             if self.is_square_attacked_by_other_side(
                 square, self._active_color
@@ -1691,10 +1691,10 @@ class Game(GameData):
     def line_empty(self, square1, square2):
         """Return True if the squares between square1 and square2 are empty."""
         piece_placement_data = self._piece_placement_data
-        ptp = POINT_TO_POINT.get((square1, square2))
+        ptp = fen_squares[square1].point_to_point.get(square2)
         if ptp is None:
             return True
-        for sqr in ptp[2][ptp[0] : ptp[1]]:
+        for sqr in ptp:
             if sqr in piece_placement_data:
                 return False
         return True

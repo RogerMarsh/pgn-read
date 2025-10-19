@@ -59,6 +59,7 @@ class _Square(unittest.TestCase):
                 "low_rld_attacks",
                 "name",
                 "number",
+                "point_to_point",
                 "rank",
                 "right_to_left_down_diagonal",
             ],
@@ -87,6 +88,7 @@ class _Square(unittest.TestCase):
                 "low_rld_attacks",
                 "name",
                 "number",
+                "point_to_point",
                 "rank",
                 "right_to_left_down_diagonal",
             ],
@@ -1191,6 +1193,28 @@ class Squares(unittest.TestCase):
                         square.left_to_right_down_diagonal,
                         sss[sqr].left_to_right_down_diagonal,
                     )
+
+    def test_19_Squares_point_to_point(self):
+        ae = self.assertEqual
+        ane = self.assertNotEqual
+        sss = squares.fen_squares
+        for square in sss.values():
+            for name, names in square.point_to_point.items():
+                sqr = sss[name]
+                with self.subTest(square=square, sqr=sqr, names=names):
+                    if square is sqr:
+                        ae(sqr is square, False)
+                    elif square.number < sqr.number:
+                        for linesqr in names:
+                            ae(square.number < sss[linesqr].number, True)
+                            ae(sqr.number > sss[linesqr].number, True)
+                    elif square.number > sqr.number:
+                        for linesqr in names:
+                            ae(square.number > sss[linesqr].number, True)
+                            ae(sqr.number < sss[linesqr].number, True)
+                    for lname in names:
+                        for line in square.attack_lines():
+                            ae(lname in line, name in line)
 
 
 if __name__ == "__main__":

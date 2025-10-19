@@ -33,7 +33,6 @@ from .constants import (
     IFG_PAWN_PROMOTE_PIECE,
     IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE,
     PGN_CAPTURE_MOVE,
-    POINT_TO_POINT,
     PGN_O_O,
     PGN_O_O_O,
     DISAMBIGUATE_PROMOTION,
@@ -452,7 +451,9 @@ class GameIgnoreCasePGN(GameTextPGN):
                         else pgn_np
                     )
                 ]:
-                    if POINT_TO_POINT.get(pobsq.square.name, square):
+                    if pobsq.square.point_to_point.get(
+                        pobsq.square.name, square
+                    ):
                         return True
         return None
 

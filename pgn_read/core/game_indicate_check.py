@@ -17,7 +17,6 @@ from .constants import (
     FEN_WHITE_KNIGHT,
     FEN_BLACK_KNIGHT,
     PGN_CAPTURE_MOVE,
-    POINT_TO_POINT,
     EN_PASSANT_TARGET_SQUARES,
     FEN_PAWNS,
     SOURCE_SQUARES,
@@ -123,9 +122,9 @@ class GameIndicateCheck(Game):
             attack_lines[0], PGN_CAPTURE_MOVE, king_square
         ):
             return False
-        ptp = POINT_TO_POINT.get((attack_lines[0], king_square))
+        ptp = fen_squares[attack_lines[0]].point_to_point.get(king_square)
         if ptp is not None:
-            for sqr in ptp[2][ptp[0] : ptp[1]]:
+            for sqr in ptp:
                 if self._legal_move_to_square_exists(sqr, "", king_square):
                     return False
             return True
@@ -243,8 +242,8 @@ class GameIndicateCheck(Game):
                     if not check:
                         return True
                     continue
-                ptp = POINT_TO_POINT[from_square, square]
-                for line_sq in ptp[2][ptp[0] : ptp[1]]:
+                ptp = fen_squares[from_square].point_to_point[square]
+                for line_sq in ptp:
                     if line_sq in ppd:
                         break
                 else:
