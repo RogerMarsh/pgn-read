@@ -1272,8 +1272,8 @@ class Game(GameData):
                     return
                 file_count = {}
                 rank_count = {}
+                from_square = piece.square
                 if len(candidates) > 1:
-                    sfile, srank = piece.square.name
                     for cpiece in candidates:
                         if not self.line_empty(
                             cpiece.square.name, destination
@@ -1343,27 +1343,23 @@ class Game(GameData):
                             (group(IFG_PIECE_MOVE), destination)
                         )
                     )
-                # pylint error E0601, used-before-assignment, ignored
-                # because sfile set if file_count and rank_count True.
-                elif file_count[sfile] == 1:
+                elif file_count[from_square.file] == 1:
                     self._append_decorated_text(
                         "".join(
                             (
                                 group(IFG_PIECE_MOVE),
-                                sfile,
+                                from_square.file,
                                 PGN_CAPTURE_MOVE,
                                 destination,
                             )
                         )
                     )
-                # pylint error E0601, used-before-assignment, ignored
-                # because srank set if file_count and rank_count True.
-                elif rank_count[srank] == 1:
+                elif rank_count[from_square.rank] == 1:
                     self._append_decorated_text(
                         "".join(
                             (
                                 group(IFG_PIECE_MOVE),
-                                srank,
+                                from_square.rank,
                                 PGN_CAPTURE_MOVE,
                                 destination,
                             )
@@ -1374,8 +1370,7 @@ class Game(GameData):
                         "".join(
                             (
                                 group(IFG_PIECE_MOVE),
-                                sfile,
-                                srank,
+                                from_square.name,
                                 PGN_CAPTURE_MOVE,
                                 destination,
                             )
@@ -1394,8 +1389,8 @@ class Game(GameData):
                 return
             file_count = {}
             rank_count = {}
+            from_square = piece.square
             if len(candidates) > 1:
-                sfile, srank = piece.square.name
                 for cpiece in candidates:
                     if not self.line_empty(cpiece.square.name, destination):
                         continue
@@ -1438,17 +1433,23 @@ class Game(GameData):
                 self._append_decorated_text(
                     group(IFG_PIECE_MOVE) + destination
                 )
-            elif file_count[sfile] == 1:
+            elif file_count[from_square.file] == 1:
                 self._append_decorated_text(
-                    "".join((group(IFG_PIECE_MOVE), sfile, destination))
+                    "".join(
+                        (group(IFG_PIECE_MOVE), from_square.file, destination)
+                    )
                 )
-            elif rank_count[srank] == 1:
+            elif rank_count[from_square.rank] == 1:
                 self._append_decorated_text(
-                    "".join((group(IFG_PIECE_MOVE), srank, destination))
+                    "".join(
+                        (group(IFG_PIECE_MOVE), from_square.rank, destination)
+                    )
                 )
             else:
                 self._append_decorated_text(
-                    "".join((group(IFG_PIECE_MOVE), sfile, srank, destination))
+                    "".join(
+                        (group(IFG_PIECE_MOVE), from_square.name, destination)
+                    )
                 )
             self._full_disambiguation_detected = True
             return
