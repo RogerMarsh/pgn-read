@@ -33,6 +33,15 @@ class _BasePGN(unittest.TestCase):
         """Return sequence of Game instances derived from s."""
         return [g for g in self.pgn.read_games(io.StringIO(s))]
 
+    def b_is_bishop_or_b_pawn(self, fen, string, tokens, state):
+        """Run subTest where side does not matter."""
+        ae = self.assertEqual
+        with self.subTest(string=string, tokens=tokens, state=state):
+            games = self.get("".join((['[SetUp"1"]', fen, string])))
+            ae(len(games), 1)
+            ae(games[0]._text, ['[SetUp"1"]', fen] + tokens)
+            ae(games[0].state, state)
+
 
 class StrictPGN(_BasePGN):
     """Provide tests for GameStrictPGN version of parser.
@@ -1487,8 +1496,8 @@ class StrictPGN(_BasePGN):
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_03_bcd_Q(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/1PBP4/8/7B/7b/8/1pbp4/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa8=Q*", ["bxa8=Q", "*"], None, "w"),
             ("b8=Q*", ["b8=Q", "*"], None, "w"),
             ("bxc8=Q*", ["bxc8=Q", "*"], None, "w"),
@@ -1502,47 +1511,12 @@ class StrictPGN(_BasePGN):
             ("d1=Q*", ["d1=Q", "*"], None, "b"),
             ("dxe1=Q*", ["dxe1=Q", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/1PBP4/8/7B/7b/8/',
-                                            "1pbp4/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/1PBP4/8/7B/7b/8/1pbp4/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_04_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/1BB5/8/7B/7b/8/1bb5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("Bxa8*", ["Bxa8", "*"], None, "w"),
             ("Bb8*", ["Bb8", "*"], None, "w"),
             ("Bxc8*", ["Bxc8", "*"], None, "w"),
@@ -1554,47 +1528,12 @@ class StrictPGN(_BasePGN):
             ("Bd1*", ["Bd1", "*"], None, "b"),
             ("Bxe1*", ["Bxe1", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/1BB5/8/7B/7b/8/',
-                                            "1bb5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/1BB5/8/7B/7b/8/1bb5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_05_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("Bxa8*", ["Bxa8", "*"], None, "w"),
             ("Bb8*", ["Bb8", "*"], None, "w"),
             ("Bxc8*", ["Bxc8", "*"], None, "w"),
@@ -1606,47 +1545,12 @@ class StrictPGN(_BasePGN):
             ("Bd1*", ["Bd1", "*"], None, "b"),
             ("Bxe1*", ["Bxe1", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/',
-                                            "2b4B/2b5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_06_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa8*", [" bxa8*"], 2, "w"),
             ("bb8*", [" bb8*"], 2, "w"),
             ("bxc8*", [" bxc8*"], 2, "w"),
@@ -1658,47 +1562,12 @@ class StrictPGN(_BasePGN):
             ("bd1*", [" bd1*"], 2, "b"),
             ("bxe1*", [" bxe1*"], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/',
-                                            "2b4B/2b5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_07_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("b6xa8*", [" b6", " xa8", " *"], 2, "w"),
             ("b7b8*", [" b7", " b8", " *"], 2, "w"),
             ("b3xc8*", [" b3", " xc8", " *"], 2, "w"),
@@ -1710,47 +1579,12 @@ class StrictPGN(_BasePGN):
             ("b2d1*", [" b2", " d1", " *"], 2, "b"),
             ("b3xe1*", [" b3", " xe1", " *"], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/',
-                                            "2b5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_08_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa7*", [" bxa7", " *"], 2, "w"),
             ("bb7*", [" bb7*"], 2, "w"),
             ("bxc7*", [" bxc7", " *"], 2, "w"),
@@ -1762,47 +1596,12 @@ class StrictPGN(_BasePGN):
             ("bd2*", [" bd2*"], 2, "b"),
             ("bxe2*", [" bxe2", " *"], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
-                                            "2b3B1/R1N1N2K/8 ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_09_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("b5xa7*", [" b5", " xa7", " *"], 2, "w"),
             ("b6b7*", [" b6", " b7", " *"], 2, "w"),
             ("b4xc7*", [" b4", " xc7", " *"], 2, "w"),
@@ -1814,42 +1613,7 @@ class StrictPGN(_BasePGN):
             ("b3d2*", [" b3", " d2", " *"], 2, "b"),
             ("b4xe2*", [" b4", " xe2", " *"], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
-                                            "2b3B1/R1N1N2K/8 ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # Tests *_118_* through *_122_* renumbered making room for new *_119_*.
     def test_120_01_dxc8_Q(self):
@@ -2934,8 +2698,8 @@ class StrictPGN(_BasePGN):
         ae(games[0]._text, ["e4", "e5", " b1", " d3", " *"])
 
     def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", [" B3xc4", " *"], 2),
             ("B3xC4*", [" B3xC4*"], 2),
             ("b3xc4*", [" b3", " xc4", " *"], 2),
@@ -2945,27 +2709,11 @@ class StrictPGN(_BasePGN):
             ("bxc4*", ["bxc4", "*"], None),
             ("bxC4*", [" bxC4*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", [" B3xc4", " *"], 2),
             ("B3xC4*", [" B3xC4*"], 2),
             ("b3xc4*", [" b3", " xc4", " *"], 2),
@@ -2975,27 +2723,11 @@ class StrictPGN(_BasePGN):
             ("bxc4*", [" bxc4", " *"], 2),
             ("bxC4*", [" bxC4*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
             ("B7xc8=q*", [" B7xc8", " =q*"], 2),
             ("B7xC8=Q*", [" B7xC8=Q*"], 2),
@@ -3029,27 +2761,11 @@ class StrictPGN(_BasePGN):
             ("bxC8Q*", [" bxC8Q*"], 2),
             ("bxC8q*", [" bxC8q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
             ("B7xc8=q*", [" B7xc8", " =q*"], 2),
             ("B7xC8=Q*", [" B7xC8=Q*"], 2),
@@ -3083,27 +2799,11 @@ class StrictPGN(_BasePGN):
             ("bxC8Q*", [" bxC8Q*"], 2),
             ("bxC8q*", [" bxC8q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8*", [" B7xc8", " *"], 2),
             ("B7xC8*", [" B7xC8*"], 2),
             ("b7xc8*", [" b7", " xc8", " *"], 2),
@@ -3113,27 +2813,11 @@ class StrictPGN(_BasePGN):
             ("bxc8*", [" bxc8*"], 2),
             ("bxC8*", [" bxC8*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8=Q*", [" B7b8", " =Q*"], 2),
             ("B7b8=q*", [" B7b8", " =q*"], 2),
             ("B7B8=Q*", [" B7B8=Q*"], 2),
@@ -3183,27 +2867,11 @@ class StrictPGN(_BasePGN):
             ("bB8Q*", [" bB8Q*"], 2),
             ("bB8q*", [" bB8q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_02_bishop_c7_to_b8(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8*", [" B7b8", " *"], 2),
             ("B7B8*", [" B7B8*"], 2),
             ("b7b8*", [" b7", " b8", " *"], 2),
@@ -3217,27 +2885,11 @@ class StrictPGN(_BasePGN):
             ("bb8*", [" bb8*"], 2),
             ("bB8*", [" bB8*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_03_bishop_c6_to_b7(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B6b7*", [" B6b7", " *"], 2),
             ("B6B7*", [" B6B7*"], 2),
             ("b6b7*", [" b6", " b7", " *"], 2),
@@ -3251,27 +2903,11 @@ class StrictPGN(_BasePGN):
             ("bb7*", [" bb7*"], 2),
             ("bB7*", [" bB7*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", [" B6xc5", " *"], 2),
             ("B6xC5*", [" B6xC5*"], 2),
             ("b6xc5*", [" b6", " xc5", " *"], 2),
@@ -3281,27 +2917,11 @@ class StrictPGN(_BasePGN):
             ("bxc5*", ["bxc5", "*"], None),
             ("bxC5*", [" bxC5*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", [" B6xc5", " *"], 2),
             ("B6xC5*", [" B6xC5*"], 2),
             ("b6xc5*", [" b6", " xc5", " *"], 2),
@@ -3311,27 +2931,11 @@ class StrictPGN(_BasePGN):
             ("bxc5*", [" bxc5", " *"], 2),
             ("bxC5*", [" bxC5*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", [" B2xc1", " =Q*"], 2),
             ("B2xc1=q*", [" B2xc1", " =q*"], 2),
             ("B2xC1=Q*", [" B2xC1=Q*"], 2),
@@ -3365,27 +2969,11 @@ class StrictPGN(_BasePGN):
             ("bxC1Q*", [" bxC1Q*"], 2),
             ("bxC1q*", [" bxC1q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", [" B2xc1", " =Q*"], 2),
             ("B2xc1=q*", [" B2xc1", " =q*"], 2),
             ("B2xC1=Q*", [" B2xC1=Q*"], 2),
@@ -3419,27 +3007,11 @@ class StrictPGN(_BasePGN):
             ("bxC1Q*", [" bxC1Q*"], 2),
             ("bxC1q*", [" bxC1q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1*", [" B2xc1", " *"], 2),
             ("B2xC1*", [" B2xC1*"], 2),
             ("b2xc1*", [" b2", " xc1", " *"], 2),
@@ -3449,27 +3021,11 @@ class StrictPGN(_BasePGN):
             ("bxc1*", [" bxc1*"], 2),
             ("bxC1*", [" bxC1*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1=Q*", [" B2b1", " =Q*"], 2),
             ("B2b1=q*", [" B2b1", " =q*"], 2),
             ("B2B1=Q*", [" B2B1=Q*"], 2),
@@ -3519,27 +3075,11 @@ class StrictPGN(_BasePGN):
             ("bB1Q*", [" bB1Q*"], 2),
             ("bB1q*", [" bB1q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_02_bishop_c2_to_b1(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1*", [" B2b1", " *"], 2),
             ("B2B1*", [" B2B1*"], 2),
             ("b2b1*", [" b2", " b1", " *"], 2),
@@ -3553,27 +3093,11 @@ class StrictPGN(_BasePGN):
             ("bb1*", [" bb1*"], 2),
             ("bB1*", [" bB1*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_03_bishop_c3_to_b2(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B3b2*", [" B3b2", " *"], 2),
             ("B3B2*", [" B3B2*"], 2),
             ("b3b2*", [" b3", " b2", " *"], 2),
@@ -3587,23 +3111,7 @@ class StrictPGN(_BasePGN):
             ("bb2*", [" bb2*"], 2),
             ("bB2*", [" bB2*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Added for Github issue 3.
     def test_188_01_pass_double_minus(self):
@@ -5733,8 +5241,8 @@ class _NonStrictPGN:
         ae(games[0]._text, ["e4", "e5", "Bd3", "*"])
 
     def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", [" B3xc4", " *"], 2),
             ("B3xC4*", [" B3xC4*"], 2),
             ("b3xc4*", ["bxc4", " xc4", " *"], 3),
@@ -5744,27 +5252,11 @@ class _NonStrictPGN:
             ("bxc4*", ["bxc4", "*"], None),
             ("bxC4*", [" bxC4*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", ["Bxc4", "*"], None),
             ("B3xC4*", [" B3xC4*"], 2),
             ("b3xc4*", [" b3", " xc4", " *"], 2),
@@ -5774,27 +5266,11 @@ class _NonStrictPGN:
             ("bxc4*", [" bxc4", " *"], 2),
             ("bxC4*", [" bxC4*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", ["Bxc8", " =Q*"], 3),  #
             ("B7xc8=q*", ["Bxc8", " =q*"], 3),  #
             ("B7xC8=Q*", [" B7xC8=Q*"], 2),
@@ -5828,27 +5304,11 @@ class _NonStrictPGN:
             ("bxC8Q*", [" bxC8Q*"], 2),
             ("bxC8q*", [" bxC8q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8*", ["Bxc8", "*"], None),
             ("B7xC8*", [" B7xC8*"], 2),
             ("b7xc8*", [" b7", " xc8", " *"], 2),
@@ -5858,27 +5318,11 @@ class _NonStrictPGN:
             ("bxc8*", [" bxc8*"], 2),
             ("bxC8*", [" bxC8*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_02_bishop_c7_to_b8(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8*", ["Bb8", "*"], None),
             ("B7B8*", [" B7B8*"], 2),
             ("b7b8*", [" b7", " b8", " *"], 2),
@@ -5892,27 +5336,11 @@ class _NonStrictPGN:
             ("bb8*", [" bb8*"], 2),
             ("bB8*", [" bB8*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_03_bishop_c6_to_b7(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B6b7*", ["Bb7", "*"], None),
             ("B6B7*", [" B6B7*"], 2),
             ("b6b7*", [" b6", " b7", " *"], 2),
@@ -5926,27 +5354,11 @@ class _NonStrictPGN:
             ("bb7*", [" bb7*"], 2),
             ("bB7*", [" bB7*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", [" B6xc5", " *"], 2),
             ("B6xC5*", [" B6xC5*"], 2),
             ("b6xc5*", ["bxc5", " xc5", " *"], 3),
@@ -5956,27 +5368,11 @@ class _NonStrictPGN:
             ("bxc5*", ["bxc5", "*"], None),
             ("bxC5*", [" bxC5*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", ["Bxc5", "*"], None),
             ("B6xC5*", [" B6xC5*"], 2),
             ("b6xc5*", [" b6", " xc5", " *"], 2),
@@ -5986,27 +5382,11 @@ class _NonStrictPGN:
             ("bxc5*", [" bxc5", " *"], 2),
             ("bxC5*", [" bxC5*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", ["Bxc1", " =Q*"], 3),  #
             ("B2xc1=q*", ["Bxc1", " =q*"], 3),  #
             ("B2xC1=Q*", [" B2xC1=Q*"], 2),
@@ -6040,27 +5420,11 @@ class _NonStrictPGN:
             ("bxC1Q*", [" bxC1Q*"], 2),
             ("bxC1q*", [" bxC1q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1*", ["Bxc1", "*"], None),
             ("B2xC1*", [" B2xC1*"], 2),
             ("b2xc1*", [" b2", " xc1", " *"], 2),
@@ -6070,27 +5434,11 @@ class _NonStrictPGN:
             ("bxc1*", [" bxc1*"], 2),
             ("bxC1*", [" bxC1*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_02_bishop_c2_to_b1(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1*", ["Bb1", "*"], None),
             ("B2B1*", [" B2B1*"], 2),
             ("b2b1*", [" b2", " b1", " *"], 2),
@@ -6104,27 +5452,11 @@ class _NonStrictPGN:
             ("bb1*", [" bb1*"], 2),
             ("bB1*", [" bB1*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_03_bishop_c3_to_b2(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B3b2*", ["Bb2", "*"], None),
             ("B3B2*", [" B3B2*"], 2),
             ("b3b2*", [" b3", " b2", " *"], 2),
@@ -6138,23 +5470,7 @@ class _NonStrictPGN:
             ("bb2*", [" bb2*"], 2),
             ("bB2*", [" bB2*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
 
 class PGN(_NonStrictPGN, StrictPGN):
@@ -7103,8 +6419,8 @@ class GameTextPGN(_NonStrictText, StrictPGN):
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_06_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa8*", [], 2, "w"),
             ("bb8*", [], 2, "w"),
             ("bxc8*", [], 2, "w"),
@@ -7116,47 +6432,12 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bd1*", [], 2, "b"),
             ("bxe1*", [], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/2B5//2B4b/8/8/',
-                                            "2b4B/2b5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/2B5//2B4b/8/8/2b4B/2b5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_08_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa7*", [" bxa7", " *"], 2, "w"),
             ("bb7*", [], 2, "w"),
             ("bxc7*", [" bxc7", " *"], 2, "w"),
@@ -7168,47 +6449,12 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bd2*", [], 2, "b"),
             ("bxe2*", [" bxe2", " *"], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
-                                            "2b3B1/R1N1N2K/8 ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_09_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("b5xa7*", [" bxa7", " *"], 2, "w"),
             ("b6b7*", [" b6", " b7", " *"], 2, "w"),
             ("b4xc7*", [" bxc7", " *"], 2, "w"),
@@ -7220,42 +6466,7 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("b3d2*", [" b3", " d2", " *"], 2, "b"),
             ("b4xe2*", [" bxe2", " *"], 2, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"8/r1n1n2k/2B3b1/2B5/',
-                                            "2b5/2b3B1/R1N1N2K/8 ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     def test_120_03_bxc8_Q(self):
         ae = self.assertEqual
@@ -7587,8 +6798,8 @@ class GameTextPGN(_NonStrictText, StrictPGN):
         ae(games[0]._text, ["e4", "e5", " b1", " *"])
 
     def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", [" B3xc4", " *"], 2),
             ("B3xC4*", [], 2),
             ("b3xc4*", ["bxc4", "*"], None),
@@ -7598,27 +6809,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxc4*", ["bxc4", "*"], None),
             ("bxC4*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", ["Bxc4", "*"], None),
             ("B3xC4*", [], 2),
             ("b3xc4*", [" bxc4", " *"], 2),
@@ -7628,29 +6823,13 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxc4*", [" bxc4", " *"], 2),
             ("bxC4*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Ignore unrecognized tokens is done in text mode when _state is not None,
     # but why some and not others in this test?
     def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
             ("B7xc8=q*", [" B7xc8", " =q*"], 2),
             ("B7xC8=Q*", [], 2),
@@ -7684,27 +6863,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxC8Q*", [], 2),
             ("bxC8q*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", ["Bxc8"], 3),
             ("B7xc8=q*", ["Bxc8"], 3),
             ("B7xC8=Q*", [], 2),
@@ -7738,27 +6901,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxC8Q*", [], 2),
             ("bxC8q*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8*", ["Bxc8", "*"], None),
             ("B7xC8*", [], 2),
             ("b7xc8*", [" b7", " xc8", " *"], 2),
@@ -7768,27 +6915,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxc8*", [], 2),
             ("bxC8*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8=Q*", [" B7b8", " =Q*"], 2),
             ("B7b8=q*", [" B7b8", " =q*"], 2),
             ("B7B8=Q*", [], 2),
@@ -7838,27 +6969,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bB8Q*", [], 2),
             ("bB8q*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_02_bishop_c7_to_b8(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8*", ["Bb8", "*"], None),
             ("B7B8*", [], 2),
             ("b7b8*", [" b7", " b8", " *"], 2),
@@ -7872,27 +6987,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bb8*", [], 2),
             ("bB8*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_03_bishop_c6_to_b7(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B6b7*", ["Bb7", "*"], None),
             ("B6B7*", [], 2),
             ("b6b7*", [" b6", " b7", " *"], 2),
@@ -7906,27 +7005,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bb7*", [], 2),
             ("bB7*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", [" B6xc5", " *"], 2),
             ("B6xC5*", [], 2),
             ("b6xc5*", ["bxc5", "*"], None),
@@ -7936,27 +7019,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxc5*", ["bxc5", "*"], None),
             ("bxC5*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", ["Bxc5", "*"], None),
             ("B6xC5*", [], 2),
             ("b6xc5*", [" bxc5", " *"], 2),
@@ -7966,29 +7033,13 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxc5*", [" bxc5", " *"], 2),
             ("bxC5*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Ignore unrecognized tokens is done in text mode when _state is not None,
     # but why some and not others in this test?
     def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", [" B2xc1", " =Q*"], 2),
             ("B2xc1=q*", [" B2xc1", " =q*"], 2),
             ("B2xC1=Q*", [], 2),
@@ -8022,27 +7073,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxC1Q*", [], 2),
             ("bxC1q*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", ["Bxc1"], 3),
             ("B2xc1=q*", ["Bxc1"], 3),
             ("B2xC1=Q*", [], 2),
@@ -8076,27 +7111,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxC1Q*", [], 2),
             ("bxC1q*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1*", ["Bxc1", "*"], None),
             ("B2xC1*", [], 2),
             ("b2xc1*", [" b2", " xc1", " *"], 2),
@@ -8106,27 +7125,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bxc1*", [], 2),
             ("bxC1*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1=Q*", [" B2b1", " =Q*"], 2),
             ("B2b1=q*", [" B2b1", " =q*"], 2),
             ("B2B1=Q*", [], 2),
@@ -8176,27 +7179,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bB1Q*", [], 2),
             ("bB1q*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_02_bishop_c2_to_b1(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1*", ["Bb1", "*"], None),
             ("B2B1*", [], 2),
             ("b2b1*", [" b2", " b1", " *"], 2),
@@ -8210,27 +7197,11 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bb1*", [], 2),
             ("bB1*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_03_bishop_c3_to_b2(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B3b2*", ["Bb2", "*"], None),
             ("B3B2*", [], 2),
             ("b3b2*", [" b3", " b2", " *"], 2),
@@ -8244,23 +7215,7 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("bb2*", [], 2),
             ("bB2*", [], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Added for Github issue 3.
     # Different outcome in GameStrictPGN tests.
@@ -8354,8 +7309,8 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_06_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa8*", ["Bxa8", "*"], None, "w"),
             ("bb8*", ["Bb8", "*"], None, "w"),
             ("bxc8*", ["Bxc8", "*"], None, "w"),
@@ -8367,47 +7322,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bd1*", ["Bd1", "*"], None, "b"),
             ("bxe1*", ["Bxe1", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/2B5/2B4b/8/',
-                                            "8/2b4B/2b5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_07_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("b6xa8*", ["Bxa8", "*"], None, "w"),
             ("b7b8*", ["Bb8", "*"], None, "w"),
             ("b3xc8*", ["Bxc8", "*"], None, "w"),
@@ -8419,47 +7339,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("b2d1*", ["Bd1", "*"], None, "b"),
             ("b3xe1*", ["Bxe1", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"r1n1n2k/2B5/2B4b/8/8/',
-                                            "2b4B/2b5/R1N1N2K ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"r1n1n2k/2B5/2B4b/8/8/2b4B/2b5/R1N1N2K ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_08_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("bxa7*", ["Bxa7", "*"], None, "w"),
             ("bb7*", ["Bb7", "*"], None, "w"),
             ("bxc7*", ["Bxc7", "*"], None, "w"),
@@ -8471,47 +7356,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bd2*", ["Bd2", "*"], None, "b"),
             ("bxe2*", ["Bxe2", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
-                                            "2b3B1/R1N1N2K/8 ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     # b1=Q gave error in GameIgnoreCasePGN when working on version 2.1.
     def test_119_09_bcd_bishop(self):
-        ae = self.assertEqual
-        for m, t, s, c in (
+        fen = ['[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ', ' - - 0 1"]']
+        for string, tokens, state, side in (
             ("b5xa7*", ["Bxa7", "*"], None, "w"),
             ("b6b7*", ["Bb7", "*"], None, "w"),
             ("b4xc7*", ["Bxc7", "*"], None, "w"),
@@ -8523,42 +7373,7 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("b3d2*", ["Bd2", "*"], None, "b"),
             ("b4xe2*", ["Bxe2", "*"], None, "b"),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            c.join(
-                                (
-                                    "".join(
-                                        (
-                                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/',
-                                            "2b3B1/R1N1N2K/8 ",
-                                        )
-                                    ),
-                                    ' - - 0 1"]',
-                                )
-                            ),
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                [
-                    '[SetUp"1"]',
-                    c.join(
-                        (
-                            '[FEN"8/r1n1n2k/2B3b1/2B5/2b5/2b3B1/R1N1N2K/8 ',
-                            ' - - 0 1"]',
-                        )
-                    ),
-                ]
-                + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(side.join(fen), string, tokens, state)
 
     def test_120_03_bxc8_Q(self):
         ae = self.assertEqual
@@ -9136,8 +7951,8 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
         ae(games[0]._text, ["e4", "e5", "Bd3", "*"])
 
     def test_182_01_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", ["bxc4", "*"], None),
             ("B3xC4*", ["bxc4", "*"], None),
             ("b3xc4*", ["bxc4", "*"], None),
@@ -9147,27 +7962,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bxc4*", ["bxc4", "*"], None),
             ("bxC4*", ["bxc4", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1P6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_182_02_pawn_capture_bc4_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B3xc4*", ["Bxc4", "*"], None),
             ("B3xC4*", ["Bxc4", "*"], None),
             ("b3xc4*", ["Bxc4", "*"], None),
@@ -9177,28 +7976,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bxc4*", ["Bxc4", "*"], None),
             ("bxC4*", ["Bxc4", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/8/8/8/2bk4/1B6/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Like '183_02' but a 'P' is on 'b7'.
     def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", ["bxc8=Q", "*"], None),
             ("B7xc8=q*", ["bxc8=Q", "*"], None),
             ("B7xC8=Q*", ["bxc8=Q", "*"], None),
@@ -9236,31 +8019,15 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("Bxc8ignored* *", [" Bxc8", " ignored* ", " *"], 2),
             ("bxc8ignored* *", [" Bxc8", " ignored* ", " *"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Like '183_01' but a 'B' is on 'b7'.
     # When compared the results for 'Bxc8' and 'bxc8' are inconsistent when
     # followed by '=Q' or '=q'.  In isolation the results are fine: see the
     # examples with 'ignored' rather than '=Q' or '=q'.
     def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8=Q*", [" bxc8=Q", " *"], 2),
             ("B7xc8=q*", [" bxc8=Q", " *"], 2),
             ("B7xC8=Q*", [" bxc8=Q", " *"], 2),
@@ -9298,27 +8065,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("Bxc8ignored* *", ["Bxc8", "*"], None),
             ("bxc8ignored* *", ["Bxc8", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_183_03_pawn_capture_bc8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7xc8*", ["Bxc8", "*"], None),
             ("B7xC8*", ["Bxc8", "*"], None),
             ("b7xc8*", ["Bxc8", "*"], None),
@@ -9328,29 +8079,13 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bxc8*", ["Bxc8", "*"], None),
             ("bxC8*", ["Bxc8", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # All tests with '-' should be accepted, like tests _170_*, *_171_*,
     # *_174_*, and *_175_*.
     def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8=Q*", ["b8=Q", "*"], None),
             ("B7b8=q*", ["b8=Q", "*"], None),
             ("B7B8=Q*", ["b8=Q", "*"], None),
@@ -9400,27 +8135,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bB8Q*", [" bB8", " Q*"], 2),
             ("bB8q*", [" bB8", " q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_02_bishop_c7_to_b8(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B7b8*", ["Bb8", "*"], None),
             ("B7B8*", ["Bb8", "*"], None),
             ("b7b8*", ["Bb8", "*"], None),
@@ -9434,27 +8153,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bb8*", ["Bb8", "*"], None),
             ("bB8*", ["Bb8", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4k3/2B5/8/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_184_03_bishop_c6_to_b7(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
             ("B6b7*", ["Bb7", "*"], None),
             ("B6B7*", ["Bb7", "*"], None),
             ("b6b7*", ["Bb7", "*"], None),
@@ -9468,27 +8171,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bb7*", ["Bb7", "*"], None),
             ("bB7*", ["Bb7", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"3k4/8/2B5/8/8/8/8/4K3 w - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_01_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", ["bxc5", "*"], None),
             ("B6xC5*", ["bxc5", "*"], None),
             ("b6xc5*", ["bxc5", "*"], None),
@@ -9498,27 +8185,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bxc5*", ["bxc5", "*"], None),
             ("bxC5*", ["bxc5", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1p6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_185_02_pawn_capture_bc5_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6xc5*", ["Bxc5", "*"], None),
             ("B6xC5*", ["Bxc5", "*"], None),
             ("b6xc5*", ["Bxc5", "*"], None),
@@ -9528,28 +8199,12 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bxc5*", ["Bxc5", "*"], None),
             ("bxC5*", ["Bxc5", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/1b6/2Bk4/8/8/8/8 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Like '183_02' but a 'P' is on 'b7'.
     def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", ["bxc1=Q", "*"], None),
             ("B2xc1=q*", ["bxc1=Q", "*"], None),
             ("B2xC1=Q*", ["bxc1=Q", "*"], None),
@@ -9587,31 +8242,15 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("Bxc1ignored* *", [" Bxc1", " ignored* ", " *"], 2),
             ("bxc1ignored* *", [" Bxc1", " ignored* ", " *"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Like '183_01' but a 'B' is on 'b2'.
     # When compared the results for 'Bxc1' and 'bxc1' are inconsistent when
     # followed by '=Q' or '=q'.  In isolation the results are fine: see the
     # examples with 'ignored' rather than '=Q' or '=q'.
     def test_186_02_pawn_promotion_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1=Q*", [" bxc1=Q", " *"], 2),
             ("B2xc1=q*", [" bxc1=Q", " *"], 2),
             ("B2xC1=Q*", [" bxc1=Q", " *"], 2),
@@ -9649,27 +8288,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("Bxc1ignored* *", ["Bxc1", "*"], None),
             ("bxc1ignored* *", ["Bxc1", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_186_03_pawn_capture_bc1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2xc1*", ["Bxc1", "*"], None),
             ("B2xC1*", ["Bxc1", "*"], None),
             ("b2xc1*", ["Bxc1", "*"], None),
@@ -9679,29 +8302,13 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bxc1*", ["Bxc1", "*"], None),
             ("bxC1*", ["Bxc1", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"8/4K3/8/8/8/8/1b6/2Bk4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # All tests with '-' should be accepted, like tests _170_*, *_171_*,
     # *_174_*, and *_175_*.
     def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1=Q*", ["b1=Q", "*"], None),
             ("B2b1=q*", ["b1=Q", "*"], None),
             ("B2B1=Q*", ["b1=Q", "*"], None),
@@ -9751,27 +8358,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bB1Q*", [" bB1", " Q*"], 2),
             ("bB1q*", [" bB1", " q*"], 2),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_02_bishop_c2_to_b1(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
             ("B2b1*", ["Bb1", "*"], None),
             ("B2B1*", ["Bb1", "*"], None),
             ("b2b1*", ["Bb1", "*"], None),
@@ -9785,27 +8376,11 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bb1*", ["Bb1", "*"], None),
             ("bB1*", ["Bb1", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/8/2b5/4k3 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     def test_187_03_bishop_c3_to_b2(self):
-        ae = self.assertEqual
-        for m, t, s in (
+        fen = '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'
+        for string, tokens, state in (
             ("B6b2*", ["Bb2", "*"], None),
             ("B6B2*", ["Bb2", "*"], None),
             ("b6b2*", ["Bb2", "*"], None),
@@ -9819,23 +8394,7 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
             ("bb2*", ["Bb2", "*"], None),
             ("bB2*", ["Bb2", "*"], None),
         ):
-            games = self.get(
-                "".join(
-                    (
-                        [
-                            '[SetUp"1"]',
-                            '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]',
-                            m,
-                        ]
-                    )
-                )
-            )
-            ae(len(games), 1)
-            ae(
-                games[0]._text,
-                ['[SetUp"1"]', '[FEN"4K3/8/8/8/8/2b5/8/3k4 b - - 0 1"]'] + t,
-            )
-            ae(games[0].state, s)
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
     # Added for Github issue 3.
     # Different outcome in GameStrictPGN tests.
