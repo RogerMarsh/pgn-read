@@ -794,23 +794,18 @@ class StrictPGN(_StrictPGN):
                 '[Result"1/2 - Â"]',
                 "<br>",
                 " d2",
-                " -d4  ",
+                " -d4",
             ],
         )
         self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
 
     def _034_little_01(self, strictness):
         games = self.do_standard_tests(
-            "Little_01.pgn",
-            strictness,
-            [6, 3],
-            [[6], []],
-            [[" ("], []],
-            [108, 3],
+            "Little_01.pgn", strictness, [6], [[6]], [[" ("]], [68]
         )
         self.do_game_text_tests(
             games[0],
-            108,
+            68,
             6,
             6,
             [
@@ -824,7 +819,10 @@ class StrictPGN(_StrictPGN):
                 " Result ",
             ],
         )
-        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+        self.assertEqual(
+            games[0]._text[-3:],
+            ["; Qf4-d6 28.Qe2-d3 1-0 </p>\n", " <p>", " </p>"],
+        )
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_034_little_01(self):
@@ -832,16 +830,11 @@ class StrictPGN(_StrictPGN):
 
     def _035_little_02(self, strictness):
         games = self.do_standard_tests(
-            "Little_02.pgn",
-            strictness,
-            [3, 3],
-            [[3], []],
-            [[" ("], []],
-            [105, 3],
+            "Little_02.pgn", strictness, [3], [[3]], [[" ("]], [65]
         )
         self.do_game_text_tests(
             games[0],
-            105,
+            65,
             3,
             3,
             [
@@ -852,7 +845,10 @@ class StrictPGN(_StrictPGN):
                 " Result ",
             ],
         )
-        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+        self.assertEqual(
+            games[0]._text[-3:],
+            ["; Qf4-d6 28.Qe2-d3 1-0 </p>\n", " <p>", " </p>"],
+        )
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_035_little_02(self):
@@ -861,11 +857,11 @@ class StrictPGN(_StrictPGN):
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_036_little_03(self):
         games = self.do_standard_tests(
-            "Little_03.pgn", True, [5, 3], [[5], []], [[" d2"], []], [99, 3]
+            "Little_03.pgn", True, [5], [[5]], [[" d2"]], [59]
         )
         self.do_game_text_tests(
             games[0],
-            99,
+            59,
             5,
             5,
             [
@@ -875,58 +871,61 @@ class StrictPGN(_StrictPGN):
                 '[Result"1/2 - Â"]',
                 "<br>",
                 " d2",
-                " -d4 ",
+                " -d4",
             ],
         )
-        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+        self.assertEqual(
+            games[0]._text[-3:],
+            ["; Qf4-d6 28.Qe2-d3 1-0 </p>\n", " <p>", " </p>"],
+        )
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_037_little_04(self):
-        self._little_strict_pgn_true("Little_04.pgn", 158)
+        self._little_strict_pgn_true("Little_04.pgn", 167)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_038_little_05(self):
-        self._little_strict_pgn_true("Little_05.pgn", 160)
+        self._little_strict_pgn_true("Little_05.pgn", 169)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_039_little_06(self):
-        self._little_strict_pgn_true("Little_06.pgn", 161)
+        self._little_strict_pgn_true("Little_06.pgn", 170)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_040_little_07(self):
-        self._little_strict_pgn_true("Little_07.pgn", 162)
+        self._little_strict_pgn_true("Little_07.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_041_little_08(self):
-        self._little_strict_pgn_true("Little_08.pgn", 164)
+        self._little_strict_pgn_true("Little_08.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_042_little_09(self):
-        self._little_strict_pgn_true("Little_09.pgn", 163)
+        self._little_strict_pgn_true("Little_09.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_043_little_10(self):
-        self._little_strict_pgn_true("Little_10.pgn", 163)
+        self._little_strict_pgn_true("Little_10.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_044_little_11(self):
-        self._little_strict_pgn_true("Little_11.pgn", 164)
+        self._little_strict_pgn_true("Little_11.pgn", 174)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_045_little_12(self):
-        self._little_strict_pgn_true("Little_12.pgn", 165)
+        self._little_strict_pgn_true("Little_12.pgn", 175)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_046_little_13(self):
-        self._little_strict_pgn_true("Little_13.pgn", 167)
+        self._little_strict_pgn_true("Little_13.pgn", 175)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_047_little_14(self):
-        self._little_strict_pgn_true("Little_14.pgn", 173)
+        self._little_strict_pgn_true("Little_14.pgn", 175)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_048_little_15(self):
-        self._little_strict_pgn_true("Little_15.pgn", 173)
+        self._little_strict_pgn_true("Little_15.pgn", 175)
 
     # calgames_08.pgn provoked addition of try ... except ... around searches
     # of source squares for a move.
@@ -975,11 +974,11 @@ class StrictPGN(_StrictPGN):
     # Minimum adjustments to little_01.pgn to make state None for TextPGN.
     def test_052_little_16(self):
         games = self.do_standard_tests(
-            "Little_16.pgn", True, [8, 3], [[8], []], [[" d2"], []], [166, 3]
+            "Little_16.pgn", True, [8, 3], [[8], []], [[" d2"], []], [177, 3]
         )
         self.do_game_text_tests(
             games[0],
-            166,
+            177,
             8,
             8,
             [
@@ -992,7 +991,7 @@ class StrictPGN(_StrictPGN):
                 '[Result"1/2 - Â"]',
                 "<br>",
                 " d2",
-                " -d4  ",
+                " -d4",
             ],
         )
         self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
@@ -1091,7 +1090,79 @@ class _OneCharacterAtATime:
 
 
 class StrictPGNOneCharacterAtATime(_OneCharacterAtATime, StrictPGN):
-    pass
+
+    def _034_little_01(self, strictness):
+        games = self.do_standard_tests(
+            "Little_01.pgn",
+            strictness,
+            [6, 3],
+            [[6], []],
+            [[" ("], []],
+            [73, 3],
+        )
+        self.do_game_text_tests(
+            games[0],
+            73,
+            6,
+            6,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                "<br>",
+                '[White"Silva, ABC (BRA)"]',
+                "<br>",
+                '[Black"Player, Riccardo (ITA)"]',
+                "<br>",
+                " (",
+                " Result ",
+            ],
+        )
+        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+
+    def _035_little_02(self, strictness):
+        games = self.do_standard_tests(
+            "Little_02.pgn",
+            strictness,
+            [3, 3],
+            [[3], []],
+            [[" ("], []],
+            [70, 3],
+        )
+        self.do_game_text_tests(
+            games[0],
+            70,
+            3,
+            3,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                " (",
+                " Result ",
+            ],
+        )
+        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_036_little_03(self):
+        games = self.do_standard_tests(
+            "Little_03.pgn", True, [5, 3], [[5], []], [[" d2"], []], [64, 3]
+        )
+        self.do_game_text_tests(
+            games[0],
+            64,
+            5,
+            5,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                '[Result"1/2 - Â"]',
+                "<br>",
+                " d2",
+                " -d4",
+            ],
+        )
+        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
 
 
 class StrictPGNExtendByOneCharacter(StrictPGN):
@@ -1225,7 +1296,7 @@ class _StrictFalseTests:
     # Most of little_nn can use this for self._strict_pgn is False.
     def _little_strict_pgn_false(self, pgnfile, length0):
         games = self.do_standard_tests(
-            pgnfile, False, [6, 3], [[6], []], [[" -d4  "], []], [length0, 3]
+            pgnfile, False, [6, 3], [[6], []], [[" -d4"], []], [length0, 3]
         )
         self.do_game_text_tests(
             games[0],
@@ -1239,7 +1310,7 @@ class _StrictFalseTests:
                 '[Result"1/2 - Â"]',
                 "<br>",
                 "d4",
-                " -d4  ",
+                " -d4",
                 " Ng8",
             ],
         )
@@ -1256,11 +1327,11 @@ class _StrictFalseTests:
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_036_little_03(self):
         games = self.do_standard_tests(
-            "Little_03.pgn", False, [6, 3], [[6], []], [[" -d4 "], []], [99, 3]
+            "Little_03.pgn", False, [6, 3], [[6], []], [[" -d4"], []], [64, 3]
         )
         self.do_game_text_tests(
             games[0],
-            99,
+            64,
             6,
             6,
             [
@@ -1270,7 +1341,7 @@ class _StrictFalseTests:
                 '[Result"1/2 - Â"]',
                 "<br>",
                 "d4",
-                " -d4 ",
+                " -d4",
                 "; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n",
             ],
         )
@@ -1278,51 +1349,51 @@ class _StrictFalseTests:
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_037_little_04(self):
-        self._little_strict_pgn_false("Little_04.pgn", 158)
+        self._little_strict_pgn_false("Little_04.pgn", 167)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_038_little_05(self):
-        self._little_strict_pgn_false("Little_05.pgn", 160)
+        self._little_strict_pgn_false("Little_05.pgn", 169)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_039_little_06(self):
-        self._little_strict_pgn_false("Little_06.pgn", 161)
+        self._little_strict_pgn_false("Little_06.pgn", 170)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_040_little_07(self):
-        self._little_strict_pgn_false("Little_07.pgn", 162)
+        self._little_strict_pgn_false("Little_07.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_041_little_08(self):
-        self._little_strict_pgn_false("Little_08.pgn", 164)
+        self._little_strict_pgn_false("Little_08.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_042_little_09(self):
-        self._little_strict_pgn_false("Little_09.pgn", 163)
+        self._little_strict_pgn_false("Little_09.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_043_little_10(self):
-        self._little_strict_pgn_false("Little_10.pgn", 163)
+        self._little_strict_pgn_false("Little_10.pgn", 173)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_044_little_11(self):
-        self._little_strict_pgn_false("Little_11.pgn", 164)
+        self._little_strict_pgn_false("Little_11.pgn", 174)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_045_little_12(self):
-        self._little_strict_pgn_false("Little_12.pgn", 165)
+        self._little_strict_pgn_false("Little_12.pgn", 175)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_046_little_13(self):
-        self._little_strict_pgn_false("Little_13.pgn", 167)
+        self._little_strict_pgn_false("Little_13.pgn", 175)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_047_little_14(self):
-        self._little_strict_pgn_false("Little_14.pgn", 173)
+        self._little_strict_pgn_false("Little_14.pgn", 175)
 
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_048_little_15(self):
-        self._little_strict_pgn_false("Little_15.pgn", 173)
+        self._little_strict_pgn_false("Little_15.pgn", 175)
 
     # calgames_08.pgn provoked addition of try ... except ... around searches
     # of source squares for a move.
@@ -1365,12 +1436,12 @@ class _StrictFalseTests:
             False,
             [9, 3],
             [[9], []],
-            [[" -d4  "], []],
-            [166, 3],
+            [[" -d4"], []],
+            [177, 3],
         )
         self.do_game_text_tests(
             games[0],
-            166,
+            177,
             9,
             9,
             [
@@ -1383,7 +1454,7 @@ class _StrictFalseTests:
                 '[Result"1/2 - Â"]',
                 "<br>",
                 "d4",
-                " -d4  ",
+                " -d4",
                 " Ng8",
             ],
         )
@@ -1413,6 +1484,31 @@ class PGN(_StrictFalseTests, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN()
 
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_036_little_03(self):
+        games = self.do_standard_tests(
+            "Little_03.pgn", False, [6], [[6]], [[" -d4"]], [59]
+        )
+        self.do_game_text_tests(
+            games[0],
+            59,
+            6,
+            5,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                '[Result"1/2 - Â"]',
+                "<br>",
+                "d4",
+                " -d4",
+            ],
+        )
+        self.assertEqual(
+            games[0]._text[-3:],
+            ["; Qf4-d6 28.Qe2-d3 1-0 </p>\n", " <p>", " </p>"],
+        )
+
 
 class PGNOneCharacterAtATime(
     _OneCharacterAtATime, _StrictFalseTests, StrictPGN
@@ -1420,12 +1516,89 @@ class PGNOneCharacterAtATime(
     def setUp(self):
         self.pgn = parser.PGN()
 
+    def _034_little_01(self, strictness):
+        games = self.do_standard_tests(
+            "Little_01.pgn",
+            strictness,
+            [6, 3],
+            [[6], []],
+            [[" ("], []],
+            [73, 3],
+        )
+        self.do_game_text_tests(
+            games[0],
+            73,
+            6,
+            6,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                "<br>",
+                '[White"Silva, ABC (BRA)"]',
+                "<br>",
+                '[Black"Player, Riccardo (ITA)"]',
+                "<br>",
+                " (",
+                " Result ",
+            ],
+        )
+        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+
+    def _035_little_02(self, strictness):
+        games = self.do_standard_tests(
+            "Little_02.pgn",
+            strictness,
+            [3, 3],
+            [[3], []],
+            [[" ("], []],
+            [70, 3],
+        )
+        self.do_game_text_tests(
+            games[0],
+            70,
+            3,
+            3,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                " (",
+                " Result ",
+            ],
+        )
+        self.assertEqual(games[1]._text, ["</p>", "<p>", "</p>"])
+
 
 class PGNExtendByOneCharacter(
     _StrictFalseTests, StrictPGNExtendByOneCharacter
 ):
     def setUp(self):
         self.pgn = parser.PGN()
+
+    # Incrementally adjust little_01.pgn until state is None for TextPGN.
+    def test_036_little_03(self):
+        games = self.do_standard_tests(
+            "Little_03.pgn", False, [6], [[6]], [[" -d4"]], [59]
+        )
+        self.do_game_text_tests(
+            games[0],
+            59,
+            6,
+            6,
+            [
+                '[Event"EM/CL/Q19-2"]',
+                '[White"Silva, ABC (BRA)"]',
+                '[Black"Player, Riccardo (ITA)"]',
+                '[Result"1/2 - Â"]',
+                "<br>",
+                "d4",
+                " -d4",
+                "; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n",
+            ],
+        )
+        self.assertEqual(
+            games[0]._text[-3:],
+            ["; Qf4-d6 28.Qe2-d3 1-0 </p>\n", " <p>", " </p>"],
+        )
 
 
 class _TextFormatTests:

@@ -243,7 +243,7 @@ class Constants(unittest.TestCase):
         )
         ae(
             constants.PGN_DISAMBIGUATION,
-            r"".join((r"(?#Disambiguation PGN)(x?[a-h][1-8]",)),
+            r"".join((r"(?#Disambiguation PGN)([x-]?[a-h][1-8]",)),
         )
         ae(
             constants.TEXT_DISAMBIGUATION,
@@ -330,7 +330,7 @@ class Constants(unittest.TestCase):
                     r"|",
                     r'(?#End of file marker)(\032)(?=\[[^"]*".*?"\s*\])',
                     r"|",
-                    r"(?#Disambiguation PGN)(x?[a-h][1-8]",
+                    r"(?#Disambiguation PGN)([x-]?[a-h][1-8]",
                     r"|",
                     r"(?#Anything else)\S+[ \t\r\f\v]*)",
                 )

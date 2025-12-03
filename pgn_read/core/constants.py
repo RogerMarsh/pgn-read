@@ -146,7 +146,7 @@ PGN_FORMAT = r"|".join(
 PGN_DISAMBIGUATION = r"".join(
     (
         r"(?#Disambiguation PGN)",
-        r"(x?[a-h][1-8]",
+        r"([x-]?[a-h][1-8]",
     )
 )
 TEXT_DISAMBIGUATION = r"".join(

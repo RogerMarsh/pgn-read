@@ -2416,7 +2416,7 @@ class StrictPGN(_BasePGN):
         games = self.get("e4e5d2-d4*")
         ae(len(games), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ["e4", "e5", " d2", " -d4*"])
+        ae(games[0]._text, ["e4", "e5", " d2", " -d4", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     def test_166_01_long_algebraic_white_b_pawn_move(self):
@@ -2490,7 +2490,7 @@ class StrictPGN(_BasePGN):
         games = self.get("e4e5b2-b4*")
         ae(len(games), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ["e4", "e5", " b2", " -b4*"])
+        ae(games[0]._text, ["e4", "e5", " b2", " -b4", " *"])
 
     def test_167_02_long_algebraic_white_b_pawn_move_with_hyphen(self):
         ae = self.assertEqual
@@ -2504,7 +2504,8 @@ class StrictPGN(_BasePGN):
                 '[SetUp"1"]',
                 '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
                 " b6",
-                " -b7*",
+                " -b7",
+                " *",
             ],
         )
         ae(games[0].state, 2)
@@ -2521,7 +2522,8 @@ class StrictPGN(_BasePGN):
                 '[SetUp"1"]',
                 '[FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
                 " b7",
-                " -b8=Q*",
+                " -b8",
+                " =Q*",
             ],
         )
         ae(games[0].state, 2)
@@ -2538,7 +2540,8 @@ class StrictPGN(_BasePGN):
                 '[SetUp"1"]',
                 '[FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]',
                 " f7",
-                " -f8=Q*",
+                " -f8",
+                " =Q*",
             ],
         )
         ae(games[0].state, 2)
@@ -2558,7 +2561,7 @@ class StrictPGN(_BasePGN):
         games = self.get("e4e7-e5*")
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ["e4", " e7", " -e5*"])
+        ae(games[0]._text, ["e4", " e7", " -e5", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     def test_170_long_algebraic_black_b_pawn_move(self):
@@ -2574,7 +2577,7 @@ class StrictPGN(_BasePGN):
         games = self.get("e4b7-b5*")
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ["e4", " b7", " -b5*"])
+        ae(games[0]._text, ["e4", " b7", " -b5", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     def test_172_long_algebraic_uc_white_pawn_move(self):
@@ -2667,7 +2670,7 @@ class StrictPGN(_BasePGN):
         games = self.get("Ng1-f3*")
         ae(len(games), 1)
         ae(games[0].state, 0)
-        ae(games[0]._text, [" Ng1", " -f3*"])
+        ae(games[0]._text, [" Ng1", " -f3", " *"])
 
     def test_181_01_pawn_move_or_too_much_precision(self):
         ae = self.assertEqual
@@ -2838,16 +2841,16 @@ class StrictPGN(_BasePGN):
             ("B7-b8=q*", [" B7-b8=q*"], 2),
             ("B7-B8=Q*", [" B7-B8=Q*"], 2),
             ("B7-B8=q*", [" B7-B8=q*"], 2),
-            ("b7-b8=Q*", [" b7", " -b8=Q*"], 2),
-            ("b7-b8=q*", [" b7", " -b8=q*"], 2),
+            ("b7-b8=Q*", [" b7", " -b8", " =Q*"], 2),
+            ("b7-b8=q*", [" b7", " -b8", " =q*"], 2),
             ("b7-B8=Q*", [" b7", " -B8=Q*"], 2),
             ("b7-B8=q*", [" b7", " -B8=q*"], 2),
             ("B7-b8Q*", [" B7-b8Q*"], 2),
             ("B7-b8q*", [" B7-b8q*"], 2),
             ("B7-B8Q*", [" B7-B8Q*"], 2),
             ("B7-B8q*", [" B7-B8q*"], 2),
-            ("b7-b8Q*", [" b7", " -b8Q*"], 2),
-            ("b7-b8q*", [" b7", " -b8q*"], 2),
+            ("b7-b8Q*", [" b7", " -b8", " Q*"], 2),
+            ("b7-b8q*", [" b7", " -b8", " q*"], 2),
             ("b7-B8Q*", [" b7", " -B8Q*"], 2),
             ("b7-B8q*", [" b7", " -B8q*"], 2),
             ("Bb8=Q*", [" Bb8", " =Q*"], 2),
@@ -2878,7 +2881,7 @@ class StrictPGN(_BasePGN):
             ("b7B8*", [" b7", " B8*"], 2),
             ("B7-b8*", [" B7-b8*"], 2),
             ("B7-B8*", [" B7-B8*"], 2),
-            ("b7-b8*", [" b7", " -b8*"], 2),
+            ("b7-b8*", [" b7", " -b8", " *"], 2),
             ("b7-B8*", [" b7", " -B8*"], 2),
             ("Bb8*", ["Bb8", "*"], None),
             ("BB8*", [" BB8*"], 2),
@@ -2896,7 +2899,7 @@ class StrictPGN(_BasePGN):
             ("b6B7*", [" b6", " B7*"], 2),
             ("B6-b7*", [" B6-b7*"], 2),
             ("B6-B7*", [" B6-B7*"], 2),
-            ("b6-b7*", [" b6", " -b7*"], 2),
+            ("b6-b7*", [" b6", " -b7", " *"], 2),
             ("b6-B7*", [" b6", " -B7*"], 2),
             ("Bb7*", ["Bb7", "*"], None),
             ("BB7*", [" BB7*"], 2),
@@ -3046,16 +3049,16 @@ class StrictPGN(_BasePGN):
             ("B2-b1=q*", [" B2-b1=q*"], 2),
             ("B2-B1=Q*", [" B2-B1=Q*"], 2),
             ("B2-B1=q*", [" B2-B1=q*"], 2),
-            ("b2-b1=Q*", [" b2", " -b1=Q*"], 2),
-            ("b2-b1=q*", [" b2", " -b1=q*"], 2),
+            ("b2-b1=Q*", [" b2", " -b1", " =Q*"], 2),
+            ("b2-b1=q*", [" b2", " -b1", " =q*"], 2),
             ("b2-B1=Q*", [" b2", " -B1=Q*"], 2),
             ("b2-B1=q*", [" b2", " -B1=q*"], 2),
             ("B2-b1Q*", [" B2-b1Q*"], 2),
             ("B2-b1q*", [" B2-b1q*"], 2),
             ("B2-B1Q*", [" B2-B1Q*"], 2),
             ("B2-B1q*", [" B2-B1q*"], 2),
-            ("b2-b1Q*", [" b2", " -b1Q*"], 2),
-            ("b2-b1q*", [" b2", " -b1q*"], 2),
+            ("b2-b1Q*", [" b2", " -b1", " Q*"], 2),
+            ("b2-b1q*", [" b2", " -b1", " q*"], 2),
             ("b2-B1Q*", [" b2", " -B1Q*"], 2),
             ("b2-B1q*", [" b2", " -B1q*"], 2),
             ("Bb1=Q*", [" Bb1", " =Q*"], 2),
@@ -3086,7 +3089,7 @@ class StrictPGN(_BasePGN):
             ("b2B1*", [" b2", " B1*"], 2),
             ("B2-b1*", [" B2-b1*"], 2),
             ("B2-B1*", [" B2-B1*"], 2),
-            ("b2-b1*", [" b2", " -b1*"], 2),
+            ("b2-b1*", [" b2", " -b1", " *"], 2),
             ("b2-B1*", [" b2", " -B1*"], 2),
             ("Bb1*", ["Bb1", "*"], None),
             ("BB1*", [" BB1*"], 2),
@@ -3104,7 +3107,7 @@ class StrictPGN(_BasePGN):
             ("b3B2*", [" b3", " B2*"], 2),
             ("B3-b2*", [" B3-b2*"], 2),
             ("B3-B2*", [" B3-B2*"], 2),
-            ("b3-b2*", [" b3", " -b2*"], 2),
+            ("b3-b2*", [" b3", " -b2", " *"], 2),
             ("b3-B2*", [" b3", " -B2*"], 2),
             ("Bb2*", ["Bb2", "*"], None),
             ("BB2*", [" BB2*"], 2),
@@ -5112,7 +5115,7 @@ class _NonStrictPGN:
         games = self.get("e4e5d2-d4*")
         ae(len(games), 1)
         ae(games[0].state, 3)
-        ae(games[0]._text, ["e4", "e5", "d4", " -d4*"])
+        ae(games[0]._text, ["e4", "e5", "d4", " -d4", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     # b2b4 is redundant precision, not long algebraic notation.
@@ -5148,7 +5151,7 @@ class _NonStrictPGN:
         games = self.get("e4e5b2-b4*")
         ae(len(games), 1)
         ae(games[0].state, 3)
-        ae(games[0]._text, ["e4", "e5", "b4", " -b4*"])
+        ae(games[0]._text, ["e4", "e5", "b4", " -b4", " *"])
 
     def test_167_02_long_algebraic_white_b_pawn_move_with_hyphen(self):
         ae = self.assertEqual
@@ -5162,7 +5165,8 @@ class _NonStrictPGN:
                 '[SetUp"1"]',
                 '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
                 "b7",
-                " -b7*",
+                " -b7",
+                " *",
             ],
         )
         ae(games[0].state, 3)
@@ -5184,7 +5188,7 @@ class _NonStrictPGN:
         games = self.get("e4e7-e5*")
         ae(len(games), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ["e4", "e5", " -e5*"])
+        ae(games[0]._text, ["e4", "e5", " -e5", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     # b7b5 is redundant precision, not long algebraic notation.
@@ -5203,7 +5207,7 @@ class _NonStrictPGN:
         games = self.get("e4b7-b5*")
         ae(len(games), 1)
         ae(games[0].state, 2)
-        ae(games[0]._text, ["e4", "b5", " -b5*"])
+        ae(games[0]._text, ["e4", "b5", " -b5", " *"])
 
     def test_180_01_too_much_precision(self):
         ae = self.assertEqual
@@ -5231,7 +5235,7 @@ class _NonStrictPGN:
         games = self.get("Ng1-f3*")
         ae(len(games), 1)
         ae(games[0].state, 1)
-        ae(games[0]._text, ["Nf3", " -f3*"])
+        ae(games[0]._text, ["Nf3", " -f3", " *"])
 
     def test_181_01_pawn_move_or_too_much_precision(self):
         ae = self.assertEqual
@@ -5329,7 +5333,7 @@ class _NonStrictPGN:
             ("b7B8*", [" b7", " B8*"], 2),
             ("B7-b8*", [" B7-b8*"], 2),
             ("B7-B8*", [" B7-B8*"], 2),
-            ("b7-b8*", [" b7", " -b8*"], 2),
+            ("b7-b8*", [" b7", " -b8", " *"], 2),
             ("b7-B8*", [" b7", " -B8*"], 2),
             ("Bb8*", ["Bb8", "*"], None),
             ("BB8*", [" BB8*"], 2),
@@ -5347,7 +5351,7 @@ class _NonStrictPGN:
             ("b6B7*", [" b6", " B7*"], 2),
             ("B6-b7*", [" B6-b7*"], 2),
             ("B6-B7*", [" B6-B7*"], 2),
-            ("b6-b7*", [" b6", " -b7*"], 2),
+            ("b6-b7*", [" b6", " -b7", " *"], 2),
             ("b6-B7*", [" b6", " -B7*"], 2),
             ("Bb7*", ["Bb7", "*"], None),
             ("BB7*", [" BB7*"], 2),
@@ -5445,7 +5449,7 @@ class _NonStrictPGN:
             ("b2B1*", [" b2", " B1*"], 2),
             ("B2-b1*", [" B2-b1*"], 2),
             ("B2-B1*", [" B2-B1*"], 2),
-            ("b2-b1*", [" b2", " -b1*"], 2),
+            ("b2-b1*", [" b2", " -b1", " *"], 2),
             ("b2-B1*", [" b2", " -B1*"], 2),
             ("Bb1*", ["Bb1", "*"], None),
             ("BB1*", [" BB1*"], 2),
@@ -5463,7 +5467,7 @@ class _NonStrictPGN:
             ("b3B2*", [" b3", " B2*"], 2),
             ("B3-b2*", [" B3-b2*"], 2),
             ("B3-B2*", [" B3-B2*"], 2),
-            ("b3-b2*", [" b3", " -b2*"], 2),
+            ("b3-b2*", [" b3", " -b2", " *"], 2),
             ("b3-B2*", [" b3", " -B2*"], 2),
             ("Bb2*", ["Bb2", "*"], None),
             ("BB2*", [" BB2*"], 2),
