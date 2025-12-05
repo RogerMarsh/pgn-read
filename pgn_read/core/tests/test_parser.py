@@ -3703,10 +3703,14 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_503_disambiguate_move_needed(self):
-        games = self.get(
-            '[SetUp"1"][FEN"5q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]Qf6d8Kh3*'
-        )
-        self.assertEqual(games[0].state, None)
+        fen = [
+            '[SetUp"1"][FEN"5q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]', "Kh3*"
+        ]
+        move = ["Qf6", "d8"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, None)
 
     def test_504_disambiguate_move_needed(self):
         games = self.get(
@@ -3770,22 +3774,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_511_disambiguate_move_needed(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, None)
+        fen = ['[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, None)
 
     def test_512_disambiguate_move_needed(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_513_disambiguate_move_needed(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q1kq3/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_514_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
@@ -3807,23 +3817,29 @@ class StrictDisambiguate(_BasePGN):
 
     def test_517_disambiguate_move_and_rank_pin_one(self):
         ae = self.assertEqual
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*'
-        )
-        ae(games[0].state, 2)
-        ae(games[0]._position_deltas, [None, None, None])
+        fen = ['[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(games[0].state, 2)
+                ae(games[0]._position_deltas, [None, None, None])
 
     def test_518_disambiguate_move_and_rank_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_519_disambiguate_move_and_rank_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/Rq1kq3/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_520_disambiguate_move_and_rank_pin_one(self):
         games = self.get(
@@ -3868,22 +3884,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_527_disambiguate_move_and_rank_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_528_disambiguate_move_and_rank_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_529_disambiguate_move_and_rank_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q1kqR2/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_530_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
@@ -3892,16 +3914,20 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_531_disambiguate_move_and_rank_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_532_disambiguate_move_and_rank_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_533_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
@@ -3910,10 +3936,12 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_534_disambiguate_move_and_rank_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/Rq1kqR2/8/8/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_535_disambiguate_move_and_rank_both_pins(self):
         games = self.get(
@@ -3940,10 +3968,12 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_539_disambiguate_move_and_file_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_540_disambiguate_move_and_file_pin_one(self):
         games = self.get(
@@ -3970,16 +4000,20 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_544_disambiguate_move_and_file_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_545_disambiguate_move_and_file_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_546_disambiguate_move_and_file_pin_two(self):
         games = self.get(
@@ -3988,22 +4022,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_547_disambiguate_move_and_file_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_548_disambiguate_move_and_file_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_549_disambiguate_move_and_file_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_550_disambiguate_move_and_file_pin_two(self):
         games = self.get(
@@ -4036,22 +4076,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_555_disambiguate_move_and_file_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_556_disambiguate_move_and_file_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_557_disambiguate_move_and_file_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/1R6/1q2q3/8/1k6/1q6/1R4K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_558_disambiguate_move_and_file_both_pins(self):
         games = self.get(
@@ -4084,22 +4130,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_563_disambiguate_move_and_diagonal_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_564_disambiguate_move_and_diagonal_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_565_disambiguate_move_and_diagonal_pin_one(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/6K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_566_disambiguate_move_and_diagonal_pin_one(self):
         games = self.get(
@@ -4132,22 +4184,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, 2)
 
     def test_571_disambiguate_move_and_diagonal_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_572_disambiguate_move_and_diagonal_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_573_disambiguate_move_and_diagonal_pin_two(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_574_disambiguate_move_and_diagonal_pin_two(self):
         games = self.get(
@@ -4180,22 +4238,28 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_579_disambiguate_move_and_diagonal_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]', "*"]
+        move = ["Qb6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_580_disambiguate_move_and_diagonal_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qe6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]', "*"]
+        move = ["Qe6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_581_disambiguate_move_and_diagonal_both_pins(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]Qb3e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/5B2/1q2q3/8/2k5/1q6/B5K1/8 b - - 0 1"]', "*"]
+        move = ["Qb3", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_582_disambiguate_move_and_diagonal_both_pins(self):
         games = self.get(
@@ -4736,16 +4800,20 @@ class StrictDisambiguate(_BasePGN):
         self.assertEqual(games[0].state, None)
 
     def test_711_disambiguate_move_needed(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re1e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]', "*"]
+        move = ["Re1", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_712_disambiguate_move_needed(self):
-        games = self.get(
-            '[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]Re6e3*'
-        )
-        self.assertEqual(games[0].state, 2)
+        fen = ['[SetUp"1"][FEN"8/8/3kr3/8/8/1r6/6K1/4r3 b - - 0 1"]', "*"]
+        move = ["Re6", "e3"]
+        for delimiter in ("", "-"):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                self.assertEqual(games[0].state, 2)
 
     def test_713_disambiguate_move_needed(self):
         games = self.get(
@@ -5114,8 +5182,8 @@ class _NonStrictPGN:
         ae = self.assertEqual
         games = self.get("e4e5d2-d4*")
         ae(len(games), 1)
-        ae(games[0].state, 3)
-        ae(games[0]._text, ["e4", "e5", "d4", " -d4", " *"])
+        ae(games[0].state, 2)
+        ae(games[0]._text, ["e4", "e5", " d2", " -d4", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     # b2b4 is redundant precision, not long algebraic notation.
@@ -5150,8 +5218,8 @@ class _NonStrictPGN:
         ae = self.assertEqual
         games = self.get("e4e5b2-b4*")
         ae(len(games), 1)
-        ae(games[0].state, 3)
-        ae(games[0]._text, ["e4", "e5", "b4", " -b4", " *"])
+        ae(games[0].state, 2)
+        ae(games[0]._text, ["e4", "e5", " b2", " -b4", " *"])
 
     def test_167_02_long_algebraic_white_b_pawn_move_with_hyphen(self):
         ae = self.assertEqual
@@ -5164,12 +5232,12 @@ class _NonStrictPGN:
             [
                 '[SetUp"1"]',
                 '[FEN"3k4/8/1P6/8/8/8/8/4K3 w - - 0 1"]',
-                "b7",
+                " b6",
                 " -b7",
                 " *",
             ],
         )
-        ae(games[0].state, 3)
+        ae(games[0].state, 2)
 
     # Added while fixing Little.pgn upper case processing.
     # Adds the '*' compared with test_115_long_algebraic_pawn_move.
@@ -5187,8 +5255,8 @@ class _NonStrictPGN:
         ae = self.assertEqual
         games = self.get("e4e7-e5*")
         ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text, ["e4", "e5", " -e5", " *"])
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " e7", " -e5", " *"])
 
     # Added while fixing Little.pgn upper case processing.
     # b7b5 is redundant precision, not long algebraic notation.
@@ -5206,8 +5274,8 @@ class _NonStrictPGN:
         ae = self.assertEqual
         games = self.get("e4b7-b5*")
         ae(len(games), 1)
-        ae(games[0].state, 2)
-        ae(games[0]._text, ["e4", "b5", " -b5", " *"])
+        ae(games[0].state, 1)
+        ae(games[0]._text, ["e4", " b7", " -b5", " *"])
 
     def test_180_01_too_much_precision(self):
         ae = self.assertEqual

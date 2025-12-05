@@ -1296,12 +1296,12 @@ class _StrictFalseTests:
     # Most of little_nn can use this for self._strict_pgn is False.
     def _little_strict_pgn_false(self, pgnfile, length0):
         games = self.do_standard_tests(
-            pgnfile, False, [6, 3], [[6], []], [[" -d4"], []], [length0, 3]
+            pgnfile, False, [5, 3], [[5], []], [[" d2"], []], [length0, 3]
         )
         self.do_game_text_tests(
             games[0],
             length0,
-            6,
+            5,
             6,
             [
                 '[Event"EM/CL/Q19-2"]',
@@ -1309,7 +1309,7 @@ class _StrictFalseTests:
                 '[Black"Player, Riccardo (ITA)"]',
                 '[Result"1/2 - Â"]',
                 "<br>",
-                "d4",
+                " d2",
                 " -d4",
                 " Ng8",
             ],
@@ -1327,12 +1327,12 @@ class _StrictFalseTests:
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_036_little_03(self):
         games = self.do_standard_tests(
-            "Little_03.pgn", False, [6, 3], [[6], []], [[" -d4"], []], [64, 3]
+            "Little_03.pgn", False, [5, 3], [[5], []], [[" d2"], []], [64, 3]
         )
         self.do_game_text_tests(
             games[0],
             64,
-            6,
+            5,
             6,
             [
                 '[Event"EM/CL/Q19-2"]',
@@ -1340,7 +1340,7 @@ class _StrictFalseTests:
                 '[Black"Player, Riccardo (ITA)"]',
                 '[Result"1/2 - Â"]',
                 "<br>",
-                "d4",
+                " d2",
                 " -d4",
                 "; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n",
             ],
@@ -1434,15 +1434,15 @@ class _StrictFalseTests:
         games = self.do_standard_tests(
             "Little_16.pgn",
             False,
-            [9, 3],
-            [[9], []],
-            [[" -d4"], []],
+            [8, 3],
+            [[8], []],
+            [[" d2"], []],
             [177, 3],
         )
         self.do_game_text_tests(
             games[0],
             177,
-            9,
+            8,
             9,
             [
                 '[Event"EM/CL/Q19-2"]',
@@ -1453,7 +1453,7 @@ class _StrictFalseTests:
                 "<br>",
                 '[Result"1/2 - Â"]',
                 "<br>",
-                "d4",
+                " d2",
                 " -d4",
                 " Ng8",
             ],
@@ -1487,12 +1487,12 @@ class PGN(_StrictFalseTests, StrictPGN):
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_036_little_03(self):
         games = self.do_standard_tests(
-            "Little_03.pgn", False, [6], [[6]], [[" -d4"]], [59]
+            "Little_03.pgn", False, [5], [[5]], [[" d2"]], [59]
         )
         self.do_game_text_tests(
             games[0],
             59,
-            6,
+            5,
             5,
             [
                 '[Event"EM/CL/Q19-2"]',
@@ -1500,7 +1500,7 @@ class PGN(_StrictFalseTests, StrictPGN):
                 '[Black"Player, Riccardo (ITA)"]',
                 '[Result"1/2 - Â"]',
                 "<br>",
-                "d4",
+                " d2",
                 " -d4",
             ],
         )
@@ -1577,12 +1577,12 @@ class PGNExtendByOneCharacter(
     # Incrementally adjust little_01.pgn until state is None for TextPGN.
     def test_036_little_03(self):
         games = self.do_standard_tests(
-            "Little_03.pgn", False, [6], [[6]], [[" -d4"]], [59]
+            "Little_03.pgn", False, [5], [[5]], [[" d2"]], [59]
         )
         self.do_game_text_tests(
             games[0],
             59,
-            6,
+            5,
             6,
             [
                 '[Event"EM/CL/Q19-2"]',
@@ -1590,7 +1590,7 @@ class PGNExtendByOneCharacter(
                 '[Black"Player, Riccardo (ITA)"]',
                 '[Result"1/2 - Â"]',
                 "<br>",
-                "d4",
+                " d2",
                 " -d4",
                 "; Ng8-f6 2.c2-c4; e7-e6 3.Nb1c3; Bf8-b4 4.e2-e3; 0-<br>\n",
             ],

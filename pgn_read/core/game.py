@@ -1123,7 +1123,7 @@ class Game(GameData):
 
         # Piece move and capture.
 
-        if dtfm.group(DG_CAPTURE):
+        if dtfm.group(DG_CAPTURE) == "x":
             if destination not in piece_placement_data:
                 self._append_token_and_set_error(match)
                 return
@@ -1212,8 +1212,13 @@ class Game(GameData):
             self.undo_board_state()
             self._append_token_and_set_error(match)
             return
-        self._append_decorated_text(group() + dtfm.group())
+        self._append_fully_disambiguated_piece_move(match, dtfm)
         self._full_disambiguation_detected = True
+
+    def _append_fully_disambiguated_piece_move(self, match_, dtfm_match):
+        """Append fully disambiguated piece move without hyphen."""
+        self._append_decorated_text(
+            match_.group() + dtfm_match.group(DG_DESTINATION))
 
     def _long_algebraic_notation_destination(self, match):
         peek_start = match.span(match.lastindex)[-1]
@@ -1467,7 +1472,7 @@ class Game(GameData):
 
         # This token must be a match as second part of move, and must be
         # correct as a pawn or piece move in combination with first part.
-        if not landm:
+        if not landm or landm.group().startswith("-"):
             self._append_token_and_set_error(match)
             return
 

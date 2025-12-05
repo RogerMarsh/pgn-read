@@ -234,8 +234,8 @@ IFG_OTHER_WITH_NON_NEWLINE_WHITESPACE = 31
 # For spotting the pawn-move-like string which is the destination of a fully
 # disambiguated piece move, say 'Qb4d4+??' including optional sufficies, where
 # Qb4 has been rejected as a move because there is a Q on b4.
-DISAMBIGUATE_TEXT = r"\A(x?)([a-h][1-8])"
-DISAMBIGUATE_PGN = r"\Ax?[a-h][1-8]"
+DISAMBIGUATE_TEXT = r"\A([x-]?)([a-h][1-8])"
+DISAMBIGUATE_PGN = r"\A[x-]?[a-h][1-8]"
 
 # The game.GameIgnoreCasePGN class may need to ignore '=Q', and similar, if,
 # for example, it were processed by peek ahead to decide between a pawn and
