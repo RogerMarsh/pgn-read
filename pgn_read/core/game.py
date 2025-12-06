@@ -1248,8 +1248,20 @@ class Game(GameData):
             self._append_token_and_set_error(match)
             return
         if landm.group(1) == "-" and self._strict_pgn is not None:
-            self._append_token_and_set_error(match)
-            return
+            counts = self._count_lan_piece_move_candidates(
+                match,
+                piece_name,
+                source_squares[group(IFG_PIECE_MOVE)][landm.groups()[1]],
+                landm.groups()[1],
+                [],
+            )
+            if counts is None:
+                self._append_token_and_set_error(match)
+                return
+            file_count, rank_count = counts
+            if len(file_count) < 2 or len(rank_count) < 2:
+                self._append_token_and_set_error(match)
+                return
 
         piece_placement_data = self._piece_placement_data
         capture, destination, promotion_piece = landm.groups()
@@ -1271,46 +1283,17 @@ class Game(GameData):
 
             # Piece move and capture.
             if capture == PGN_CAPTURE_MOVE:
-                candidates = []
-                for cpiece in self._pieces_on_board[piece_name]:
-                    if cpiece.square.name in src_squares:
-                        candidates.append(cpiece)
-                if not candidates:
-                    self._append_token_and_set_error(match)
-                    return
-                file_count = {}
-                rank_count = {}
                 from_square = piece.square
-                if len(candidates) > 1:
-                    for cpiece in candidates:
-                        if not self.line_empty(
-                            cpiece.square.name, destination
-                        ):
-                            continue
-                        square_before_move = cpiece.square
-                        cpfile, cprank = square_before_move.name
-                        remove = (
-                            (destination, piece_placement_data[destination]),
-                            (square_before_move.name, cpiece),
-                        )
-                        self.remove_piece_from_board(remove[0])
-                        self.remove_piece_on_square(remove[1])
-                        place = destination, cpiece
-                        self.place_piece_on_square(place)
-                        if not self.is_piece_pinned_to_king(
-                            cpiece, square_before_move
-                        ):
-                            if cpfile not in file_count:
-                                file_count[cpfile] = 1
-                            else:
-                                file_count[cpfile] += 1
-                            if cprank not in rank_count:
-                                rank_count[cprank] = 1
-                            else:
-                                rank_count[cprank] += 1
-                        self.remove_piece_on_square(place)
-                        self.place_piece_on_board(remove[0])
-                        self.place_piece_on_square(remove[1])
+                counts = self._count_lan_piece_move_candidates(
+                    match,
+                    piece_name,
+                    src_squares,
+                    destination,
+                    [(destination, piece_placement_data[destination])],
+                )
+                if counts is None:
+                    return
+                file_count, rank_count = counts
                 if not self.line_empty(piece.square.name, destination):
                     self._append_token_and_set_error(match)
                     return
@@ -1388,39 +1371,13 @@ class Game(GameData):
                 return
 
             # Piece move without capture.
-            candidates = []
-            for cpiece in self._pieces_on_board[piece_name]:
-                if cpiece.square.name in src_squares:
-                    candidates.append(cpiece)
-            if not candidates:
-                self._append_token_and_set_error(match)
-                return
-            file_count = {}
-            rank_count = {}
             from_square = piece.square
-            if len(candidates) > 1:
-                for cpiece in candidates:
-                    if not self.line_empty(cpiece.square.name, destination):
-                        continue
-                    square_before_move = cpiece.square
-                    cpfile, cprank = square_before_move.name
-                    remove = square_before_move.name, cpiece
-                    self.remove_piece_on_square(remove)
-                    place = destination, cpiece
-                    self.place_piece_on_square(place)
-                    if not self.is_piece_pinned_to_king(
-                        cpiece, square_before_move
-                    ):
-                        if cpfile not in file_count:
-                            file_count[cpfile] = 1
-                        else:
-                            file_count[cpfile] += 1
-                        if cprank not in rank_count:
-                            rank_count[cprank] = 1
-                        else:
-                            rank_count[cprank] += 1
-                    self.remove_piece_on_square(place)
-                    self.place_piece_on_square(remove)
+            counts = self._count_lan_piece_move_candidates(
+                match, piece_name, src_squares, destination, []
+            )
+            if counts is None:
+                return
+            file_count, rank_count = counts
             if not self.line_empty(piece.square.name, destination):
                 self._append_token_and_set_error(match)
                 return
@@ -1461,6 +1418,45 @@ class Game(GameData):
                 )
             self._full_disambiguation_detected = True
             return
+
+    def _count_lan_piece_move_candidates(
+        self, match, piece_name, src_squares, destination, remove_piece
+    ):
+        candidates = []
+        for cpiece in self._pieces_on_board[piece_name]:
+            if cpiece.square.name in src_squares:
+                candidates.append(cpiece)
+        if not candidates:
+            self._append_token_and_set_error(match)
+            return None
+        file_count = {}
+        rank_count = {}
+        if len(candidates) > 1:
+            for cpiece in candidates:
+                if not self.line_empty(cpiece.square.name, destination):
+                    continue
+                square_before_move = cpiece.square
+                cpfile, cprank = square_before_move.name
+                remove_all = remove_piece + [(square_before_move.name, cpiece)]
+                for remove in remove_all:
+                    self.remove_piece_on_square(remove)
+                place = destination, cpiece
+                self.place_piece_on_square(place)
+                if not self.is_piece_pinned_to_king(
+                    cpiece, square_before_move
+                ):
+                    if cpfile not in file_count:
+                        file_count[cpfile] = 1
+                    else:
+                        file_count[cpfile] += 1
+                    if cprank not in rank_count:
+                        rank_count[cprank] = 1
+                    else:
+                        rank_count[cprank] += 1
+                self.remove_piece_on_square(place)
+                for remove in remove_all:
+                    self.place_piece_on_square(remove)
+        return file_count, rank_count
 
     def _long_algebraic_notation_pawn_move(self, match):
         group = match.group
