@@ -1247,6 +1247,9 @@ class Game(GameData):
         if not landm:
             self._append_token_and_set_error(match)
             return
+        if landm.group(1) == "-" and self._strict_pgn is not None:
+            self._append_token_and_set_error(match)
+            return
 
         piece_placement_data = self._piece_placement_data
         capture, destination, promotion_piece = landm.groups()

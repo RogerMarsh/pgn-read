@@ -5302,8 +5302,8 @@ class _NonStrictPGN:
         ae = self.assertEqual
         games = self.get("Ng1-f3*")
         ae(len(games), 1)
-        ae(games[0].state, 1)
-        ae(games[0]._text, ["Nf3", " -f3", " *"])
+        ae(games[0].state, 0)
+        ae(games[0]._text, [" Ng1", " -f3", " *"])
 
     def test_181_01_pawn_move_or_too_much_precision(self):
         ae = self.assertEqual
