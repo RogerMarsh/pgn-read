@@ -3705,7 +3705,8 @@ class StrictDisambiguate(_BasePGN):
     def test_503_disambiguate_move_needed(self):
         ae = self.assertEqual
         fen = [
-            '[SetUp"1"][FEN"5q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]', "Kh3*"
+            '[SetUp"1"][FEN"5q2/8/1q1q1q2/8/8/8/6K1/2k5 b - - 0 1"]',
+            "Kh3*",
         ]
         move = ["Qf6", "d8"]
         for delimiter in ("", "-"):

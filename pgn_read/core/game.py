@@ -1218,7 +1218,8 @@ class Game(GameData):
     def _append_fully_disambiguated_piece_move(self, match_, dtfm_match):
         """Append fully disambiguated piece move without hyphen."""
         self._append_decorated_text(
-            match_.group() + dtfm_match.group(DG_DESTINATION))
+            match_.group() + dtfm_match.group(DG_DESTINATION)
+        )
 
     def _long_algebraic_notation_destination(self, match):
         peek_start = match.span(match.lastindex)[-1]
@@ -1272,108 +1273,21 @@ class Game(GameData):
         elif destination not in piece_placement_data:
             self._append_token_and_set_error(match)
             return
+        if promotion_piece:
+            self._append_token_and_set_error(match)
+            return
+        piece = piece_placement_data[group(IFG_PIECE_DESTINATION)]
+        src_squares = source_squares[group(IFG_PIECE_MOVE)][destination]
 
-        # Piece move.
-        if piece_name:
-            if promotion_piece:
-                self._append_token_and_set_error(match)
-                return
-            piece = piece_placement_data[group(IFG_PIECE_DESTINATION)]
-            src_squares = source_squares[group(IFG_PIECE_MOVE)][destination]
-
-            # Piece move and capture.
-            if capture == PGN_CAPTURE_MOVE:
-                from_square = piece.square
-                counts = self._count_lan_piece_move_candidates(
-                    match,
-                    piece_name,
-                    src_squares,
-                    destination,
-                    [(destination, piece_placement_data[destination])],
-                )
-                if counts is None:
-                    return
-                file_count, rank_count = counts
-                if not self.line_empty(piece.square.name, destination):
-                    self._append_token_and_set_error(match)
-                    return
-                # Does piece move without capture path need code from here:
-                square_before_move = piece.square
-                remove = (
-                    (destination, piece_placement_data[destination]),
-                    (square_before_move.name, piece),
-                )
-                self.remove_piece_from_board(remove[0])
-                self.remove_piece_on_square(remove[1])
-                place = destination, piece
-                self.place_piece_on_square(place)
-                if self.is_piece_pinned_to_king(piece, square_before_move):
-                    self.remove_piece_on_square(place)
-                    self.place_piece_on_board(remove[0])
-                    self.place_piece_on_square(remove[1])
-                    self.append_token_and_set_error(match)
-                    return
-                # to here?
-                # The only _long_algebraic_notation_piece_move() call at time
-                # of writing is guarded by a test on self._strict_pgn.
-                self._modify_game_state_piece_move(
-                    (
-                        (destination, piece_placement_data[destination]),
-                        (piece.square.name, piece),
-                    ),
-                    ((destination, piece),),
-                    fullmove_number_for_next_halfmove,
-                )
-                if self.is_side_off_move_in_check():
-                    self.undo_board_state()
-                    self._append_token_and_set_error(match)
-                    return
-                if len(file_count) < 2 and len(rank_count) < 2:
-                    self._append_decorated_text(
-                        PGN_CAPTURE_MOVE.join(
-                            (group(IFG_PIECE_MOVE), destination)
-                        )
-                    )
-                elif file_count[from_square.file] == 1:
-                    self._append_decorated_text(
-                        "".join(
-                            (
-                                group(IFG_PIECE_MOVE),
-                                from_square.file,
-                                PGN_CAPTURE_MOVE,
-                                destination,
-                            )
-                        )
-                    )
-                elif rank_count[from_square.rank] == 1:
-                    self._append_decorated_text(
-                        "".join(
-                            (
-                                group(IFG_PIECE_MOVE),
-                                from_square.rank,
-                                PGN_CAPTURE_MOVE,
-                                destination,
-                            )
-                        )
-                    )
-                else:
-                    self._append_decorated_text(
-                        "".join(
-                            (
-                                group(IFG_PIECE_MOVE),
-                                from_square.name,
-                                PGN_CAPTURE_MOVE,
-                                destination,
-                            )
-                        )
-                    )
-                self._full_disambiguation_detected = True
-                return
-
-            # Piece move without capture.
+        # Piece move and capture.
+        if capture == PGN_CAPTURE_MOVE:
             from_square = piece.square
             counts = self._count_lan_piece_move_candidates(
-                match, piece_name, src_squares, destination, []
+                match,
+                piece_name,
+                src_squares,
+                destination,
+                [(destination, piece_placement_data[destination])],
             )
             if counts is None:
                 return
@@ -1381,12 +1295,30 @@ class Game(GameData):
             if not self.line_empty(piece.square.name, destination):
                 self._append_token_and_set_error(match)
                 return
-            # Should the block of code in the piece move with capture path
-            # which tests if piece cannot be moved because it is pinned be
-            # copied to here?
-            # (Is there a test, not yet thought of, which breaks this code?)
+            # Does piece move without capture path need code from here:
+            square_before_move = piece.square
+            remove = (
+                (destination, piece_placement_data[destination]),
+                (square_before_move.name, piece),
+            )
+            self.remove_piece_from_board(remove[0])
+            self.remove_piece_on_square(remove[1])
+            place = destination, piece
+            self.place_piece_on_square(place)
+            if self.is_piece_pinned_to_king(piece, square_before_move):
+                self.remove_piece_on_square(place)
+                self.place_piece_on_board(remove[0])
+                self.place_piece_on_square(remove[1])
+                self.append_token_and_set_error(match)
+                return
+            # to here?
+            # The only _long_algebraic_notation_piece_move() call at time
+            # of writing is guarded by a test on self._strict_pgn.
             self._modify_game_state_piece_move(
-                ((piece.square.name, piece),),
+                (
+                    (destination, piece_placement_data[destination]),
+                    (piece.square.name, piece),
+                ),
                 ((destination, piece),),
                 fullmove_number_for_next_halfmove,
             )
@@ -1396,28 +1328,84 @@ class Game(GameData):
                 return
             if len(file_count) < 2 and len(rank_count) < 2:
                 self._append_decorated_text(
-                    group(IFG_PIECE_MOVE) + destination
+                    PGN_CAPTURE_MOVE.join((group(IFG_PIECE_MOVE), destination))
                 )
             elif file_count[from_square.file] == 1:
                 self._append_decorated_text(
                     "".join(
-                        (group(IFG_PIECE_MOVE), from_square.file, destination)
+                        (
+                            group(IFG_PIECE_MOVE),
+                            from_square.file,
+                            PGN_CAPTURE_MOVE,
+                            destination,
+                        )
                     )
                 )
             elif rank_count[from_square.rank] == 1:
                 self._append_decorated_text(
                     "".join(
-                        (group(IFG_PIECE_MOVE), from_square.rank, destination)
+                        (
+                            group(IFG_PIECE_MOVE),
+                            from_square.rank,
+                            PGN_CAPTURE_MOVE,
+                            destination,
+                        )
                     )
                 )
             else:
                 self._append_decorated_text(
                     "".join(
-                        (group(IFG_PIECE_MOVE), from_square.name, destination)
+                        (
+                            group(IFG_PIECE_MOVE),
+                            from_square.name,
+                            PGN_CAPTURE_MOVE,
+                            destination,
+                        )
                     )
                 )
             self._full_disambiguation_detected = True
             return
+
+        # Piece move without capture.
+        from_square = piece.square
+        counts = self._count_lan_piece_move_candidates(
+            match, piece_name, src_squares, destination, []
+        )
+        if counts is None:
+            return
+        file_count, rank_count = counts
+        if not self.line_empty(piece.square.name, destination):
+            self._append_token_and_set_error(match)
+            return
+        # Should the block of code in the piece move with capture path
+        # which tests if piece cannot be moved because it is pinned be
+        # copied to here?
+        # (Is there a test, not yet thought of, which breaks this code?)
+        self._modify_game_state_piece_move(
+            ((piece.square.name, piece),),
+            ((destination, piece),),
+            fullmove_number_for_next_halfmove,
+        )
+        if self.is_side_off_move_in_check():
+            self.undo_board_state()
+            self._append_token_and_set_error(match)
+            return
+        if len(file_count) < 2 and len(rank_count) < 2:
+            self._append_decorated_text(group(IFG_PIECE_MOVE) + destination)
+        elif file_count[from_square.file] == 1:
+            self._append_decorated_text(
+                "".join((group(IFG_PIECE_MOVE), from_square.file, destination))
+            )
+        elif rank_count[from_square.rank] == 1:
+            self._append_decorated_text(
+                "".join((group(IFG_PIECE_MOVE), from_square.rank, destination))
+            )
+        else:
+            self._append_decorated_text(
+                "".join((group(IFG_PIECE_MOVE), from_square.name, destination))
+            )
+        self._full_disambiguation_detected = True
+        return
 
     def _count_lan_piece_move_candidates(
         self, match, piece_name, src_squares, destination, remove_piece
