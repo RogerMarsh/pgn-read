@@ -1401,11 +1401,15 @@ class Game(GameData):
                 "".join((group(IFG_PIECE_MOVE), from_square.rank, destination))
             )
         else:
-            self._append_decorated_text(
-                "".join((group(IFG_PIECE_MOVE), from_square.name, destination))
+            self._append_piece_move_with_from_square(
+                group(IFG_PIECE_MOVE), from_square.name, destination
             )
         self._full_disambiguation_detected = True
         return
+
+    def _append_piece_move_with_from_square(self, name, from_, destination):
+        """Append fully disambiguated piece move without hyphen."""
+        self._append_decorated_text("".join((name, from_, destination)))
 
     def _count_lan_piece_move_candidates(
         self, match, piece_name, src_squares, destination, remove_piece
