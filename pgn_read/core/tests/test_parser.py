@@ -3304,6 +3304,62 @@ class StrictPGN(_BasePGN):
                 ae(games[0].state, 2)
                 ae(games[0]._text[-3:], [" Qe6", " -e8", " =QKb2*"])
 
+    def test_192_01_lan_king_move(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" Ke4", " d5", " *"])
+
+    def test_192_02_lan_king_move_hyphen(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" Ke4", " -d5", " *"])
+
+    def test_192_03_lan_knight_move_hyphen(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/5N2/8/8/k6K w - - 0 1"]',
+            "*",
+        ]
+        move = ["Nf4", "d5"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" Nf4", " -d5", " *"])
+
+    def test_192_04_lan_knight_move_full_disambiguation(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/5N2/8/1N3N2/8/8/k6K w - - 0 1"]',
+            "*",
+        ]
+        move = ["Nf4", "d5"]
+        for delimiter in ("-", ""):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Nf4d5", "*"])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -5895,6 +5951,20 @@ class PGN(_NonStrictPGN, StrictPGN):
         ):
             self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
+    def test_192_01_lan_king_move(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
+
 
 class PGNOneCharacterAtATime(_NonStrictPGN, StrictPGNOneCharacterAtATime):
     """Repeat PGN tests reading text one character at a time."""
@@ -6124,6 +6194,20 @@ class PGNOneCharacterAtATime(_NonStrictPGN, StrictPGNOneCharacterAtATime):
         ):
             self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
+    def test_192_01_lan_king_move(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
+
 
 class PGNExtendByOneCharacter(_NonStrictPGN, StrictPGNExtendByOneCharacter):
     """Repeat PGN tests reading text in two chunks, last is length 1."""
@@ -6352,6 +6436,20 @@ class PGNExtendByOneCharacter(_NonStrictPGN, StrictPGNExtendByOneCharacter):
             ("bB1q*", [" bB1q*"], 2),
         ):
             self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_192_01_lan_king_move(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
 
 
 class FEN(StrictFEN):
@@ -8170,6 +8268,48 @@ class GameTextPGN(_NonStrictText, StrictPGN):
         ae(games[0].state, 3)
         ae(games[0]._text, ["e4", "e5", "$111"])
 
+    def test_192_01_lan_king_move(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
+
+    def test_192_02_lan_king_move_hyphen(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
+
+    def test_192_03_lan_knight_move_hyphen(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/5N2/8/8/k6K w - - 0 1"]',
+            "*",
+        ]
+        move = ["Nf4", "d5"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Nd5", "*"])
+
 
 class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
     """Provide tests for GameIgnoreCasePGN version of parser.
@@ -9362,6 +9502,48 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
                 ae(len(games), 1)
                 ae(games[0].state, 2)
                 ae(games[0]._text[-3:], [" -e8=Q", " Kb2", " *"])
+
+    def test_192_01_lan_king_move(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
+
+    def test_192_02_lan_king_move_hyphen(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/4K3/8/8/k7 w - - 0 1"]',
+            "*",
+        ]
+        move = ["Ke4", "d5"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Kd5", "*"])
+
+    def test_192_03_lan_knight_move_hyphen(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"8/8/8/8/5N2/8/8/k6K w - - 0 1"]',
+            "*",
+        ]
+        move = ["Nf4", "d5"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, None)
+                ae(games[0]._text[-2:], ["Nd5", "*"])
 
 
 class GameLongAlgebraicNotationPawnMove(_BasePGN):
