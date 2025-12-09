@@ -1558,6 +1558,7 @@ class Game(GameData):
                 return
 
             # Promotion move without capture.
+            piece = piece_placement_data[square_name]
             if (
                 square_name
                 not in source_squares[source_squares_index][destination]

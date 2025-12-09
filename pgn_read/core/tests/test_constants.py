@@ -521,7 +521,7 @@ class Constants(unittest.TestCase):
         ae(constants.DG_DESTINATION, 2)
         ae(
             constants.LAN_FORMAT,
-            r"(?#Lower case)\A([-x]?)([a-h][1-8])(?:=(qrbn))?",
+            r"(?#Lower case)\A([-x]?)([a-h][1-8])(?:=([qrbn]))?",
         )
         ae(constants.LAN_MOVE_SEPARATOR, "-")
         ae(constants.LAN_CAPTURE_OR_MOVE, 1)

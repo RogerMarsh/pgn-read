@@ -10,8 +10,6 @@ from .constants import (
     FEN_WHITE_PIECES,
     FEN_WHITE_ACTIVE,
     FEN_BLACK_ACTIVE,
-    FEN_WHITE_KING,
-    FEN_BLACK_KING,
 )
 from .squares import fen_squares
 
@@ -52,15 +50,8 @@ class Piece:
         containing game was created.
 
         """
-        assert (
-            name not in FEN_PAWNS
-            and name != FEN_WHITE_KING
-            and name != FEN_BLACK_KING
-            and self.name in FEN_PAWNS
-        )
         promoted_pawn = Piece(name, *a)
         promoted_pawn.identity = self.identity
-        assert self.color == promoted_pawn.color
         return promoted_pawn
 
     # A possible database key, so probably belongs in subclass.

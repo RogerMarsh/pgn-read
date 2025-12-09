@@ -3263,6 +3263,47 @@ class StrictPGN(_BasePGN):
         ae(games[0].state, 2)
         ae(games[0]._position_deltas, [None, None, None])
 
+    def test_191_01_lan_promote_and_capture(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"4n3/3P4/8/8/8/8/8/k6K w - - 0 1"]',
+            "=QKa2*",
+        ]
+        move = ["d7", "e8"]
+        for delimiter in ("x",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" d7", " xe8", " =QKa2*"])
+
+    def test_191_02_lan_promote_and_capture(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"4n1Q1/8/4Q1Q1/8/8/8/8/k6K w - - 0 1"]',
+            "=QKb2*",
+        ]
+        move = ["Qe6", "e8"]
+        for delimiter in ("x",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" Qe6", " xe8", " =QKb2*"])
+
+    def test_191_03_lan_promote_and_capture(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"6Q1/8/4Q3/8/8/8/8/k6K w - - 0 1"]',
+            "=QKb2*",
+        ]
+        move = ["Qe6", "e8"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" Qe6", " -e8", " =QKb2*"])
+
 
 class StrictPGNOneCharacterAtATime(StrictPGN):
     """Repeat StrictPGN tests reading text one character at a time."""
@@ -3274,6 +3315,44 @@ class StrictPGNOneCharacterAtATime(StrictPGN):
 
         """
         return [g for g in self.pgn.read_games(io.StringIO(s), size=1)]
+
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
+            ("B7xc8=q*", [" B7xc8", " =q*"], 2),
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", [" b7", " xc8", " =q*"], 2),
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", [" B7xc8", " Q*"], 2),
+            ("B7xc8q*", [" B7xc8", " q*"], 2),
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", [" Bxc8", " =Q*"], 2),
+            ("Bxc8=q*", [" Bxc8", " =q*"], 2),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", ["bxc8=Q", "*"], None),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", [" Bxc8", " Q*"], 2),
+            ("Bxc8q*", [" Bxc8", " q*"], 2),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
 
 class StrictPGNExtendByOneCharacter(StrictPGN):
@@ -3289,6 +3368,44 @@ class StrictPGNExtendByOneCharacter(StrictPGN):
         t = io.StringIO(s)
         size = max(len(t.getvalue()) - 1, 1)
         return [g for g in self.pgn.read_games(t, size=size)]
+
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
+            ("B7xc8=q*", [" B7xc8", " =q*"], 2),
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", [" b7", " xc8", " =q*"], 2),
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", [" B7xc8", " Q*"], 2),
+            ("B7xc8q*", [" B7xc8", " q*"], 2),
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", [" Bxc8", " =Q*"], 2),
+            ("Bxc8=q*", [" Bxc8", " =q*"], 2),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", ["bxc8=Q", "*"], None),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", [" Bxc8", " Q*"], 2),
+            ("Bxc8q*", [" Bxc8", " q*"], 2),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
 
 class StrictFEN(_BasePGN):
@@ -5469,7 +5586,7 @@ class _NonStrictPGN:
             ("B2xC1=Q*", [" B2xC1=Q*"], 2),
             ("B2xC1=q*", [" B2xC1=q*"], 2),
             ("b2xc1=Q*", [" b2", " xc1", " =Q*"], 2),
-            ("b2xc1=q*", [" b2", " xc1", " =q*"], 2),
+            ("b2xc1=q*", ["b2", " xc1", " =q*"], 3),  # tolerate "b2" and 3.
             ("b2xC1=Q*", [" b2", " xC1=Q*"], 2),
             ("b2xC1=q*", [" b2", " xC1=q*"], 2),
             ("B2xc1Q*", ["Bxc1", " Q*"], 3),  #
@@ -5556,6 +5673,228 @@ class PGN(_NonStrictPGN, StrictPGN):
     def setUp(self):
         self.pgn = parser.PGN()
 
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
+            ("B7xc8=q*", [" B7xc8", " =q*"], 2),
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", ["b7", " xc8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", [" B7xc8", " Q*"], 2),
+            ("B7xc8q*", [" B7xc8", " q*"], 2),
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", [" Bxc8", " =Q*"], 2),
+            ("Bxc8=q*", [" Bxc8", " =q*"], 2),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", ["bxc8=Q", "*"], None),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", [" Bxc8", " Q*"], 2),
+            ("Bxc8q*", [" Bxc8", " q*"], 2),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", ["Bxc8", " =Q*"], 3),  #
+            ("B7xc8=q*", ["Bxc8", " =q*"], 3),  #
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", ["b7", " xc8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", ["Bxc8", " Q*"], 3),  #
+            ("B7xc8q*", ["Bxc8", " q*"], 3),  #
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", ["Bxc8", " =Q*"], 3),
+            ("Bxc8=q*", ["Bxc8", " =q*"], 3),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", [" bxc8=Q", " *"], 2),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", ["Bxc8", " Q*"], 3),
+            ("Bxc8q*", ["Bxc8", " q*"], 3),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
+        fen = '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7b8=Q*", [" B7b8", " =Q*"], 2),
+            ("B7b8=q*", [" B7b8", " =q*"], 2),
+            ("B7B8=Q*", [" B7B8=Q*"], 2),
+            ("B7B8=q*", [" B7B8=q*"], 2),
+            ("b7b8=Q*", [" b7", " b8=Q", " *"], 2),
+            ("b7b8=q*", ["b7", " b8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7B8=Q*", [" b7", " B8=Q*"], 2),
+            ("b7B8=q*", [" b7", " B8=q*"], 2),
+            ("B7b8Q*", [" B7b8", " Q*"], 2),
+            ("B7b8q*", [" B7b8", " q*"], 2),
+            ("B7B8Q*", [" B7B8Q*"], 2),
+            ("B7B8q*", [" B7B8q*"], 2),
+            ("b7b8Q*", [" b7", " b8", " Q*"], 2),
+            ("b7b8q*", [" b7", " b8", " q*"], 2),
+            ("b7B8Q*", [" b7", " B8Q*"], 2),
+            ("b7B8q*", [" b7", " B8q*"], 2),
+            ("B7-b8=Q*", [" B7-b8=Q*"], 2),
+            ("B7-b8=q*", [" B7-b8=q*"], 2),
+            ("B7-B8=Q*", [" B7-B8=Q*"], 2),
+            ("B7-B8=q*", [" B7-B8=q*"], 2),
+            ("b7-b8=Q*", [" b7", " -b8", " =Q*"], 2),
+            ("b7-b8=q*", [" b7", " -b8", " =q*"], 2),
+            ("b7-B8=Q*", [" b7", " -B8=Q*"], 2),
+            ("b7-B8=q*", [" b7", " -B8=q*"], 2),
+            ("B7-b8Q*", [" B7-b8Q*"], 2),
+            ("B7-b8q*", [" B7-b8q*"], 2),
+            ("B7-B8Q*", [" B7-B8Q*"], 2),
+            ("B7-B8q*", [" B7-B8q*"], 2),
+            ("b7-b8Q*", [" b7", " -b8", " Q*"], 2),
+            ("b7-b8q*", [" b7", " -b8", " q*"], 2),
+            ("b7-B8Q*", [" b7", " -B8Q*"], 2),
+            ("b7-B8q*", [" b7", " -B8q*"], 2),
+            ("Bb8=Q*", [" Bb8", " =Q*"], 2),
+            ("Bb8=q*", [" Bb8", " =q*"], 2),
+            ("BB8=Q*", [" BB8=Q*"], 2),
+            ("BB8=q*", [" BB8=q*"], 2),
+            ("bb8=Q*", [" bb8=Q*"], 2),
+            ("bb8=q*", [" bb8=q*"], 2),
+            ("bB8=Q*", [" bB8=Q*"], 2),
+            ("bB8=q*", [" bB8=q*"], 2),
+            ("Bb8Q*", [" Bb8", " Q*"], 2),
+            ("Bb8q*", [" Bb8", " q*"], 2),
+            ("BB8Q*", [" BB8Q*"], 2),
+            ("BB8q*", [" BB8q*"], 2),
+            ("bb8Q*", [" bb8Q*"], 2),
+            ("bb8q*", [" bb8q*"], 2),
+            ("bB8Q*", [" bB8Q*"], 2),
+            ("bB8q*", [" bB8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
+        fen = '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
+            ("B2xc1=Q*", [" B2xc1", " =Q*"], 2),
+            ("B2xc1=q*", [" B2xc1", " =q*"], 2),
+            ("B2xC1=Q*", [" B2xC1=Q*"], 2),
+            ("B2xC1=q*", [" B2xC1=q*"], 2),
+            ("b2xc1=Q*", [" b2", " xc1", " =Q*"], 2),
+            ("b2xc1=q*", ["b2", " xc1", " =q*"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=Q*", [" b2", " xC1=Q*"], 2),
+            ("b2xC1=q*", [" b2", " xC1=q*"], 2),
+            ("B2xc1Q*", [" B2xc1", " Q*"], 2),
+            ("B2xc1q*", [" B2xc1", " q*"], 2),
+            ("B2xC1Q*", [" B2xC1Q*"], 2),
+            ("B2xC1q*", [" B2xC1q*"], 2),
+            ("b2xc1Q*", [" b2", " xc1", " Q*"], 2),
+            ("b2xc1q*", [" b2", " xc1", " q*"], 2),
+            ("b2xC1Q*", [" b2", " xC1Q*"], 2),
+            ("b2xC1q*", [" b2", " xC1q*"], 2),
+            ("Bxc1=Q*", [" Bxc1", " =Q*"], 2),
+            ("Bxc1=q*", [" Bxc1", " =q*"], 2),
+            ("BxC1=Q*", [" BxC1=Q*"], 2),
+            ("BxC1=q*", [" BxC1=q*"], 2),
+            ("bxc1=Q*", ["bxc1=Q", "*"], None),
+            ("bxc1=q*", [" bxc1=q*"], 2),
+            ("bxC1=Q*", [" bxC1=Q*"], 2),
+            ("bxC1=q*", [" bxC1=q*"], 2),
+            ("Bxc1Q*", [" Bxc1", " Q*"], 2),
+            ("Bxc1q*", [" Bxc1", " q*"], 2),
+            ("BxC1Q*", [" BxC1Q*"], 2),
+            ("BxC1q*", [" BxC1q*"], 2),
+            ("bxc1Q*", [" bxc1Q*"], 2),
+            ("bxc1q*", [" bxc1q*"], 2),
+            ("bxC1Q*", [" bxC1Q*"], 2),
+            ("bxC1q*", [" bxC1q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
+        fen = '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
+            ("B2b1=Q*", [" B2b1", " =Q*"], 2),
+            ("B2b1=q*", [" B2b1", " =q*"], 2),
+            ("B2B1=Q*", [" B2B1=Q*"], 2),
+            ("B2B1=q*", [" B2B1=q*"], 2),
+            ("b2b1=Q*", [" b2", " b1=Q", " *"], 2),
+            ("b2b1=q*", ["b2", " b1", " =q*"], 3),  # tolerate "b2" and 3.
+            ("b2B1=Q*", [" b2", " B1=Q*"], 2),
+            ("b2B1=q*", [" b2", " B1=q*"], 2),
+            ("B2b1Q*", [" B2b1", " Q*"], 2),
+            ("B2b1q*", [" B2b1", " q*"], 2),
+            ("B2B1Q*", [" B2B1Q*"], 2),
+            ("B2B1q*", [" B2B1q*"], 2),
+            ("b2b1Q*", [" b2", " b1", " Q*"], 2),
+            ("b2b1q*", [" b2", " b1", " q*"], 2),
+            ("b2B1Q*", [" b2", " B1Q*"], 2),
+            ("b2B1q*", [" b2", " B1q*"], 2),
+            ("B2-b1=Q*", [" B2-b1=Q*"], 2),
+            ("B2-b1=q*", [" B2-b1=q*"], 2),
+            ("B2-B1=Q*", [" B2-B1=Q*"], 2),
+            ("B2-B1=q*", [" B2-B1=q*"], 2),
+            ("b2-b1=Q*", [" b2", " -b1", " =Q*"], 2),
+            ("b2-b1=q*", [" b2", " -b1", " =q*"], 2),
+            ("b2-B1=Q*", [" b2", " -B1=Q*"], 2),
+            ("b2-B1=q*", [" b2", " -B1=q*"], 2),
+            ("B2-b1Q*", [" B2-b1Q*"], 2),
+            ("B2-b1q*", [" B2-b1q*"], 2),
+            ("B2-B1Q*", [" B2-B1Q*"], 2),
+            ("B2-B1q*", [" B2-B1q*"], 2),
+            ("b2-b1Q*", [" b2", " -b1", " Q*"], 2),
+            ("b2-b1q*", [" b2", " -b1", " q*"], 2),
+            ("b2-B1Q*", [" b2", " -B1Q*"], 2),
+            ("b2-B1q*", [" b2", " -B1q*"], 2),
+            ("Bb1=Q*", [" Bb1", " =Q*"], 2),
+            ("Bb1=q*", [" Bb1", " =q*"], 2),
+            ("BB1=Q*", [" BB1=Q*"], 2),
+            ("BB1=q*", [" BB1=q*"], 2),
+            ("bb1=Q*", [" bb1=Q*"], 2),
+            ("bb1=q*", [" bb1=q*"], 2),
+            ("bB1=Q*", [" bB1=Q*"], 2),
+            ("bB1=q*", [" bB1=q*"], 2),
+            ("Bb1Q*", [" Bb1", " Q*"], 2),
+            ("Bb1q*", [" Bb1", " q*"], 2),
+            ("BB1Q*", [" BB1Q*"], 2),
+            ("BB1q*", [" BB1q*"], 2),
+            ("bb1Q*", [" bb1Q*"], 2),
+            ("bb1q*", [" bb1q*"], 2),
+            ("bB1Q*", [" bB1Q*"], 2),
+            ("bB1q*", [" bB1q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
 
 class PGNOneCharacterAtATime(_NonStrictPGN, StrictPGNOneCharacterAtATime):
     """Repeat PGN tests reading text one character at a time."""
@@ -5563,12 +5902,456 @@ class PGNOneCharacterAtATime(_NonStrictPGN, StrictPGNOneCharacterAtATime):
     def setUp(self):
         self.pgn = parser.PGN()
 
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
+            ("B7xc8=q*", [" B7xc8", " =q*"], 2),
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", ["b7", " xc8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", [" B7xc8", " Q*"], 2),
+            ("B7xc8q*", [" B7xc8", " q*"], 2),
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", [" Bxc8", " =Q*"], 2),
+            ("Bxc8=q*", [" Bxc8", " =q*"], 2),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", ["bxc8=Q", "*"], None),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", [" Bxc8", " Q*"], 2),
+            ("Bxc8q*", [" Bxc8", " q*"], 2),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", ["Bxc8", " =Q*"], 3),  #
+            ("B7xc8=q*", ["Bxc8", " =q*"], 3),  #
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", ["b7", " xc8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", ["Bxc8", " Q*"], 3),  #
+            ("B7xc8q*", ["Bxc8", " q*"], 3),  #
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", ["Bxc8", " =Q*"], 3),
+            ("Bxc8=q*", ["Bxc8", " =q*"], 3),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", [" bxc8=Q", " *"], 2),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", ["Bxc8", " Q*"], 3),
+            ("Bxc8q*", ["Bxc8", " q*"], 3),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
+        fen = '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7b8=Q*", [" B7b8", " =Q*"], 2),
+            ("B7b8=q*", [" B7b8", " =q*"], 2),
+            ("B7B8=Q*", [" B7B8=Q*"], 2),
+            ("B7B8=q*", [" B7B8=q*"], 2),
+            ("b7b8=Q*", [" b7", " b8=Q", " *"], 2),
+            ("b7b8=q*", ["b7", " b8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7B8=Q*", [" b7", " B8=Q*"], 2),
+            ("b7B8=q*", [" b7", " B8=q*"], 2),
+            ("B7b8Q*", [" B7b8", " Q*"], 2),
+            ("B7b8q*", [" B7b8", " q*"], 2),
+            ("B7B8Q*", [" B7B8Q*"], 2),
+            ("B7B8q*", [" B7B8q*"], 2),
+            ("b7b8Q*", [" b7", " b8", " Q*"], 2),
+            ("b7b8q*", [" b7", " b8", " q*"], 2),
+            ("b7B8Q*", [" b7", " B8Q*"], 2),
+            ("b7B8q*", [" b7", " B8q*"], 2),
+            ("B7-b8=Q*", [" B7-b8=Q*"], 2),
+            ("B7-b8=q*", [" B7-b8=q*"], 2),
+            ("B7-B8=Q*", [" B7-B8=Q*"], 2),
+            ("B7-B8=q*", [" B7-B8=q*"], 2),
+            ("b7-b8=Q*", [" b7", " -b8", " =Q*"], 2),
+            ("b7-b8=q*", [" b7", " -b8", " =q*"], 2),
+            ("b7-B8=Q*", [" b7", " -B8=Q*"], 2),
+            ("b7-B8=q*", [" b7", " -B8=q*"], 2),
+            ("B7-b8Q*", [" B7-b8Q*"], 2),
+            ("B7-b8q*", [" B7-b8q*"], 2),
+            ("B7-B8Q*", [" B7-B8Q*"], 2),
+            ("B7-B8q*", [" B7-B8q*"], 2),
+            ("b7-b8Q*", [" b7", " -b8", " Q*"], 2),
+            ("b7-b8q*", [" b7", " -b8", " q*"], 2),
+            ("b7-B8Q*", [" b7", " -B8Q*"], 2),
+            ("b7-B8q*", [" b7", " -B8q*"], 2),
+            ("Bb8=Q*", [" Bb8", " =Q*"], 2),
+            ("Bb8=q*", [" Bb8", " =q*"], 2),
+            ("BB8=Q*", [" BB8=Q*"], 2),
+            ("BB8=q*", [" BB8=q*"], 2),
+            ("bb8=Q*", [" bb8=Q*"], 2),
+            ("bb8=q*", [" bb8=q*"], 2),
+            ("bB8=Q*", [" bB8=Q*"], 2),
+            ("bB8=q*", [" bB8=q*"], 2),
+            ("Bb8Q*", [" Bb8", " Q*"], 2),
+            ("Bb8q*", [" Bb8", " q*"], 2),
+            ("BB8Q*", [" BB8Q*"], 2),
+            ("BB8q*", [" BB8q*"], 2),
+            ("bb8Q*", [" bb8Q*"], 2),
+            ("bb8q*", [" bb8q*"], 2),
+            ("bB8Q*", [" bB8Q*"], 2),
+            ("bB8q*", [" bB8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
+        fen = '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
+            ("B2xc1=Q*", [" B2xc1", " =Q*"], 2),
+            ("B2xc1=q*", [" B2xc1", " =q*"], 2),
+            ("B2xC1=Q*", [" B2xC1=Q*"], 2),
+            ("B2xC1=q*", [" B2xC1=q*"], 2),
+            ("b2xc1=Q*", [" b2", " xc1", " =Q*"], 2),
+            ("b2xc1=q*", ["b2", " xc1", " =q*"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=Q*", [" b2", " xC1=Q*"], 2),
+            ("b2xC1=q*", [" b2", " xC1=q*"], 2),
+            ("B2xc1Q*", [" B2xc1", " Q*"], 2),
+            ("B2xc1q*", [" B2xc1", " q*"], 2),
+            ("B2xC1Q*", [" B2xC1Q*"], 2),
+            ("B2xC1q*", [" B2xC1q*"], 2),
+            ("b2xc1Q*", [" b2", " xc1", " Q*"], 2),
+            ("b2xc1q*", [" b2", " xc1", " q*"], 2),
+            ("b2xC1Q*", [" b2", " xC1Q*"], 2),
+            ("b2xC1q*", [" b2", " xC1q*"], 2),
+            ("Bxc1=Q*", [" Bxc1", " =Q*"], 2),
+            ("Bxc1=q*", [" Bxc1", " =q*"], 2),
+            ("BxC1=Q*", [" BxC1=Q*"], 2),
+            ("BxC1=q*", [" BxC1=q*"], 2),
+            ("bxc1=Q*", ["bxc1=Q", "*"], None),
+            ("bxc1=q*", [" bxc1=q*"], 2),
+            ("bxC1=Q*", [" bxC1=Q*"], 2),
+            ("bxC1=q*", [" bxC1=q*"], 2),
+            ("Bxc1Q*", [" Bxc1", " Q*"], 2),
+            ("Bxc1q*", [" Bxc1", " q*"], 2),
+            ("BxC1Q*", [" BxC1Q*"], 2),
+            ("BxC1q*", [" BxC1q*"], 2),
+            ("bxc1Q*", [" bxc1Q*"], 2),
+            ("bxc1q*", [" bxc1q*"], 2),
+            ("bxC1Q*", [" bxC1Q*"], 2),
+            ("bxC1q*", [" bxC1q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
+        fen = '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
+            ("B2b1=Q*", [" B2b1", " =Q*"], 2),
+            ("B2b1=q*", [" B2b1", " =q*"], 2),
+            ("B2B1=Q*", [" B2B1=Q*"], 2),
+            ("B2B1=q*", [" B2B1=q*"], 2),
+            ("b2b1=Q*", [" b2", " b1=Q", " *"], 2),
+            ("b2b1=q*", ["b2", " b1", " =q*"], 3),  # tolerate "b2" and 3.
+            ("b2B1=Q*", [" b2", " B1=Q*"], 2),
+            ("b2B1=q*", [" b2", " B1=q*"], 2),
+            ("B2b1Q*", [" B2b1", " Q*"], 2),
+            ("B2b1q*", [" B2b1", " q*"], 2),
+            ("B2B1Q*", [" B2B1Q*"], 2),
+            ("B2B1q*", [" B2B1q*"], 2),
+            ("b2b1Q*", [" b2", " b1", " Q*"], 2),
+            ("b2b1q*", [" b2", " b1", " q*"], 2),
+            ("b2B1Q*", [" b2", " B1Q*"], 2),
+            ("b2B1q*", [" b2", " B1q*"], 2),
+            ("B2-b1=Q*", [" B2-b1=Q*"], 2),
+            ("B2-b1=q*", [" B2-b1=q*"], 2),
+            ("B2-B1=Q*", [" B2-B1=Q*"], 2),
+            ("B2-B1=q*", [" B2-B1=q*"], 2),
+            ("b2-b1=Q*", [" b2", " -b1", " =Q*"], 2),
+            ("b2-b1=q*", [" b2", " -b1", " =q*"], 2),
+            ("b2-B1=Q*", [" b2", " -B1=Q*"], 2),
+            ("b2-B1=q*", [" b2", " -B1=q*"], 2),
+            ("B2-b1Q*", [" B2-b1Q*"], 2),
+            ("B2-b1q*", [" B2-b1q*"], 2),
+            ("B2-B1Q*", [" B2-B1Q*"], 2),
+            ("B2-B1q*", [" B2-B1q*"], 2),
+            ("b2-b1Q*", [" b2", " -b1", " Q*"], 2),
+            ("b2-b1q*", [" b2", " -b1", " q*"], 2),
+            ("b2-B1Q*", [" b2", " -B1Q*"], 2),
+            ("b2-B1q*", [" b2", " -B1q*"], 2),
+            ("Bb1=Q*", [" Bb1", " =Q*"], 2),
+            ("Bb1=q*", [" Bb1", " =q*"], 2),
+            ("BB1=Q*", [" BB1=Q*"], 2),
+            ("BB1=q*", [" BB1=q*"], 2),
+            ("bb1=Q*", [" bb1=Q*"], 2),
+            ("bb1=q*", [" bb1=q*"], 2),
+            ("bB1=Q*", [" bB1=Q*"], 2),
+            ("bB1=q*", [" bB1=q*"], 2),
+            ("Bb1Q*", [" Bb1", " Q*"], 2),
+            ("Bb1q*", [" Bb1", " q*"], 2),
+            ("BB1Q*", [" BB1Q*"], 2),
+            ("BB1q*", [" BB1q*"], 2),
+            ("bb1Q*", [" bb1Q*"], 2),
+            ("bb1q*", [" bb1q*"], 2),
+            ("bB1Q*", [" bB1Q*"], 2),
+            ("bB1q*", [" bB1q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
 
 class PGNExtendByOneCharacter(_NonStrictPGN, StrictPGNExtendByOneCharacter):
     """Repeat PGN tests reading text in two chunks, last is length 1."""
 
     def setUp(self):
         self.pgn = parser.PGN()
+
+    def test_183_01_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1P6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", [" B7xc8", " =Q*"], 2),
+            ("B7xc8=q*", [" B7xc8", " =q*"], 2),
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", ["b7", " xc8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", [" B7xc8", " Q*"], 2),
+            ("B7xc8q*", [" B7xc8", " q*"], 2),
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", [" Bxc8", " =Q*"], 2),
+            ("Bxc8=q*", [" Bxc8", " =q*"], 2),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", ["bxc8=Q", "*"], None),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", [" Bxc8", " Q*"], 2),
+            ("Bxc8q*", [" Bxc8", " q*"], 2),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_183_02_pawn_promotion_bc8_or_too_much_precision(self):
+        fen = '[FEN"2bk4/1B6/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7xc8=Q*", ["Bxc8", " =Q*"], 3),  #
+            ("B7xc8=q*", ["Bxc8", " =q*"], 3),  #
+            ("B7xC8=Q*", [" B7xC8=Q*"], 2),
+            ("B7xC8=q*", [" B7xC8=q*"], 2),
+            ("b7xc8=Q*", [" b7", " xc8", " =Q*"], 2),
+            ("b7xc8=q*", ["b7", " xc8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
+            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("B7xc8Q*", ["Bxc8", " Q*"], 3),  #
+            ("B7xc8q*", ["Bxc8", " q*"], 3),  #
+            ("B7xC8Q*", [" B7xC8Q*"], 2),
+            ("B7xC8q*", [" B7xC8q*"], 2),
+            ("b7xc8Q*", [" b7", " xc8", " Q*"], 2),
+            ("b7xc8q*", [" b7", " xc8", " q*"], 2),
+            ("b7xC8Q*", [" b7", " xC8Q*"], 2),
+            ("b7xC8q*", [" b7", " xC8q*"], 2),
+            ("Bxc8=Q*", ["Bxc8", " =Q*"], 3),
+            ("Bxc8=q*", ["Bxc8", " =q*"], 3),
+            ("BxC8=Q*", [" BxC8=Q*"], 2),
+            ("BxC8=q*", [" BxC8=q*"], 2),
+            ("bxc8=Q*", [" bxc8=Q", " *"], 2),
+            ("bxc8=q*", [" bxc8=q*"], 2),
+            ("bxC8=Q*", [" bxC8=Q*"], 2),
+            ("bxC8=q*", [" bxC8=q*"], 2),
+            ("Bxc8Q*", ["Bxc8", " Q*"], 3),
+            ("Bxc8q*", ["Bxc8", " q*"], 3),
+            ("BxC8Q*", [" BxC8Q*"], 2),
+            ("BxC8q*", [" BxC8q*"], 2),
+            ("bxc8Q*", [" bxc8Q*"], 2),
+            ("bxc8q*", [" bxc8q*"], 2),
+            ("bxC8Q*", [" bxC8Q*"], 2),
+            ("bxC8q*", [" bxC8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_184_01_pawn_promotion_b8_or_too_much_precision(self):
+        fen = '[FEN"3k4/1Pb5/8/8/8/8/8/4K3 w - - 0 1"]'
+        for string, tokens, state in (
+            ("B7b8=Q*", [" B7b8", " =Q*"], 2),
+            ("B7b8=q*", [" B7b8", " =q*"], 2),
+            ("B7B8=Q*", [" B7B8=Q*"], 2),
+            ("B7B8=q*", [" B7B8=q*"], 2),
+            ("b7b8=Q*", [" b7", " b8=Q", " *"], 2),
+            ("b7b8=q*", ["b7", " b8", " =q*"], 3),  # tolerate "b7" and 3.
+            ("b7B8=Q*", [" b7", " B8=Q*"], 2),
+            ("b7B8=q*", [" b7", " B8=q*"], 2),
+            ("B7b8Q*", [" B7b8", " Q*"], 2),
+            ("B7b8q*", [" B7b8", " q*"], 2),
+            ("B7B8Q*", [" B7B8Q*"], 2),
+            ("B7B8q*", [" B7B8q*"], 2),
+            ("b7b8Q*", [" b7", " b8", " Q*"], 2),
+            ("b7b8q*", [" b7", " b8", " q*"], 2),
+            ("b7B8Q*", [" b7", " B8Q*"], 2),
+            ("b7B8q*", [" b7", " B8q*"], 2),
+            ("B7-b8=Q*", [" B7-b8=Q*"], 2),
+            ("B7-b8=q*", [" B7-b8=q*"], 2),
+            ("B7-B8=Q*", [" B7-B8=Q*"], 2),
+            ("B7-B8=q*", [" B7-B8=q*"], 2),
+            ("b7-b8=Q*", [" b7", " -b8", " =Q*"], 2),
+            ("b7-b8=q*", [" b7", " -b8", " =q*"], 2),
+            ("b7-B8=Q*", [" b7", " -B8=Q*"], 2),
+            ("b7-B8=q*", [" b7", " -B8=q*"], 2),
+            ("B7-b8Q*", [" B7-b8Q*"], 2),
+            ("B7-b8q*", [" B7-b8q*"], 2),
+            ("B7-B8Q*", [" B7-B8Q*"], 2),
+            ("B7-B8q*", [" B7-B8q*"], 2),
+            ("b7-b8Q*", [" b7", " -b8", " Q*"], 2),
+            ("b7-b8q*", [" b7", " -b8", " q*"], 2),
+            ("b7-B8Q*", [" b7", " -B8Q*"], 2),
+            ("b7-B8q*", [" b7", " -B8q*"], 2),
+            ("Bb8=Q*", [" Bb8", " =Q*"], 2),
+            ("Bb8=q*", [" Bb8", " =q*"], 2),
+            ("BB8=Q*", [" BB8=Q*"], 2),
+            ("BB8=q*", [" BB8=q*"], 2),
+            ("bb8=Q*", [" bb8=Q*"], 2),
+            ("bb8=q*", [" bb8=q*"], 2),
+            ("bB8=Q*", [" bB8=Q*"], 2),
+            ("bB8=q*", [" bB8=q*"], 2),
+            ("Bb8Q*", [" Bb8", " Q*"], 2),
+            ("Bb8q*", [" Bb8", " q*"], 2),
+            ("BB8Q*", [" BB8Q*"], 2),
+            ("BB8q*", [" BB8q*"], 2),
+            ("bb8Q*", [" bb8Q*"], 2),
+            ("bb8q*", [" bb8q*"], 2),
+            ("bB8Q*", [" bB8Q*"], 2),
+            ("bB8q*", [" bB8q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_186_01_pawn_promotion_bc1_or_too_much_precision(self):
+        fen = '[FEN"8/4K3/8/8/8/8/1p6/2Bk4 b - - 0 1"]'
+        for string, tokens, state in (
+            ("B2xc1=Q*", [" B2xc1", " =Q*"], 2),
+            ("B2xc1=q*", [" B2xc1", " =q*"], 2),
+            ("B2xC1=Q*", [" B2xC1=Q*"], 2),
+            ("B2xC1=q*", [" B2xC1=q*"], 2),
+            ("b2xc1=Q*", [" b2", " xc1", " =Q*"], 2),
+            ("b2xc1=q*", ["b2", " xc1", " =q*"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=Q*", [" b2", " xC1=Q*"], 2),
+            ("b2xC1=q*", [" b2", " xC1=q*"], 2),
+            ("B2xc1Q*", [" B2xc1", " Q*"], 2),
+            ("B2xc1q*", [" B2xc1", " q*"], 2),
+            ("B2xC1Q*", [" B2xC1Q*"], 2),
+            ("B2xC1q*", [" B2xC1q*"], 2),
+            ("b2xc1Q*", [" b2", " xc1", " Q*"], 2),
+            ("b2xc1q*", [" b2", " xc1", " q*"], 2),
+            ("b2xC1Q*", [" b2", " xC1Q*"], 2),
+            ("b2xC1q*", [" b2", " xC1q*"], 2),
+            ("Bxc1=Q*", [" Bxc1", " =Q*"], 2),
+            ("Bxc1=q*", [" Bxc1", " =q*"], 2),
+            ("BxC1=Q*", [" BxC1=Q*"], 2),
+            ("BxC1=q*", [" BxC1=q*"], 2),
+            ("bxc1=Q*", ["bxc1=Q", "*"], None),
+            ("bxc1=q*", [" bxc1=q*"], 2),
+            ("bxC1=Q*", [" bxC1=Q*"], 2),
+            ("bxC1=q*", [" bxC1=q*"], 2),
+            ("Bxc1Q*", [" Bxc1", " Q*"], 2),
+            ("Bxc1q*", [" Bxc1", " q*"], 2),
+            ("BxC1Q*", [" BxC1Q*"], 2),
+            ("BxC1q*", [" BxC1q*"], 2),
+            ("bxc1Q*", [" bxc1Q*"], 2),
+            ("bxc1q*", [" bxc1q*"], 2),
+            ("bxC1Q*", [" bxC1Q*"], 2),
+            ("bxC1q*", [" bxC1q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
+
+    def test_187_01_pawn_promotion_b1_or_too_much_precision(self):
+        fen = '[FEN"4K3/8/8/8/8/8/1pB5/4k3 b - - 0 1"]'
+        for string, tokens, state in (
+            ("B2b1=Q*", [" B2b1", " =Q*"], 2),
+            ("B2b1=q*", [" B2b1", " =q*"], 2),
+            ("B2B1=Q*", [" B2B1=Q*"], 2),
+            ("B2B1=q*", [" B2B1=q*"], 2),
+            ("b2b1=Q*", [" b2", " b1=Q", " *"], 2),
+            ("b2b1=q*", ["b2", " b1", " =q*"], 3),  # tolerate "b2" and 3.
+            ("b2B1=Q*", [" b2", " B1=Q*"], 2),
+            ("b2B1=q*", [" b2", " B1=q*"], 2),
+            ("B2b1Q*", [" B2b1", " Q*"], 2),
+            ("B2b1q*", [" B2b1", " q*"], 2),
+            ("B2B1Q*", [" B2B1Q*"], 2),
+            ("B2B1q*", [" B2B1q*"], 2),
+            ("b2b1Q*", [" b2", " b1", " Q*"], 2),
+            ("b2b1q*", [" b2", " b1", " q*"], 2),
+            ("b2B1Q*", [" b2", " B1Q*"], 2),
+            ("b2B1q*", [" b2", " B1q*"], 2),
+            ("B2-b1=Q*", [" B2-b1=Q*"], 2),
+            ("B2-b1=q*", [" B2-b1=q*"], 2),
+            ("B2-B1=Q*", [" B2-B1=Q*"], 2),
+            ("B2-B1=q*", [" B2-B1=q*"], 2),
+            ("b2-b1=Q*", [" b2", " -b1", " =Q*"], 2),
+            ("b2-b1=q*", [" b2", " -b1", " =q*"], 2),
+            ("b2-B1=Q*", [" b2", " -B1=Q*"], 2),
+            ("b2-B1=q*", [" b2", " -B1=q*"], 2),
+            ("B2-b1Q*", [" B2-b1Q*"], 2),
+            ("B2-b1q*", [" B2-b1q*"], 2),
+            ("B2-B1Q*", [" B2-B1Q*"], 2),
+            ("B2-B1q*", [" B2-B1q*"], 2),
+            ("b2-b1Q*", [" b2", " -b1", " Q*"], 2),
+            ("b2-b1q*", [" b2", " -b1", " q*"], 2),
+            ("b2-B1Q*", [" b2", " -B1Q*"], 2),
+            ("b2-B1q*", [" b2", " -B1q*"], 2),
+            ("Bb1=Q*", [" Bb1", " =Q*"], 2),
+            ("Bb1=q*", [" Bb1", " =q*"], 2),
+            ("BB1=Q*", [" BB1=Q*"], 2),
+            ("BB1=q*", [" BB1=q*"], 2),
+            ("bb1=Q*", [" bb1=Q*"], 2),
+            ("bb1=q*", [" bb1=q*"], 2),
+            ("bB1=Q*", [" bB1=Q*"], 2),
+            ("bB1=q*", [" bB1=q*"], 2),
+            ("Bb1Q*", [" Bb1", " Q*"], 2),
+            ("Bb1q*", [" Bb1", " q*"], 2),
+            ("BB1Q*", [" BB1Q*"], 2),
+            ("BB1q*", [" BB1q*"], 2),
+            ("bb1Q*", [" bb1Q*"], 2),
+            ("bb1q*", [" bb1q*"], 2),
+            ("bB1Q*", [" bB1Q*"], 2),
+            ("bB1q*", [" bB1q*"], 2),
+        ):
+            self.b_is_bishop_or_b_pawn(fen, string, tokens, state)
 
 
 class FEN(StrictFEN):
@@ -6463,6 +7246,32 @@ class _NonStrictText:
             ],
         )
 
+    def test_191_01_lan_promote_and_capture(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"4n3/3P4/8/8/8/8/8/k6K w - - 0 1"]',
+            "=QKa2*",
+        ]
+        move = ["d7", "e8"]
+        for delimiter in ("x",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(games[0].state, None)
+                ae(games[0]._text[-3:], ["dxe8=Q", "Ka2", "*"])
+
+    def test_191_02_lan_promote_and_capture(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"4n3/3P4/8/8/8/8/8/k6K w - - 0 1"]',
+            "=QKa2*",
+        ]
+        move = ["d7", "e8"]
+        for delimiter in ("x",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(games[0].state, None)
+                ae(games[0]._text[-3:], ["dxe8=Q", "Ka2", "*"])
+
 
 class GameTextPGN(_NonStrictText, StrictPGN):
     """Provide tests for GameTextPGN version of parser."""
@@ -6779,6 +7588,45 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ],
         )
 
+    # Rejected like this in all cases except 'ignore case', where it is seen
+    # as an attempted bishop move from rank 7 to b8, 'B7b8'.
+    def test_166_03_long_algebraic_white_b_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]b7b8=Q*'
+        )
+        ae(len(games), 1)
+        ae(
+            games[0]._text,
+            [
+                '[SetUp"1"]',
+                '[FEN"3k4/1P6/8/8/8/8/8/4K3 w - - 0 1"]',
+                "b7",
+                " b8=Q",
+                " *",
+            ],
+        )
+        ae(games[0].state, 3)
+
+    # Always rejected as an attempt to move a pawn from f6 to f7.
+    def test_166_04_long_algebraic_white_f_pawn_move(self):
+        ae = self.assertEqual
+        games = self.get(
+            '[SetUp"1"][FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]f7f8=Q*'
+        )
+        ae(len(games), 1)
+        ae(
+            games[0]._text,
+            [
+                '[SetUp"1"]',
+                '[FEN"3k4/5P2/8/8/8/8/8/4K3 w - - 0 1"]',
+                "f7",
+                " f8=Q",
+                " *",
+            ],
+        )
+        ae(games[0].state, 3)
+
     # Added while fixing Little.pgn upper case processing.
     # b7b5 is redundant precision, not long algebraic notation.
     def test_170_long_algebraic_black_b_pawn_move(self):
@@ -6912,9 +7760,9 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("B7xC8=Q*", [], 2),
             ("B7xC8=q*", [], 2),
             ("b7xc8=Q*", ["bxc8=Q", "*"], None),
-            ("b7xc8=q*", [" b7", " xc8", " =q*"], 2),
-            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
-            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("b7xc8=q*", ["b7"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", ["b7"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=q*", ["b7"], 3),  # tolerate "b7" and 3.
             ("B7xc8Q*", [" B7xc8", " Q*"], 2),
             ("B7xc8q*", [" B7xc8", " q*"], 2),
             ("B7xC8Q*", [], 2),
@@ -6950,9 +7798,9 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("B7xC8=Q*", [], 2),
             ("B7xC8=q*", [], 2),
             ("b7xc8=Q*", [" bxc8=Q", " *"], 2),
-            ("b7xc8=q*", [" b7", " xc8", " =q*"], 2),
-            ("b7xC8=Q*", [" b7", " xC8=Q*"], 2),
-            ("b7xC8=q*", [" b7", " xC8=q*"], 2),
+            ("b7xc8=q*", ["b7"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=Q*", ["b7"], 3),  # tolerate "b7" and 3.
+            ("b7xC8=q*", ["b7"], 3),  # tolerate "b7" and 3.
             ("B7xc8Q*", ["Bxc8"], 3),
             ("B7xc8q*", ["Bxc8"], 3),
             ("B7xC8Q*", [], 2),
@@ -7001,10 +7849,10 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("B7b8=q*", [" B7b8", " =q*"], 2),
             ("B7B8=Q*", [], 2),
             ("B7B8=q*", [], 2),
-            ("b7b8=Q*", [" b7", " b8=Q", " *"], 2),
-            ("b7b8=q*", [" b7", " b8", " =q*"], 2),
-            ("b7B8=Q*", [" b7", " B8=Q*"], 2),
-            ("b7B8=q*", [" b7", " B8=q*"], 2),
+            ("b7b8=Q*", ["b7", " b8=Q", " *"], 3),  # tolerate "b7" and 3.
+            ("b7b8=q*", ["b7"], 3),  # tolerate "b7" and 3.
+            ("b7B8=Q*", ["b7"], 3),  # tolerate "b7" and 3.
+            ("b7B8=q*", ["b7"], 3),  # tolerate "b7" and 3.
             ("B7b8Q*", [" B7b8", " Q*"], 2),
             ("B7b8q*", [" B7b8", " q*"], 2),
             ("B7B8Q*", [], 2),
@@ -7122,9 +7970,9 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("B2xC1=Q*", [], 2),
             ("B2xC1=q*", [], 2),
             ("b2xc1=Q*", ["bxc1=Q", "*"], None),
-            ("b2xc1=q*", [" b2", " xc1", " =q*"], 2),
-            ("b2xC1=Q*", [" b2", " xC1=Q*"], 2),
-            ("b2xC1=q*", [" b2", " xC1=q*"], 2),
+            ("b2xc1=q*", ["b2"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=Q*", ["b2"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=q*", ["b2"], 3),  # tolerate "b2" and 3.
             ("B2xc1Q*", [" B2xc1", " Q*"], 2),
             ("B2xc1q*", [" B2xc1", " q*"], 2),
             ("B2xC1Q*", [], 2),
@@ -7160,9 +8008,9 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("B2xC1=Q*", [], 2),
             ("B2xC1=q*", [], 2),
             ("b2xc1=Q*", [" bxc1=Q", " *"], 2),
-            ("b2xc1=q*", [" b2", " xc1", " =q*"], 2),
-            ("b2xC1=Q*", [" b2", " xC1=Q*"], 2),
-            ("b2xC1=q*", [" b2", " xC1=q*"], 2),
+            ("b2xc1=q*", ["b2"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=Q*", ["b2"], 3),  # tolerate "b2" and 3.
+            ("b2xC1=q*", ["b2"], 3),  # tolerate "b2" and 3.
             ("B2xc1Q*", ["Bxc1"], 3),
             ("B2xc1q*", ["Bxc1"], 3),
             ("B2xC1Q*", [], 2),
@@ -7211,10 +8059,10 @@ class GameTextPGN(_NonStrictText, StrictPGN):
             ("B2b1=q*", [" B2b1", " =q*"], 2),
             ("B2B1=Q*", [], 2),
             ("B2B1=q*", [], 2),
-            ("b2b1=Q*", [" b2", " b1=Q", " *"], 2),
-            ("b2b1=q*", [" b2", " b1", " =q*"], 2),
-            ("b2B1=Q*", [" b2", " B1=Q*"], 2),
-            ("b2B1=q*", [" b2", " B1=q*"], 2),
+            ("b2b1=Q*", ["b2", " b1=Q", " *"], 3),  # tolerate "b2" and 3.
+            ("b2b1=q*", ["b2"], 3),  # tolerate "b2" and 3.
+            ("b2B1=Q*", ["b2"], 3),  # tolerate "b2" and 3.
+            ("b2B1=q*", ["b2"], 3),  # tolerate "b2" and 3.
             ("B2b1Q*", [" B2b1", " Q*"], 2),
             ("B2b1q*", [" B2b1", " q*"], 2),
             ("B2B1Q*", [], 2),
@@ -8500,6 +9348,20 @@ class GameIgnoreCasePGN(_NonStrictText, StrictPGN):
         ae(len(games), 1)
         ae(games[0].state, 3)
         ae(games[0]._text, ["e4", "e5", "$111"])
+
+    def test_191_03_lan_promote_and_capture(self):
+        ae = self.assertEqual
+        fen = [
+            '[SetUp"1"][FEN"6Q1/8/4Q3/8/8/8/8/k6K w - - 0 1"]',
+            "=QKb2*",
+        ]
+        move = ["Qe6", "e8"]
+        for delimiter in ("-",):
+            with self.subTest(fen=fen, move=move, delimiter=delimiter):
+                games = self.get(delimiter.join(move).join(fen))
+                ae(len(games), 1)
+                ae(games[0].state, 2)
+                ae(games[0]._text[-3:], [" -e8=Q", " Kb2", " *"])
 
 
 class GameLongAlgebraicNotationPawnMove(_BasePGN):
