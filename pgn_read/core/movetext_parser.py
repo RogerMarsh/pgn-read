@@ -47,9 +47,8 @@ from .constants import (
     CGM_END_OF_FILE_MARKER,
     CGM_OTHER_WITH_NON_NEWLINE_WHITESPACE,
     PGN_TOKEN_SEPARATOR,
-    SEVEN_TAG_ROSTER,
-    SUPPLEMENTAL_TAG_ROSTER,
 )
+from . import pgndata
 
 game_format = re.compile(GAME_FORMAT)
 full_disambiguation_allowed = re.compile(FULL_DISAMBIGUATION_ALLOWED)
@@ -59,7 +58,7 @@ class PGNMoveTextError(Exception):
     """Exception raised where PGNMoveText parsing cannot continue."""
 
 
-class MoveText:
+class MoveText(pgndata.PGNData):
     """Data structure of game movetext symbols derived from a PGN game score.
 
     Movetext is ignored except for detecting comment, reserved, and
@@ -69,25 +68,7 @@ class MoveText:
     Almost all games will be flagged as games with errors because they
     contain movetext, which is seen as invalid movetext by the parser
     in PGNMoveText.
-
     """
-
-    # Defaults for MoveText instance state.
-    _state = None
-
-    # Locate position in PGN text file of latest game.
-    game_offset = 0
-
-    def __init__(self):
-        """Create empty data structure for Tag Pairs and Movetext of game."""
-        super().__init__()
-        self._text = []
-        self._tags = {}
-
-    @property
-    def pgn_tags(self):
-        """Return _tags dict of PGN tag names and values."""
-        return self._tags
 
     def is_pgn_valid(self):
         """Return True if the tags in the game are valid.
@@ -98,22 +79,6 @@ class MoveText:
 
         """
         return bool(self._tags)
-
-    def is_tag_roster_valid(self):
-        """Return True if the game's tag roster is valid."""
-        tags = self._tags
-        for str_tag in SEVEN_TAG_ROSTER:
-            if str_tag not in tags:
-                # A mandatory tag is missing.
-                return False
-            if len(tags[str_tag]) == 0:
-                # Mandatory tags must have a non-null value.
-                return False
-        for str_tag in SUPPLEMENTAL_TAG_ROSTER:
-            if str_tag in tags:
-                if len(tags[str_tag]) == 0:
-                    return False
-        return True
 
     def is_full_disambiguation_allowed(self):
         """Return True if self._text could have fully disambiguated moves.
@@ -128,35 +93,6 @@ class MoveText:
 
         """
         return bool(full_disambiguation_allowed.search("".join(self._text)))
-
-    def set_game_error(self):
-        """Declare parsing of game text has failed.
-
-        set_game_error() allows an instance of parser.PGN to declare the game
-        invalid in cases where the Game class instance cannot do so: such as
-        when input text ends without a game termination marker but is valid up
-        to that point.
-
-        set_game_error() does nothing if the current state is not None.
-
-        Otherwise the state is set to True.
-
-        set_game_error() should not be used within the Game class or any
-        subclass.
-
-        """
-        if self._state is None:
-            self._state = len(self._text)
-
-    @property
-    def pgn_text(self):
-        """Return True if text has been found for game."""
-        return self._text
-
-    @property
-    def state(self):
-        """Return the token offset where PGN error in game occured."""
-        return self._state
 
     def append_comment_to_eol(self, match):
         r"""Append ';...\n' token from gamescore.

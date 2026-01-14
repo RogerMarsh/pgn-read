@@ -4,8 +4,6 @@
 # Code transferred from 2025 version of game.py.
 
 """Portable Game Notation (PGN) position and game data structures."""
-import re
-
 from .constants import (
     IFG_TAG_NAME,
     TAG_FEN,
@@ -45,22 +43,6 @@ from .constants import (
     OTHER_SIDE,
     SIDE_TO_MOVE_KING,
     PIECE_TO_KING,
-    # The TAG_* list is long enough to cause a pylint duplicate-code report
-    # citing pgn_read.core.constants module.
-    TAG_EVENT,
-    TAG_SITE,
-    TAG_DATE,
-    TAG_ROUND,
-    TAG_WHITE,
-    TAG_BLACK,
-    TAG_RESULT,
-    SEVEN_TAG_ROSTER,
-    SUPPLEMENTAL_TAG_ROSTER,
-    DEFAULT_TAG_VALUE,
-    DEFAULT_TAG_DATE_VALUE,
-    DEFAULT_SORT_TAG_VALUE,
-    DEFAULT_SORT_TAG_RESULT_VALUE,
-    SEVEN_TAG_ROSTER_DEFAULTS,
     PGN_TOKEN_SEPARATOR,
 )
 from .piece import Piece
@@ -70,8 +52,8 @@ from .squares import (
     fen_source_squares,
     en_passant_target_squares,
 )
+from . import pgndata
 
-white_black_tag_value_format = re.compile(r"\s*([^,.\s]+)")
 KNIGHTS = FEN_WHITE_KNIGHT + FEN_BLACK_KNIGHT
 
 
@@ -79,7 +61,7 @@ class GameError(Exception):
     """Exceptions raised manipulating Game state."""
 
 
-class GameData:
+class GameData(pgndata.PGNData):
     """Data structure of game positions derived from a PGN game score.
 
     Comparison operators implement the PGN collating sequence, except in
@@ -91,8 +73,6 @@ class GameData:
 
     # Defaults for Game instance state.
     _full_disambiguation_detected = False
-    _state = None
-    _movetext_offset = None
     _initial_position = None
     _fullmove_number = None
     _halfmove_clock = None
@@ -100,19 +80,16 @@ class GameData:
     _castling_availability = None
     _active_color = None
 
-    # Locate position in PGN text file of latest game.
-    game_offset = 0
-
     def __init__(self):
         """Create empty data structure for a game presented in PGN format."""
+        super().__init__()
+
         # There is 1:1 between self._text and self._position_deltas.
         # self._movetext_offset is offset of first non-tag item in self._text,
         # usually the first movetext item but ';...\n', '<...>', and others
         # are possible too.
-        self._text = []
         self._position_deltas = []
 
-        self._tags = {}
         self._error_list = []
         self._state_stack = [None]
 
@@ -158,16 +135,6 @@ class GameData:
     def len_ravstack(self):
         """Return self._ravstack depth."""
         return len(self._ravstack)
-
-    @property
-    def pgn_tags(self):
-        """Return _tags dict of PGN tag names and values."""
-        return self._tags
-
-    @property
-    def pgn_text(self):
-        """Return _text str of PGN text (the whole game score)."""
-        return self._text
 
     @property
     def piece_placement_data(self):
@@ -218,65 +185,6 @@ class GameData:
     def game_ok_with_variation_errors(self):
         """Return True if game has no PGN errors: variations are ignored."""
         return bool(self._state is None and self._error_list)
-
-    @property
-    def game_has_errors(self):
-        """Return True if game has PGN errors: variations are ignored."""
-        return bool(self._state is not None)
-
-    @property
-    def state(self):
-        """Return the token offset where PGN error in game occured."""
-        return self._state
-
-    @property
-    def movetext_offset(self):
-        """Return the token offset where PGN movetext begins."""
-        return self._movetext_offset
-
-    # May be removed in future, or converted to property.
-    # Property game_has_errors is equivalent but meaning of True and False is
-    # reversed.
-    def is_movetext_valid(self):
-        """Return True if there are no error_tokens in the collected game."""
-        return self._state is None
-
-    # May be overridden in subclasses.
-    def is_tag_roster_valid(self):
-        """Return True if the game's tag roster is valid."""
-        tags = self._tags
-        for str_tag in SEVEN_TAG_ROSTER:
-            if str_tag not in tags:
-                # A mandatory tag is missing.
-                return False
-            if len(tags[str_tag]) == 0:
-                # Mandatory tags must have a non-null value.
-                return False
-        for str_tag in SUPPLEMENTAL_TAG_ROSTER:
-            if str_tag in tags:
-                if len(tags[str_tag]) == 0:
-                    return False
-        return True
-
-    def is_pgn_valid(self):
-        """Return True if the tags and movetext in the game are valid.
-
-        Movetext with no PGN errors in the main line but errors in one or more
-        RAVs will cause this method to return True.
-
-        """
-        return self.is_movetext_valid() and self.is_tag_roster_valid()
-
-    def is_pgn_valid_export_format(self):
-        """Return True if the tags and movetext meet PGN export format rules.
-
-        This method always returns False if is_pgn_valid returns False, but
-        may return False if is_pgn_valid returns True.
-
-        """
-        if not self.is_pgn_valid():
-            return False
-        return self._tags.get(TAG_RESULT) == self._text[-1]
 
     def add_board_state_none(self):
         """Append placeholder, None, for token being processed.
@@ -1092,217 +1000,23 @@ class GameData:
             return FEN_NULL
         return adjusted_castling_availability
 
+    # This method is no longer part of comparison operator implemention.
     def seven_tag_roster_collation_value(self):
-        """Return Seven Tag Roster tuple converted to sort in collation order.
+        """Return Seven Tag roster elements from get_collation().
 
-        Order is: Date, Event, Site, Round, White, Black, Result.
-
-        A Query ('?') represents an unknown value in Event, Site, White, and
-        Black, tags.
-
-        A Query ('?') represents an unknown round and a hyphen ('-') means
-        round not relevant.  Query is before hyphen in the collation order.
-
-        A Query ('?') represents an unknown character in a date value.  It is
-        treated as '0' for collation.
+        Use get_collation() method directly.
 
         """
-        tags = self._tags
-        event = tags.get(TAG_EVENT, DEFAULT_SORT_TAG_VALUE)
-        site = tags.get(TAG_SITE, DEFAULT_SORT_TAG_VALUE)
-        white = tags.get(TAG_WHITE, DEFAULT_SORT_TAG_VALUE)
-        black = tags.get(TAG_BLACK, DEFAULT_SORT_TAG_VALUE)
-        return (
-            tags.get(TAG_DATE, DEFAULT_TAG_DATE_VALUE).replace("?", "0"),
-            event if event != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
-            site if site != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
-            tags.get(TAG_ROUND, DEFAULT_TAG_VALUE).replace("?", " "),
-            white if white != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
-            black if black != DEFAULT_TAG_VALUE else DEFAULT_SORT_TAG_VALUE,
-            tags.get(TAG_RESULT, DEFAULT_SORT_TAG_RESULT_VALUE),
-        )
+        return tuple(self.get_collation()[:7])
 
+    # This method is no longer part of comparison operator implemention.
     def movetext_collation_value(self):
-        """Return movetext converted to sort in collation order.
+        """Return Seven Tag roster elements from get_collation().
 
-        1. e4 is before 1... e4 in collation order but self._text normally will
-        not have the move number indications.  If sorting gets into movetext it
-        is possible the ordering implemented in this method will differ from
-        the ordering implied by the PGN specification when move sufficies are
-        present.
+        Use get collation() method directly.
 
         """
-        if TAG_FEN in self._tags:
-            fen = self._tags[TAG_FEN].split()
-            move_number = int(fen[FEN_FULLMOVE_NUMBER_FIELD_INDEX])
-            inactive_color = OTHER_SIDE[fen[FEN_ACTIVE_COLOR_FIELD_INDEX]]
-        else:
-            move_number = 1
-            inactive_color = FEN_BLACK_ACTIVE
-        if self._movetext_offset:
-            movetext = self._text[self._movetext_offset :]
-        else:
-            movetext = self._text[:]
-        return move_number, inactive_color, movetext
-
-    def __eq__(self, other):
-        """Return  True if self == other in PGN collating order."""
-        strs = self.seven_tag_roster_collation_value()
-        stro = other.seven_tag_roster_collation_value()
-        if strs != stro:
-            return False
-        smcv = self.movetext_collation_value()
-        omcv = other.movetext_collation_value()
-        if smcv != omcv:
-            return False
-        return True
-
-    def __ge__(self, other):
-        """Return  True if self >= other in PGN collating order."""
-        strs = self.seven_tag_roster_collation_value()
-        stro = other.seven_tag_roster_collation_value()
-        if strs > stro:
-            return True
-        if strs < stro:
-            return False
-        smcv = self.movetext_collation_value()
-        omcv = other.movetext_collation_value()
-        if smcv > omcv:
-            return True
-        if smcv < omcv:
-            return False
-        return True
-
-    def __gt__(self, other):
-        """Return  True if self > other in PGN collating order."""
-        strs = self.seven_tag_roster_collation_value()
-        stro = other.seven_tag_roster_collation_value()
-        if strs > stro:
-            return True
-        if strs < stro:
-            return False
-        smcv = self.movetext_collation_value()
-        omcv = other.movetext_collation_value()
-        if smcv > omcv:
-            return True
-        if smcv < omcv:
-            return False
-        return False
-
-    def __le__(self, other):
-        """Return  True if self <= other in PGN collating order."""
-        strs = self.seven_tag_roster_collation_value()
-        stro = other.seven_tag_roster_collation_value()
-        if strs < stro:
-            return True
-        if strs > stro:
-            return False
-        smcv = self.movetext_collation_value()
-        omcv = other.movetext_collation_value()
-        if smcv < omcv:
-            return True
-        if smcv > omcv:
-            return False
-        return True
-
-    def __lt__(self, other):
-        """Return  True if self < other in PGN collating order."""
-        strs = self.seven_tag_roster_collation_value()
-        stro = other.seven_tag_roster_collation_value()
-        if strs < stro:
-            return True
-        if strs > stro:
-            return False
-        smcv = self.movetext_collation_value()
-        omcv = other.movetext_collation_value()
-        if smcv < omcv:
-            return True
-        if smcv > omcv:
-            return False
-        return False
-
-    def get_tags(self, name_value_separator=" "):
-        """Return list of PGN tags in an undefined order.
-
-        The default name_value_separator gives PGN tags in export format.
-
-        """
-        return [
-            "".join(("[", k, name_value_separator, '"', v, '"]'))
-            for k, v in self._tags.items()
-        ]
-
-    def get_tags_in_text_order(self):
-        """Return list of tags in their order in game text in export format."""
-        if self._movetext_offset is None:
-            return []
-        return self._text[: self._movetext_offset]
-
-    def get_non_seven_tag_roster_tags(self):
-        """Return string of sorted tags not in Seven Tag Roster."""
-        return "\n".join(
-            [
-                "".join(("[", k, ' "', v, '"]'))
-                for k, v in sorted(self._tags.items())
-                if k not in SEVEN_TAG_ROSTER
-            ]
-        )
-
-    def get_seven_tag_roster_tags(self):
-        """Return Seven Tag Roster string in order given in PGN specification.
-
-        The PGN specification says name format is <family name>,< ><first name>
-        or when an initial is given it is immediately followed by a period.
-        Thus 'Smyslov, Vassily V.' but nothing is said about multiple initials
-        or cases where 'Smyslov, V. Vassily' is the correct form.  It seems
-        consistent to do multiple initials like 'Smyslov, V. V.' with a single
-        space following the dot too.
-
-        Many PGN files do something very close to, but not exactly, this in
-        the White and Black tags.
-
-        """
-        tags = self._tags
-        str_tags = []
-        for tag in SEVEN_TAG_ROSTER:
-            if tag not in tags:
-                value = SEVEN_TAG_ROSTER_DEFAULTS.get(tag, DEFAULT_TAG_VALUE)
-            elif tag in (TAG_WHITE, TAG_BLACK):
-                val = white_black_tag_value_format.findall(tags[tag])
-                if len(val) == 1:
-                    value = val[0]
-                else:
-                    value = [val.pop(0) + ","]
-                    value.extend(
-                        [(n + "." if len(n) == 1 else n) for n in val]
-                    )
-                    value = " ".join(value)
-            else:
-                value = tags[tag]
-            str_tags.append("".join(("[", tag, ' "', value, '"]')))
-        return "\n".join(str_tags)
-
-    def _set_movetext_indicators(self):
-        if TAG_FEN in self._tags:
-            fen = self._tags[TAG_FEN].split()
-            fullmove_number = int(fen[FEN_FULLMOVE_NUMBER_FIELD_INDEX])
-            active_color = fen[FEN_ACTIVE_COLOR_FIELD_INDEX]
-        else:
-            fullmove_number = 1
-            active_color = FEN_WHITE_ACTIVE
-        return fullmove_number, active_color
-
-    def get_movetext(self):
-        """Return list of movetext.
-
-        Moves have check and checkmate indicators, but not the black move
-        indicators found in export format if a black move follows a comment
-        or is first move in a RAV, nor move numbers.
-
-        """
-        if self._movetext_offset is None:
-            return []
-        return self._text[self._movetext_offset :]
+        return tuple(self.get_collation()[7:])
 
     def pgn_error_notification(self):
         """Do nothing.  Subclasses should override to fit requirements.
