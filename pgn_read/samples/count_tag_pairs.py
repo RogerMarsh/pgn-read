@@ -7,7 +7,6 @@
 from ..core.tagpair_parser import TagPairGame
 from ._utilities_tagpair import main, read_pgn_count_tag_pairs
 
-
 if __name__ == "__main__":
     main(
         game_class=TagPairGame,

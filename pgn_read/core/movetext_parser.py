@@ -18,6 +18,7 @@ confirming the movetext represents a legal game.  Significant time should
 be saved when the validity of moves played is not of interest.
 
 """
+
 import re
 
 from .constants import (

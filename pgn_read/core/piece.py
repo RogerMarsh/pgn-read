@@ -3,6 +3,7 @@
 # Licence: See LICENCE (BSD licence)
 
 """Portable Game Notation (PGN) position and game navigation pieces."""
+
 from .constants import (
     FEN_PAWNS,
     FEN_WHITE_PAWN,

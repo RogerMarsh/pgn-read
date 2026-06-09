@@ -14,6 +14,7 @@ argument and adds it to the instance of game.Game class, or subclass, in the
 game argument.
 
 """
+
 import re
 
 from .game import Game

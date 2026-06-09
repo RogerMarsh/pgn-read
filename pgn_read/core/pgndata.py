@@ -8,6 +8,7 @@ Tag pair and movetext tokens are identified, but the positions implied
 by movetext are not tracked.
 
 """
+
 import re
 
 from .constants import (

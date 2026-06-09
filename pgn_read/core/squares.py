@@ -13,6 +13,7 @@ fen_square_names, which maps square number in Forsyth Edwards Notation
 order to square name.
 
 """
+
 from . import constants
 
 

@@ -12,6 +12,7 @@ of the moves played or given in variations (RAVs).
 Game binds _strict_pgn to False.
 
 """
+
 import re
 
 from .constants import (

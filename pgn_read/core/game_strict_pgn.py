@@ -14,6 +14,7 @@ GameStrictPGN does not allow these transgressions.  It is a subclass of Game.
 GameStrictPGN binds _strict_pgn to True.
 
 """
+
 from .game import Game
 
 

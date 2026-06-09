@@ -16,6 +16,7 @@ newline is reasonable, but using a regular expression to find the last
 needed too fully parse the games.
 
 """
+
 import tkinter.filedialog
 import re
 

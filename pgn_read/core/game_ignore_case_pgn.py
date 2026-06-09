@@ -15,6 +15,7 @@ for typical game scores without variations.
 GameIgnoreCasePGN uses the GameTextPGN binding for _strict_pgn.
 
 """
+
 import re
 
 from .constants import (

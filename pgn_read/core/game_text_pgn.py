@@ -12,6 +12,7 @@ in PGN movetext.  It is a subclass of Game.
 GameTextPGN binds _strict_pgn to None.
 
 """
+
 import re
 
 from .constants import (

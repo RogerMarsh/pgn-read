@@ -23,6 +23,7 @@ descriptions.  This should save significant time when the moves played are
 not of interest.
 
 """
+
 import re
 
 from .constants import (

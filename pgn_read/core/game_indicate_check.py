@@ -9,6 +9,7 @@ GameIndicateCheck extends Game by adding check indicators, '+' and '#', to
 movetext from games stored on the database.
 
 """
+
 from .constants import (
     FEN_WHITE_ACTIVE,
     FEN_NULL,

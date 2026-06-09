@@ -7,7 +7,6 @@
 from ._utilities import main
 from ..core.game_ignore_case_pgn import GameIgnoreCasePGN
 
-
 if __name__ == "__main__":
     main(
         game_class=GameIgnoreCasePGN,

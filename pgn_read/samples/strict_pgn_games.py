@@ -7,7 +7,6 @@
 from ._utilities import main
 from ..core.game_strict_pgn import GameStrictPGN
 
-
 if __name__ == "__main__":
     main(
         game_class=GameStrictPGN, samples_title="Sample Strict PGN File Report"

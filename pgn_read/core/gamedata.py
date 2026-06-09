@@ -4,6 +4,7 @@
 # Code transferred from 2025 version of game.py.
 
 """Portable Game Notation (PGN) position and game data structures."""
+
 from .constants import (
     IFG_TAG_NAME,
     TAG_FEN,
