@@ -601,6 +601,7 @@ class PGNDataExport(unittest.TestCase):
             ";Comment to EOL\n",
             "b5",
             "Bb3",
+            "{[%eval 0]\n[%clk\n1:30:10]}",
             "Be7",
             "1-0",
         ]
@@ -633,7 +634,7 @@ class PGNDataExport(unittest.TestCase):
                     "{Comment One} 2... Nc6 {Comment Two}\n",
                     "3. Bb5 {[%eval 0]} $5 3... a6 {[%eval 0] Comment Three} ",
                     "4. Ba4 ;Comment to EOL\n",
-                    "4... b5 5. Bb3 Be7 1-0",
+                    "4... b5 5. Bb3 {[%eval 0] [%clk 1:30:10]} 5... Be7 1-0",
                 )
             ),
         )

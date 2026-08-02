@@ -45,7 +45,7 @@ suffix_annotations = re.compile(r"(!!|!\?|!|\?\?|\?!|\?)$")
 white_black_tag_value_format = re.compile(r"\s*([^,.\s]+)")
 
 # Remove multiple leading '[%.*]' and adjacent \s* in '{.*}'.
-structured_comment_re = re.compile(r"^{(?:\s*\[\s*%.*\])+\s*")
+structured_comment_re = re.compile(r"^{(?:\s*\[\s*%.*\])+\s*", flags=re.DOTALL)
 NULL_PGN_COMMENT = "{}"
 
 # The Seven Tag Roster names in PGN collation order.
