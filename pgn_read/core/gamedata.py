@@ -369,6 +369,46 @@ class GameData(pgndata.PGNData):
                 return True
         return False
 
+    def __set_empty_position(self):
+        """Initialise board state as empty board for invalid FEN."""
+        self._piece_placement_data.clear()
+        self._pieces_on_board.clear()
+        pob = self._pieces_on_board
+        for piece in (
+            FEN_WHITE_KING,
+            FEN_WHITE_QUEEN,
+            FEN_WHITE_ROOK,
+            FEN_WHITE_BISHOP,
+            FEN_WHITE_KNIGHT,
+            FEN_BLACK_KING,
+            FEN_BLACK_QUEEN,
+            FEN_BLACK_ROOK,
+            FEN_BLACK_BISHOP,
+            FEN_BLACK_KNIGHT,
+        ):
+            pob[piece] = []
+        for file in FILE_NAMES:
+            pob[file + FEN_BLACK_PAWN] = []
+            pob[file + FEN_WHITE_PAWN] = []
+        self._active_color = FEN_WHITE_ACTIVE
+        self._en_passant_target_square = FEN_NULL
+        self._castling_availability = FEN_NULL
+        self._halfmove_clock = 0
+        self._fullmove_number = 1
+        self.set_initial_board_state(
+            (
+                tuple(
+                    (p, p.square.name)
+                    for p in self._piece_placement_data.values()
+                ),
+                self._active_color,
+                self._castling_availability,
+                self._en_passant_target_square,
+                self._halfmove_clock,
+                self._fullmove_number,
+            )
+        )
+
     def set_initial_position(self):
         """Initialise board state, using PGN FEN tag if there is one.
 
@@ -383,17 +423,15 @@ class GameData(pgndata.PGNData):
             tag_fen is None and tag_setup != SETUP_VALUE_FEN_ABSENT
         ):
             if self._state is None:
-                for token_number, mvt in enumerate(self._text):
+                for mvt in self._text:
                     if (
                         mvt[IFG_TAG_NAME] == TAG_FEN
                         or mvt[IFG_TAG_NAME] == TAG_SETUP
                     ):
-                        self._state = token_number
-                        self._state_stack[-1] = self._state
+                        self.__set_empty_position()
                         break
                 else:
-                    self._state = len(self._text)
-                    self._state_stack[-1] = self._state
+                    self.__set_empty_position()
                 return False
 
         pieces_on_board = self._pieces_on_board
@@ -420,28 +458,24 @@ class GameData(pgndata.PGNData):
         if tag_fen is not None:
             tff = tag_fen.split(FEN_FIELD_DELIM)
             if len(tff) != FEN_FIELD_COUNT:
-                self._state = len(self._text)
-                self._state_stack[-1] = self._state
+                self.__set_empty_position()
                 return False
             active_color = tff[FEN_ACTIVE_COLOR_FIELD_INDEX]
             if active_color not in FEN_WHITE_ACTIVE + FEN_BLACK_ACTIVE:
-                self._state = len(self._text)
-                self._state_stack[-1] = self._state
+                self.__set_empty_position()
                 return False
             i = 0
             for fen_char in tff[FEN_PIECE_PLACEMENT_FIELD_INDEX]:
                 if fen_char == FEN_RANK_DELIM:
                     if divmod(i, 8)[1]:
-                        self._state = len(self._text)
-                        self._state_stack[-1] = self._state
+                        self.__set_empty_position()
                         return False
                     continue
                 if fen_char in RANK_NAMES:
                     i += int(fen_char)
                     continue
                 if fen_char not in FEN_PIECE_NAMES:
-                    self._state = len(self._text)
-                    self._state_stack[-1] = self._state
+                    self.__set_empty_position()
                     return False
                 piece = Piece(fen_char, fen_square_names[i])
                 piece_placement_data[piece.square.name] = piece
@@ -451,31 +485,35 @@ class GameData(pgndata.PGNData):
                         piece
                     )
                     if piece.square.rank in "18":
+                        self.__set_empty_position()
                         return False
                 elif fen_char == FEN_BLACK_PAWN:
                     pieces_on_board[piece.square.file + FEN_BLACK_PAWN].append(
                         piece
                     )
                     if piece.square.rank in "18":
+                        self.__set_empty_position()
                         return False
                 else:
                     pieces_on_board[fen_char].append(piece)
                 i += 1
             if i != len(RANK_NAMES) * len(FILE_NAMES):
+                self.__set_empty_position()
                 return False
             castling_availability = tff[FEN_CASTLING_AVAILABILITY_FIELD_INDEX]
             if castling_availability != FEN_NULL:
                 if set(FEN_INITIAL_CASTLING).union(tff[2]) != set(
                     FEN_INITIAL_CASTLING
                 ):
-                    self._state = len(self._text)
-                    self._state_stack[-1] = self._state
+                    self.__set_empty_position()
+                    return False
+                if len(tff[2]) != len(set(tff[2])):
+                    self.__set_empty_position()
                     return False
                 for square, castling_option in CASTLING_RIGHTS.items():
                     if square not in piece_placement_data:
                         if castling_option in castling_availability:
-                            self._state = len(self._text)
-                            self._state_stack[-1] = self._state
+                            self.__set_empty_position()
                             return False
                         continue
                     for option in castling_option:
@@ -485,20 +523,21 @@ class GameData(pgndata.PGNData):
                             piece_placement_data[square].name
                             != CASTLING_PIECE_FOR_SQUARE[square]
                         ):
-                            self._state = len(self._text)
-                            self._state_stack[-1] = self._state
+                            self.__set_empty_position()
                             return False
             en_passant_target_square = tff[
                 FEN_EN_PASSANT_TARGET_SQUARE_FIELD_INDEX
             ]
             if en_passant_target_square != FEN_NULL:
                 if en_passant_target_square not in fen_squares:
+                    self.__set_empty_position()
                     return False
                 if active_color == FEN_WHITE_ACTIVE:
                     target_pawn = FEN_BLACK_PAWN
                 else:
                     target_pawn = FEN_WHITE_PAWN
                 if en_passant_target_square in piece_placement_data:
+                    self.__set_empty_position()
                     return False
                 for k, target_square in en_passant_target_squares[
                     active_color
@@ -506,16 +545,20 @@ class GameData(pgndata.PGNData):
                     if target_square == en_passant_target_square:
                         occupied_square, source_square = k
                         if source_square in piece_placement_data:
+                            self.__set_empty_position()
                             return False
                         if occupied_square not in piece_placement_data:
+                            self.__set_empty_position()
                             return False
                         if (
                             piece_placement_data[occupied_square].name
                             != target_pawn
                         ):
+                            self.__set_empty_position()
                             return False
                         break
                 else:
+                    self.__set_empty_position()
                     return False
             white_king_count = 0
             white_queen_count = 0
@@ -555,8 +598,10 @@ class GameData(pgndata.PGNData):
                 elif pce.name == FEN_BLACK_PAWN:
                     black_pawn_count += 1
             if white_king_count != 1 or black_king_count != 1:
+                self.__set_empty_position()
                 return False
             if white_pawn_count > 8 or black_pawn_count > 8:
+                self.__set_empty_position()
                 return False
             if (
                 white_queen_count
@@ -564,6 +609,7 @@ class GameData(pgndata.PGNData):
                 + white_bishop_count
                 + white_knight_count
             ) > 7 + 8 - white_pawn_count:
+                self.__set_empty_position()
                 return False
             if (
                 black_queen_count
@@ -571,10 +617,13 @@ class GameData(pgndata.PGNData):
                 + black_bishop_count
                 + black_knight_count
             ) > 7 + 8 - black_pawn_count:
+                self.__set_empty_position()
                 return False
             if white_queen_count + white_pawn_count > 9:
+                self.__set_empty_position()
                 return False
             if black_queen_count + black_pawn_count > 9:
+                self.__set_empty_position()
                 return False
             for count in (
                 white_rook_count,
@@ -582,6 +631,7 @@ class GameData(pgndata.PGNData):
                 white_knight_count,
             ):
                 if count + white_pawn_count > 10:
+                    self.__set_empty_position()
                     return False
             for count in (
                 black_rook_count,
@@ -589,16 +639,15 @@ class GameData(pgndata.PGNData):
                 black_knight_count,
             ):
                 if count + black_pawn_count > 10:
+                    self.__set_empty_position()
                     return False
             halfmove_clock = tff[FEN_HALFMOVE_CLOCK_FIELD_INDEX]
             if not halfmove_clock.isdigit():
-                self._state = len(self._text)
-                self._state_stack[-1] = self._state
+                self.__set_empty_position()
                 return False
             fullmove_number = tff[FEN_FULLMOVE_NUMBER_FIELD_INDEX]
             if not fullmove_number.isdigit():
-                self._state = len(self._text)
-                self._state_stack[-1] = self._state
+                self.__set_empty_position()
                 return False
             if active_color == FEN_WHITE_ACTIVE:
                 king = FEN_BLACK_KING
@@ -609,9 +658,12 @@ class GameData(pgndata.PGNData):
                     if self.is_square_attacked_by_other_side(
                         piece.square.name, OTHER_SIDE[active_color]
                     ):
+                        self.__set_empty_position()
                         return False
                     break
             else:
+                # Unreachable because of the earlier test for kings present.
+                self.__set_empty_position()
                 return False
             self._active_color = active_color
             self._en_passant_target_square = en_passant_target_square

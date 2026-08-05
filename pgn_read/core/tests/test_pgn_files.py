@@ -3830,7 +3830,7 @@ class _IgnoreCasePGNUpper:
     # Correct because the FEN tag has been converted to upper-case.
     def test_021_twic95n_10_pgn(self):
         # g = self.do_standard_tests('twic95n_10.pgn', False, 19, 'O-O-O')
-        self.do_standard_tests("twic95n_10.pgn", None, 19, [], [], 82)
+        self.do_standard_tests("twic95n_10.pgn", None, 19, [19], [], 82)
         # print(g._text)
         # print(g._text[:19])
         # print(g._text[19:])

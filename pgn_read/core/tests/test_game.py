@@ -1094,6 +1094,116 @@ class GameIndicateCheck(unittest.TestCase):
         ae(g.is_check_given_by_move(), False)
 
 
+class GameInitialPositionFromFEN(unittest.TestCase):
+    def setUp(self):
+        self.game = gamedata.GameData()
+        self.game._tags[constants.TAG_SETUP] = (
+            constants.SETUP_VALUE_FEN_PRESENT
+        )
+
+    def tearDown(self):
+        del self.game
+
+    def setposition(self, fen):
+        g = self.game
+        g._tags[constants.TAG_FEN] = fen
+        g._piece_placement_data.clear()
+        g._pieces_on_board.clear()
+        g._active_color = None
+        g._en_passant_target_square = None
+        g._castling_availability = None
+        g._halfmove_clock = None
+        g._fullmove_number = None
+        g._initial_position = None
+
+    def test_01_invalid_fen(self):
+        pob = {
+            key: []
+            for key in ["K", "Q", "R", "B", "N", "k", "q", "r", "b", "n"]
+            + ["aP", "bP", "cP", "dP", "eP", "fP", "gP", "hP"]
+            + ["ap", "bp", "cp", "dp", "ep", "fp", "gp", "hp"]
+        }
+        ae = self.assertEqual
+        setposition = self.setposition
+        g = self.game
+        for fen in (
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 a",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR a KQkq - 0 1",
+            "rnbqkbnr/pppp1pppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/ppppyppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnp/rppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPR/PNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppr/8/8/8/8/PPPPPPPP/pNBQKBNR w KQkq - 0 1",
+            "Pnbqkbnr/pppppppp/8/8/8/8/rPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/9/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkqq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w G - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w KQkq - 0 1",
+            "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "nrbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbrn/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq a 0 1",
+            "rnbqkbnr/1ppppppp/p7/8/8/8/PPPPPPPP/RNBQKBNR w KQkq a6 0 1",
+            "rnbqkbnr/1ppppppp/p7/8/8/8/PPPPPPPP/RNBQKBNR w KQkq b6 0 1",
+            "rnbqkbr/pppppppp/8/1n6/8/8/PPPPPPPP/RNBQKBNR w KQkq b6 0 1",
+            "rnbqkbr/pppppppp/8/1nP5/8/8/PP1PPPPP/RNBQKBNR w KQkq b6 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/P7/PPPPPPP/RNBQKBNR b KQkq b3 0 1",
+            "rnbqkbnr/pppppppp/8/8/1N6/8/PPPPPPPP/RBQKBNR b KQkq b3 0 1",
+            "rnbqkbr/pppppppp/8/8/1Np5/8/PP1PPPPP/RNBQKBNR b KQkq b3 0 1",
+            "rrbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rbbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rqbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rkbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnnqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBRR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBBR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBQR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBKR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKNNR w KQkq - 0 1",
+            "rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1BNR w KQkq - 0 1",
+            "rnb1kbnr/pppppppp/p7/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/P7/PPPPPPPP/RNB1KBNR w KQkq - 0 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - - 1",
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 -",
+            "8/8/8/8/8/8/8/8 w - - 0 1",
+            "k7/8/8/8/8/7r/8/7K b - - 0 1",
+            "k7/8/R7/8/8/8/8/7K w - - 0 1",
+        ):
+            with self.subTest(fen=fen):
+                setposition(fen)
+                ae(g.set_initial_position(), False)
+                ae(
+                    g.initial_position,
+                    ((), "w", "-", "-", 0, 1),
+                )
+                ae(g.piece_placement_data, {})
+                ae(g._pieces_on_board, pob)
+                ae(g._state_stack, [None])
+                ae(g._state, None)
+
+    def test_02_no_fen(self):
+        ae = self.assertEqual
+        g = self.game
+        g._tags.clear()
+        ae(g.set_initial_position(), True)
+
+    def test_03_valid_position_fen(self):
+        ae = self.assertEqual
+        setposition = self.setposition
+        g = self.game
+        for fen in (
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "rnbqkbnr/pp1ppppp/8/8/1Pp5/8/P1PPPPPP/RNBQKBNR b KQkq b3 0 1",
+            "rnbqkbnr/p1pppppp/8/1pP5/8/8/PP1PPPPP/RNBQKBNR w KQkq b6 0 1",
+            "k7/8/8/8/8/7r/8/7K w - - 0 1",
+            "k7/8/R7/8/8/8/8/7K b - - 0 1",
+        ):
+            with self.subTest(fen=fen):
+                setposition(fen)
+                ae(g.set_initial_position(), True)
+
+
 if __name__ == "__main__":
     runner = unittest.TextTestRunner
     loader = unittest.defaultTestLoader.loadTestsFromTestCase
@@ -1103,3 +1213,4 @@ if __name__ == "__main__":
     runner().run(loader(Termination))
     runner().run(loader(GenerateFENForPosition))
     runner().run(loader(GameIndicateCheck))
+    runner().run(loader(GameInitialPositionFromFEN))
