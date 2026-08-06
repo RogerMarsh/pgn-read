@@ -131,11 +131,11 @@ class Game(GameData):
     def append_pass_and_set_error(self, match):
         """Append '--' token and set PGN error found."""
         if self._movetext_offset is None and self._text:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self._append_token_and_set_error(match)
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
         self._append_token_and_set_error(match)
 
     def append_pass_after_error(self, match):
@@ -376,11 +376,11 @@ class Game(GameData):
 
         """
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self._append_token_and_set_error(match)
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
         piece_placement_data = self._piece_placement_data
         if self._active_color == FEN_WHITE_ACTIVE:
             king_square = FILE_NAMES[4] + RANK_NAMES[-1]
@@ -455,11 +455,11 @@ class Game(GameData):
 
         """
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self._append_token_and_set_error(match)
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
         group = match.group
         if self._active_color == FEN_WHITE_ACTIVE:
             piece_name = group(IFG_PIECE_MOVE)
@@ -712,11 +712,11 @@ class Game(GameData):
 
         """
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self._append_token_and_set_error(match)
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
         group = match.group
         piece_placement_data = self._piece_placement_data
 
@@ -863,11 +863,11 @@ class Game(GameData):
 
         """
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self._append_token_and_set_error(match)
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
         group = match.group
         if group(IFG_PAWN_PROMOTE_TO_RANK) is None:
             self._append_token_and_set_error(match)
@@ -1025,10 +1025,11 @@ class Game(GameData):
 
         """
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self._append_token_and_set_error(match)
                 return
-            self._movetext_offset = len(self._text)
         self._text.append(match.group())
         self.add_board_state_none()
 

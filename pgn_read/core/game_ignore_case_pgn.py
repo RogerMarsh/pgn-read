@@ -273,10 +273,11 @@ class GameIgnoreCasePGN(GameTextPGN):
         else:
             pawn_promotion_match = None
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self.append_token_and_set_error(match)
                 return
-            self._movetext_offset = len(self._text)
         fen = generate_fen_for_position(
             self._piece_placement_data.values(),
             self._active_color,
@@ -430,6 +431,8 @@ class GameIgnoreCasePGN(GameTextPGN):
 
         # In case this is done for first movetext element after tags.
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self.append_token_and_set_error(match)
                 return None
@@ -479,12 +482,12 @@ class GameIgnoreCasePGN(GameTextPGN):
         # So the test on self._piece_placement_data gives a helpful answer.
         # Cannot wait till it's done in 'super().append_pawn_move(pgn_match)'.
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self.append_token_and_set_error(match)
                 self._bishop_or_bpawn = None
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
 
         if PGN_CAPTURE_MOVE in mgl:
             if mgl.startswith(FEN_BLACK_BISHOP):
@@ -556,12 +559,12 @@ class GameIgnoreCasePGN(GameTextPGN):
             # So the test on self._piece_placement_data gives a helpful answer.
             # Cannot wait for 'super().append_pawn_move(pgn_match)'.
             if self._movetext_offset is None:
+                self._ravstack.append([0])
+                self._movetext_offset = len(self._text)
                 if not self.set_initial_position():
                     self.append_token_and_set_error(match)
                     self._bishop_or_bpawn = None
                     return
-                self._ravstack.append([0])
-                self._movetext_offset = len(self._text)
 
         if PGN_CAPTURE_MOVE in mgl:
             if PGN_PROMOTION in mgl:

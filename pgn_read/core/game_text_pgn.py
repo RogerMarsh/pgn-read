@@ -119,12 +119,12 @@ class GameTextPGN(Game):
         # So the test on self._piece_placement_data gives a helpful answer.
         # Cannot wait till it's done in 'super().append_pawn_move(pgn_match)'.
         if self._movetext_offset is None:
+            self._ravstack.append([0])
+            self._movetext_offset = len(self._text)
             if not self.set_initial_position():
                 self.append_token_and_set_error(match)
                 self._bishop_or_bpawn = None
                 return
-            self._ravstack.append([0])
-            self._movetext_offset = len(self._text)
 
         if PGN_CAPTURE_MOVE in mgl:
             pgn_match = text_format.match(mgl[0] + mgl[-3:])
