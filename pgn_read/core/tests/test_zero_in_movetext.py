@@ -27,9 +27,9 @@ class ZeroInMoveText(unittest.TestCase):
         parser = self.parser
         ae = self.assertEqual
         texts = (
-            'd4 10 d5 1-0\n\ne4 10 e5 1/2-1/2',
-            'd4 20 g6 1-0\n\ne4 20 c6 1/2-1/2',
-            'd4 25 g6 1-0\n\ne4 25 c6 { 0 } 1/2-1/2',
+            "d4 10 d5 1-0\n\ne4 10 e5 1/2-1/2",
+            "d4 20 g6 1-0\n\ne4 20 c6 1/2-1/2",
+            "d4 25 g6 1-0\n\ne4 25 c6 { 0 } 1/2-1/2",
         )
         for text in texts:
             for size in range(1, len(text) + 1):
@@ -41,9 +41,9 @@ class ZeroInMoveText(unittest.TestCase):
         parser = self.parser
         ae = self.assertEqual
         texts = (
-            'd4 010 d5 1-0\n\ne4 10 e5 1/2-1/2',
-            'd4 020 g6 1-0\n\ne4 20 c6 1/2-1/2',
-            'd4 025 g6 1-0\n\ne4 25 c6 { 0 } 1/2-1/2',
+            "d4 010 d5 1-0\n\ne4 10 e5 1/2-1/2",
+            "d4 020 g6 1-0\n\ne4 20 c6 1/2-1/2",
+            "d4 025 g6 1-0\n\ne4 25 c6 { 0 } 1/2-1/2",
         )
         for text in texts:
             for size in range(1, len(text) + 1):
@@ -61,7 +61,7 @@ class ZeroInMoveText(unittest.TestCase):
     def t_003_movetext_move_bare_zero(self):
         parser = self.parser
         ae = self.assertEqual
-        text = 'd4 0 d5 1-0\n\ne4 10 e5 1/2-1/2'
+        text = "d4 0 d5 1-0\n\ne4 10 e5 1/2-1/2"
         for size in range(1, len(text) + 1):
             with self.subTest(size=size, text=text):
                 for count, game in enumerate(
@@ -117,9 +117,9 @@ class PGNTagPair(ZeroInMoveText):
         parser = self.parser
         ae = self.assertEqual
         texts = (
-            'd4 010 d5 1-0\n\ne4 10 e5 1/2-1/2',
-            'd4 020 g6 1-0\n\ne4 20 c6 1/2-1/2',
-            'd4 025 g6 1-0\n\ne4 25 c6 { 0 } 1/2-1/2',
+            "d4 010 d5 1-0\n\ne4 10 e5 1/2-1/2",
+            "d4 020 g6 1-0\n\ne4 20 c6 1/2-1/2",
+            "d4 025 g6 1-0\n\ne4 25 c6 { 0 } 1/2-1/2",
         )
         for text in texts:
             for size in range(1, len(text) + 1):
@@ -138,7 +138,7 @@ class PGNTagPair(ZeroInMoveText):
     def test_003_movetext_move_bare_zero(self):
         parser = self.parser
         ae = self.assertEqual
-        text = 'd4 0 d5 1-0\n\ne4 10 e5 1/2-1/2'
+        text = "d4 0 d5 1-0\n\ne4 10 e5 1/2-1/2"
         for size in range(1, len(text) + 1):
             with self.subTest(size=size, text=text):
                 for count, game in enumerate(
